@@ -4,6 +4,5 @@ server:
 spring:
   application:
     name: user-service
-  config:
-    activate:
-      on-profile: test
+  profiles:
+    active: test
