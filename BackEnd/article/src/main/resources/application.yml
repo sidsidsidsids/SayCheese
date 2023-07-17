@@ -1,0 +1,9 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: user-service
+  config:
+    activate:
+      on-profile: test
