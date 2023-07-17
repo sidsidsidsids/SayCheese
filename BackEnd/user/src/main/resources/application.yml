@@ -1,0 +1,39 @@
+#
+#h2:
+#    console:
+#    enabled: true
+#    path: /test
+#jpa:
+#    hibernate:
+#        ddl-auto: update
+#    properties:
+#        hibernate:
+#            format_sql: true
+#            show_sql: true
+#datasource:
+#    driver-class-name: org.h2.Driver
+#    url: jdbd:h2:tcp://localhos/~/test
+#    username: sa
+#
+#spring:
+#    security:
+#        user:
+#            name: user
+#            password: 1234
+#server:
+#    port: 8081
+
+
+spring:
+    datasource:
+        url: jdbc:mariadb://stg-yswa-kr-practice-db-master.mariadb.database.azure.com:3306/S09P12A401
+        username: S09P12A401
+        password: qyBRUweO0E
+        driver-class-name: org.mariadb.jdbc.Driver
+    jpa:
+        hibernate:
+            ddl-auto: none
+        properties:
+            hibernate:
+                show_sql: true
+                format_sql: true
