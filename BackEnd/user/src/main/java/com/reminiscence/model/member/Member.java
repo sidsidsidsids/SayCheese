@@ -1,21 +1,21 @@
 package com.reminiscence.model.member;
 
 import com.reminiscence.BaseTimeEntity;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Entity
+@Entity(name = "Member")
 @NoArgsConstructor
 @Getter
-@Table(uniqueConstraints = {@UniqueConstraint(name="Unique_nickname",columnNames = {"nickname"}),
-                            @UniqueConstraint(name="Unique_email",columnNames = {"email"})})
+@Table(name="MEMBER", uniqueConstraints = {@UniqueConstraint(name="NICKNAME_EMAIL_UNIQUE",columnNames = {"nickname, email"})})
 public class Member extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name="email", nullable = false)
+    @Column(name="email", nullable = false, length = 40)
     private String email;
     @Column(name="password", nullable = false)
     private String password;
@@ -23,7 +23,7 @@ public class Member extends BaseTimeEntity {
     private String nickname;
     @Enumerated(EnumType.STRING)
     @Column(name="role", nullable = false)
-    private Role role;
+    private RoleType roleType;
     @Column(name="gender_fm")
     private char genderFm;
     @Column(name="age")
@@ -42,5 +42,19 @@ public class Member extends BaseTimeEntity {
 
     @Column(name="personal_agreement_yn")
     private char personalAgreement;
+
+    @Builder
+    public Member(String email, String password, String nickname, Character genderFm, int age, String name, String profile, String snsId, String snsType) {
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.genderFm = genderFm;
+        this.age = age;
+        this.name = name;
+        this.profile = profile;
+        this.snsId = snsId;
+        this.snsType = snsType;
+    }
+
 
 }

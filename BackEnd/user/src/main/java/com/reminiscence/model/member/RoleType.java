@@ -1,6 +1,6 @@
 package com.reminiscence.model.member;
 
 
-public enum Role {
+public enum RoleType {
     ADMIN, Member;
 }
