@@ -16,6 +16,7 @@ public class ControllerAdvice {
         return new ResponseEntity<ErrorResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    // Notice 관련 예외 처리
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleNoticeException(NoticeException noticeException) {
         ErrorResponse response=ErrorResponse.of(noticeException.getHttpStatus().value(),noticeException.getMessage());

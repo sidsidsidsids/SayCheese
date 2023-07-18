@@ -22,10 +22,17 @@ public class NoticeController {
     private final NoticeService noticeService;
 
 
+    /**
+     * 관리자가 공지 글을 작성하는 API
+     * @param userDetail 사용자 정보
+     * @param noticeArticleRequestDto 사용자 공지 글 작성 요청 정보
+     * @return
+     */
     @PostMapping("")
-    public ResponseEntity<String> createNoticeArticle(@AuthenticationPrincipal UserDetail userDetail,
+    public ResponseEntity<String> writeNoticeArticle(@AuthenticationPrincipal UserDetail userDetail,
                                                       @Valid @RequestBody NoticeArticleRequestDto noticeArticleRequestDto) {
 
+        // user 정보와 사용자 요청 정보를 하나의 Dto로 만듬
         NoticeArticleAndMemberRequestDto noticeArticleAndMemberRequestDto=NoticeArticleAndMemberRequestDto.builder()
                 .member(userDetail.getMember())
                 .noticeArticleRequestDto(noticeArticleRequestDto).build();
