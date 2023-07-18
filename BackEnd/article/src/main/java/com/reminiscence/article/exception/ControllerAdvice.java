@@ -4,6 +4,7 @@ package com.reminiscence.article.exception;
 import com.reminiscence.article.exception.customexception.NoticeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -20,6 +21,13 @@ public class ControllerAdvice {
         ErrorResponse response=ErrorResponse.of(noticeException.getHttpStatus().value(),noticeException.getMessage());
         return new ResponseEntity<ErrorResponse>(response, noticeException.getHttpStatus());
     }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleNoticeException(MethodArgumentNotValidException methodArgumentNotValidException) {
+        ErrorResponse response = ErrorResponse.of(HttpStatus.BAD_REQUEST.value(), methodArgumentNotValidException.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+        return new ResponseEntity<ErrorResponse>(response, HttpStatus.BAD_REQUEST);
+    }
+
 
 
 
