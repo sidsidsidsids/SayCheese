@@ -25,9 +25,9 @@ public class Member extends BaseTimeEntity {
     @Column(name="role", nullable = false)
     private Role role;
     @Column(name="gender_fm")
-    private char genderFm;
+    private Character genderFm;
     @Column(name="age")
-    private int age;
+    private Integer age;
     @Column(name="name")
     private String name;
 
@@ -41,6 +41,6 @@ public class Member extends BaseTimeEntity {
     private String snsType;
 
     @Column(name="personal_agreement_yn")
-    private char personalAgreement;
+    private Character personalAgreement;
 
 }
