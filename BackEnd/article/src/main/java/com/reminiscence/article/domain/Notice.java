@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @DiscriminatorValue("N")
+@Table(name = "notice_article")
 public class Notice extends Article {
     @Column(name = "subject")
     private String subject;
