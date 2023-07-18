@@ -1,10 +1,14 @@
 package com.reminiscence.article.domain;
 
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
 @DiscriminatorValue("N")
 @Table(name = "notice_article")
+@NoArgsConstructor
 public class NoticeArticle extends Article {
     @Column(name = "subject")
     private String subject;
@@ -13,4 +17,15 @@ public class NoticeArticle extends Article {
 
     @Column(name="hit", nullable = false)
     private Long hit;
+    @Builder
+    public NoticeArticle(String subject, String content,Member member) {
+
+        this(subject,content,0L,member);
+    }
+    public NoticeArticle(String subject, String content, Long hit, Member member) {
+        super(member);
+        this.subject = subject;
+        this.content = content;
+        this.hit=hit;
+    }
 }

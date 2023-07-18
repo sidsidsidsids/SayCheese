@@ -1,5 +1,7 @@
 package com.reminiscence.article.notice.service;
 
-public interface NoticeService {
+import com.reminiscence.article.notice.dto.NoticeArticleRequestDto;
 
+public interface NoticeService {
+    public void writeArticle(NoticeArticleRequestDto noticeArticleRequestDto);
 }
