@@ -17,7 +17,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/notice")
+@RequestMapping("/api/article/notice")
 public class NoticeController {
     private final NoticeService noticeService;
 
