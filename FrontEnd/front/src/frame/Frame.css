@@ -1,0 +1,9 @@
+div.frame {
+  font-size: 30px;
+}
+
+div.frameHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

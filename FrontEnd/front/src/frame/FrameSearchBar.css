@@ -1,0 +1,23 @@
+/* form {
+  display: block;
+  height: 20px;
+} */
+
+div.frameSearch > form > button {
+  border: none;
+  background: transparent;
+  font-size: 30px;
+}
+
+div.frameSearch > form > button > img {
+  height: 30px;
+  object-fit: cover;
+}
+
+div.frameSearch > form > input {
+  border: none;
+  border-bottom: 3px solid black;
+}
+&:focus {
+  outline: none;
+}
