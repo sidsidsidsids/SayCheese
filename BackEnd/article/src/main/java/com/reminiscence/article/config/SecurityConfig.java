@@ -20,7 +20,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.addFilterBefore(new JWTAuthorizationFilter(env,memberRepository), BasicAuthenticationFilter.class);
-        http.authorizeRequests().antMatchers("/api/article").access("hasRole('ADMIN')")
+        http.authorizeRequests().antMatchers("/api/article/notice").access("hasRole('ADMIN')")
                 .and()
                 .authorizeRequests().antMatchers("/api/article/**").permitAll()
                 .and()
