@@ -8,11 +8,11 @@ import javax.persistence.*;
 @Entity
 @Table(name = "image_article")
 @DiscriminatorValue("I")
-@Getter @Setter
+@Getter
 public class ImageArticle extends Article{
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "image_id")
     private Image image;
 
 }
