@@ -5,4 +5,5 @@ spring:
   application:
     name: article-service
   profiles:
-    active: prod
+    active: local
+    include: jwt
