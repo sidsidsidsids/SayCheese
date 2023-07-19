@@ -4,7 +4,7 @@
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
-
 :sectlinks:
+:sectnums:
 
 include::Notice-API.adoc[]

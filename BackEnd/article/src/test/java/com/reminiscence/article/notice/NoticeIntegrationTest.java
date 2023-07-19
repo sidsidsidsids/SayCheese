@@ -47,8 +47,11 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -81,7 +84,9 @@ public class NoticeIntegrationTest {
         mvc=MockMvcBuilders.webAppContextSetup(applicationContext)
                 .apply(springSecurity())
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
-                .apply(documentationConfiguration(restDocumentation))
+                .apply(documentationConfiguration(restDocumentation).operationPreprocessors()
+                        .withRequestDefaults(prettyPrint())
+                        .withResponseDefaults(prettyPrint()))
                 .build();
         Member admin=memberRepository.findById(1L).orElse(null);
         Member member=memberRepository.findById(2L).orElse(null);
@@ -113,8 +118,8 @@ public class NoticeIntegrationTest {
                                         headerWithName("Authorization").description("로그인 성공한 토큰 ")
                                 ),
                                 requestFields(
-                                        fieldWithPath("subject").type(JsonFieldType.STRING).description("제목"),
-                                        fieldWithPath("content").type(JsonFieldType.STRING).description("내용")
+                                        fieldWithPath("subject").type(JsonFieldType.STRING).description("제목").attributes(key("constraints").value("제목은 최소 3글자, 20글자 이하")),
+                                        fieldWithPath("content").type(JsonFieldType.STRING).description("내용").attributes(key("constraints").value("내용은 최소 3글자, 1000글자 이하"))
                                 ),
                                 responseFields(
                                         fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
@@ -135,7 +140,16 @@ public class NoticeIntegrationTest {
                         .headers(headers)
                         .content(objectMapper.writeValueAsString(dummyNoticeArticleRequestDto))
                         .contentType("application/json"))
-                        .andExpect(status().isForbidden());
+                        .andExpect(status().isForbidden())
+                        .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                                requestHeaders(
+                                        headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                                ),
+                                requestFields(
+                                        fieldWithPath("subject").type(JsonFieldType.STRING).description("제목").attributes(key("constraints").value("제목은 최소 3글자, 20글자 이하")),
+                                        fieldWithPath("content").type(JsonFieldType.STRING).description("내용").attributes(key("constraints").value("내용은 최소 3글자, 1000글자 이하"))
+                                )
+                        ));
 
     }
 
@@ -159,8 +173,8 @@ public class NoticeIntegrationTest {
                                         headerWithName("Authorization").description("로그인 성공한 토큰 ")
                                 ),
                                 requestFields(
-                                        fieldWithPath("subject").type(JsonFieldType.STRING).description("제목"),
-                                        fieldWithPath("content").type(JsonFieldType.STRING).description("내용")
+                                        fieldWithPath("subject").type(JsonFieldType.STRING).description("제목").attributes(key("constraints").value("제목은 최소 3글자, 20글자 이하")),
+                                        fieldWithPath("content").type(JsonFieldType.STRING).description("내용").attributes(key("constraints").value("내용은 최소 3글자, 1000글자 이하"))
                                 ),
                                 responseFields(
                                         fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 코드"),
@@ -192,8 +206,8 @@ public class NoticeIntegrationTest {
                                 headerWithName("Authorization").description("로그인 성공한 토큰 ")
                         ),
                         requestFields(
-                                fieldWithPath("subject").type(JsonFieldType.STRING).description("제목"),
-                                fieldWithPath("content").type(JsonFieldType.STRING).description("내용")
+                                fieldWithPath("subject").type(JsonFieldType.STRING).description("제목").attributes(key("constraints").value("제목은 최소 3글자, 20글자 이하")),
+                                fieldWithPath("content").type(JsonFieldType.STRING).description("내용").attributes(key("constraints").value("내용은 최소 3글자, 1000글자 이하"))
                         ),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
@@ -215,7 +229,16 @@ public class NoticeIntegrationTest {
                         .headers(headers)
                         .content(objectMapper.writeValueAsString(dummyNoticeArticleRequestDto))
                         .contentType("application/json"))
-                        .andExpect(status().isForbidden());
+                        .andExpect(status().isForbidden())
+                        .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                                requestHeaders(
+                                        headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                                ),
+                                requestFields(
+                                        fieldWithPath("subject").type(JsonFieldType.STRING).description("제목").attributes(key("constraints").value("제목은 최소 3글자, 20글자 이하")),
+                                        fieldWithPath("content").type(JsonFieldType.STRING).description("내용").attributes(key("constraints").value("내용은 최소 3글자, 1000글자 이하"))
+                                )
+                        ));
 
 
     }
@@ -240,14 +263,14 @@ public class NoticeIntegrationTest {
                                         headerWithName("Authorization").description("로그인 성공한 토큰 ")
                                 ),
                                 requestFields(
-                                        fieldWithPath("subject").type(JsonFieldType.STRING).description("제목"),
-                                        fieldWithPath("content").type(JsonFieldType.STRING).description("내용")
+                                        fieldWithPath("subject").type(JsonFieldType.STRING).description("제목").attributes(key("constraints").value("제목은 최소 3글자, 20글자 이하")),
+                                        fieldWithPath("content").type(JsonFieldType.STRING).description("내용").attributes(key("constraints").value("내용은 최소 3글자, 1000글자 이하"))
                                 ),
                                 responseFields(
                                         fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 코드"),
                                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지")
                                 )
-                        ));;
+                        ));
 
 
     }
@@ -271,14 +294,14 @@ public class NoticeIntegrationTest {
                                 headerWithName("Authorization").description("로그인 성공한 토큰 ")
                         ),
                         requestFields(
-                                fieldWithPath("subject").type(JsonFieldType.STRING).description("제목"),
-                                fieldWithPath("content").type(JsonFieldType.STRING).description("내용")
+                                fieldWithPath("subject").type(JsonFieldType.STRING).description("제목").attributes(key("constraints").value("제목은 최소 3글자, 20글자 이하")),
+                                fieldWithPath("content").type(JsonFieldType.STRING).description("내용").attributes(key("constraints").value("내용은 최소 3글자, 1000글자 이하"))
                         ),
                         responseFields(
                                 fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 코드"),
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지")
                         )
-                ));;
+                ));
 
 
     }
