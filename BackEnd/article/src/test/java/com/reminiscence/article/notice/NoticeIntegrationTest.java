@@ -134,7 +134,7 @@ public class NoticeIntegrationTest {
                         .headers(headers)
                         .content(objectMapper.writeValueAsString(dummyNoticeArticleRequestDto))
                         .contentType("application/json"))
-                        .andExpect(status().is4xxClientError());
+                        .andExpect(status().isForbidden());
 
     }
 
