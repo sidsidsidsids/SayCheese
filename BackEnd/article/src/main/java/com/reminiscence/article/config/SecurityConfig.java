@@ -22,6 +22,8 @@ public class SecurityConfig {
         http.addFilterBefore(new JWTAuthorizationFilter(env,memberRepository), BasicAuthenticationFilter.class);
         http.authorizeRequests().antMatchers("/api/article").access("hasRole('ADMIN')")
                 .and()
+                .authorizeRequests().antMatchers("/api/image/**").permitAll()
+                .and()
                 .authorizeRequests().antMatchers("/api/article/**").permitAll()
                 .and()
                 .authorizeRequests().anyRequest().authenticated();
@@ -29,7 +31,6 @@ public class SecurityConfig {
         http.httpBasic().disable();
         http.formLogin().disable();
         return http.build();
-
 
     }
 }
