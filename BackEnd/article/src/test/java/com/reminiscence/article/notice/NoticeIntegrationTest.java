@@ -51,6 +51,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -169,6 +170,118 @@ public class NoticeIntegrationTest {
 
     }
 
+
+
+    @Test
+    @DisplayName("공지 수정 테스트(정상)")
+    public void modifyNoticeArticleSuccessTest() throws Exception {
+        DummyNoticeArticleRequestDto.Builder builder=new DummyNoticeArticleRequestDto.Builder();
+        builder.subject("시스템 점검 안내")
+                .content("내일 3시에 점검 있어요");
+        DummyNoticeArticleRequestDto dummyNoticeArticleRequestDto=builder.build();
+        HttpHeaders headers=new HttpHeaders();
+        headers.add("Authorization","Bearer "+adminToken);
+        mvc.perform(put("/api/article/notice/2")
+                        .headers(headers)
+                        .content(objectMapper.writeValueAsString(dummyNoticeArticleRequestDto))
+                        .contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                        ),
+                        requestFields(
+                                fieldWithPath("subject").type(JsonFieldType.STRING).description("제목"),
+                                fieldWithPath("content").type(JsonFieldType.STRING).description("내용")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
+                        )
+                ));
+
+    }
+
+    @Test
+    @DisplayName("공지 수정 테스트(일반 사용자 시도)")
+    public void modifyNoticeArticleAuthFailTest() throws Exception {
+        DummyNoticeArticleRequestDto.Builder builder=new DummyNoticeArticleRequestDto.Builder();
+        builder.subject("시스템 점검 안내")
+                .content("내일 3시에 점검 있어요");
+        DummyNoticeArticleRequestDto dummyNoticeArticleRequestDto=builder.build();
+        HttpHeaders headers=new HttpHeaders();
+        headers.add("Authorization","Bearer "+memberToken);
+        mvc.perform(put("/api/article/notice/2")
+                        .headers(headers)
+                        .content(objectMapper.writeValueAsString(dummyNoticeArticleRequestDto))
+                        .contentType("application/json"))
+                        .andExpect(status().isForbidden());
+
+
+    }
+
+    @Test
+    @DisplayName("공지 수정 테스트(짧은 제목으로 작성 시)")
+    public void modifyNoticeArticleLowerSubjectFailTest() throws Exception {
+        DummyNoticeArticleRequestDto.Builder builder=new DummyNoticeArticleRequestDto.Builder();
+        builder.subject("제목")
+                .content("내일 3시에 점검 있어요");
+        DummyNoticeArticleRequestDto dummyNoticeArticleRequestDto=builder.build();
+        HttpHeaders headers=new HttpHeaders();
+        headers.add("Authorization","Bearer "+adminToken);
+        mvc.perform(put("/api/article/notice/2")
+                        .headers(headers)
+                        .content(objectMapper.writeValueAsString(dummyNoticeArticleRequestDto))
+                        .contentType("application/json"))
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                        .andExpect(status().isBadRequest())
+                        .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                                requestHeaders(
+                                        headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                                ),
+                                requestFields(
+                                        fieldWithPath("subject").type(JsonFieldType.STRING).description("제목"),
+                                        fieldWithPath("content").type(JsonFieldType.STRING).description("내용")
+                                ),
+                                responseFields(
+                                        fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 코드"),
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지")
+                                )
+                        ));;
+
+
+    }
+    @Test
+    @DisplayName("공지 수정 테스트(없는 번호로 요청 시)")
+    public void modifyNoticeArticleNotExistsIdFailTest() throws Exception {
+        DummyNoticeArticleRequestDto.Builder builder=new DummyNoticeArticleRequestDto.Builder();
+        builder.subject("제목")
+                .content("내일 3시에 점검 있어요");
+        DummyNoticeArticleRequestDto dummyNoticeArticleRequestDto=builder.build();
+        HttpHeaders headers=new HttpHeaders();
+        headers.add("Authorization","Bearer "+adminToken);
+        mvc.perform(put("/api/article/notice/10000")
+                        .headers(headers)
+                        .content(objectMapper.writeValueAsString(dummyNoticeArticleRequestDto))
+                        .contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(status().isBadRequest())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                        ),
+                        requestFields(
+                                fieldWithPath("subject").type(JsonFieldType.STRING).description("제목"),
+                                fieldWithPath("content").type(JsonFieldType.STRING).description("내용")
+                        ),
+                        responseFields(
+                                fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지")
+                        )
+                ));;
+
+
+    }
 
 
 

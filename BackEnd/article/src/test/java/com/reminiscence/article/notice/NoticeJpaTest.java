@@ -58,4 +58,41 @@ public class NoticeJpaTest {
 
         Assertions.assertThat(noticeRepository.findById(noticeArticle.getId()).orElse(null).getId()).isEqualTo(noticeArticle.getId());
     }
+    @Test
+    @DisplayName("공지 수정 테스트")
+    public void noticeArticleModifyTest() throws Exception {
+        // 공지 생성
+        DummyNoticeArticleRequestDto.Builder builder=new DummyNoticeArticleRequestDto.Builder();
+        builder.subject("시스템 점검 안내")
+                .content("내일 10시에 점검 있어요");
+        DummyNoticeArticleRequestDto dummyNoticeArticleRequestDto=builder.build();
+
+        NoticeArticleRequestDto noticeArticleRequestDto=objectMapper.readValue(objectMapper.writeValueAsString(dummyNoticeArticleRequestDto),NoticeArticleRequestDto.class);
+        NoticeArticleAndMemberRequestDto noticeArticleAndMemberRequestDto=NoticeArticleAndMemberRequestDto.builder()
+                .noticeArticleRequestDto(noticeArticleRequestDto)
+                .member(member)
+                .build();
+        NoticeArticle noticeArticle=noticeArticleAndMemberRequestDto.toEntity(noticeArticleAndMemberRequestDto);
+        noticeRepository.save(noticeArticle);
+
+        Assertions.assertThat(noticeRepository.findById(noticeArticle.getId()).orElse(null).getId()).isEqualTo(noticeArticle.getId());
+
+
+        // 공지 수정 시도
+        NoticeArticle newNoticeArticle=noticeRepository.findById(noticeArticle.getId()).orElse(null);
+
+        DummyNoticeArticleRequestDto.Builder modifyBuilder=new DummyNoticeArticleRequestDto.Builder();
+        modifyBuilder.subject("시스템 점검 안내")
+                    .content("내일 12시에 점검 있어요");
+        DummyNoticeArticleRequestDto modifyDummyNoticeArticleRequestDto=modifyBuilder.build();
+        NoticeArticleRequestDto modifyNoticeArticleRequestDto=objectMapper.readValue(objectMapper.writeValueAsString(modifyDummyNoticeArticleRequestDto),NoticeArticleRequestDto.class);
+
+        newNoticeArticle.modifySubject(modifyNoticeArticleRequestDto.getSubject());
+        newNoticeArticle.modifyContent(modifyNoticeArticleRequestDto.getContent());
+
+        Assertions.assertThat(noticeRepository.findById(noticeArticle.getId()).orElse(null).getSubject()).isEqualTo(modifyNoticeArticleRequestDto.getSubject());
+        Assertions.assertThat(noticeRepository.findById(noticeArticle.getId()).orElse(null).getContent()).isEqualTo(modifyNoticeArticleRequestDto.getContent());
+
+
+    }
 }
