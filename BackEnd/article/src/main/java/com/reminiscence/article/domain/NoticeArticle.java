@@ -1,6 +1,7 @@
 package com.reminiscence.article.domain;
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @DiscriminatorValue("N")
 @Table(name = "notice_article")
 @NoArgsConstructor
+@Getter
 public class NoticeArticle extends Article {
     @Column(name = "subject")
     private String subject;

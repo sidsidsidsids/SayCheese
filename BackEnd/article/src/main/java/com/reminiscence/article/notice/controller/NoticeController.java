@@ -31,7 +31,6 @@ public class NoticeController {
     @PostMapping("")
     public ResponseEntity<String> writeNoticeArticle(@AuthenticationPrincipal UserDetail userDetail,
                                                       @Valid @RequestBody NoticeArticleRequestDto noticeArticleRequestDto) {
-
         // user 정보와 사용자 요청 정보를 하나의 Dto로 만듬
         NoticeArticleAndMemberRequestDto noticeArticleAndMemberRequestDto=NoticeArticleAndMemberRequestDto.builder()
                 .member(userDetail.getMember())

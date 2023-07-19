@@ -1,6 +1,7 @@
 package com.reminiscence.article.domain;
 
 import com.reminiscence.article.BaseTimeEntity;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import javax.persistence.FetchType;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name="type")
 @NoArgsConstructor
+@Getter
 public abstract class Article extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
@@ -19,6 +21,7 @@ public abstract class Article extends BaseTimeEntity {
     private Member member;
 
     public Article(Member member){
+
         this.member = member;
     }
 
