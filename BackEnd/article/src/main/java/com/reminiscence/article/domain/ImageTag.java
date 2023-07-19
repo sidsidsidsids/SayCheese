@@ -1,11 +1,14 @@
 package com.reminiscence.article.domain;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ImageTag {
 
     @EmbeddedId
@@ -20,4 +23,12 @@ public class ImageTag {
     @JoinColumn(name="tagId")
     @MapsId("tagId")
     private Tag tag;
+
+    public ImageTag(Image image, Tag tag) {
+        this.image = image;
+        this.tag = tag;
+        image.addImageTag(this);
+        tag.addImageTag(this);
+        this.imageTagKey = new ImageTagKey(image.getId(), tag.getId());
+    }
 }

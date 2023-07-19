@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter @Setter
+@Getter
 public class Tag extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,5 +19,9 @@ public class Tag extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "tag")
     private List<ImageTag> imageTags = new ArrayList<>();
+
+    public void addImageTag(ImageTag imageTag){
+        this.imageTags.add(imageTag);
+    }
 
 }
