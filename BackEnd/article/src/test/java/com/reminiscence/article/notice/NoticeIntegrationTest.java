@@ -8,7 +8,10 @@ import com.reminiscence.article.domain.Member;
 import com.reminiscence.article.filter.JWTAuthorizationFilter;
 import com.reminiscence.article.member.repository.MemberRepository;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcBuilderCustomizer;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,9 +20,17 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.headers.HeaderDocumentation;
+import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.restdocs.payload.PayloadDocumentation;
+import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -31,13 +42,21 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
+import org.springframework.web.filter.CharacterEncodingFilter;
+
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
+//@AutoConfigureMockMvc
 @Transactional
 public class NoticeIntegrationTest {
 
@@ -46,22 +65,23 @@ public class NoticeIntegrationTest {
 
     @Autowired
     MemberRepository memberRepository;
-
-
-    @Autowired
+//    @Autowired
     MockMvc mvc;
     @Autowired
     private Environment env;
 
-    @Autowired
-    SecurityFilterChain securityFilterChain;
     ObjectMapper objectMapper=new ObjectMapper();
     String adminToken;
 
     String memberToken;
 
     @BeforeEach
-    public void init() throws SQLException {
+    public void init(RestDocumentationContextProvider restDocumentation) throws SQLException {
+        mvc=MockMvcBuilders.webAppContextSetup(applicationContext)
+                .apply(springSecurity())
+                .addFilters(new CharacterEncodingFilter("UTF-8", true))
+                .apply(documentationConfiguration(restDocumentation))
+                .build();
         Member admin=memberRepository.findById(1L).orElse(null);
         Member member=memberRepository.findById(2L).orElse(null);
         adminToken= JWT.create()
@@ -85,7 +105,20 @@ public class NoticeIntegrationTest {
                         .headers(headers)
                         .content(objectMapper.writeValueAsString(dummyNoticeArticleRequestDto))
                         .contentType("application/json"))
-                        .andExpect(status().isOk());
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                        .andExpect(status().isOk())
+                        .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                                requestHeaders(
+                                        headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                                ),
+                                requestFields(
+                                        fieldWithPath("subject").type(JsonFieldType.STRING).description("제목"),
+                                        fieldWithPath("content").type(JsonFieldType.STRING).description("내용")
+                                ),
+                                responseFields(
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
+                                )
+                        ));
 
     }
     @Test
@@ -118,7 +151,21 @@ public class NoticeIntegrationTest {
                         .headers(headers)
                         .content(objectMapper.writeValueAsString(dummyNoticeArticleRequestDto))
                         .contentType("application/json"))
-                        .andExpect(status().isBadRequest());
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                        .andExpect(status().isBadRequest())
+                        .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                                requestHeaders(
+                                        headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                                ),
+                                requestFields(
+                                        fieldWithPath("subject").type(JsonFieldType.STRING).description("제목"),
+                                        fieldWithPath("content").type(JsonFieldType.STRING).description("내용")
+                                ),
+                                responseFields(
+                                        fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 코드"),
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지")
+                                )
+                        ));;
 
     }
 
