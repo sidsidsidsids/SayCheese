@@ -5,6 +5,7 @@
   align-items: center;
   cursor: pointer;
 }
+/* 제목에 커서 올릴 경우 손가락 모양으로 바뀜 */
 
 .faq-card-answer {
   position: relative;
@@ -24,6 +25,7 @@
   visibility: hidden;
   transition: padding-top 0.5s, padding-bottom 0.5s, height 0.5s, transform 0.5s;
 }
+/* transition으로 아코디언 열고 닫는 애니메이션 속도를 추가해 매끄럽게 보이도록 함 */
 
 .FaqCard {
   display: flex;

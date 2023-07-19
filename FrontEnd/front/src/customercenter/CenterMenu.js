@@ -9,6 +9,7 @@ function CenterMenu() {
       <hr />
       <h3>자주 묻는 질문</h3>
     </div>
+    /* 공지사항과 자주 묻는 질문 router 연결 필요함 */
   );
 }
 

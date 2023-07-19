@@ -3,6 +3,7 @@
   align-items: flex-start;
   justify-content: center;
 }
+/* Menu와 Main을 일렬로 나열하기 위해 flex 추가 */
 
 .stop-dragging {
   -ms-user-select: none;

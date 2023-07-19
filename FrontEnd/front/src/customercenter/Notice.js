@@ -1,5 +1,6 @@
 import "./Notice.css";
 
+// db 연결 시 제목, 작성일, 조회수, 내용 수정해야 함
 function Notice() {
   return (
     <div>
