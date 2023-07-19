@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./RoomJoinModal.css";
+import ModalButtons from "./ModalButtons";
 
 function RoomJoinModal({ open, close }) {
   const [inputRoomCode, setInputRoomCode] = useState("");
@@ -41,8 +42,7 @@ function RoomJoinModal({ open, close }) {
             maxLength={10}
           />
         </p>
-        <button onClick={handleConfirm}>확인</button>
-        <button onClick={close}>나가기</button>
+        <ModalButtons onConfirm={handleConfirm} onClose={close} />
       </div>
     </div>
   );
