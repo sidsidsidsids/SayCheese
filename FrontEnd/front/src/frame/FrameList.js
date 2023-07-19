@@ -27,6 +27,12 @@ export default function FrameList() {
       imgSrc: { sampleImg },
       likes: 20,
     },
+    {
+      id: 3,
+      name: "snoopy4",
+      imgSrc: { sampleImg },
+      likes: 100,
+    },
   ]);
   frameList.map((item) => console.log(item));
 

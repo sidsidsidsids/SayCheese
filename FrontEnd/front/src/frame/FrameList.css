@@ -1,7 +1,12 @@
 div.FrameList {
   display: flex;
-  flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-around;
-  align-content: space-around;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  align-content: center;
+  background-color: white;
+  border-radius: 0 30px 30px 30px;
+  min-height: 70vh;
+  padding: 20px 0;
 }
