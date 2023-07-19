@@ -1,0 +1,35 @@
+hr {
+  background: #9795f0;
+  height: 1px;
+  border: 0;
+}
+
+table {
+  width: 100%;
+  border-top: 3px solid #9795f0;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border-bottom: 1px solid #9795f0;
+  padding: 10px;
+  text-align: center;
+}
+
+tbody tr:hover {
+  background-color: #9795f0;
+  color: #fff;
+}
+
+tbody tr td:nth-child(2):hover {
+  font-weight: bold;
+}
+
+.TableCell1 {
+  width: 10%;
+}
+
+.TableCell2 {
+  width: 15%;
+}
