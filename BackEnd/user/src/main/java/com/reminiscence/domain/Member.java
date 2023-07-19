@@ -1,4 +1,4 @@
-package com.reminiscence.model.member;
+package com.reminiscence.domain;
 
 import com.reminiscence.BaseTimeEntity;
 import lombok.Builder;
@@ -10,7 +10,8 @@ import javax.persistence.*;
 @Entity(name = "Member")
 @NoArgsConstructor
 @Getter
-@Table(name="MEMBER", uniqueConstraints = {@UniqueConstraint(name="NICKNAME_EMAIL_UNIQUE",columnNames = {"nickname, email"})})
+@Table(name="MEMBER", uniqueConstraints = {@UniqueConstraint(name="Unique_nickname",columnNames = {"nickname"}),
+        @UniqueConstraint(name="Unique_email",columnNames = {"email"})})
 public class Member extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,16 +45,18 @@ public class Member extends BaseTimeEntity {
     private char personalAgreement;
 
     @Builder
-    public Member(String email, String password, String nickname, Character genderFm, int age, String name, String profile, String snsId, String snsType) {
+    public Member(String email, String password, String nickname, RoleType roleType, Character genderFm, int age, String name, String profile, String snsId, String snsType, char personalAgreement) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
+        this.roleType = roleType;
         this.genderFm = genderFm;
         this.age = age;
         this.name = name;
         this.profile = profile;
         this.snsId = snsId;
         this.snsType = snsType;
+        this.personalAgreement = personalAgreement;
     }
 
 

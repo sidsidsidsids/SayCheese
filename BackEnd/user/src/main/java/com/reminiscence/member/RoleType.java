@@ -1,4 +1,4 @@
-package com.reminiscence.model.member;
+package com.reminiscence.member;
 
 
 public enum RoleType {

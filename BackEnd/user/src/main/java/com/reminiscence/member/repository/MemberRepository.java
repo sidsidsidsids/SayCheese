@@ -1,4 +1,4 @@
-package com.reminiscence.repository.member;
+package com.reminiscence.member.repository;
 
 
 import com.reminiscence.domain.Member;

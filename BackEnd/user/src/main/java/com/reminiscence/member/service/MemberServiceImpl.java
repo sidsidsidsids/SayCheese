@@ -1,13 +1,13 @@
-package com.reminiscence.service.member;
+package com.reminiscence.member.service;
 
-import java.util.List;
-
+import com.reminiscence.domain.Member;
 import com.reminiscence.domain.MemberJoinRequestDto;
 import com.reminiscence.domain.MemberUpdatePasswordDto;
 import com.reminiscence.domain.MemberUpdateRequestDto;
 import com.reminiscence.repository.member.MemberRepository;
-import com.reminiscence.domain.Member;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Service

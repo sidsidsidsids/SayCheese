@@ -1,11 +1,11 @@
-package com.reminiscence.service.member;
-
-import java.util.List;
+package com.reminiscence.member.service;
 
 import com.reminiscence.domain.Member;
 import com.reminiscence.domain.MemberJoinRequestDto;
 import com.reminiscence.domain.MemberUpdatePasswordDto;
 import com.reminiscence.domain.MemberUpdateRequestDto;
+
+import java.util.List;
 
 public interface MemberService {
 

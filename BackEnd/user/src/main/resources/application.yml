@@ -15,16 +15,6 @@
 ##    url: jdbd:h2:tcp://localhost/~/test
 ##    username: sa
 ##
-##spring:
-##    security:
-##        user:
-##            name: user
-##            password: 1234
-##server:
-##    port: 8081
-#
-#server:
-#    port: 3030
 #spring:
 #  datasource:
 ##        url: jdbc:mariadb://stg-yswa-kr-practice-db-master.mariadb.database.azure.com:3306/S09P12A401
@@ -42,16 +32,13 @@
 #      hibernate:
 #        show_sql: true
 #        format_sql: true
-#    security:
-#        user:
-#            name: user
-#            password: 1234
-
-server:
-  port: 3031
 
 spring:
   application:
-    name: article-service
+    name: member-service
   profiles:
     active: local
+  security:
+        user:
+            name: user
+            password: 1234

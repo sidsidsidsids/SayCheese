@@ -1,14 +1,14 @@
-package com.reminiscence.controller.member;
+package com.reminiscence.member.controller;
 
+import com.reminiscence.JwtServiceImpl;
 import com.reminiscence.domain.Member;
 import com.reminiscence.domain.MemberJoinRequestDto;
 import com.reminiscence.domain.MemberUpdateRequestDto;
 import com.reminiscence.service.member.MemberService;
-import com.reminiscence.JwtServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/member")

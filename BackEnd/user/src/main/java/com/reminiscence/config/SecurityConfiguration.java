@@ -1,5 +1,6 @@
 package com.reminiscence.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
@@ -19,8 +20,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import javax.sql.DataSource;
 
 
-//@EnableWebSecurity
-//@Configuration
+@EnableWebSecurity
+@Configuration
+@RequiredArgsConstructor
 public class SecurityConfiguration {
 
     // 경로 접근 설정
@@ -30,11 +32,11 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authz) -> {
                     try {
                         authz
-                            .mvcMatchers("/", "/home").permitAll()
+                            .mvcMatchers("/", "/test").permitAll()
                             .anyRequest().authenticated()
                             .and()
                         .formLogin()
-                            .loginPage("home/index")
+                            .loginPage("/index")
                             .permitAll()
                             .and()
                         .logout()
