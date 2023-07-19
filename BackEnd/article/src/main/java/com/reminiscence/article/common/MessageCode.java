@@ -11,7 +11,8 @@ import org.springframework.http.ResponseEntity;
 @Getter
 public enum MessageCode {
 
-    NOTICE_WRITE_SUCCESS(HttpStatus.OK, "공지글 작성이 완료되었습니다.");
+    NOTICE_WRITE_SUCCESS(HttpStatus.OK, "공지글 작성이 완료되었습니다."),
+    NOTICE_MODIFY_SUCCESS(HttpStatus.OK, "공지글 수정이 완료되었습니다.");
 
 
     MessageCode(HttpStatus httpStatus, String message) {
@@ -32,10 +33,12 @@ public enum MessageCode {
         private String message;
 
         private Response(String message){
+
             this.message=message;
         }
 
         public String getMessage(){
+
             return message;
         }
     }

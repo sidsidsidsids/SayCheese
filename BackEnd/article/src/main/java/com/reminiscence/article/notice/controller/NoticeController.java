@@ -8,10 +8,7 @@ import com.reminiscence.article.notice.service.NoticeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -37,5 +34,12 @@ public class NoticeController {
                 .noticeArticleRequestDto(noticeArticleRequestDto).build();
         noticeService.writeArticle(noticeArticleAndMemberRequestDto);
         return MessageCode.NOTICE_WRITE_SUCCESS.toResponseEntity();
+    }
+    @PutMapping("/{noticeArticleId}")
+    public ResponseEntity<MessageCode.Response> modifyNoticeArticle(@PathVariable String noticeArticleId,
+                                                                   @Valid @RequestBody NoticeArticleRequestDto noticeArticleRequestDto) throws Exception{
+        // user 정보와 사용자 요청 정보를 하나의 Dto로 만듬
+        noticeService.modifyArticle(Long.parseLong(noticeArticleId),noticeArticleRequestDto);
+        return MessageCode.NOTICE_MODIFY_SUCCESS.toResponseEntity();
     }
 }

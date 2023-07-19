@@ -30,4 +30,12 @@ public class NoticeArticle extends Article {
         this.content = content;
         this.hit=hit;
     }
+
+
+    public void modifyContent(String content) {
+        this.content=content;
+    }
+    public void modifySubject(String subject) {
+        this.subject=subject;
+    }
 }

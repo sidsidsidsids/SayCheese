@@ -6,4 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public interface NoticeService {
     public void writeArticle(NoticeArticleAndMemberRequestDto noticeArticleAndMemberRequestDto);
+
+    public void modifyArticle(Long noticeArticleId,NoticeArticleRequestDto noticeArticleRequestDto);
 }
