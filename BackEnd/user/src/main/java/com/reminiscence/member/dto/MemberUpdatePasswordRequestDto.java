@@ -3,11 +3,11 @@ package com.reminiscence.member.dto;
 import com.reminiscence.domain.Member;
 import lombok.Builder;
 
-public class MemberUpdatePasswordDto {
+public class MemberUpdatePasswordRequestDto {
     private String password;
 
     @Builder
-    public MemberUpdatePasswordDto(String password) {
+    public MemberUpdatePasswordRequestDto(String password) {
         this.password = password;
     }
 

@@ -1,12 +1,13 @@
-package com.reminiscence.domain;
+package com.reminiscence.member.dto;
 
+import com.reminiscence.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class MemberUpdateRequestDto {
+public class MemberInfoUpdateRequestDto {
     private String password;
     private String nickname;
     private char genderFm;
@@ -18,7 +19,7 @@ public class MemberUpdateRequestDto {
     private char personalAgreement;
 
     @Builder
-    public MemberUpdateRequestDto(String email, String password, String nickname, char genderFm, int age, String name, String profile, String snsId, String snsType) {
+    public MemberInfoUpdateRequestDto(String email, String password, String nickname, char genderFm, int age, String name, String profile, String snsId, String snsType) {
         this.password = password;
         this.nickname = nickname;
         this.genderFm = genderFm;

@@ -1,29 +1,27 @@
 package com.reminiscence.member.service;
 
 import com.reminiscence.domain.Member;
-import com.reminiscence.domain.MemberJoinRequestDto;
-import com.reminiscence.domain.MemberUpdatePasswordDto;
-import com.reminiscence.domain.MemberUpdateRequestDto;
+import com.reminiscence.member.dto.MemberJoinRequestDto;
+import com.reminiscence.member.dto.MemberLoginRequestDto;
+import com.reminiscence.member.dto.MemberUpdatePasswordRequestDto;
+import com.reminiscence.member.dto.MemberInfoUpdateRequestDto;
 
 import java.util.List;
 
 public interface MemberService {
 
-//    int idCheck(String memberId) throws Exception;
+    Member login(MemberLoginRequestDto memberLoginRequestDto) throws Exception;
     Member joinMember(MemberJoinRequestDto memberJoinRequestDto) throws Exception;
-//    MemberDto login(Map<String, String> map) throws Exception;
-//    Member login(Member member) throws Exception;
-//    void updatePw(Map<String, String> map) throws Exception;
+    Member emailCheck(String email) throws Exception;
+    Member nicknameCheck(String nickname) throws Exception;
 //    /* Admin */
 	List<Member> getMemberList(String key) throws Exception;
-////	MemberDto getMember(String memberId) throws Exception;
-    Member getMemberInfo(long memberid) throws Exception;
-    Member updateMemberPassword(MemberUpdatePasswordDto memberUpdatePasswordDto) throws Exception;
-    Member updateMemberInfo(MemberUpdateRequestDto memberUpdateRequestDto) throws  Exception;
-//    void updateMember(Member member) throws Exception;
-//    void deleteMember(String memberid) throws Exception;
-//
-//    void saveRefreshToken(String memberid, String refreshToken) throws Exception;
-//    Object getRefreshToken(String memberid) throws Exception;
-//    void deleRefreshToken(String memberid) throws Exception;
+    Member getMemberInfo(String memberId) throws Exception;
+    Member updateMemberPassword(MemberUpdatePasswordRequestDto memberUpdatePasswordRequestDto) throws Exception;
+    Member updateMemberInfo(MemberInfoUpdateRequestDto memberInfoUpdateRequestDto) throws  Exception;
+
+    void deleteMember(String memberId) throws Exception;
+    void saveRefreshToken(String memberid, String refreshToken) throws Exception;
+    Object getRefreshToken(String memberid) throws Exception;
+    void deleteRefreshToken(String memberid) throws Exception;
 }

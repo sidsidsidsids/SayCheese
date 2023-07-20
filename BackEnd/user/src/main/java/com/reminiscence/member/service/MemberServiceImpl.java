@@ -1,13 +1,13 @@
 package com.reminiscence.member.service;
 
 import com.reminiscence.domain.Member;
-import com.reminiscence.domain.MemberJoinRequestDto;
-import com.reminiscence.domain.MemberUpdatePasswordDto;
-import com.reminiscence.domain.MemberUpdateRequestDto;
-import com.reminiscence.repository.member.MemberRepository;
+import com.reminiscence.member.dto.*;
+import com.reminiscence.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
+//import java.util.HashMap;
 import java.util.List;
+//import java.util.Map;
 
 
 @Service
@@ -21,20 +21,41 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public Member login(MemberLoginRequestDto memberLoginRequestDto) throws Exception {
+        Member member = memberLoginRequestDto.toEntity();
+        String email = member.getEmail();
+        String password = member.getPassword();
+        if(email == null || password == null)
+            return null;
+        MemberResponseDto memberResponseDto = memberRepository.login(email, password);
+        return memberResponseDto.toEntity();
+    }
+
+    @Override
     public Member joinMember(MemberJoinRequestDto memberJoinRequestDto) throws Exception {
         Member member = memberJoinRequestDto.toEntity();
         return memberRepository.save(member);
     }
 
     @Override
-    public Member updateMemberInfo(MemberUpdateRequestDto memberUpdateRequestDto) throws Exception {
-        Member member = memberUpdateRequestDto.toEntity();
+    public Member emailCheck(String email) throws Exception {
+        return memberRepository.findByEmail(email);
+    }
+
+    @Override
+    public Member nicknameCheck(String nickname) throws Exception {
+        return memberRepository.findByNickname(nickname);
+    }
+
+    @Override
+    public Member updateMemberInfo(MemberInfoUpdateRequestDto memberInfoUpdateRequestDto) throws Exception {
+        Member member = memberInfoUpdateRequestDto.toEntity();
         return memberRepository.save(member);
     }
 
     @Override
-	public Member getMemberInfo(long memberId) throws Exception {
-        Member member = memberRepository.findById(memberId).get();
+	public Member getMemberInfo(String memberId) throws Exception {
+        Member member = memberRepository.findByEmail(memberId);
         return member;
 	}
 
@@ -45,66 +66,35 @@ public class MemberServiceImpl implements MemberService {
 	}
 
     @Override
-    public Member updateMemberPassword(MemberUpdatePasswordDto memberUpdatePasswordDto) throws Exception {
-        Member member = memberUpdatePasswordDto.toEntity();
+    public Member updateMemberPassword(MemberUpdatePasswordRequestDto memberUpdatePasswordRequestDto) throws Exception {
+        Member member = memberUpdatePasswordRequestDto.toEntity();
         return memberRepository.save(member);
     }
 
-//    @Override
-//    public int idCheck(String memberId) throws Exception {
-////		return sqlSession.getMapper(MemberMapper.class).idCheck(memberId);
-//        return memberRepository.idCheck(memberId);
-//    }
-//
-//
-//    //	@Override
-////	public MemberDto login(Map<String, String> map) throws Exception {
-//////		return sqlSession.getMapper(MemberMapper.class).loginMember(map);
-////		return memberDao.login(map);
-////	}
-//    @Override
-//    public Member login(Member member) throws Exception {
-//        if(member.getId() == null || member.getPassword() == null)
-//            return null;
-//        return memberRepository.login(member);
-////	return sqlSession.getMapper(MemberMapper.class).login(memberDto);
-//    }
-//
-//
-////	/* ADMIN */
-//
-//
-//    @Override
-//    public Member memberInfo(String memberid) throws Exception {
-//        return memberRepository.memberInfo(memberid);
-////		return sqlSession.getMapper(MemberMapper.class).memberInfo(memberid);
-//    }
-//
-//
-//    @Override
-//    public void deleteMember(String memberId) throws Exception {
-//        memberRepository.delete(memberId);
-//    }
-//
-//    @Override
-//    public void saveRefreshToken(String memberid, String refreshToken) throws Exception {
+    @Override
+    public void deleteMember(String memberId) throws Exception {
+        memberRepository.deleteByEmail(memberId);
+    }
+
+    @Override
+    public void saveRefreshToken(String memberId, String refreshToken) throws Exception {
 //        Map<String, String> map = new HashMap<String, String>();
-//        map.put("memberid", memberid);
+//        map.put("memberId", memberId);
 //        map.put("token", refreshToken);
-//        memberRepository.saveRefreshToken(map);
-//    }
-//
-//    @Override
-//    public Object getRefreshToken(String memberid) throws Exception {
-//        return memberRepository.getRefreshToken(memberid);
-//    }
-//
-//    @Override
-//    public void deleRefreshToken(String memberid) throws Exception {
+        memberRepository.saveRefreshToken(memberId, refreshToken);
+    }
+
+    @Override
+    public Object getRefreshToken(String memberId) throws Exception {
+        return memberRepository.getRefreshToken(memberId);
+    }
+
+    @Override
+    public void deleteRefreshToken(String memberId) throws Exception {
 //        Map<String, String> map = new HashMap<String, String>();
-//        map.put("memberid", memberid);
+//        map.put("memberId", memberId);
 //        map.put("token", null);
-//        memberRepository.deleteRefreshToken(map);
-//    }
+        memberRepository.deleteRefreshToken(memberId, null);
+    }
 
 }
