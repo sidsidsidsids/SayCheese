@@ -3,6 +3,7 @@ import RoomChat from "./RoomChat";
 import RoomFooter from "./RoomFooter";
 import RoomHeader from "./RoomHeader";
 import RoomPhoto from "./RoomPhoto";
+import "./Room.css";
 
 function RunRoom() {
   return (
@@ -13,7 +14,7 @@ function RunRoom() {
         <RoomButtons
           onConfirm={() => {}}
           onClose={() => {}}
-          buttonName1="버튼1"
+          buttonName1="촬영"
           buttonName2="버튼2"
         />
       </div>

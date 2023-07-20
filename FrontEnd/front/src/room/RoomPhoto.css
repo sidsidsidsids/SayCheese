@@ -1,11 +1,10 @@
 .room-photo {
-  display: inline-flex;
+  display: inline-block;
   justify-content: center;
   align-items: center;
-  padding: 10px;
   font-size: 18px;
   font-weight: bold;
   border: 1px dashed black;
   width: 80%;
-  height: 60%;
+  height: 90%;
 }

@@ -1,3 +1,32 @@
 .room {
   background: linear-gradient(180deg, #fbc8d4 0%, #9795f0 100%);
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+.room-active {
+  margin: 0;
+  padding: 0;
+}
+.room-top {
+  display: inline-flex;
+  width: 100%;
+  height: 10vh;
+  box-shadow: 0 0 0 2px lightcoral inset;
+  margin: 0;
+}
+.room-mid {
+  display: inline-flex;
+  width: 100%;
+  height: 70vh;
+  box-shadow: 0 0 0 2px lightcoral inset;
+  margin: 0;
+}
+.room-bot {
+  display: inline-flex;
+  width: 100%;
+  height: 20vh;
+  box-shadow: 0 0 0 2px lightcoral inset;
+  margin: 0;
 }

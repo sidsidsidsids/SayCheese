@@ -1,28 +1,37 @@
+import { useDispatch, useSelector } from "react-redux";
+import { start } from "../redux/roomStatus";
 import RoomButtons from "./RoomButtons";
 import RoomChat from "./RoomChat";
 import RoomFooter from "./RoomFooter";
 import RoomHeader from "./RoomHeader";
 import RoomPhoto from "./RoomPhoto";
+import "./Room.css";
 
 function WaitRoom() {
+  const dispatch = useDispatch();
+  const stat = useSelector((state) => state.status);
   return (
     // {roomStatus == "before" ? () : ()}
     <div className="room-active">
-      <div>
+      <div className="room-top">
         <RoomHeader />
         <RoomButtons
-          onConfirm={() => {}}
+          onConfirm={() => {
+            dispatch(start());
+            console.log(stat);
+          }}
           onClose={() => {}}
-          buttonName1="버튼1"
+          buttonName1="대기"
           buttonName2="버튼2"
         />
       </div>
-      <div>
+      <div className="room-mid">
         <RoomPhoto />
         <RoomChat />
       </div>
-
-      <RoomFooter />
+      <div className="room-bot">
+        <RoomFooter />
+      </div>
     </div>
   );
 }

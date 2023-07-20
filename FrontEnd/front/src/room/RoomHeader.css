@@ -2,10 +2,9 @@
   display: inline-block;
   justify-content: center;
   align-items: center;
-  padding: 10px;
   font-size: 18px;
   font-weight: bold;
   border: 1px dashed black;
   width: 90%;
-  height: 10%;
+  height: 90%;
 }

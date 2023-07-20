@@ -1,14 +1,11 @@
-import { useState } from "react";
+import { useSelector } from "react-redux";
 import "./Room.css";
 import RunRoom from "./RunRoom";
 import ResultRoom from "./ResultRoom";
 import WaitRoom from "./WaitRoom";
 
 function Room() {
-  const [roomStatus, setRoomStatus] = useState({
-    startAction: false,
-    afterAction: false,
-  });
+  const roomStatus = useSelector((state) => state.status);
 
   return (
     // {roomStatus == "before" ? () : ()}

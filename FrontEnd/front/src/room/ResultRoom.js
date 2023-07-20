@@ -3,6 +3,7 @@ import RoomChat from "./RoomChat";
 import RoomFooter from "./RoomFooter";
 import RoomHeader from "./RoomHeader";
 import RoomPhoto from "./RoomPhoto";
+import "./Room.css";
 
 function ResultRoom() {
   return (
