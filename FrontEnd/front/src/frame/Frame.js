@@ -21,8 +21,6 @@ export default function Frame() {
           <button
             onClick={() => {
               setFocusedItem(item.tabItem);
-              console.log(item.tabItem, "click!");
-              console.log(focusedItem);
             }}
             className={`FrameButton ${
               focusedItem === item.tabItem ? "focused" : ""

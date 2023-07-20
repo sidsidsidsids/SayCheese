@@ -34,18 +34,19 @@ export default function FrameList() {
       likes: 100,
     },
   ]);
-  frameList.map((item) => console.log(item));
 
   return (
-    <div className="FrameList">
-      {frameList.map((item) => (
-        <FrameCard
-          key={item.id}
-          name={item.name}
-          imgSrc={item.imgSrc.sampleImg}
-          likes={item.likes}
-        />
-      ))}
+    <div className="frameSpace">
+      <div className="FrameList">
+        {frameList.map((item) => (
+          <FrameCard
+            key={item.id}
+            name={item.name}
+            imgSrc={item.imgSrc.sampleImg}
+            likes={item.likes}
+          />
+        ))}
+      </div>
     </div>
   );
 }
