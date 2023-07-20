@@ -5,7 +5,7 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 @Getter
-public class NoticeArticleListVo {
+public class NoticeArticleVo {
 
     private final Long id;
     private final String subject;
@@ -13,7 +13,7 @@ public class NoticeArticleListVo {
     private final Long hit;
     private final LocalDateTime createdDate;
 
-    public NoticeArticleListVo(NoticeArticle noticeArticle){
+    public NoticeArticleVo(NoticeArticle noticeArticle){
         this.id=noticeArticle.getId();
         this.subject= noticeArticle.getSubject();
         this.writer=noticeArticle.getMember().getNickname();

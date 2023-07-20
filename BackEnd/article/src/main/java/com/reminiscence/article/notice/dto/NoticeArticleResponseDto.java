@@ -1,6 +1,6 @@
 package com.reminiscence.article.notice.dto;
 
-import com.reminiscence.article.notice.vo.NoticeArticleListVo;
+import com.reminiscence.article.notice.vo.NoticeArticleVo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,7 +14,7 @@ public class NoticeArticleResponseDto {
     private int curPage; // 현재 페이지
     private int totalPages;
     private long totalDataCount;
-    List<NoticeArticleListVo> noticeArticleListVoList;
+    List<NoticeArticleVo> noticeArticleListVoList;
 
     public void setCurPage(int curPage) {
         if(curPage<=0){
@@ -29,7 +29,7 @@ public class NoticeArticleResponseDto {
     public void setTotalDataCount(long totalDataCount) {
         this.totalDataCount = totalDataCount;
     }
-    public void add(NoticeArticleListVo noticeArticleListVo){
+    public void add(NoticeArticleVo noticeArticleListVo){
         if(noticeArticleListVoList==null){
             noticeArticleListVoList=new ArrayList<>();
         }

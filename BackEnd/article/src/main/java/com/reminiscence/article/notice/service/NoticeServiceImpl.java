@@ -1,6 +1,5 @@
 package com.reminiscence.article.notice.service;
 
-import com.reminiscence.article.config.auth.UserDetail;
 import com.reminiscence.article.domain.NoticeArticle;
 import com.reminiscence.article.exception.customexception.NoticeException;
 import com.reminiscence.article.exception.message.NoticeMessage;
@@ -8,7 +7,7 @@ import com.reminiscence.article.notice.dto.NoticeArticleAndMemberRequestDto;
 import com.reminiscence.article.notice.dto.NoticeArticleRequestDto;
 import com.reminiscence.article.notice.dto.NoticeArticleResponseDto;
 import com.reminiscence.article.notice.repository.NoticeRepository;
-import com.reminiscence.article.notice.vo.NoticeArticleListVo;
+import com.reminiscence.article.notice.vo.NoticeArticleVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,9 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Service
@@ -59,7 +55,7 @@ public class NoticeServiceImpl implements NoticeService{
         noticeArticleResponseDto.setTotalDataCount(noticeArticlePageList.getTotalElements());
 
         for(NoticeArticle noticeArticle:noticeArticlePageList.getContent()){
-            noticeArticleResponseDto.add(new NoticeArticleListVo(noticeArticle));
+            noticeArticleResponseDto.add(new NoticeArticleVo(noticeArticle));
         }
         return noticeArticleResponseDto;
     }

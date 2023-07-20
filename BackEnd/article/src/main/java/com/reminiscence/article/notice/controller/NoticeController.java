@@ -53,10 +53,6 @@ public class NoticeController {
     @GetMapping("")
     public ResponseEntity<NoticeArticleResponseDto> getNoticeArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable) throws Exception{
         NoticeArticleResponseDto noticeArticleResponseDto=noticeService.getNoticeArticleList(pageable);
-
-        System.out.println(noticeArticleResponseDto.getCurPage());
-        System.out.println(noticeArticleResponseDto.getTotalPages());
-        System.out.println(noticeArticleResponseDto.getTotalDataCount());
         return new ResponseEntity<>(noticeArticleResponseDto, HttpStatus.OK);
     }
 }
