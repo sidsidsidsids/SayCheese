@@ -2,7 +2,7 @@ package com.reminiscence.article.notice.service;
 
 import com.reminiscence.article.domain.NoticeArticle;
 import com.reminiscence.article.exception.customexception.NoticeException;
-import com.reminiscence.article.exception.message.NoticeMessage;
+import com.reminiscence.article.exception.message.NoticeExceptionMessage;
 import com.reminiscence.article.notice.dto.NoticeArticleAndMemberRequestDto;
 import com.reminiscence.article.notice.dto.NoticeArticleRequestDto;
 import com.reminiscence.article.notice.dto.NoticeArticleResponseDto;
@@ -34,7 +34,7 @@ public class NoticeServiceImpl implements NoticeService{
     @Transactional
     public void modifyArticle(Long noticeArticleId, NoticeArticleRequestDto noticeArticleRequestDto) {
         NoticeArticle noticeArticle=noticeRepository.findById(noticeArticleId).orElseThrow(
-                ()->new NoticeException(NoticeMessage.DATA_NOT_FOUND)
+                ()->new NoticeException(NoticeExceptionMessage.DATA_NOT_FOUND)
         );
         noticeArticle.modifySubject(noticeArticleRequestDto.getSubject());
         noticeArticle.modifyContent(noticeArticleRequestDto.getContent());
