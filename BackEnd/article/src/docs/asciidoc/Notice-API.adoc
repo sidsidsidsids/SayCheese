@@ -25,3 +25,8 @@ operation::NoticeIntegrationTest/modifyNoticeArticleLowerSubjectFailTest[snippet
 
 === Notice 수정 API(없는 번호인 경우)
 operation::NoticeIntegrationTest/modifyNoticeArticleNotExistsIdFailTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+
+[[Notice-조회-API]]
+
+=== Notice 조회 API
+operation::NoticeIntegrationTest/getNoticeArticleListSuccessTest[snippets='http-request,request-parameters,http-response,response-fields']
