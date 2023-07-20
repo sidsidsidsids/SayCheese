@@ -1,23 +1,23 @@
 package com.reminiscence.article.notice;
 
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reminiscence.article.domain.Member;
 import com.reminiscence.article.domain.NoticeArticle;
 import com.reminiscence.article.member.repository.MemberRepository;
 import com.reminiscence.article.notice.dto.NoticeArticleAndMemberRequestDto;
 import com.reminiscence.article.notice.dto.NoticeArticleRequestDto;
+import com.reminiscence.article.notice.dto.NoticeArticleResponseDto;
 import com.reminiscence.article.notice.repository.NoticeRepository;
+import com.reminiscence.article.notice.vo.NoticeArticleVo;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.core.env.Environment;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @DataJpaTest
 public class NoticeJpaTest {
@@ -93,6 +93,32 @@ public class NoticeJpaTest {
         Assertions.assertThat(noticeRepository.findById(noticeArticle.getId()).orElse(null).getSubject()).isEqualTo(modifyNoticeArticleRequestDto.getSubject());
         Assertions.assertThat(noticeRepository.findById(noticeArticle.getId()).orElse(null).getContent()).isEqualTo(modifyNoticeArticleRequestDto.getContent());
 
+
+    }
+
+    @Test
+    @DisplayName("공지 조회 테스트")
+    public void noticeArticleListTest() throws Exception {
+        Pageable pageable=PageRequest.of(0,10, Sort.Direction.DESC,"id");
+        int page=pageable.getPageNumber();
+        if(page<=0){
+            page=1;
+        }
+        Page<NoticeArticle> noticeArticlePageList=noticeRepository.findNoticeArticle(pageable);
+        NoticeArticleResponseDto noticeArticleResponseDto=new NoticeArticleResponseDto();
+
+        noticeArticleResponseDto.setCurPage(page);
+        noticeArticleResponseDto.setTotalPages(noticeArticlePageList.getTotalPages());
+        noticeArticleResponseDto.setTotalDataCount(noticeArticlePageList.getTotalElements());
+
+        for(NoticeArticle noticeArticle:noticeArticlePageList.getContent()){
+            noticeArticleResponseDto.add(new NoticeArticleVo(noticeArticle));
+        }
+
+        Assertions.assertThat(noticeArticleResponseDto.getCurPage()).isEqualTo(1);
+        Assertions.assertThat(noticeArticleResponseDto.getTotalPages()).isEqualTo(5);
+        Assertions.assertThat(noticeArticleResponseDto.getTotalDataCount()).isEqualTo(49);
+        Assertions.assertThat(noticeArticleResponseDto.getNoticeArticleVoList().size()).isEqualTo(10);
 
     }
 }

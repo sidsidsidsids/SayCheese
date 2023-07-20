@@ -51,16 +51,16 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-//@AutoConfigureMockMvc
 @Transactional
 public class NoticeIntegrationTest {
 
@@ -69,7 +69,6 @@ public class NoticeIntegrationTest {
 
     @Autowired
     MemberRepository memberRepository;
-//    @Autowired
     MockMvc mvc;
     @Autowired
     private Environment env;
@@ -303,6 +302,33 @@ public class NoticeIntegrationTest {
                         )
                 ));
 
+
+    }
+
+    @Test
+    @DisplayName("공지 조회 테스트")
+    public void getNoticeArticleListSuccessTest() throws Exception {
+        mvc.perform(get("/api/article/notice?page=3")
+                        .contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestParameters(
+                                parameterWithName("page").description("page")
+                        ),
+                        responseFields(
+                                fieldWithPath("curPage").type(JsonFieldType.NUMBER).description("현재 페이지"),
+                                fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 수"),
+                                fieldWithPath("totalDataCount").type(JsonFieldType.NUMBER).description("전체 데이터 개수"),
+                                fieldWithPath("noticeArticleVoList").type(JsonFieldType.ARRAY).description("공지 글 목록 리스트"),
+                                fieldWithPath("noticeArticleVoList[].id").type(JsonFieldType.NUMBER).description("글 번호"),
+                                fieldWithPath("noticeArticleVoList[].subject").type(JsonFieldType.STRING).description("제목"),
+                                fieldWithPath("noticeArticleVoList[].writer").type(JsonFieldType.STRING).description("작성자"),
+                                fieldWithPath("noticeArticleVoList[].hit").type(JsonFieldType.NUMBER).description("조회수"),
+                                fieldWithPath("noticeArticleVoList[].createdDate").type(JsonFieldType.STRING).description("생성일")
+
+                        )
+                ));
 
     }
 

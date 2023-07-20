@@ -4,17 +4,18 @@ import com.reminiscence.article.notice.vo.NoticeArticleVo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class NoticeArticleResponseDto {
+public class NoticeArticleResponseDto implements Serializable {
 
-    private int curPage; // 현재 페이지
+    private int curPage;
     private int totalPages;
     private long totalDataCount;
-    List<NoticeArticleVo> noticeArticleListVoList;
+    List<NoticeArticleVo> noticeArticleVoList;
 
     public void setCurPage(int curPage) {
         if(curPage<=0){
@@ -30,10 +31,10 @@ public class NoticeArticleResponseDto {
         this.totalDataCount = totalDataCount;
     }
     public void add(NoticeArticleVo noticeArticleListVo){
-        if(noticeArticleListVoList==null){
-            noticeArticleListVoList=new ArrayList<>();
+        if(noticeArticleVoList==null){
+            noticeArticleVoList=new ArrayList<>();
         }
-        this.noticeArticleListVoList.add(noticeArticleListVo);
+        this.noticeArticleVoList.add(noticeArticleListVo);
     }
 
 
