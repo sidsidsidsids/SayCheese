@@ -1,6 +1,7 @@
 package com.reminiscence.article.notice.controller;
 
-import com.reminiscence.article.common.NoticeMessage;
+import com.reminiscence.article.message.Response;
+import com.reminiscence.article.message.custom_message.NoticeResponseMessage;
 import com.reminiscence.article.config.auth.UserDetail;
 import com.reminiscence.article.notice.dto.NoticeArticleAndMemberRequestDto;
 import com.reminiscence.article.notice.dto.NoticeArticleRequestDto;
@@ -31,21 +32,21 @@ public class NoticeController {
      * @return
      */
     @PostMapping("")
-    public ResponseEntity<NoticeMessage.Response> writeNoticeArticle(@AuthenticationPrincipal UserDetail userDetail,
-                                                                     @Valid @RequestBody NoticeArticleRequestDto noticeArticleRequestDto) throws Exception{
+    public ResponseEntity<Response> writeNoticeArticle(@AuthenticationPrincipal UserDetail userDetail,
+                                                       @Valid @RequestBody NoticeArticleRequestDto noticeArticleRequestDto) throws Exception{
         // user 정보와 사용자 요청 정보를 하나의 Dto로 만듬
         NoticeArticleAndMemberRequestDto noticeArticleAndMemberRequestDto=NoticeArticleAndMemberRequestDto.builder()
                 .member(userDetail.getMember())
                 .noticeArticleRequestDto(noticeArticleRequestDto).build();
         noticeService.writeArticle(noticeArticleAndMemberRequestDto);
-        return NoticeMessage.NOTICE_WRITE_SUCCESS.toResponseEntity();
+        return new ResponseEntity<>(Response.of(NoticeResponseMessage.NOTICE_WRITE_SUCCESS),HttpStatus.OK);
     }
     @PutMapping("/{noticeArticleId}")
-    public ResponseEntity<NoticeMessage.Response> modifyNoticeArticle(@PathVariable String noticeArticleId,
-                                                                      @Valid @RequestBody NoticeArticleRequestDto noticeArticleRequestDto) throws Exception{
+    public ResponseEntity<Response> modifyNoticeArticle(@PathVariable String noticeArticleId,
+                                                                              @Valid @RequestBody NoticeArticleRequestDto noticeArticleRequestDto) throws Exception{
         // user 정보와 사용자 요청 정보를 하나의 Dto로 만듬
         noticeService.modifyArticle(Long.parseLong(noticeArticleId),noticeArticleRequestDto);
-        return NoticeMessage.NOTICE_MODIFY_SUCCESS.toResponseEntity();
+        return new ResponseEntity<>(Response.of(NoticeResponseMessage.NOTICE_MODIFY_SUCCESS),HttpStatus.OK);
     }
     @GetMapping("")
     public ResponseEntity<NoticeArticleResponseDto> getNoticeArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable) throws Exception{
