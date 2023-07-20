@@ -3,6 +3,7 @@ plugins {
 	id 'org.springframework.boot' version '2.7.13'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 	id 'org.asciidoctor.jvm.convert' version '3.3.2'
+	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.reminiscence'
@@ -13,6 +14,7 @@ java {
 }
 
 configurations {
+	querydsl.extendsFrom compileClasspath
 	asciidoctorExt
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -39,6 +41,9 @@ dependencies {
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	testImplementation 'org.springframework.security:spring-security-test'
 
+	// querydsl 설정
+	implementation 'com.querydsl:querydsl-jpa'
+	implementation 'com.querydsl:querydsl-apt'
 }
 
 // static/docs 폴더 비우기
@@ -75,12 +80,29 @@ build {
 	dependsOn copyDocument
 }
 bootJar {
-	dependsOn asciidoctor
-	from ("${asciidoctor.outputDir}/html5") {
-		into 'static/docs'
-	}
+	dependsOn copyDocument
 }
 
 jar {
 	enabled = false
+}
+
+def querydslDir = "$buildDir/generated/querydsl"
+
+querydsl {
+	library = "com.querydsl:querydsl-apt"
+	jpa = true
+	querydslSourcesDir = querydslDir
+}
+
+sourceSets {
+	main {
+		java {
+			srcDirs = ['src/main/java', querydslDir]
+		}
+	}
+}
+
+compileQuerydsl{
+	options.annotationProcessorPath = configurations.querydsl
 }

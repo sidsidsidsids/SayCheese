@@ -12,6 +12,8 @@ operation::NoticeIntegrationTest/writeNoticeArticleAuthFailTest[snippets='http-r
 === Notice 작성 API(글이 짧을 경우)
 operation::NoticeIntegrationTest/writeNoticeArticleLowerSubjectFailTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']
 
+[[Notice-수정-API]]
+
 === Notice 수정 API
 operation::NoticeIntegrationTest/modifyNoticeArticleSuccessTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']
 

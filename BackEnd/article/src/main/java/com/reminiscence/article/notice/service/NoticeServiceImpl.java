@@ -6,15 +6,26 @@ import com.reminiscence.article.exception.customexception.NoticeException;
 import com.reminiscence.article.exception.message.NoticeMessage;
 import com.reminiscence.article.notice.dto.NoticeArticleAndMemberRequestDto;
 import com.reminiscence.article.notice.dto.NoticeArticleRequestDto;
+import com.reminiscence.article.notice.dto.NoticeArticleResponseDto;
 import com.reminiscence.article.notice.repository.NoticeRepository;
+import com.reminiscence.article.notice.vo.NoticeArticleListVo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
 @RequiredArgsConstructor
 public class NoticeServiceImpl implements NoticeService{
+
+    private final int DEFAULT_NOTICE_PAGE_SIZE=10;
     private final NoticeRepository noticeRepository;
 
     @Override
@@ -31,6 +42,26 @@ public class NoticeServiceImpl implements NoticeService{
         );
         noticeArticle.modifySubject(noticeArticleRequestDto.getSubject());
         noticeArticle.modifyContent(noticeArticleRequestDto.getContent());
+    }
+
+    @Override
+    public  NoticeArticleResponseDto getNoticeArticleList(Pageable tempPageable) {
+        int page=tempPageable.getPageNumber();
+        if(page<=0){
+            page=1;
+        }
+        Pageable pageable= PageRequest.of(page-1,DEFAULT_NOTICE_PAGE_SIZE, Sort.Direction.DESC,"id");
+        Page<NoticeArticle> noticeArticlePageList=noticeRepository.findNoticeArticle(pageable);
+        NoticeArticleResponseDto noticeArticleResponseDto=new NoticeArticleResponseDto();
+
+        noticeArticleResponseDto.setCurPage(page);
+        noticeArticleResponseDto.setTotalPages(noticeArticlePageList.getTotalPages());
+        noticeArticleResponseDto.setTotalDataCount(noticeArticlePageList.getTotalElements());
+
+        for(NoticeArticle noticeArticle:noticeArticlePageList.getContent()){
+            noticeArticleResponseDto.add(new NoticeArticleListVo(noticeArticle));
+        }
+        return noticeArticleResponseDto;
     }
 
 

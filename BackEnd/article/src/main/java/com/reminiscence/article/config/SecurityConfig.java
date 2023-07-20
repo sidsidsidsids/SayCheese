@@ -24,11 +24,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.addFilterBefore(new JWTAuthorizationFilter(env,memberRepository), BasicAuthenticationFilter.class);
-        http.authorizeRequests().antMatchers("/api/article/notice").access("hasRole('ADMIN')")
+        http.authorizeRequests().antMatchers(HttpMethod.GET,"/api/article/notice").permitAll()
+                .and()
+                .authorizeRequests().antMatchers("/api/article/notice").access("hasRole('ADMIN')")
+                .and()
+                .authorizeRequests().antMatchers(HttpMethod.GET,"/api/article/notice/**").permitAll()
                 .and()
                 .authorizeRequests().antMatchers(HttpMethod.PUT,"/api/article/notice/**").access("hasRole('ADMIN')")
                 .and()
-                .authorizeRequests().antMatchers("/api/article/**").permitAll()
+                .authorizeRequests().antMatchers("/api/article/**").authenticated()
                 .and()
                 .authorizeRequests().antMatchers("/docs/**").permitAll()
                 .and()
