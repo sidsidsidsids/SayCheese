@@ -8,3 +8,5 @@
 :sectnums:
 
 include::Notice-API.adoc[]
+
+include::Faq-API.adoc[]
