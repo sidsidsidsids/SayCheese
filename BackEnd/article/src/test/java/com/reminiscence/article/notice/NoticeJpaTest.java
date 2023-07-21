@@ -111,9 +111,9 @@ public class NoticeJpaTest {
             noticeArticleListResponseDto.add(new NoticeArticleVo(noticeArticle));
         }
 
-        Assertions.assertThat(noticeArticleListResponseDto.getCurPage()).isEqualTo(1);
-        Assertions.assertThat(noticeArticleListResponseDto.getTotalPages()).isEqualTo(5);
-        Assertions.assertThat(noticeArticleListResponseDto.getTotalDataCount()).isEqualTo(49);
+        Assertions.assertThat(noticeArticleListResponseDto.getPageNavigator().getCurPage()).isEqualTo(1);
+        Assertions.assertThat(noticeArticleListResponseDto.getPageNavigator().getTotalPages()).isEqualTo(5);
+        Assertions.assertThat(noticeArticleListResponseDto.getPageNavigator().getTotalDataCount()).isEqualTo(49);
         Assertions.assertThat(noticeArticleListResponseDto.getNoticeArticleVoList().size()).isEqualTo(10);
 
     }

@@ -317,11 +317,12 @@ public class NoticeIntegrationTest {
                                 parameterWithName("page").description("page")
                         ),
                         responseFields(
-                                fieldWithPath("curPage").type(JsonFieldType.NUMBER).description("현재 페이지"),
-                                fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 수"),
-                                fieldWithPath("totalDataCount").type(JsonFieldType.NUMBER).description("전체 데이터 개수"),
-                                fieldWithPath("prevNavigation").type(JsonFieldType.BOOLEAN).description("이전 페이지네이션 존재 유무"),
-                                fieldWithPath("nextNavigation").type(JsonFieldType.BOOLEAN).description("다음 페이지네이션 존재 유무"),
+                                fieldWithPath("pageNavigator").type(JsonFieldType.OBJECT).description("페이지 정보"),
+                                fieldWithPath("pageNavigator.curPage").type(JsonFieldType.NUMBER).description("현재 페이지"),
+                                fieldWithPath("pageNavigator.totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 수"),
+                                fieldWithPath("pageNavigator.totalDataCount").type(JsonFieldType.NUMBER).description("전체 데이터 개수"),
+                                fieldWithPath("pageNavigator.prevNavigation").type(JsonFieldType.BOOLEAN).description("이전 페이지네이션 존재 유무"),
+                                fieldWithPath("pageNavigator.nextNavigation").type(JsonFieldType.BOOLEAN).description("다음 페이지네이션 존재 유무"),
                                 fieldWithPath("noticeArticleVoList").type(JsonFieldType.ARRAY).description("공지 글 목록 리스트"),
                                 fieldWithPath("noticeArticleVoList[].id").type(JsonFieldType.NUMBER).description("글 번호"),
                                 fieldWithPath("noticeArticleVoList[].subject").type(JsonFieldType.STRING).description("제목"),
