@@ -1,8 +1,12 @@
 package com.reminiscence.article.exception;
 
 
+import com.reminiscence.article.exception.customexception.ImageArticleException;
+import com.reminiscence.article.exception.customexception.ImageException;
+import com.reminiscence.article.exception.customexception.NoticeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
