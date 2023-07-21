@@ -60,10 +60,9 @@ public class NoticeServiceImpl implements NoticeService{
 
     @Override
     public NoticeArticleResponseDto getNoticeArticle(Long noticeArticleId) {
-        NoticeArticle noticeArticle=noticeRepository.findNoticeArticleById(noticeArticleId);
-        if(noticeArticle==null){
-            throw new NoticeException(NoticeExceptionMessage.DATA_NOT_FOUND);
-        }
+        NoticeArticle noticeArticle=noticeRepository.findNoticeArticleById(noticeArticleId).orElseThrow(
+                ()->new NoticeException(NoticeExceptionMessage.DATA_NOT_FOUND));
+
         return new NoticeArticleResponseDto(noticeArticle);
     }
 

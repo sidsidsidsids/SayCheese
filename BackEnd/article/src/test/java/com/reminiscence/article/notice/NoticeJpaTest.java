@@ -125,10 +125,9 @@ public class NoticeJpaTest {
     @DisplayName("공지 상세 조회 테스트")
     public void noticeArticleDetailTest() throws Exception {
         long noticeArticleId=1L;
-        NoticeArticle noticeArticle=noticeRepository.findNoticeArticleById(noticeArticleId);
-        if(noticeArticle==null){
-            throw new NoticeException(NoticeExceptionMessage.DATA_NOT_FOUND);
-        }
+        NoticeArticle noticeArticle=noticeRepository.findNoticeArticleById(noticeArticleId).orElseThrow(
+                ()->new NoticeException(NoticeExceptionMessage.DATA_NOT_FOUND));
+
         NoticeArticleResponseDto noticeArticleResponseDto=new NoticeArticleResponseDto(noticeArticle);
         Assertions.assertThat(noticeArticleResponseDto.getId()).isEqualTo(noticeArticleId);
         Assertions.assertThat(noticeArticleResponseDto.getSubject()).isEqualTo("오전 점검 안내");
@@ -140,10 +139,9 @@ public class NoticeJpaTest {
     public void noticeArticleDetailNotExistsIdFailTest() throws Exception {
         long noticeArticleId=100000L;
         Assertions.assertThatThrownBy(()->{
-            NoticeArticle noticeArticle=noticeRepository.findNoticeArticleById(noticeArticleId);
-            if(noticeArticle==null){
-                throw new NoticeException(NoticeExceptionMessage.DATA_NOT_FOUND);
-            }
+            NoticeArticle noticeArticle=noticeRepository.findNoticeArticleById(noticeArticleId).orElseThrow(
+                    ()->new NoticeException(NoticeExceptionMessage.DATA_NOT_FOUND));
+
             NoticeArticleResponseDto noticeArticleResponseDto=new NoticeArticleResponseDto(noticeArticle);
         }).isInstanceOf(NoticeException.class);
     }

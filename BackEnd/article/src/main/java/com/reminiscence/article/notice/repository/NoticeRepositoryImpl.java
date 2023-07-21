@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class NoticeRepositoryImpl implements NoticeRepositoryCustom{
@@ -42,11 +43,11 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom{
     }
 
     @Override
-    public NoticeArticle findNoticeArticleById(Long id) {
-        return jpaQueryFactory.selectFrom(QNoticeArticle.noticeArticle)
-                .join(QNoticeArticle.noticeArticle.member,QMember.member)
+    public Optional<NoticeArticle> findNoticeArticleById(Long id) {
+        return Optional.ofNullable(jpaQueryFactory.selectFrom(QNoticeArticle.noticeArticle)
+                .join(QNoticeArticle.noticeArticle.member, QMember.member)
                 .where(QNoticeArticle.noticeArticle.id.eq(id))
                 .fetchJoin()
-                .fetchOne();
+                .fetchOne());
     }
 }
