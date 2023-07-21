@@ -1,8 +1,9 @@
 server:
-  port: 3306
+  port: 3304
 
 spring:
   application:
     name: article-service
   profiles:
-    active: prod
+    active: test
+    include: jwt

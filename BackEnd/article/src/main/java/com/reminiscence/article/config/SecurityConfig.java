@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -23,9 +24,19 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.addFilterBefore(new JWTAuthorizationFilter(env,memberRepository), BasicAuthenticationFilter.class);
-        http.authorizeRequests().antMatchers("/api/article").access("hasRole('ADMIN')")
+        http.authorizeRequests().antMatchers(HttpMethod.GET,"/api/article/notice").permitAll()
                 .and()
-                .authorizeRequests().antMatchers("/api/article/**").permitAll()
+                .authorizeRequests().antMatchers("/api/article/notice").access("hasRole('ADMIN')")
+                .and()
+                .authorizeRequests().antMatchers(HttpMethod.GET,"/api/article/notice/**").permitAll()
+                .and()
+                .authorizeRequests().antMatchers(HttpMethod.PUT,"/api/article/notice/**").access("hasRole('ADMIN')")
+                .and()
+                .authorizeRequests().antMatchers(HttpMethod.GET,"/api/faq/**").permitAll()
+                .and()
+                .authorizeRequests().antMatchers("/api/article/**").authenticated()
+                .and()
+                .authorizeRequests().antMatchers("/docs/**").permitAll()
                 .and()
                 .authorizeRequests().anyRequest().authenticated();
         http.exceptionHandling().authenticationEntryPoint(new AuthenticaitionEntryPoint());
