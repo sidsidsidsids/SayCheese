@@ -1,7 +1,4 @@
 spring:
-  h2:
-    console:
-      enabled: true
   sql:
     init:
       mode: always
@@ -17,3 +14,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
+jwt:
+  secret: secret-key
+  expiration: 86400000
