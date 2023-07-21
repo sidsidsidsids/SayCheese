@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface NoticeRepositoryCustom {
     Page<NoticeArticle> findNoticeArticle(Pageable pageable);
+
+    NoticeArticle findNoticeArticleById(Long id);
 }

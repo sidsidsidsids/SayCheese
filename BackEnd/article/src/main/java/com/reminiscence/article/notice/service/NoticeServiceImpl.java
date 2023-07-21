@@ -6,6 +6,7 @@ import com.reminiscence.article.exception.message.NoticeExceptionMessage;
 import com.reminiscence.article.notice.dto.NoticeArticleAndMemberRequestDto;
 import com.reminiscence.article.notice.dto.NoticeArticleRequestDto;
 import com.reminiscence.article.notice.dto.NoticeArticleListResponseDto;
+import com.reminiscence.article.notice.dto.NoticeArticleResponseDto;
 import com.reminiscence.article.notice.repository.NoticeRepository;
 import com.reminiscence.article.notice.vo.NoticeArticleVo;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +59,15 @@ public class NoticeServiceImpl implements NoticeService{
             noticeArticleListResponseDto.add(new NoticeArticleVo(noticeArticle));
         }
         return noticeArticleListResponseDto;
+    }
+
+    @Override
+    public NoticeArticleResponseDto getNoticeArticle(Long noticeArticleId) {
+        NoticeArticle noticeArticle=noticeRepository.findNoticeArticleById(noticeArticleId);
+        if(noticeArticle==null){
+            throw new NoticeException(NoticeExceptionMessage.DATA_NOT_FOUND);
+        }
+        return new NoticeArticleResponseDto(noticeArticle);
     }
 
 

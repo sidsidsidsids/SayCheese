@@ -40,4 +40,13 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom{
 
         return new PageImpl<>(list, pageable, count);
     }
+
+    @Override
+    public NoticeArticle findNoticeArticleById(Long id) {
+        return jpaQueryFactory.selectFrom(QNoticeArticle.noticeArticle)
+                .join(QNoticeArticle.noticeArticle.member,QMember.member)
+                .where(QNoticeArticle.noticeArticle.id.eq(id))
+                .fetchJoin()
+                .fetchOne();
+    }
 }
