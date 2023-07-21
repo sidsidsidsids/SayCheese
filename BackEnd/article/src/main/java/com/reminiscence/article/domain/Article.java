@@ -2,16 +2,15 @@ package com.reminiscence.article.domain;
 
 import com.reminiscence.article.BaseTimeEntity;
 import lombok.Getter;
-import org.hibernate.annotations.BatchSize;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.persistence.FetchType;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name="type")
+@NoArgsConstructor
 @Getter
 public abstract class Article extends BaseTimeEntity {
     @Id
@@ -21,11 +20,11 @@ public abstract class Article extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @OneToMany(mappedBy = "article")
-    private List<Lover> lovers = new ArrayList<>();
+    public Article(Member member){
 
-    //생성 메서드
-    public void changeMember(Member member){
         this.member = member;
     }
+
+
+
 }

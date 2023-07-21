@@ -1,8 +1,6 @@
 package com.reminiscence.article.exception;
 
 
-import com.reminiscence.article.exception.customexception.ImageArticleException;
-import com.reminiscence.article.exception.customexception.ImageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,5 +23,21 @@ public class ControllerAdvice {
         ErrorResponse response=ErrorResponse.of(imageArticleException.getHttpStatus().value(),imageArticleException.getMessage());
         return new ResponseEntity<ErrorResponse>(response, imageArticleException.getHttpStatus());
     }
+
+    // Notice 관련 예외 처리
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleNoticeException(NoticeException noticeException) {
+        ErrorResponse response=ErrorResponse.of(noticeException.getHttpStatus().value(),noticeException.getMessage());
+        return new ResponseEntity<ErrorResponse>(response, noticeException.getHttpStatus());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException methodArgumentNotValidException) {
+        ErrorResponse response = ErrorResponse.of(HttpStatus.BAD_REQUEST.value(), methodArgumentNotValidException.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+        return new ResponseEntity<ErrorResponse>(response, HttpStatus.BAD_REQUEST);
+    }
+
+
+
 
 }
