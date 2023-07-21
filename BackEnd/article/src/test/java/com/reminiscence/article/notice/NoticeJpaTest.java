@@ -147,4 +147,5 @@ public class NoticeJpaTest {
             NoticeArticleResponseDto noticeArticleResponseDto=new NoticeArticleResponseDto(noticeArticle);
         }).isInstanceOf(NoticeException.class);
     }
+
 }

@@ -32,6 +32,8 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests().antMatchers(HttpMethod.PUT,"/api/article/notice/**").access("hasRole('ADMIN')")
                 .and()
+                .authorizeRequests().antMatchers(HttpMethod.GET,"/api/faq/**").permitAll()
+                .and()
                 .authorizeRequests().antMatchers("/api/article/**").authenticated()
                 .and()
                 .authorizeRequests().antMatchers("/docs/**").permitAll()
