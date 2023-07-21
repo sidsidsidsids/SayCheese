@@ -15,6 +15,19 @@
   /* margin: 40px auto; */
 }
 
+.cardImg:hover {
+  animation: imgZoom 2s forwards;
+}
+
+@keyframes imgZoom {
+  from {
+  }
+
+  to {
+    background-color: white;
+    transform: scale(2);
+  }
+}
 @media (max-width: 600px) {
   .frameCard {
     margin: 20px auto;
