@@ -22,7 +22,7 @@ function WaitRoom() {
           }}
           onClose={() => {}}
           buttonName1="대기"
-          buttonName2="버튼2"
+          buttonName2="취소"
         />
       </div>
       <div className="room-mid">

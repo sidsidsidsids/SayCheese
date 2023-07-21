@@ -1,10 +1,10 @@
 .room-button {
-  display: inline-block;
+  display: flex;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
   font-size: 18px;
   font-weight: bold;
   border: 1px dashed black;
-  width: 5%;
-  height: 90%;
+  width: 19%
 }

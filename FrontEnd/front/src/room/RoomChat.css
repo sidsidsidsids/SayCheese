@@ -1,11 +1,10 @@
 .room-chat {
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 10px;
   font-size: 18px;
   font-weight: bold;
   border: 1px dashed black;
-  width: 15%;
-  height: 70%;
+  width: 19%;
 }
