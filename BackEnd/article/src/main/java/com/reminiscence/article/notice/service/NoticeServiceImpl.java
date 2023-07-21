@@ -1,5 +1,6 @@
 package com.reminiscence.article.notice.service;
 
+import com.reminiscence.article.common.Pagination;
 import com.reminiscence.article.domain.NoticeArticle;
 import com.reminiscence.article.exception.customexception.NoticeException;
 import com.reminiscence.article.exception.message.NoticeExceptionMessage;
@@ -22,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class NoticeServiceImpl implements NoticeService{
 
-    private final int DEFAULT_NOTICE_PAGE_SIZE=10;
     private final NoticeRepository noticeRepository;
 
     @Override
@@ -47,7 +47,7 @@ public class NoticeServiceImpl implements NoticeService{
         if(page<=0){
             page=1;
         }
-        Pageable pageable= PageRequest.of(page-1,DEFAULT_NOTICE_PAGE_SIZE, Sort.Direction.DESC,"id");
+        Pageable pageable= PageRequest.of(page-1, Pagination.DEFAULT_NOTICE_PER_PAGE_SIZE, Sort.Direction.DESC,"id");
         Page<NoticeArticle> noticeArticlePageList=noticeRepository.findNoticeArticle(pageable);
         NoticeArticleListResponseDto noticeArticleListResponseDto =new NoticeArticleListResponseDto();
 
