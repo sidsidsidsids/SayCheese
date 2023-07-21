@@ -1,0 +1,10 @@
+[[ImageArticle-API]]
+== ImageArticle API
+
+[[ImageArticle-작성-API]]
+=== ImageArticle 작성 API
+operation::ImageArticleTest/writeImageArticleSuccessTest[/snippets='http-request,request-headers,request-fields,http-response']
+
+[[ImageArticle-조회-API]]
+=== ImageArticle 조회 API
+operation::ImageArticleTest/detailImageArticleSuccessTest[/snippets='http-request,request-headers,path-parameters,http-response']
