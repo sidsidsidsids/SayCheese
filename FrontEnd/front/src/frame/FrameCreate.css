@@ -1,0 +1,9 @@
+.createSpace {
+  display: flex;
+  align-items: center;
+  background: greenyellow;
+}
+
+.createWrapper {
+  padding: 100px 0;
+}

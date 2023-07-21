@@ -36,17 +36,16 @@ export default function FrameList() {
   ]);
 
   return (
-    <div className="frameSpace">
-      <div className="FrameList">
-        {frameList.map((item) => (
-          <FrameCard
-            key={item.id}
-            name={item.name}
-            imgSrc={item.imgSrc.sampleImg}
-            likes={item.likes}
-          />
-        ))}
-      </div>
+    <div className="FrameList">
+      {frameList.map((item) => (
+        <FrameCard
+          key={item.id}
+          name={item.name}
+          imgSrc={item.imgSrc.sampleImg}
+          likes={item.likes}
+        />
+      ))}
     </div>
+    // 페이지네이션
   );
 }

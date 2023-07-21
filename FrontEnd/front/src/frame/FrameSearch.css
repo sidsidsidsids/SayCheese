@@ -1,6 +1,6 @@
-div.frameSearch {
-  margin-left: auto;
-  flex-shrink: 0;
+div.frameSearfch > form {
+  display: flex;
+  flex-direction: row;
 }
 
 div.frameSearch > form > button {

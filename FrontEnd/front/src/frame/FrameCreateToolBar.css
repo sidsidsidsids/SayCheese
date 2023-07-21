@@ -1,0 +1,25 @@
+.ToolBar {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.ToolBar:nth-child(n) {
+  margin: 10px;
+}
+
+.toolBarTap > li {
+  padding: 25px 10px 25px 30px;
+  list-style: none;
+}
+
+.toolBarTap > li.focusedTool {
+  background-color: #d9d9d9;
+  border-radius: 50px 0 0 50px;
+  /* border-right: #d9d9d9 1px solid; */
+}
+
+.detailedToolBar {
+  background-color: #d9d9d9;
+  width: 300px;
+  border-radius: 30px;
+}

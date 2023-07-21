@@ -6,11 +6,21 @@ div.FrameList {
   justify-content: space-between;
   align-items: flex-start;
   align-content: space-around;
-  padding: 20px;
+  padding: 40px;
+}
+.responsiveFrameTab {
+  display: none;
 }
 
 .frameSpace {
   border-radius: 0 30px 30px 30px;
   background-color: white;
   min-height: 70vh;
+}
+
+@media (max-width: 600px) {
+  .frameSpace {
+    border-radius: 0 0 30px 30px;
+    font-size: 20px;
+  }
 }
