@@ -14,3 +14,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.BackColor {
+  background: linear-gradient(180deg, #fbc8d4 0%, #9795f0 100%);
+  width: 100vw;
+  height: 100vh;
+  padding: 20px 0;
+}
