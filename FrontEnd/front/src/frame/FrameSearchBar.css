@@ -1,0 +1,29 @@
+div.frameSearch {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+div.frameSearch > form > button {
+  border: none;
+  background: transparent;
+  /* background-color: blue; */
+  height: 30px;
+}
+
+div.frameSearch > form > button > img {
+  height: 20px;
+  vertical-align: baseline;
+  object-fit: cover;
+}
+
+div.frameSearch > form > input {
+  font-family: Black Han Sans;
+  border: none;
+  border-bottom: 3px solid black;
+  background-color: transparent;
+  width: 200px;
+  font-size: 22px;
+}
+&:focus {
+  outline: none;
+}

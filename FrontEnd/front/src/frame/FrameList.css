@@ -1,0 +1,16 @@
+div.FrameList {
+  /* text-align: left; */
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  align-content: space-around;
+  padding: 20px;
+}
+
+.frameSpace {
+  border-radius: 0 30px 30px 30px;
+  background-color: white;
+  min-height: 70vh;
+}
