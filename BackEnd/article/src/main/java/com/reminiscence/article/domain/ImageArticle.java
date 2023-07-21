@@ -22,7 +22,7 @@ public class ImageArticle extends Article{
 
     @Builder
     public ImageArticle(Member member, Image image){
-        changeMember(member);
+        super(member);
         this.image = image;
     }
 
