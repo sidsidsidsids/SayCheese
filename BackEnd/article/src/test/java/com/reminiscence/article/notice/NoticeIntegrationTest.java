@@ -306,7 +306,7 @@ public class NoticeIntegrationTest {
     }
 
     @Test
-    @DisplayName("공지 조회 테스트")
+    @DisplayName("공지 목록 조회 테스트")
     public void getNoticeArticleListSuccessTest() throws Exception {
         mvc.perform(get("/api/article/notice?page=3")
                         .contentType("application/json"))
@@ -320,6 +320,8 @@ public class NoticeIntegrationTest {
                                 fieldWithPath("curPage").type(JsonFieldType.NUMBER).description("현재 페이지"),
                                 fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 수"),
                                 fieldWithPath("totalDataCount").type(JsonFieldType.NUMBER).description("전체 데이터 개수"),
+                                fieldWithPath("prevNavigation").type(JsonFieldType.BOOLEAN).description("이전 페이지네이션 존재 유무"),
+                                fieldWithPath("nextNavigation").type(JsonFieldType.BOOLEAN).description("다음 페이지네이션 존재 유무"),
                                 fieldWithPath("noticeArticleVoList").type(JsonFieldType.ARRAY).description("공지 글 목록 리스트"),
                                 fieldWithPath("noticeArticleVoList[].id").type(JsonFieldType.NUMBER).description("글 번호"),
                                 fieldWithPath("noticeArticleVoList[].subject").type(JsonFieldType.STRING).description("제목"),

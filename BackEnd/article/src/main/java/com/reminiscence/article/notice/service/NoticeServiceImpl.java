@@ -49,11 +49,8 @@ public class NoticeServiceImpl implements NoticeService{
         }
         Pageable pageable= PageRequest.of(page-1, Pagination.DEFAULT_NOTICE_PER_PAGE_SIZE, Sort.Direction.DESC,"id");
         Page<NoticeArticle> noticeArticlePageList=noticeRepository.findNoticeArticle(pageable);
-        NoticeArticleListResponseDto noticeArticleListResponseDto =new NoticeArticleListResponseDto();
+        NoticeArticleListResponseDto noticeArticleListResponseDto =new NoticeArticleListResponseDto(page, noticeArticlePageList.getTotalPages(),noticeArticlePageList.getTotalElements());
 
-        noticeArticleListResponseDto.setCurPage(page);
-        noticeArticleListResponseDto.setTotalPages(noticeArticlePageList.getTotalPages());
-        noticeArticleListResponseDto.setTotalDataCount(noticeArticlePageList.getTotalElements());
 
         for(NoticeArticle noticeArticle:noticeArticlePageList.getContent()){
             noticeArticleListResponseDto.add(new NoticeArticleVo(noticeArticle));

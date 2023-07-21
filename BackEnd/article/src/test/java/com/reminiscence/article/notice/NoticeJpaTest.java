@@ -97,7 +97,7 @@ public class NoticeJpaTest {
     }
 
     @Test
-    @DisplayName("공지 조회 테스트")
+    @DisplayName("공지 목록 조회 테스트")
     public void noticeArticleListTest() throws Exception {
         Pageable pageable=PageRequest.of(0,10, Sort.Direction.DESC,"id");
         int page=pageable.getPageNumber();
@@ -105,11 +105,7 @@ public class NoticeJpaTest {
             page=1;
         }
         Page<NoticeArticle> noticeArticlePageList=noticeRepository.findNoticeArticle(pageable);
-        NoticeArticleListResponseDto noticeArticleListResponseDto =new NoticeArticleListResponseDto();
-
-        noticeArticleListResponseDto.setCurPage(page);
-        noticeArticleListResponseDto.setTotalPages(noticeArticlePageList.getTotalPages());
-        noticeArticleListResponseDto.setTotalDataCount(noticeArticlePageList.getTotalElements());
+        NoticeArticleListResponseDto noticeArticleListResponseDto =new NoticeArticleListResponseDto(page,noticeArticlePageList.getTotalPages(),noticeArticlePageList.getTotalElements());
 
         for(NoticeArticle noticeArticle:noticeArticlePageList.getContent()){
             noticeArticleListResponseDto.add(new NoticeArticleVo(noticeArticle));
