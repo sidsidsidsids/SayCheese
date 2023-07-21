@@ -1,11 +1,13 @@
 package com.reminiscence.domain;
 
 import com.reminiscence.BaseTimeEntity;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Optional;
 
 @Entity(name = "Member")
 @NoArgsConstructor
@@ -16,7 +18,7 @@ public class Member extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name="email", nullable = false, length = 40)
+    @Column(name="email", nullable = false)
     private String email;
     @Column(name="password", nullable = false)
     private String password;
@@ -24,7 +26,7 @@ public class Member extends BaseTimeEntity {
     private String nickname;
     @Enumerated(EnumType.STRING)
     @Column(name="role", nullable = false)
-    private RoleType roleType;
+    private Role role;
     @Column(name="gender_fm")
     private char genderFm;
     @Column(name="age")
@@ -45,11 +47,11 @@ public class Member extends BaseTimeEntity {
     private char personalAgreement;
 
     @Builder
-    public Member(String email, String password, String nickname, RoleType roleType, Character genderFm, int age, String name, String profile, String snsId, String snsType, char personalAgreement) {
+    public Member(String email, String password, String nickname, Role role, char genderFm, int age, String name, String profile, String snsId, String snsType, char personalAgreement) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
-        this.roleType = roleType;
+        this.role = role;
         this.genderFm = genderFm;
         this.age = age;
         this.name = name;

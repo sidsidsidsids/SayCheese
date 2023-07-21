@@ -39,14 +39,9 @@ public class MemberController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity join(@RequestBody MemberJoinRequestDto requestDto) {
-        logger.debug("memberDto info : {}", requestDto);
-        try {
-            memberService.joinMember(requestDto);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity join(@RequestBody MemberJoinRequestDto requestDto) throws Exception {
+        logger.debug("MemberJoinRequestDto info : {}", requestDto);
+        return memberService.joinMember(requestDto);
     }
 
     @GetMapping("/join/{email}/id-check")

@@ -1,8 +1,14 @@
 package com.reminiscence.member.service;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.reminiscence.domain.Member;
 import com.reminiscence.member.dto.*;
 import com.reminiscence.member.repository.MemberRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 //import java.util.HashMap;
@@ -22,19 +28,26 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member login(MemberLoginRequestDto memberLoginRequestDto) throws Exception {
+
         Member member = memberLoginRequestDto.toEntity();
         String email = member.getEmail();
         String password = member.getPassword();
-        if(email == null || password == null)
-            return null;
-        MemberResponseDto memberResponseDto = memberRepository.login(email, password);
+        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);;
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        MemberResponseDto memberResponseDto = objectMapper.convertValue(memberRepository.findByEmailAndPassword(email, password), MemberResponseDto.class);
         return memberResponseDto.toEntity();
     }
 
     @Override
-    public Member joinMember(MemberJoinRequestDto memberJoinRequestDto) throws Exception {
+    public ResponseEntity joinMember(MemberJoinRequestDto memberJoinRequestDto) throws Exception {
         Member member = memberJoinRequestDto.toEntity();
-        return memberRepository.save(member);
+        if (memberRepository.findByEmail(member.getEmail()) == null)
+            return new ResponseEntity<>(null, HttpStatus.ALREADY_REPORTED);
+        if (memberRepository.findByNickname(member.getNickname()) == null)
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+
+        return new ResponseEntity<>(memberRepository.save(member), HttpStatus.OK);
     }
 
     @Override
@@ -54,16 +67,16 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-	public Member getMemberInfo(String memberId) throws Exception {
+    public Member getMemberInfo(String memberId) throws Exception {
         Member member = memberRepository.findByEmail(memberId);
         return member;
-	}
+    }
 
-	@Override
-	public List<Member> getMemberList(String key) throws Exception {
+    @Override
+    public List<Member> getMemberList(String key) throws Exception {
         List<Member> memberlist = memberRepository.getMemberList(key);
-		return memberlist;
-	}
+        return memberlist;
+    }
 
     @Override
     public Member updateMemberPassword(MemberUpdatePasswordRequestDto memberUpdatePasswordRequestDto) throws Exception {

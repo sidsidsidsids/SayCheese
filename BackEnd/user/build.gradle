@@ -34,6 +34,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	implementation 'junit:junit:4.13.1'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.5' // or the latest version
     testImplementation 'org.projectlombok:lombok:1.18.26'
     compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -44,6 +45,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
 }
 
 tasks.named('test') {

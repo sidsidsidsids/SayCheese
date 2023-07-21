@@ -1,10 +1,12 @@
 package com.reminiscence.member.dto;
 
 import com.reminiscence.domain.Member;
-import com.reminiscence.domain.RoleType;
+import com.reminiscence.domain.Role;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.Column;
 
 @Getter
 @NoArgsConstructor
@@ -12,13 +14,17 @@ public class MemberJoinRequestDto {
     private String email;
     private String password;
     private String nickname;
-    private RoleType roleType;
+    private Role role;
+    @Column(name = "gender_fm")
     private char genderFm;
     private int age;
     private String name;
     private String profile;
+    @Column(name = "sns_id")
     private String snsId;
+    @Column(name = "sns_type")
     private String snsType;
+    @Column(name = "personal_agreement_yn")
     private char personalAgreement;
 
     @Builder
@@ -26,7 +32,7 @@ public class MemberJoinRequestDto {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
-        this.roleType = RoleType.Member;
+        this.role = Role.Member;
         this.genderFm = genderFm;
         this.age = age;
         this.name = name;
@@ -41,7 +47,7 @@ public class MemberJoinRequestDto {
                 .email(email)
                 .password(password)
                 .nickname(nickname)
-                .roleType(roleType)
+                .role(role)
                 .genderFm(genderFm)
                 .age(age)
                 .name(name)

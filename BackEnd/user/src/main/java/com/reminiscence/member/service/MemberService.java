@@ -5,13 +5,14 @@ import com.reminiscence.member.dto.MemberJoinRequestDto;
 import com.reminiscence.member.dto.MemberLoginRequestDto;
 import com.reminiscence.member.dto.MemberUpdatePasswordRequestDto;
 import com.reminiscence.member.dto.MemberInfoUpdateRequestDto;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface MemberService {
 
     Member login(MemberLoginRequestDto memberLoginRequestDto) throws Exception;
-    Member joinMember(MemberJoinRequestDto memberJoinRequestDto) throws Exception;
+    ResponseEntity joinMember(MemberJoinRequestDto memberJoinRequestDto) throws Exception;
     Member emailCheck(String email) throws Exception;
     Member nicknameCheck(String nickname) throws Exception;
 //    /* Admin */

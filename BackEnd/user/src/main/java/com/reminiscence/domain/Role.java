@@ -1,6 +1,6 @@
 package com.reminiscence.domain;
 
 
-public enum RoleType {
+public enum Role {
     ADMIN, Member;
 }

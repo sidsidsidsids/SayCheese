@@ -26,33 +26,19 @@ import javax.sql.DataSource;
 public class SecurityConfiguration {
 
     // 경로 접근 설정
-//    @Bean
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        http.csrf().disable().cors().disable()
-                .authorizeHttpRequests((authz) -> {
-                    try {
-                        authz
-                            .mvcMatchers("/", "/test").permitAll()
-                            .anyRequest().authenticated()
-                            .and()
-                        .formLogin()
-                            .loginPage("/index")
-                            .permitAll()
-                            .and()
-                        .logout()
-                            .permitAll();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-        ;
+        http.csrf().disable().cors().disable();
+        http.formLogin().disable();
+        http.httpBasic().disable();
+
         return http.build();
     }
 
     // 접근 설정 예외 경로 설정
 //    @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers("/ignore1", "/ignore2");
+        return (web) -> web.ignoring().antMatchers("/**.html", "/**.css", "/img/**");
     }
 
     // using the WebSecurityConfigurerAdapter with an embedded DataSource that is initialized with the default schema and has a single user
