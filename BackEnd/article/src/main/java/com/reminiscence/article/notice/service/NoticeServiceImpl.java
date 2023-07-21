@@ -5,7 +5,7 @@ import com.reminiscence.article.exception.customexception.NoticeException;
 import com.reminiscence.article.exception.message.NoticeExceptionMessage;
 import com.reminiscence.article.notice.dto.NoticeArticleAndMemberRequestDto;
 import com.reminiscence.article.notice.dto.NoticeArticleRequestDto;
-import com.reminiscence.article.notice.dto.NoticeArticleResponseDto;
+import com.reminiscence.article.notice.dto.NoticeArticleListResponseDto;
 import com.reminiscence.article.notice.repository.NoticeRepository;
 import com.reminiscence.article.notice.vo.NoticeArticleVo;
 import lombok.RequiredArgsConstructor;
@@ -41,23 +41,23 @@ public class NoticeServiceImpl implements NoticeService{
     }
 
     @Override
-    public  NoticeArticleResponseDto getNoticeArticleList(Pageable tempPageable) {
+    public NoticeArticleListResponseDto getNoticeArticleList(Pageable tempPageable) {
         int page=tempPageable.getPageNumber();
         if(page<=0){
             page=1;
         }
         Pageable pageable= PageRequest.of(page-1,DEFAULT_NOTICE_PAGE_SIZE, Sort.Direction.DESC,"id");
         Page<NoticeArticle> noticeArticlePageList=noticeRepository.findNoticeArticle(pageable);
-        NoticeArticleResponseDto noticeArticleResponseDto=new NoticeArticleResponseDto();
+        NoticeArticleListResponseDto noticeArticleListResponseDto =new NoticeArticleListResponseDto();
 
-        noticeArticleResponseDto.setCurPage(page);
-        noticeArticleResponseDto.setTotalPages(noticeArticlePageList.getTotalPages());
-        noticeArticleResponseDto.setTotalDataCount(noticeArticlePageList.getTotalElements());
+        noticeArticleListResponseDto.setCurPage(page);
+        noticeArticleListResponseDto.setTotalPages(noticeArticlePageList.getTotalPages());
+        noticeArticleListResponseDto.setTotalDataCount(noticeArticlePageList.getTotalElements());
 
         for(NoticeArticle noticeArticle:noticeArticlePageList.getContent()){
-            noticeArticleResponseDto.add(new NoticeArticleVo(noticeArticle));
+            noticeArticleListResponseDto.add(new NoticeArticleVo(noticeArticle));
         }
-        return noticeArticleResponseDto;
+        return noticeArticleListResponseDto;
     }
 
 

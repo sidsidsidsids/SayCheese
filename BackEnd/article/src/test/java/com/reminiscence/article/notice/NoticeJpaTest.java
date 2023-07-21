@@ -7,7 +7,7 @@ import com.reminiscence.article.domain.NoticeArticle;
 import com.reminiscence.article.member.repository.MemberRepository;
 import com.reminiscence.article.notice.dto.NoticeArticleAndMemberRequestDto;
 import com.reminiscence.article.notice.dto.NoticeArticleRequestDto;
-import com.reminiscence.article.notice.dto.NoticeArticleResponseDto;
+import com.reminiscence.article.notice.dto.NoticeArticleListResponseDto;
 import com.reminiscence.article.notice.repository.NoticeRepository;
 import com.reminiscence.article.notice.vo.NoticeArticleVo;
 import org.assertj.core.api.Assertions;
@@ -105,20 +105,20 @@ public class NoticeJpaTest {
             page=1;
         }
         Page<NoticeArticle> noticeArticlePageList=noticeRepository.findNoticeArticle(pageable);
-        NoticeArticleResponseDto noticeArticleResponseDto=new NoticeArticleResponseDto();
+        NoticeArticleListResponseDto noticeArticleListResponseDto =new NoticeArticleListResponseDto();
 
-        noticeArticleResponseDto.setCurPage(page);
-        noticeArticleResponseDto.setTotalPages(noticeArticlePageList.getTotalPages());
-        noticeArticleResponseDto.setTotalDataCount(noticeArticlePageList.getTotalElements());
+        noticeArticleListResponseDto.setCurPage(page);
+        noticeArticleListResponseDto.setTotalPages(noticeArticlePageList.getTotalPages());
+        noticeArticleListResponseDto.setTotalDataCount(noticeArticlePageList.getTotalElements());
 
         for(NoticeArticle noticeArticle:noticeArticlePageList.getContent()){
-            noticeArticleResponseDto.add(new NoticeArticleVo(noticeArticle));
+            noticeArticleListResponseDto.add(new NoticeArticleVo(noticeArticle));
         }
 
-        Assertions.assertThat(noticeArticleResponseDto.getCurPage()).isEqualTo(1);
-        Assertions.assertThat(noticeArticleResponseDto.getTotalPages()).isEqualTo(5);
-        Assertions.assertThat(noticeArticleResponseDto.getTotalDataCount()).isEqualTo(49);
-        Assertions.assertThat(noticeArticleResponseDto.getNoticeArticleVoList().size()).isEqualTo(10);
+        Assertions.assertThat(noticeArticleListResponseDto.getCurPage()).isEqualTo(1);
+        Assertions.assertThat(noticeArticleListResponseDto.getTotalPages()).isEqualTo(5);
+        Assertions.assertThat(noticeArticleListResponseDto.getTotalDataCount()).isEqualTo(49);
+        Assertions.assertThat(noticeArticleListResponseDto.getNoticeArticleVoList().size()).isEqualTo(10);
 
     }
 }

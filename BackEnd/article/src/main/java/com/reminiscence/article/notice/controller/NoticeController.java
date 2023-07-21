@@ -5,7 +5,7 @@ import com.reminiscence.article.message.custom_message.NoticeResponseMessage;
 import com.reminiscence.article.config.auth.UserDetail;
 import com.reminiscence.article.notice.dto.NoticeArticleAndMemberRequestDto;
 import com.reminiscence.article.notice.dto.NoticeArticleRequestDto;
-import com.reminiscence.article.notice.dto.NoticeArticleResponseDto;
+import com.reminiscence.article.notice.dto.NoticeArticleListResponseDto;
 import com.reminiscence.article.notice.service.NoticeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -49,8 +49,8 @@ public class NoticeController {
         return new ResponseEntity<>(Response.of(NoticeResponseMessage.NOTICE_MODIFY_SUCCESS),HttpStatus.OK);
     }
     @GetMapping("")
-    public ResponseEntity<NoticeArticleResponseDto> getNoticeArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable) throws Exception{
-        NoticeArticleResponseDto noticeArticleResponseDto=noticeService.getNoticeArticleList(pageable);
-        return new ResponseEntity<>(noticeArticleResponseDto, HttpStatus.OK);
+    public ResponseEntity<NoticeArticleListResponseDto> getNoticeArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable) throws Exception{
+        NoticeArticleListResponseDto noticeArticleListResponseDto =noticeService.getNoticeArticleList(pageable);
+        return new ResponseEntity<>(noticeArticleListResponseDto, HttpStatus.OK);
     }
 }

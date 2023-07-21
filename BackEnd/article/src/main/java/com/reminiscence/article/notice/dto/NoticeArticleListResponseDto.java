@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class NoticeArticleResponseDto implements Serializable {
+public class NoticeArticleListResponseDto implements Serializable {
 
     private int curPage;
     private int totalPages;
