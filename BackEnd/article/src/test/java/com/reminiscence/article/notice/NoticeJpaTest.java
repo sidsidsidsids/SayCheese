@@ -4,10 +4,13 @@ package com.reminiscence.article.notice;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reminiscence.article.domain.Member;
 import com.reminiscence.article.domain.NoticeArticle;
+import com.reminiscence.article.exception.customexception.NoticeException;
+import com.reminiscence.article.exception.message.NoticeExceptionMessage;
 import com.reminiscence.article.member.repository.MemberRepository;
 import com.reminiscence.article.notice.dto.NoticeArticleAndMemberRequestDto;
 import com.reminiscence.article.notice.dto.NoticeArticleRequestDto;
 import com.reminiscence.article.notice.dto.NoticeArticleListResponseDto;
+import com.reminiscence.article.notice.dto.NoticeArticleResponseDto;
 import com.reminiscence.article.notice.repository.NoticeRepository;
 import com.reminiscence.article.notice.vo.NoticeArticleVo;
 import org.assertj.core.api.Assertions;
@@ -116,5 +119,32 @@ public class NoticeJpaTest {
         Assertions.assertThat(noticeArticleListResponseDto.getPageNavigator().getTotalDataCount()).isEqualTo(49);
         Assertions.assertThat(noticeArticleListResponseDto.getNoticeArticleVoList().size()).isEqualTo(10);
 
+    }
+
+    @Test
+    @DisplayName("공지 상세 조회 테스트")
+    public void noticeArticleDetailTest() throws Exception {
+        long noticeArticleId=1L;
+        NoticeArticle noticeArticle=noticeRepository.findNoticeArticleById(noticeArticleId);
+        if(noticeArticle==null){
+            throw new NoticeException(NoticeExceptionMessage.DATA_NOT_FOUND);
+        }
+        NoticeArticleResponseDto noticeArticleResponseDto=new NoticeArticleResponseDto(noticeArticle);
+        Assertions.assertThat(noticeArticleResponseDto.getId()).isEqualTo(noticeArticleId);
+        Assertions.assertThat(noticeArticleResponseDto.getSubject()).isEqualTo("오전 점검 안내");
+        Assertions.assertThat(noticeArticleResponseDto.getContent()).isEqualTo("10시 점검입니다");
+        Assertions.assertThat(noticeArticleResponseDto.getWriter()).isEqualTo("se6816");
+    }
+    @Test
+    @DisplayName("공지 상세 조회 테스트(없는 번호 조회 시)")
+    public void noticeArticleDetailNotExistsIdFailTest() throws Exception {
+        long noticeArticleId=100000L;
+        Assertions.assertThatThrownBy(()->{
+            NoticeArticle noticeArticle=noticeRepository.findNoticeArticleById(noticeArticleId);
+            if(noticeArticle==null){
+                throw new NoticeException(NoticeExceptionMessage.DATA_NOT_FOUND);
+            }
+            NoticeArticleResponseDto noticeArticleResponseDto=new NoticeArticleResponseDto(noticeArticle);
+        }).isInstanceOf(NoticeException.class);
     }
 }

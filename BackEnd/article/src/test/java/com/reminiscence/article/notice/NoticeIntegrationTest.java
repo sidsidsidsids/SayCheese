@@ -25,6 +25,7 @@ import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.headers.HeaderDocumentation;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.restdocs.snippet.Snippet;
@@ -51,8 +52,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -306,7 +306,7 @@ public class NoticeIntegrationTest {
     }
 
     @Test
-    @DisplayName("공지 목록 조회 테스트")
+    @DisplayName("공지 목록 조회 테스트(정상)")
     public void getNoticeArticleListSuccessTest() throws Exception {
         mvc.perform(get("/api/article/notice?page=3")
                         .contentType("application/json"))
@@ -333,6 +333,48 @@ public class NoticeIntegrationTest {
                         )
                 ));
 
+    }
+
+    @Test
+    @DisplayName("공지 상세 조회 테스트(정상)")
+    public void getNoticeArticleDetailSuccessTest() throws Exception {
+        Long noticeArticleId=1L;
+        mvc.perform(RestDocumentationRequestBuilders.get("/api/article/notice/{noticeArticleId}",noticeArticleId)
+                        .contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        pathParameters(
+                                parameterWithName("noticeArticleId").description("글 번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("글번호"),
+                                fieldWithPath("subject").type(JsonFieldType.STRING).description("공지 제목"),
+                                fieldWithPath("content").type(JsonFieldType.STRING).description("공지 내용"),
+                                fieldWithPath("writer").type(JsonFieldType.STRING).description("작성자"),
+                                fieldWithPath("hit").type(JsonFieldType.NUMBER).description("조회 수"),
+                                fieldWithPath("createdDate").type(JsonFieldType.STRING).description("생성일")
+
+                        )
+                ));
+    }
+    @Test
+    @DisplayName("공지 상세 조회 테스트(잘못된 번호가 들어올 시)")
+    public void getNoticeArticleDetailNotExistsIdFailTest() throws Exception {
+        Long noticeArticleId=1000000L;
+        mvc.perform(RestDocumentationRequestBuilders.get("/api/article/notice/{noticeArticleId}",noticeArticleId)
+                        .contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(status().isNotFound())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        pathParameters(
+                                parameterWithName("noticeArticleId").description("글 번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지")
+                        )
+                ));
     }
 
 

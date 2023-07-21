@@ -14,6 +14,7 @@ public class NoticeArticleResponseDto {
     private String content;
     private String writer;
     private LocalDateTime createdDate;
+    private Long hit;
 
     public NoticeArticleResponseDto(NoticeArticle noticeArticle){
         this.id=noticeArticle.getId();
@@ -21,5 +22,6 @@ public class NoticeArticleResponseDto {
         this.content=noticeArticle.getContent();
         this.writer=noticeArticle.getMember().getNickname();
         this.createdDate=noticeArticle.getCreatedDate();
+        this.hit=noticeArticle.getHit();
     }
 }
