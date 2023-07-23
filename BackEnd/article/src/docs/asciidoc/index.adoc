@@ -7,6 +7,6 @@
 :sectlinks:
 :sectnums:
 
+include::ImageArticle-API.adoc[]
 include::Notice-API.adoc[]
-
 include::Faq-API.adoc[]
