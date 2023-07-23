@@ -8,18 +8,19 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ImageOwnerRepository extends JpaRepository<ImageOwner, Long> {
 
     @Query("select i from ImageOwner i where i.image.id = :imageId and i.member.id = :memberId")
-    public ImageOwner findByImageIdAndMemberId(@Param("imageId") Long imageId, @Param("memberId") Long memberId);
+    public Optional<ImageOwner> findByImageIdAndMemberId(@Param("imageId") Long imageId, @Param("memberId") Long memberId);
 
     @Query("select i from ImageOwner i where i.member.id = :memberId")
-    public List<ImageOwner> findByMemberId(@Param("memberId") Long memberId);
+    public Optional<List<ImageOwner>> findByMemberId(@Param("memberId") Long memberId);
 
     @Query("select i from ImageOwner i where i.image.id = :imageId")
-    public List<ImageOwner> findByImageId(@Param("imageId") Long imageId);
+    public Optional<List<ImageOwner>> findByImageId(@Param("imageId") Long imageId);
 
     @Modifying
     @Query("delete from ImageOwner i where i.image.id = :imageId and i.member.id = :memberId")
