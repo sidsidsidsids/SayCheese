@@ -5,6 +5,7 @@ import com.reminiscence.article.domain.ImageOwner;
 import com.reminiscence.article.domain.Member;
 import com.reminiscence.article.image.repository.ImageOwnerRepository;
 import com.reminiscence.article.image.repository.ImageRepository;
+import com.reminiscence.article.image.repository.ImageTagRepository;
 import com.reminiscence.article.member.repository.MemberRepository;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,33 +28,42 @@ public class ImageJpaTest {
 
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
+    ImageTagRepository imageTagRepository;
 
     @Test
     @DisplayName("소유한 이미지 조회")
     public void OwnerImageReadTest() {
         // given
-        Member member = memberRepository.findById(2L).orElse(null);
-        assertEquals(member.getId(), 2L);
+        Long memberId = 2L;
+        Member member = memberRepository.findById(memberId).orElse(null);
+        assertNotNull(member);
+        assertEquals(memberId, member.getId());
 
         // when
-        List<ImageOwner> findImageOwners = imageOwnerRepository.findByMemberId(member.getId());
+        List<ImageOwner> findImageOwners = imageOwnerRepository.findByMemberId(member.getId()).orElse(null);
 
         // then
-        assertEquals(findImageOwners.get(0).getImage().getLink(), "www.daum.com");
-        assertEquals(findImageOwners.get(1).getImage().getLink(), "www.google.com");
+        assertNotNull(findImageOwners);
+        assertEquals(9, findImageOwners.size());
+        for(ImageOwner imageOwner : findImageOwners){
+            assertEquals(memberId, imageOwner.getMember().getId());
+        }
     }
     @Test
     @DisplayName("소유한 이미지가 없을 때 조회")
     public void OwnerNoneImageReadTest() {
         // given
-        Member member = memberRepository.findById(3L).orElse(null);
-        assertEquals(member.getId(), 3L);
+        Long memberId = 4L;
+        Member member = memberRepository.findById(memberId).orElse(null);
+        assertNotNull(member);
+        assertEquals(member.getId(), memberId);
 
         // when
-        List<ImageOwner> findImageOwners = imageOwnerRepository.findByMemberId(member.getId());
+        List<ImageOwner> findImageOwners = imageOwnerRepository.findByMemberId(member.getId()).orElse(null);
         // then
-
-        assertEquals(findImageOwners.size(), 0);
+        assertNotNull(findImageOwners);
+        assertEquals(0, findImageOwners.size());
     }
 
     @Test
@@ -62,32 +72,53 @@ public class ImageJpaTest {
         // given
         Long imageId = 3L;
         Image image = imageRepository.findById(imageId).orElse(null);
+        assertNotNull(image);
         assertEquals(image.getId(), imageId);
 
 
         // when
-        List<ImageOwner> findImages = imageOwnerRepository.findByImageId(image.getId());
+        List<ImageOwner> findImages = imageOwnerRepository.findByImageId(image.getId()).orElse(null);
 
         // then
-        assertEquals(findImages.size(), 2);
-        assertEquals(findImages.get(0).getMember().getNickname(), "se6816");
-        assertEquals(findImages.get(1).getMember().getNickname(), "se6815");
+        assertNotNull(findImages);
+        assertEquals(2, findImages.size());
+        assertEquals("se6816", findImages.get(0).getMember().getNickname());
+        assertEquals("se6815", findImages.get(1).getMember().getNickname() );
     }
 
     @Test
     @DisplayName("이미지 삭제")
     public void ImageDeleteTest(){
         // given
-        Member member = memberRepository.findById(1L).orElse(null);
-        Image image = imageRepository.findById(3L).orElse(null);
+        Long memberId = 1L;
+        Long imageId = 3L;
+        Member member = memberRepository.findById(memberId).orElse(null);
+        Image image = imageRepository.findById(imageId).orElse(null);
 
-        assertEquals(member.getId(), 1L);
-        assertEquals(image.getId(), 3L);
+        assertNotNull(member);
+        assertNotNull(image);
+        assertEquals(member.getId(), memberId);
+        assertEquals(image.getId(), imageId);
 
         // when
         imageOwnerRepository.deleteByImageIdAndMemberId(image.getId(), member.getId());
 
         // then
-        assertEquals(imageOwnerRepository.findByImageIdAndMemberId(image.getId(), member.getId()), null);
+        ImageOwner findImageOwner = imageOwnerRepository.findByImageIdAndMemberId(image.getId(), member.getId()).orElse(null);
+        assertNull(findImageOwner);
+    }
+
+    @Test
+    @DisplayName("이미지 태그 조회")
+    public void ImageTagReadTest(){
+        // given
+        Long imageId = 1L;
+
+        // when
+        List<String> findTags = imageTagRepository.findTagNameByImageId(imageId).orElse(null);
+
+        // then
+        assertNotNull(findTags);
+        assertEquals(4, findTags.size());
     }
 }
