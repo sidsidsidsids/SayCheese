@@ -22,10 +22,6 @@ import java.util.UUID;
 public class ImageServiceImpl implements ImageService{
     private final AmazonS3 amazonS3;
 
-    @Override
-    public void saveImage(UserDetail userDetail, ImageNameDto imageNameDto) {
-        
-    }
 
     public PreSignedResponseDto getPreSignedUrl(String bucket, String prefix, String fileName) {
 

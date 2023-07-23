@@ -6,7 +6,8 @@
 insert into member(email,password,nickname,role) values
 ('se6816@naver.com','password','se6816','ADMIN'),
 ('se6815@naver.com','password','se6815','MEMBER'),
-('se6817@naver.com','password','se6817','MEMBER');
+('se6817@naver.com','password','se6817','MEMBER'),
+('se6818@naver.com','password','se6818','MEMBER');
 
 -- Test Notification Data
 insert into article(created_date, member_id, type) values
@@ -274,7 +275,23 @@ insert into tag(name, created_date) values
 insert into Image(link, type, created_date) values
 ('www.naver.com', 'png', now()),
 ('www.daum.com', 'jpg', now()),
-('www.google.com', 'jpg', now());
+('www.google.com', 'jpg', now()),
+('link1', 'jpg', now()),
+('link2', 'jpg', now()),
+('link3', 'jpg', now()),
+('link4', 'jpg', now()),
+('link5', 'jpg', now()),
+('link6', 'jpg', now()),
+('link7', 'jpg', now()),
+('link8', 'jpg', now()),
+('link9', 'jpg', now()),
+('link10', 'jpg', now()),
+('link11', 'jpg', now()),
+('link12', 'jpg', now()),
+('link13', 'jpg', now()),
+('link14', 'jpg', now()),
+('link15', 'jpg', now()),
+('link16', 'jpg', now());
 
 -- Test ImageTag Data
 insert into Image_Tag(image_id, tag_id) values
@@ -283,27 +300,88 @@ insert into Image_Tag(image_id, tag_id) values
 (1, 3),
 (1, 4);
 
+
 -- Test ImageOwner Data
 insert into Image_Owner(member_id, image_id) values
 (1, 1),
-(1, 3),
 (2, 2),
-(2, 3);
+(1, 3),
+(2, 3),
+(2, 4),
+(2, 5),
+(2, 6),
+(1, 7),
+(1, 8),
+(1, 9),
+(2, 10),
+(2, 11),
+(2, 12),
+(3, 13),
+(3, 14),
+(3, 15),
+(3, 16),
+(1, 17),
+(2, 18);
 
 
 -- Test Article Data
 insert into Article(member_id, type, created_date) values
-(1, 'IMAGE', now()),
-(2, 'IMAGE', now()),
-(2, 'IMAGE', now());
+(1, 'I', now()),
+(2, 'I', now()),
+(1, 'I', now()),
+(2, 'I', now()),
+(2, 'I', now()),
+(2, 'I', now()),
+(1, 'I', now()),
+(1, 'I', now()),
+(1, 'I', now()),
+(2, 'I', now()),
+(2, 'I', now()),
+(2, 'I', now()),
+(3, 'I', now()),
+(3, 'I', now()),
+(3, 'I', now()),
+(3, 'I', now()),
+(1, 'I', now()),
+(2, 'I', now());
 
 -- Test ImageArticle Data
 insert into Image_Article(id, image_id) values
 (50, 1),
 (51, 2),
-(52, 3);
+(52, 3),
+(53, 4),
+(54, 5),
+(55, 6),
+(56, 7),
+(57, 8),
+(58, 9),
+(59, 10),
+(60, 11),
+(61, 12),
+(62, 13),
+(63, 14),
+(64, 15),
+(65, 16),
+(66, 17),
+(67, 18);
 
 insert into lover(member_id, article_id) values
-(2, 50);
+(2, 50),
+(1, 51),
+(2, 51),
+(1, 52),
+(2, 52),
+(3, 52),
+(1, 53),
+(2, 53),
+(1, 54),
+(2, 54),
+(1, 55),
+(2, 55),
+(1, 56),
+(2, 56),
+(1, 57),
+(2, 57);
 
 

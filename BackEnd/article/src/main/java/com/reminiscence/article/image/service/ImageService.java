@@ -5,9 +5,8 @@ import com.reminiscence.article.image.dto.ImageNameDto;
 import com.reminiscence.article.image.dto.PreSignedResponseDto;
 
 public interface ImageService {
-    public void saveImage(UserDetail userDetail, ImageNameDto fileName);
-
+//    public void saveImage(UserDetail userDetail, ImageNameDto fileName);
 //    public void readOwnImages(UserDetail userDetail);
 //    public void readImageOwner(Long id);
-    public PreSignedResponseDto getPreSignedUrl(String bucket, String prefix, String fileName);
+    PreSignedResponseDto getPreSignedUrl(String bucket, String prefix, String fileName);
 }

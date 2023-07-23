@@ -1,4 +1,4 @@
-package com.reminiscence.article.image.dummy;
+package com.reminiscence.article.ImageArticle.dummy;
 
 
 
