@@ -1,8 +1,11 @@
 package com.reminiscence.article.lover.service;
 
-import com.reminiscence.article.domain.Article;
 import com.reminiscence.article.domain.ImageArticle;
 import com.reminiscence.article.domain.Lover;
+import com.reminiscence.article.exception.customexception.ImageArticleException;
+import com.reminiscence.article.exception.customexception.LoverException;
+import com.reminiscence.article.exception.message.ImageArticleExceptionMessage;
+import com.reminiscence.article.exception.message.LoverExceptionMessage;
 import com.reminiscence.article.imagearticle.repository.ImageArticleRepository;
 import com.reminiscence.article.lover.repository.LoverRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +24,8 @@ public class LoverServiceImpl implements LoverService{
     public boolean writeLoverImageArticle(Long memberId, Long articleId) {
 
         Optional<ImageArticle> findArticle = imageArticleRepository.findById(articleId);
-        if(!imageArticleValidate(findArticle)){
-            return false;
-        }
+        findArticle.orElseThrow(()->
+                new ImageArticleException(ImageArticleExceptionMessage.NOT_FOUND_IMAGE_ARTICLE));
         Lover lover = Lover.builder()
                 .memberId(memberId)
                 .article(findArticle.get())
@@ -35,18 +37,10 @@ public class LoverServiceImpl implements LoverService{
     @Override
     public boolean deleteLoverImageArticle(Long memberId, Long articleId) {
         Optional<Lover> findLover = loverRepository.findByMemberIdAndArticleId(memberId, articleId);
-        if(!loverValidate(findLover)){
-            return false;
-        }
+        findLover.orElseThrow(()->
+                new LoverException(LoverExceptionMessage.NOT_FOUND_LOVER));
         loverRepository.delete(findLover.get());
         return true;
-    }
-
-    public boolean imageArticleValidate(Optional<ImageArticle> article){
-        return article.isPresent();
-    }
-    public boolean loverValidate(Optional<Lover> lover){
-        return lover.isPresent();
     }
 
 }

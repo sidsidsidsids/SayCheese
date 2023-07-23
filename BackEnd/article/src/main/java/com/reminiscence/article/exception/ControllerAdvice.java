@@ -1,10 +1,7 @@
 package com.reminiscence.article.exception;
 
 
-import com.reminiscence.article.exception.customexception.ImageArticleException;
-import com.reminiscence.article.exception.customexception.ImageException;
-import com.reminiscence.article.exception.customexception.MemberException;
-import com.reminiscence.article.exception.customexception.NoticeException;
+import com.reminiscence.article.exception.customexception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -42,6 +39,13 @@ public class ControllerAdvice {
     public ResponseEntity<ErrorResponse> handleNoticeException(NoticeException noticeException) {
         ErrorResponse response=ErrorResponse.of(noticeException.getHttpStatus().value(),noticeException.getMessage());
         return new ResponseEntity<ErrorResponse>(response, noticeException.getHttpStatus());
+    }
+
+    // Lover 관련 예외 처리
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleLoverException(LoverException loverException) {
+        ErrorResponse response=ErrorResponse.of(loverException.getHttpStatus().value(),loverException.getMessage());
+        return new ResponseEntity<ErrorResponse>(response, loverException.getHttpStatus());
     }
 
     @ExceptionHandler
