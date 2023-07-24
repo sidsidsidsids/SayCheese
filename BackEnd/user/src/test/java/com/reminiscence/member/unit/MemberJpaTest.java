@@ -4,30 +4,21 @@ import com.reminiscence.domain.Member;
 import com.reminiscence.domain.Role;
 import com.reminiscence.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.After;
-import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
 @DataJpaTest
 @Slf4j
 public class MemberJpaTest {
 
     @Autowired
     MemberRepository memberRepository;
-
-    @After
-    public void cleanup() {
-        memberRepository.deleteAll();
-    }
 
     @Test
     @DisplayName("멤버저장_블러오기")

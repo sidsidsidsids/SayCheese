@@ -1,31 +1,52 @@
 package com.reminiscence.member.integration;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.http.MediaType;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.reminiscence.JwtService;
 import com.reminiscence.domain.Member;
 import com.reminiscence.domain.Role;
+import com.reminiscence.member.dto.MemberJoinRequestDto;
 import com.reminiscence.member.dto.MemberLoginRequestDto;
 import com.reminiscence.member.dto.MemberResponseDto;
 import com.reminiscence.member.repository.MemberRepository;
 import com.reminiscence.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.sql.SQLException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-@RunWith(SpringRunner.class)
+
+@ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @SpringBootTest
 @Transactional
 @Slf4j
@@ -33,18 +54,44 @@ public class MemberTest {
 
     @Autowired
     MemberService memberService;
+    MockMvc mvc; // mockMvc 생성
 
     @Autowired
     MemberRepository memberRepository;
 
-    @After
-    public void cleanup() {
-        memberRepository.deleteAll();
+    String adminToken;
+
+    String memberToken;
+
+    ObjectMapper objectMapper = new ObjectMapper();
+
+    @Autowired
+    private Environment env;
+    @Autowired
+    private WebApplicationContext applicationContext;
+
+    @BeforeEach
+    public void init(RestDocumentationContextProvider restDocumentation) throws SQLException {
+        mvc= MockMvcBuilders.webAppContextSetup(applicationContext)
+                .apply(springSecurity())
+                .addFilters(new CharacterEncodingFilter("UTF-8", true))
+                .apply(documentationConfiguration(restDocumentation).operationPreprocessors()
+                        .withRequestDefaults(prettyPrint())
+                        .withResponseDefaults(prettyPrint()))
+                .build();
+        Member admin=memberRepository.findById(1L).orElse(null);
+        Member member=memberRepository.findById(2L).orElse(null);
+        adminToken= JWT.create()
+                .withClaim("memberId",String.valueOf(admin.getId()))
+                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
+        memberToken= JWT.create()
+                .withClaim("memberId",String.valueOf(member.getId()))
+                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
     }
 
     @Test
-    @DisplayName("회원가입 테스트")
-    public void testJoinMember() {
+    @DisplayName("회원가입 성공 테스트")
+    public void testJoinMemberSuccess() throws Exception {
         //given
         String email = "b088081@gmail.com";
         String password = "1234";
@@ -56,18 +103,22 @@ public class MemberTest {
         String snsId = "nosns";
         String snsType = "facebook";
 
-        memberRepository.save(Member.builder()
+        MemberJoinRequestDto memberJoinRequestDto = MemberJoinRequestDto.builder()
                 .email(email)
                 .password(password)
                 .nickname(nickname)
-                .role(Role.Member)
                 .genderFm(genderFm)
                 .age(age)
                 .name(name)
                 .profile(profile)
                 .snsId(snsId)
                 .snsType(snsType)
-                .build());
+                .build();
+
+        mvc.perform(post("/api/member/join")
+                .content(objectMapper.writeValueAsString(memberJoinRequestDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()); // 응답 status를 ok로 테스트
 
         //when
         List<Member> membersList = memberRepository.findAll();
@@ -87,8 +138,108 @@ public class MemberTest {
     }
 
     @Test
+    @DisplayName("회원가입 실패 테스트_이메일 중복")
+    public void testJoinMemberFailure_DuplicatedEmail() throws Exception {
+        //given
+        String email = "b088081@gmail.com";
+        String password = "1234";
+        String nickname = "검정";
+        char genderFm = 'F';
+        int age = 31;
+        String name = "고무신";
+        String profile = "xxxxxxx";
+        String snsId = "nosns";
+        String snsType = "facebook";
+
+        memberRepository.save(MemberJoinRequestDto.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .genderFm(genderFm)
+                .age(age)
+                .name(name)
+                .profile(profile)
+                .snsId(snsId)
+                .snsType(snsType)
+                .build().toEntity());
+
+        MemberJoinRequestDto memberJoinRequestDto = MemberJoinRequestDto.builder()
+                .email(email)
+                .password("password")
+                .nickname("nickname")
+                .genderFm('F')
+                .age(age)
+                .name(name)
+                .profile(profile)
+                .snsId(snsId)
+                .snsType(snsType)
+                .build();
+
+        mvc.perform(post("/api/member/join")
+                        .content(objectMapper.writeValueAsString(memberJoinRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isAlreadyReported()); // 응답 status를 alreadyReported로 테스트
+
+        //when
+        List<Member> membersList = memberRepository.findAll();
+
+        //then
+        assertThat(membersList.size()).isOne();
+    }
+
+    @Test
+    @DisplayName("회원가입 실패 테스트_닉네임 중복")
+    public void testJoinMemberFailure_DuplicatedNickname() throws Exception {
+        //given
+        String email = "b088081@gmail.com";
+        String password = "1234";
+        String nickname = "검정";
+        char genderFm = 'F';
+        int age = 31;
+        String name = "고무신";
+        String profile = "xxxxxxx";
+        String snsId = "nosns";
+        String snsType = "facebook";
+
+        memberRepository.save(MemberJoinRequestDto.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .genderFm(genderFm)
+                .age(age)
+                .name(name)
+                .profile(profile)
+                .snsId(snsId)
+                .snsType(snsType)
+                .build().toEntity());
+
+        MemberJoinRequestDto memberJoinRequestDto = MemberJoinRequestDto.builder()
+                .email("email")
+                .password("password")
+                .nickname(nickname)
+                .genderFm('F')
+                .age(age)
+                .name(name)
+                .profile(profile)
+                .snsId(snsId)
+                .snsType(snsType)
+                .build();
+
+        mvc.perform(post("/api/member/join")
+                        .content(objectMapper.writeValueAsString(memberJoinRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isConflict()); // 응답 status를 conflict로 테스트
+
+        //when
+        List<Member> membersList = memberRepository.findAll();
+
+        //then
+        assertThat(membersList.size()).isOne();
+    }
+
+    @Test
     @DisplayName("로그인 성공")
-    public void testLoginSuccess() throws SQLException {
+    public void testLoginSuccess() throws Exception {
         //given
         String email = "b088081@gmail.com";
         String password = "1234";
@@ -117,11 +268,19 @@ public class MemberTest {
                 .email(email)
                 .password(password)
                 .build();
-        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);;
+
+        mvc.perform(post("/api/member/login")
+                        .content(objectMapper.writeValueAsString(memberLoginRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()); // 응답 status를 ok로 테스트
+//                .andExpect(jsonPath(email).value(email))
+//                .andExpect(jsonPath(password).value(password));
+
+        objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);;
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        MemberResponseDto memberResponseDto = objectMapper.convertValue(memberRepository.findByEmailAndPassword(memberLoginRequestDto.getEmail(), memberLoginRequestDto.getPassword()), MemberResponseDto.class);
 
+        MemberResponseDto memberResponseDto = objectMapper.convertValue(memberRepository.findByEmailAndPassword(memberLoginRequestDto.getEmail(), memberLoginRequestDto.getPassword()), MemberResponseDto.class);
         assertThat(memberResponseDto).isNotNull();
     }
 
@@ -146,7 +305,7 @@ public class MemberTest {
                 .password("incorrect_password")
                 .build();
 
-        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);;
+        objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);;
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         MemberResponseDto memberResponseDto = objectMapper.convertValue(memberRepository.findByEmailAndPassword(memberLoginRequestDto.getEmail(), memberLoginRequestDto.getPassword()), MemberResponseDto.class);

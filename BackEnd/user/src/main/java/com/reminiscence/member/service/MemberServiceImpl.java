@@ -42,9 +42,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public ResponseEntity joinMember(MemberJoinRequestDto memberJoinRequestDto) throws Exception {
         Member member = memberJoinRequestDto.toEntity();
-        if (memberRepository.findByEmail(member.getEmail()) == null)
+        // 이메일 중복 시 HttpStatus를 Already_Reported 상태로 응답 전달
+        if (memberRepository.findByEmail(member.getEmail()) != null)
             return new ResponseEntity<>(null, HttpStatus.ALREADY_REPORTED);
-        if (memberRepository.findByNickname(member.getNickname()) == null)
+        // 닉네임 중복 시 HttpStatus를 Conflict 상태로 응답 전달
+        if (memberRepository.findByNickname(member.getNickname()) != null)
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
 
         return new ResponseEntity<>(memberRepository.save(member), HttpStatus.OK);

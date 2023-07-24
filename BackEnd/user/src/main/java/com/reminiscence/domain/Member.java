@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.*;
 import java.util.Optional;
 
 @Entity(name = "Member")
@@ -60,6 +61,5 @@ public class Member extends BaseTimeEntity {
         this.snsType = snsType;
         this.personalAgreement = personalAgreement;
     }
-
 
 }
