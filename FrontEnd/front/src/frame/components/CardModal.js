@@ -1,28 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 
-export default function CardModal(props) {
-  // 열기, 닫기, 모달 헤더 텍스트를 부모로부터 받아옴
-  const { open, close, header } = props;
+import "../css/CardModal.css";
+// react-redux
+import { useDispatch, useSelector } from "react-redux";
+import { closeModal } from "../../redux/features/modal/modalSlice";
+
+export default function CardModal() {
+  // 모달에 표시할 내용이 없으면 에러가 나지않게 로딩 상태를 표시
+  const [loading] = useState(false);
+
+  // 모달에 띄울 컨텐츠를 가져옵니다
+  // state는 젠처 리덕스 스토어를 의미하며, modal 리듀서에서 관리되는 상태 객체 modalContent를 추출합니다.
+  const { isOpen } = useSelector((store) => store.modal);
+  const { modalContent } = useSelector((state) => state.modal);
+
+  console.log("@@@@@@@@@@@@@@", modalContent, isOpen);
+
+  // const dispatch = useDispatch();
 
   return (
-    // 모달이 열릴때 openModal 클래스가 생성된다.
-    <div className={open ? "openModal modal" : "modal"}>
-      {open ? (
-        <section>
-          <header>
-            {header}
-            <button className="close" onClick={close}>
-              &times;
-            </button>
-          </header>
-          <main>{props.children}</main>
-          <footer>
-            <button className="close" onClick={close}>
-              close
-            </button>
-          </footer>
-        </section>
-      ) : null}
-    </div>
+    <>
+      <div className="modalBackdrop"></div>
+      <div className="modal">
+        {loading ? (
+          <div>loading..</div>
+        ) : (
+          <>
+            {modalContent.name}
+            <br />
+            {modalContent.writer}
+            <br />
+            {/* .imgSrc에 추후 주의가 필요합니다. 이후 재설정이 필요합니다 */}
+
+            <img src={modalContent.imgSrc.sampleImg} alt="프레임 이미지" />
+            <br />
+
+            {modalContent.likes}
+          </>
+        )}
+        {/* <button onClick={useDispatch(closeModal())}>닫기</button> */}
+      </div>
+    </>
   );
 }

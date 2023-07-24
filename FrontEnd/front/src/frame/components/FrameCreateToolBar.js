@@ -24,7 +24,7 @@ export default function CreateToolBar() {
               onClick={(e) => {
                 setFocusedTool(item.createItem);
               }}
-              // 현재 선택된 도구인 경우에는 focusedTool 클래스를 추가하여 스타일을 변경합니다.
+              // 현재 선택된 도구인 경우에는 focusedTool 클래스를 추가하여 배경색을 회색으로 변경합니다.
               className={`${
                 focusedTool === item.createItem ? "focusedTool" : ""
               }`}

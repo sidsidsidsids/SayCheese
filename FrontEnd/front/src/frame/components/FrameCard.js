@@ -1,39 +1,20 @@
-// 프레임 구경하기 전시 아이템으로 사용될 카드 컴포넌트 파일입니다.
-import React, { useState } from "react";
-
 import "../css/FrameCard.css";
 
-import CardModal from "./CardModal";
+// react-redux
+import { useDispatch } from "react-redux";
+import { openModal } from "../../redux/features/modal/modalSlice";
 
-export default function FrameCard({ name, imgSrc, likes }) {
-  //모달에 쓸 데이터
-  const [showModal, setShowModal] = useState(false); // 모달 열림/닫힘 상태를 관리합니다.
-  // 모달 열기 함수를 정의합니다.
-  const openModal = () => {
-    setShowModal(true);
-    console.log(openModal);
-  };
-
-  // 모달 닫기 함수를 정의합니다.
-  const closeModal = () => {
-    setShowModal(false);
-  };
+// FrameCard 컴포넌트: 프레임을 한개씩 담을 카드 컴포넌트입니다
+export default function FrameCard({ name, imgSrc, likes, writer, payload }) {
+  const dispatch = useDispatch();
 
   return (
-    <>
-      <div className="frameCard" onClick={openModal}>
-        {name}
-        <img
-          className="cardImg"
-          width="100px"
-          src={imgSrc}
-          alt="프레임 이미지"
-        />
-        likes:{likes}
-      </div>
-      {showModal && (
-        <CardModal open={showModal} close={closeModal} header="Modal heading" />
-      )}
-    </>
+    // 카드를 클릭하면 isOpen을 true하기 합니다
+    <div className="frameCard" onClick={() => dispatch(openModal(payload))}>
+      {/* <div className="frameCard" onClick={openModal}> */}
+      {name}
+      <img className="cardImg" width="100px" src={imgSrc} alt="프레임 이미지" />
+      likes:{likes}
+    </div>
   );
 }

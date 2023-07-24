@@ -2,11 +2,16 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
+// 라우터
 import "./index.css";
 import App from "./App";
 import Main from "./Main";
 import Frame from "./frame/pages/Frame";
 import ErrorPage from "./error-page";
+
+// Redux
+import { Provider } from "react-redux"; // React 앱에 Redux 스토어를 연결하기 위한 Provider
+import store from "./redux/store";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +41,8 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>
 );
