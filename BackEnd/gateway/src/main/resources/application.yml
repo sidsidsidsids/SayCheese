@@ -21,6 +21,7 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+            - AuthorizationFilter
 
         - id: article-service
           uri: lb://ARTICLE-SERVICE
@@ -29,6 +30,7 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/article-service/(?<segment>.*), /$\{segment}
+            - AuthorizationFilter
 
 
         - id: room-service
@@ -38,6 +40,7 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/room-service/(?<segment>.*), /$\{segment}
+            - AuthorizationFilter
 
 
 
