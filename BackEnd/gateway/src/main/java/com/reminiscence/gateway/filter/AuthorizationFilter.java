@@ -48,7 +48,7 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
 
         String subject=null;
         try{
-            System.out.println(env.getProperty("token.secret"));
+            log.info(env.getProperty("token.secret"));
             subject= JWT.require(Algorithm.HMAC512(env.getProperty("token.secret"))).build()
                     .verify(jwt).getSubject();
         }catch(Exception e){
