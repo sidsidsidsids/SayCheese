@@ -7,7 +7,7 @@ import Faq from "./Faq";
 function CenterMain() {
   return (
     <div className="CenterMain">
-      <Notice />
+      <Faq />
     </div>
   );
 }
