@@ -1,11 +1,10 @@
-// 프레임 리스트 컴포넌트 입니다.
-// todo: get frame data
+// FrameList 컴포넌트 : 프레임 리스트를 서버에서 받아와서 렌더링할 컴포넌트입니다.
 
-import "./FrameList.css";
+import "../css/FrameList.css";
 
 import React, { useState } from "react";
 import FrameCard from "./FrameCard";
-import sampleImg from "./assets/snoopy.png";
+import sampleImg from "../assets/snoopy.png";
 
 export default function FrameList() {
   const [frameList, setFrameList] = useState([

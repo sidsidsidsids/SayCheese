@@ -1,7 +1,7 @@
 // 프레임 구경하기 전시 아이템으로 사용될 카드 컴포넌트 파일입니다.
 import React, { useState } from "react";
 
-import "./FrameCard.css";
+import "../css/FrameCard.css";
 
 import CardModal from "./CardModal";
 
