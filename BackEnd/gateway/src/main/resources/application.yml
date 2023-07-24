@@ -9,8 +9,9 @@ eureka:
       defaultZone: http://localhost:7000/eureka
 
 
-
 spring:
+  application:
+    name: gateway-service
   cloud:
     gateway:
       routes:
@@ -42,13 +43,14 @@ spring:
 
 
         - id: room-service
-          uri: lb//ROOM-SERVICE
+          uri: lb://ROOM-SERVICE
           predicates:
             - Path=room-service/**
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/room-service/(?<segment>.*), /$\{segment}
             - AuthorizationFilter
+
 
 
 

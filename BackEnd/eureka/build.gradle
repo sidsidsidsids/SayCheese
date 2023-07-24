@@ -20,14 +20,9 @@ ext {
 }
 
 dependencies {
+	implementation(platform("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"))
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
-
-dependencyManagement {
-	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-	}
 }
 
 tasks.named('test') {

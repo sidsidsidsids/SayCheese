@@ -12,7 +12,11 @@ version = '0.0.1-SNAPSHOT'
 java {
 	sourceCompatibility = '11'
 }
-
+ext {
+	snippetsDir = file('build/generated-snippets')
+	set('springCloudVersion', "2021.0.8")
+//	set('snippetsDir', file("build/generated-snippets"))
+}
 configurations {
 	querydsl.extendsFrom compileClasspath
 	asciidoctorExt
@@ -26,7 +30,9 @@ repositories {
 }
 
 dependencies {
+	implementation(platform("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"))
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -51,10 +57,7 @@ asciidoctor.doFirst {
 	delete file('src/main/resources/static/docs')
 }
 
-ext {
-	snippetsDir = file('build/generated-snippets')
-//	set('snippetsDir', file("build/generated-snippets"))
-}
+
 
 
 tasks.named('test') {
@@ -73,6 +76,7 @@ task copyDocument(type: Copy) {
 	from file("build/docs/asciidoc/")
 	into file("src/main/resources/static/docs")
 }
+
 
 // build 의 의존작업 명시
 build {
