@@ -14,9 +14,7 @@ export default function CardModal() {
   const { isOpen } = useSelector((store) => store.modal);
   const { modalContent } = useSelector((state) => state.modal);
 
-  console.log("@@@@@@@@@@@@@@", modalContent, isOpen);
-
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   return (
     <>
@@ -38,7 +36,13 @@ export default function CardModal() {
             {modalContent.likes}
           </>
         )}
-        {/* <button onClick={useDispatch(closeModal())}>닫기</button> */}
+        <button
+          onClick={() => {
+            dispatch(closeModal());
+          }}
+        >
+          닫기
+        </button>
       </div>
     </>
   );
