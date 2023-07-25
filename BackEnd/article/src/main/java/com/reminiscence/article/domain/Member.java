@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -34,6 +36,9 @@ public class Member extends BaseTimeEntity {
     @Column(name="profile")
     private String profile;
 
+    @Column(name="del_yn")
+    private Character delYn;
+
     @Column(name="sns_id")
     private String snsId;
 
@@ -42,5 +47,9 @@ public class Member extends BaseTimeEntity {
 
     @Column(name="personal_agreement_yn")
     private Character personalAgreement;
+
+    @OneToMany
+    @JoinColumn(name="member_id")
+    private List<Lover> lovers = new ArrayList<>();
 
 }

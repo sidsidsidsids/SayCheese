@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.persistence.FetchType;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -20,6 +22,9 @@ public abstract class Article extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
+
+    @OneToMany(mappedBy = "article")
+    private List<Lover> lovers = new ArrayList<>();
     public Article(Member member){
 
         this.member = member;
