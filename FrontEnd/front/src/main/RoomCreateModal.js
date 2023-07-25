@@ -1,10 +1,13 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./RoomCreateModal.css";
 import ModalButtons from "./ModalButtons";
 import l_Frame from "./assets/ladder_shape.PNG";
 import w_Frame from "./assets/window_shape.PNG";
 
 function RoomCreateModal({ open, close }) {
+  // 이동 위한 navigate 선언
+  const navigate = useNavigate();
   // 방 설정들
   const [isModeActive, setIsModeActive] = useState(true);
   // const [roomTime, setRoomTime] = useState(30);
@@ -13,7 +16,26 @@ function RoomCreateModal({ open, close }) {
   // 모달 설정
   const [isComplete, setIsComplete] = useState(false);
   // 방 코드
-  let roomCode;
+  const [roomCode, setRoomCode] = useState("");
+  async function codeCreation() {
+    let isValid = false;
+    while (!isValid) {
+      let tmpCode = Math.random().toString(36).substring(2, 11);
+      isValid = await isValidCode(tmpCode);
+      if (isValid) {
+        setRoomCode(tmpCode);
+      }
+    }
+  }
+  async function isValidCode(code) {
+    try {
+      await console.log("이 코드", code, " 중복 체크");
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
   // 방 초대링크
   let roomInvite;
   // open이 아닐 때 출력 x
@@ -22,10 +44,13 @@ function RoomCreateModal({ open, close }) {
   }
   // 최종 제출
   const handleConfirm = () => {
+    console.log("## ## ## ## ## ## ## ");
     console.log("방 모드(isModeActive): ", isModeActive);
     // console.log("방 시간(roomTime): ", roomTime);
     console.log("방 프레임(isWindowFrame): ", isWindowFrame);
     console.log("방 비밀번호(roomPassword): ", roomPassword);
+    console.log("## ## ## ## ## ## ## ");
+    codeCreation();
     setIsComplete(true);
   };
 
@@ -62,6 +87,7 @@ function RoomCreateModal({ open, close }) {
             onConfirm={() => {
               console.log("방 코드(roomCode): ", roomCode);
               console.log("방 초대링크(roomInvite): ", roomInvite);
+              navigate(`/room/${roomCode}`);
               setIsComplete(false);
             }}
             onClose={close}
@@ -91,27 +117,6 @@ function RoomCreateModal({ open, close }) {
               </label>
             </p>
           </div>
-          {/* 시간 설정
-        <div className="time-settings">
-          <p>
-            촬영 시간 설정
-            <input
-              // onInput : maxLength 적용 위한 코드
-              onInput={(event) => {
-                if (event.target.value.length > event.target.maxLength)
-                  event.target.value = event.target.value.slice(
-                    0,
-                    event.target.maxLength
-                  );
-              }}
-              type="number"
-              value={roomTime}
-              onChange={handleRoomTime}
-              maxLength={3}
-            />
-            초
-          </p>
-        </div> */}
           {/* 프레임 설정 */}
           <div className="frame-type">
             <p>
