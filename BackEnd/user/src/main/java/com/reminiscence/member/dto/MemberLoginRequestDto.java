@@ -2,6 +2,7 @@ package com.reminiscence.member.dto;
 
 import com.reminiscence.domain.Member;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

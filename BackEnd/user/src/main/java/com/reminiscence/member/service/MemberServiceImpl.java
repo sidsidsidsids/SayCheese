@@ -9,6 +9,7 @@ import com.reminiscence.member.dto.*;
 import com.reminiscence.member.repository.MemberRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 //import java.util.HashMap;
@@ -21,6 +22,8 @@ public class MemberServiceImpl implements MemberService {
 
     private MemberRepository memberRepository;
 
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     public MemberServiceImpl(MemberRepository memberRepository) {
         super();
         this.memberRepository = memberRepository;
@@ -31,7 +34,7 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = memberLoginRequestDto.toEntity();
         String email = member.getEmail();
-        String password = member.getPassword();
+        String password = bCryptPasswordEncoder.encode(member.getPassword());
         ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);;
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);

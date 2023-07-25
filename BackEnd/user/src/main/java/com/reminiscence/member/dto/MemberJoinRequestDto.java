@@ -3,18 +3,19 @@ package com.reminiscence.member.dto;
 import com.reminiscence.domain.Member;
 import com.reminiscence.domain.Role;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 
-@Getter
+@Data
 @NoArgsConstructor
 public class MemberJoinRequestDto {
     private String email;
     private String password;
     private String nickname;
-    private Role role;
+    private Role role = Role.Member;
     @Column(name = "gender_fm")
     private char genderFm;
     private int age;

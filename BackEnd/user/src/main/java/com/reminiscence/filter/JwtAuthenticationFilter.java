@@ -1,69 +1,94 @@
 package com.reminiscence.filter;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.reminiscence.config.auth.MemberDetail;
-import com.reminiscence.domain.Member;
-import com.reminiscence.member.repository.MemberRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.env.Environment;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.OncePerRequestFilter;
+import java.io.IOException;
+import java.util.Date;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+
+import com.reminiscence.config.auth.EmailPasswordAuthenticationToken;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.reminiscence.config.auth.MemberDetail;
+import com.reminiscence.member.dto.MemberLoginRequestDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Slf4j
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 
-    private final Environment env;
-    private final MemberRepository memberRepository;
+    private final AuthenticationManager authenticationManager;
+
+    // Authentication 객체 만들어서 리턴 => 의존 : AuthenticationManager
+    // 인증 요청시에 실행되는 함수 => /login
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        // 토큰 유무 확인
-        String header=request.getHeader(JWTKey.REQUIRED_HEADER);
-        if(header==null || !header.startsWith(JWTKey.TOKEN_PREFIX)){
-            chain.doFilter(request,response);
-            return;
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationException {
+
+        System.out.println("JwtAuthenticationFilter : 진입");
+
+        // request에 있는 email과 password를 파싱해서 자바 Object로 받기
+        ObjectMapper om = new ObjectMapper();
+        MemberLoginRequestDto loginRequestDto = null;
+        try {
+            loginRequestDto = om.readValue(request.getInputStream(), MemberLoginRequestDto.class);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        String token=header.substring(JWTKey.TOKEN_PREFIX.length());
-        String secretKey=env.getProperty("jwt.secret");
-        logger.debug("secretKey: "+ secretKey);
-        if(secretKey==null) {
-            logger.error("JWT key is not exists!!");
-            chain.doFilter(request, response);
-            return;
-        }
+        System.out.println("JwtAuthenticationFilter : "+loginRequestDto);
 
-        // JWT 토큰에서 memberId 부분만 추출
-        String memberId= JWT.require(Algorithm.HMAC512(secretKey)).build()
-                .verify(token)
-                .getClaim("memberId")
-                .asString();
+        // 이메일패스워드 토큰 생성
+        EmailPasswordAuthenticationToken authenticationToken =
+                new EmailPasswordAuthenticationToken(
+                        loginRequestDto.getEmail(),
+                        loginRequestDto.getPassword());
 
-        // token 값을 권한 처리를 위해 Authentication에 주입
-        if(memberId!=null){
-            Member member=memberRepository.findById(Long.parseLong(memberId)).orElse(null);
-            MemberDetail memberDetail =new MemberDetail(member);
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken=new UsernamePasswordAuthenticationToken(memberDetail,null, memberDetail.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-        }
+        System.out.println("JwtAuthenticationFilter : 토큰생성완료");
 
+        // authenticate() 함수가 호출 되면 인증 프로바이더가 유저 디테일 서비스의
+        // loadUserByUsername(토큰의 첫번째 파라메터) 를 호출하고
+        // UserDetails를 리턴받아서 토큰의 두번째 파라메터(credential)과
+        // UserDetails(DB값)의 getPassword()함수로 비교해서 동일하면
+        // Authentication 객체를 만들어서 필터체인으로 리턴해준다.
 
-        chain.doFilter(request,response);
+        // Tip: 인증 프로바이더의 디폴트 서비스는 UserDetailsService 타입
+        // Tip: 인증 프로바이더의 디폴트 암호화 방식은 BCryptPasswordEncoder
+        // 결론은 인증 프로바이더에게 알려줄 필요가 없음.
+        Authentication authentication =
+                authenticationManager.authenticate(authenticationToken);
+
+        MemberDetail memberDetail = (MemberDetail) authentication.getPrincipal();
+        System.out.println("Authentication : "+memberDetail.getMember().getEmail());
+        return authentication;
     }
 
+    // JWT Token 생성해서 response에 담아주기
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
+                                            Authentication authResult) throws IOException, ServletException {
 
-    private interface JWTKey{
-        public static final String REQUIRED_HEADER="Authorization";
-        public static final String TOKEN_PREFIX="Bearer ";
+        MemberDetail memberDetail = (MemberDetail) authResult.getPrincipal();
 
+        String jwtToken = JWT.create()
+                .withSubject(memberDetail.getUsername())
+                .withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.EXPIRATION_TIME))
+                .withClaim("id", memberDetail.getMember().getId())
+                .withClaim("username", memberDetail.getMember().getName())
+                .sign(Algorithm.HMAC512(JwtProperties.SECRET));
+
+        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+jwtToken);
     }
+
 }
