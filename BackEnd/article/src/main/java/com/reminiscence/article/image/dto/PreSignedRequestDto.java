@@ -5,11 +5,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ImageNameDto {
+public class PreSignedRequestDto {
     private String imageName;
     private ImageType imageType;
 
-    public ImageNameDto(String imageName, ImageType imageType) {
+    public PreSignedRequestDto(String imageName, ImageType imageType) {
         this.imageName = imageName;
         this.imageType = imageType;
     }
