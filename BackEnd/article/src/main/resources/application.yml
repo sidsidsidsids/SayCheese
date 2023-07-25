@@ -5,7 +5,7 @@ spring:
   application:
     name: article-service
   profiles:
-    active: test
+    active: local
     include: jwt
 
 eureka:
