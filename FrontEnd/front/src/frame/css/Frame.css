@@ -1,9 +1,9 @@
-div.frame {
+.frame {
   font-size: 30px;
 }
 
 /* 프레임 탭 */
-div.frameTap {
+.frameTap {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -42,6 +42,7 @@ div.frameTap {
   display: none;
 }
 
+/* 화면 작아지면 검색바 숨김, 탭 글씨 줄임 */
 @media (max-width: 600px) {
   .frameSearchTab {
     display: none;
@@ -54,7 +55,15 @@ div.frameTap {
 
 /* 탭 아래 컨텐츠 영역 */
 .frameSpace {
-  border-radius: 0 30px 30px 30px;
   background-color: white;
+  border-radius: 0 30px 30px 30px;
   min-height: 70vh;
+}
+
+/* 프레임 페이지 컨텐츠 부분 영역 */
+@media (max-width: 600px) {
+  .frameSpace {
+    border-radius: 0 0 30px 30px;
+    font-size: 20px;
+  }
 }

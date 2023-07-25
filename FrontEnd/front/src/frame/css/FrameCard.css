@@ -1,7 +1,6 @@
 .frameCard {
   width: 230px;
   height: 230px;
-  /* margin: 50px 0 0 50px; */
   border: #d9d9d9 1px solid;
   border-radius: 30px;
   display: flex;
@@ -10,9 +9,6 @@
   align-items: center;
   padding: 0;
   margin-top: 20px;
-  /* margin: 10px auto 10px 10px; */
-  /* margin: 10px auto; */
-  /* margin: 40px auto; */
 }
 
 .cardImg:hover {
