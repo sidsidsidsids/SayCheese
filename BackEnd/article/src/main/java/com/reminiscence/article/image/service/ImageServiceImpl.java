@@ -6,12 +6,12 @@ import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.reminiscence.article.config.auth.UserDetail;
-import com.reminiscence.article.image.dto.ImageNameDto;
+import com.reminiscence.article.domain.Image;
 import com.reminiscence.article.image.dto.PreSignedResponseDto;
-import lombok.NoArgsConstructor;
+import com.reminiscence.article.image.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URL;
 import java.util.Date;
@@ -19,12 +19,26 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ImageServiceImpl implements ImageService{
     private final AmazonS3 amazonS3;
+    private final ImageRepository imageRepository;
 
+    @Transactional
+    @Override
+    public void saveImage(UserDetail userDetail, String fileName, String imageLink) {
+        String fileType = getFileType(fileName);
+        String name = getFileName(fileName);
+        Image image = Image.builder()
+                .link(imageLink)
+                .type(fileType)
+                .name(name)
+                .build();
+        imageRepository.save(image);
+    }
 
-    public PreSignedResponseDto getPreSignedUrl(String bucket, String prefix, String fileName) {
-
+    public PreSignedResponseDto getPreSignedUrl(String prefix, String fileName) {
+        String bucket = "200oks3bucket";
         String oneFileName = onlyOneFileName(fileName);
         if (!prefix.equals("")) {
             fileName = prefix + "/" + oneFileName;
@@ -57,6 +71,11 @@ public class ImageServiceImpl implements ImageService{
     private String onlyOneFileName(String filename){
         return UUID.randomUUID().toString()+filename;
     }
-
+    private String getFileType(String fileName){
+        return fileName.substring(fileName.lastIndexOf(".")+1);
+    }
+    private String getFileName(String fileName){
+        return fileName.substring(0, fileName.lastIndexOf("."));
+    }
 
 }
