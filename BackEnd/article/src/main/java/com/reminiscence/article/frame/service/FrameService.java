@@ -6,6 +6,4 @@ import com.reminiscence.article.frame.dto.PreSignedResponseDto;
 
 public interface FrameService {
     PreSignedResponseDto getPreSignedUrl(String bucket, String prefix, String fileName);
-
-    void saveFrame(UserDetail userDetail, FrameArticleRequestDto frameArticleRequestDto);
 }

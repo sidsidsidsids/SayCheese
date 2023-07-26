@@ -34,13 +34,6 @@ public class FrameServiceImpl implements FrameService {
         return new PreSignedResponseDto(url.toString(), oneFileName);
     }
 
-    @Override
-    public void saveFrame(UserDetail userDetail, FrameArticleRequestDto frameArticleRequestDto) {
-
-
-
-    }
-
     private GeneratePresignedUrlRequest getGeneratePreSignedUrlRequest(String bucket, String fileName) {
         GeneratePresignedUrlRequest generatePresignedUrlRequest =
                 new GeneratePresignedUrlRequest(bucket, fileName)

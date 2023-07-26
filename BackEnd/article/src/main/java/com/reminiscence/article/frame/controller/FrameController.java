@@ -19,6 +19,17 @@ import javax.validation.Valid;
 public class FrameController {
     private final FrameService frameService;
 
+    /**
+     * AmazonS3 Presigned URL 생성
+     * @param
+     * frameRequestDto
+     *     frameName : 프레임 이름
+     *     frameType : Frame, Image
+     * @return
+     * PreSignedResponseDto
+     *     preSignUrl : PreSignedUrl
+     *     fileName : (UUID + 파일 이름)으로 설정된 저장될 파일 이름
+     */
     @PostMapping("/presigned")
     public ResponseEntity<PreSignedResponseDto> getPreSignedUrl(@Valid @RequestBody FrameRequestDto frameRequestDto) {
         String prefix = frameRequestDto.getFrameType().getValue();
