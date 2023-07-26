@@ -1,0 +1,14 @@
+[[FrameArticle-API]]
+== FrameArticle API
+
+
+[[FrameArticle-작성-API]]
+=== FrameArticle 작성 API(정상)
+operation::FrameArticleIntegrationTest/writeFrameArticleTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+
+=== FrameArticle 작성 API(비로그인 시도 시)
+operation::FrameArticleIntegrationTest/writeFrameArticleNotAuthFailTest[snippets='http-request,request-fields,http-response']
+
+=== FrameArticle 작성 API(잘못된 값이 들어올 시)
+operation::FrameArticleIntegrationTest/writeFrameArticleValidFailTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+

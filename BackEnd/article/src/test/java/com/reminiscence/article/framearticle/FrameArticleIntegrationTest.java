@@ -79,7 +79,7 @@ public class FrameArticleIntegrationTest {
 
     @Test
     @DisplayName("프레임 저장 테스트(정상)")
-    public void writeFrameArticleTest() throws Exception{
+    public void writeFrameArticleSuccessTest() throws Exception{
         DummyFrameArticleRequestDto dummyFrameArticleRequestDto=new DummyFrameArticleRequestDto.Builder()
                 .name("test")
                 .subject("test")
@@ -152,6 +152,9 @@ public class FrameArticleIntegrationTest {
                         .contentType("application/json"))
                 .andExpect(status().isBadRequest())
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                        ),
                         requestFields(
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("프레임 이름").attributes(key("constraints").value("최소 3글자, 100글자 이하")),
                                 fieldWithPath("link").type(JsonFieldType.STRING).description("프레임 링크 주소").attributes(key("constraints").value("최소 3글자, 최대 1000글자")),
