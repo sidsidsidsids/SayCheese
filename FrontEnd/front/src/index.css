@@ -1,10 +1,15 @@
+@import url("https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap");
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+
+  font-family: "Black Han Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: blueviolet;
 }
 
 code {
@@ -25,4 +30,10 @@ code {
 ::-webkit-scrollbar-track {
   background-color: #dadada;
   border-radius: 10px;
+}
+.BackColor {
+  background: linear-gradient(180deg, #fbc8d4 0%, #9795f0 100%);
+  width: 100vw;
+  height: 100vh;
+  padding: 20px 0;
 }

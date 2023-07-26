@@ -15,6 +15,8 @@
   border: 0px solid rgba(151, 149, 240, 0.5);
   border-top-width: 1px;
   transition: padding-top 0.5s, padding-bottom 0.5s, height 0.5s, transform 0.5s;
+
+  text-align: left;
 }
 
 .faq-card-none {

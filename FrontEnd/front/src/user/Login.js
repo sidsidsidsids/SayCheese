@@ -1,8 +1,16 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "./Login.css";
 import Button from "../Button";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+  const movePage = useNavigate();
+
+  // 개인정보 동의 페이지로 이동
+  const moveInfoAgreePage = () => {
+    movePage("/user/infoagree");
+  };
+
   const [activeIndex, setActiveIndex] = useState(null);
 
   const handleInputFocus = (index) => {
@@ -44,11 +52,15 @@ function Login() {
               />
             </div>
             <Button className="LoginBtn" text={"로그인"} />
-            <div className="BtnSort">
-              <Button className="LoginEtcBtn" text={"비밀번호 찾기"} />
-              <Button className="LoginEtcBtn" text={"회원가입"} />
-            </div>
           </form>
+          <div className="BtnSort">
+            <Button className="LoginEtcBtn" text={"비밀번호 찾기"} />
+            <Button
+              className="LoginEtcBtn"
+              text={"회원가입"}
+              onClick={moveInfoAgreePage}
+            />
+          </div>
         </div>
       </div>
     </div>

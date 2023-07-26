@@ -1,36 +1,35 @@
+import { useEffect, useState } from "react";
 import FaqAccordion from "./FaqAccordion";
-
-// 임의로 faq 데이터 만듦. db연결할 경우 수정!
-const qnaList = [
-  {
-    question: "자주 묻는 질문 1",
-    answer: "그에 대한 답변 1",
-  },
-  {
-    question: "자주 묻는 질문 2",
-    answer:
-      "그에 대한 답변 2 그에 대한 답변 2 그에 대한 답변 2 그에 대한 답변 2 그에 대한 답변 2",
-  },
-  {
-    question: "자주 묻는 질문 3",
-    answer: "그에 대한 답변 3",
-  },
-  {
-    question: "자주 묻는 질문 4",
-    answer: "그에 대한 답변 4",
-  },
-  {
-    question: "자주 묻는 질문 5",
-    answer: "그에 대한 답변 5",
-  },
-];
+import axios from "axios";
 
 function Faq() {
+  const [faqs, setFaqs] = useState([]);
+
+  useEffect(() => {
+    getFaq();
+  }, []);
+
+  async function getFaq() {
+    try {
+      console.log("try 시작");
+      const response = await axios.get("/api/faq", {
+        headers: {
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "69420",
+        },
+      });
+      setFaqs(response.data.faqVoList);
+      console.log(response.data.faqVoList);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <div>
       <h1>자주 묻는 질문</h1>
       <br className="stop-dragging" />
-      <FaqAccordion sections={qnaList} />
+      <FaqAccordion sections={faqs} />
     </div>
   );
 }

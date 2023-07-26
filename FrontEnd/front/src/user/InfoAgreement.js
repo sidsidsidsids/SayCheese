@@ -33,6 +33,8 @@ function InfoAgreement() {
             <label for="AgreeCheckBtn">동의합니다.</label>
           </form>
           <div className="NextBtnSort">
+            {/* 체크박스 눌러야 SignUp 페이지로 이동할 수 있는 버튼 활성화시키기
+              회원가입 페이지 링크 조금 더 생각해봐야 할 문제 */}
             <Button className="NextBtn" text={"다음"} />
           </div>
         </div>

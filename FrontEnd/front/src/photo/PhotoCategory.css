@@ -1,0 +1,5 @@
+.CategoryColor {
+  padding: 5px;
+  border-radius: 10px;
+  background-image: linear-gradient(180deg, #fbc8d4 0%, #9795f0 100%);
+}

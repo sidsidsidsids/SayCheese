@@ -1,13 +1,11 @@
 import "./User.css";
 
-import Login from "./Login";
-import InfoAgreement from "./InfoAgreement";
-import SignUp from "./SignUp";
+import { Outlet } from "react-router";
 
 function User() {
   return (
     <div className="UserBox">
-      <SignUp />
+      <Outlet />
     </div>
   );
 }

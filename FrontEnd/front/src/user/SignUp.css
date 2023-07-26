@@ -58,6 +58,10 @@
   color: #ea5455;
 }
 
+.SamePassword {
+  color: #1acb16;
+}
+
 .SignGenderAgeSort {
   display: flex;
   align-items: center;
