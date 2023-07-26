@@ -3,6 +3,7 @@ package com.reminiscence.article.image;
 import com.reminiscence.article.domain.Image;
 import com.reminiscence.article.domain.ImageOwner;
 import com.reminiscence.article.domain.Member;
+import com.reminiscence.article.image.dto.OwnerImageResponseDto;
 import com.reminiscence.article.image.repository.ImageOwnerRepository;
 import com.reminiscence.article.image.repository.ImageRepository;
 import com.reminiscence.article.image.repository.ImageTagRepository;
@@ -14,8 +15,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @DataJpaTest
@@ -51,6 +55,23 @@ public class ImageJpaTest {
             assertEquals(memberId, imageOwner.getMember().getId());
         }
     }
+    @Test
+    @DisplayName("소유한 이미지 최신순 이미지 조회 테스트")
+    public void RecentOwnerImageTest(){
+        // given
+        Long memberId = 1L;
+        int PAGE_SIZE = 5;
+        PageRequest page = PageRequest.of(0, PAGE_SIZE, Sort.Direction.DESC, "createdDate");
+
+        // when
+        List<OwnerImageResponseDto> recentOwnerImage = imageRepository.findRecentOwnerImage(page, memberId).orElse(null);
+
+        // then
+        assertNotNull(recentOwnerImage);
+        assertEquals(PAGE_SIZE, recentOwnerImage.size());
+        assertEquals(17, recentOwnerImage.get(0).getImageId());
+    }
+
     @Test
     @DisplayName("소유한 이미지가 없을 때 조회")
     public void OwnerNoneImageReadTest() {

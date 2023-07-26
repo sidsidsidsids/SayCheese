@@ -2,9 +2,11 @@ package com.reminiscence.article.image;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reminiscence.article.domain.Member;
 import com.reminiscence.article.image.dto.ImageType;
+import com.reminiscence.article.image.dummy.DummyDeleteImageOwnerRequestDto;
 import com.reminiscence.article.image.dummy.DummyImagePreSignRequestDto;
 import com.reminiscence.article.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +24,6 @@ import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
@@ -37,6 +38,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -58,7 +60,7 @@ public class ImageTest {
     String adminToken;
     String memberToken;
     @BeforeEach
-    public void init(RestDocumentationContextProvider restDocumentation) throws SQLException {
+    public void init(RestDocumentationContextProvider restDocumentation) {
         mvc= MockMvcBuilders.webAppContextSetup(applicationContext)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .apply(springSecurity())
@@ -103,6 +105,32 @@ public class ImageTest {
                         responseFields(
                                 fieldWithPath("preSignUrl").type(JsonFieldType.STRING).description("이미지 업로드 URL"),
                                 fieldWithPath("fileName").type(JsonFieldType.STRING).description("UUID로 저장될 파일 이름")
+                        )
+                ));
+    }
+    @Test
+    @DisplayName("이미지 소유자 삭제 테스트")
+    public void deleteImageOwnerSuccessTest() throws Exception {
+        Long imageId = 2L;
+        DummyDeleteImageOwnerRequestDto.Builder builder = new DummyDeleteImageOwnerRequestDto.Builder();
+        builder.imageId(imageId);
+        DummyDeleteImageOwnerRequestDto dummyRequestDto = builder.build();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization","Bearer "+ memberToken);
+        mvc.perform(delete("/api/image")
+                    .headers(headers)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(dummyRequestDto)))
+                .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                        ),
+                        requestFields(
+                                fieldWithPath("imageId").type(JsonFieldType.NUMBER).description("이미지 ID").attributes(key("constraints").value("Not Null"))
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("이미지 소유자 삭제 성공 메시지")
                         )
                 ));
     }
