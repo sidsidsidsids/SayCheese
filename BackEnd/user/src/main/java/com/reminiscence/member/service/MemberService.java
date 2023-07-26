@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface MemberService {
 
-    Member login(MemberLoginRequestDto memberLoginRequestDto) throws Exception;
+//    Member login(MemberLoginRequestDto memberLoginRequestDto) throws Exception;
     ResponseEntity joinMember(MemberJoinRequestDto memberJoinRequestDto) throws Exception;
     Member emailCheck(String email) throws Exception;
     Member nicknameCheck(String nickname) throws Exception;
@@ -22,7 +22,7 @@ public interface MemberService {
     Member updateMemberInfo(MemberInfoUpdateRequestDto memberInfoUpdateRequestDto) throws  Exception;
 
     void deleteMember(String memberId) throws Exception;
-    void saveRefreshToken(String memberid, String refreshToken) throws Exception;
-    Object getRefreshToken(String memberid) throws Exception;
-    void deleteRefreshToken(String memberid) throws Exception;
+//    void saveRefreshToken(String memberid, String refreshToken) throws Exception;
+//    Object getRefreshToken(String memberid) throws Exception;
+//    void deleteRefreshToken(String memberid) throws Exception;
 }

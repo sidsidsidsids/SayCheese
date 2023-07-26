@@ -1,18 +1,24 @@
 package com.reminiscence.config;
 
+import com.reminiscence.config.auth.MemberDetailService;
 import com.reminiscence.filter.JwtAuthenticationFilter;
 import com.reminiscence.filter.JwtAuthorizationFilter;
+import com.reminiscence.handler.AccessDenyHandler;
+import com.reminiscence.handler.CustomAuthenticationEntryPoint;
 import com.reminiscence.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -31,11 +37,10 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-    private AuthenticationManager authenticationManager;
+public class SecurityConfiguration {
 
     private final Environment env;
+    private final MemberDetailService memberDetailService;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -43,28 +48,49 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private CorsConfig corsConfig;
 
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
     // 경로 접근 설정
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         http
-				.addFilter(corsConfig.corsFilter())
+                .addFilter(corsConfig.corsFilter())
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .formLogin().disable()
                 .httpBasic().disable()
-
                 .addFilter(new JwtAuthenticationFilter(authenticationManager))
-                .addFilter(new JwtAuthorizationFilter(env, memberRepository))
+                .addFilterAfter(new JwtAuthorizationFilter(env, memberRepository), JwtAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/api/article/image/**")
-                .access("hasRole('ROLE_Member') or hasRole('ROLE_ADMIN')")
-                .antMatchers("/api/admin/**")
-                .access("hasRole('ROLE_ADMIN')")
-                .anyRequest().permitAll();
+                    .antMatchers("/public").permitAll()
+                    .antMatchers("/private").hasRole("USER")
+                    .anyRequest().permitAll()
+                    .and()
+                .logout()
+                    .logoutUrl("logout")
+                    .logoutSuccessUrl("/public");
+//                .antMatchers("/api/article/image/**")
+//                .access("hasRole('ROLE_Member') or hasRole('ROLE_ADMIN')")
+//                .antMatchers("/api/admin/**")
+//                .access("hasRole('ROLE_ADMIN')")
+//                .anyRequest().permitAll();
 
+        http.exceptionHandling().accessDeniedHandler(new AccessDenyHandler());
+        http.exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint());
         return http.build();
     }
+
+//    @Bean
+//    public FilterRegistrationBean<JwtAuthenticationFilter> jwtAuthenticationFilter() {
+//        FilterRegistrationBean<JwtAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
+//        registrationBean.setFilter(new JwtAuthenticationFilter(authenticationManager));
+//        registrationBean.addUrlPatterns("api/member/login"); // Filter가 적용될 URL 패턴 설정
+//        return registrationBean;
+//    }
 
     // 접근 설정 예외 경로 설정
 //    @Bean

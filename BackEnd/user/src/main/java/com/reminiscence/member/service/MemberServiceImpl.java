@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.reminiscence.domain.Member;
 import com.reminiscence.member.dto.*;
 import com.reminiscence.member.repository.MemberRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,28 +23,37 @@ public class MemberServiceImpl implements MemberService {
 
     private MemberRepository memberRepository;
 
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public MemberServiceImpl(MemberRepository memberRepository) {
+    public MemberServiceImpl(MemberRepository memberRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         super();
         this.memberRepository = memberRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    @Override
-    public Member login(MemberLoginRequestDto memberLoginRequestDto) throws Exception {
-
-        Member member = memberLoginRequestDto.toEntity();
-        String email = member.getEmail();
-        String password = bCryptPasswordEncoder.encode(member.getPassword());
-        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);;
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        MemberResponseDto memberResponseDto = objectMapper.convertValue(memberRepository.findByEmailAndPassword(email, password), MemberResponseDto.class);
-        return memberResponseDto.toEntity();
-    }
+//    @Override
+//    public Member login(MemberLoginRequestDto memberLoginRequestDto) throws Exception {
+//
+//        Member member = memberRepository.findByEmail(memberLoginRequestDto.getEmail());
+//        // 해당 아이디의 멤버가 없을 때
+//        if(member == null){
+//            return null;
+//        }
+//        // 비밀번호가 다를 경우
+//        if(!bCryptPasswordEncoder.matches(memberLoginRequestDto.getPassword(), member.getPassword())){
+//            return null;
+//        }
+//        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);;
+//        objectMapper.registerModule(new JavaTimeModule());
+//        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+//        MemberResponseDto memberResponseDto = objectMapper.convertValue(memberRepository.findByEmail(memberLoginRequestDto.getEmail()), MemberResponseDto.class);
+//        return memberResponseDto.toEntity();
+//    }
 
     @Override
     public ResponseEntity joinMember(MemberJoinRequestDto memberJoinRequestDto) throws Exception {
+        memberJoinRequestDto.setPassword(bCryptPasswordEncoder.encode(memberJoinRequestDto.getPassword()));
         Member member = memberJoinRequestDto.toEntity();
         // 이메일 중복 시 HttpStatus를 Already_Reported 상태로 응답 전달
         if (memberRepository.findByEmail(member.getEmail()) != null)
@@ -94,25 +104,25 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.deleteByEmail(memberId);
     }
 
-    @Override
-    public void saveRefreshToken(String memberId, String refreshToken) throws Exception {
-//        Map<String, String> map = new HashMap<String, String>();
-//        map.put("memberId", memberId);
-//        map.put("token", refreshToken);
-        memberRepository.saveRefreshToken(memberId, refreshToken);
-    }
-
-    @Override
-    public Object getRefreshToken(String memberId) throws Exception {
-        return memberRepository.getRefreshToken(memberId);
-    }
-
-    @Override
-    public void deleteRefreshToken(String memberId) throws Exception {
-//        Map<String, String> map = new HashMap<String, String>();
-//        map.put("memberId", memberId);
-//        map.put("token", null);
-        memberRepository.deleteRefreshToken(memberId, null);
-    }
+//    @Override
+//    public void saveRefreshToken(String memberId, String refreshToken) throws Exception {
+////        Map<String, String> map = new HashMap<String, String>();
+////        map.put("memberId", memberId);
+////        map.put("token", refreshToken);
+//        memberRepository.saveRefreshToken(memberId, refreshToken);
+//    }
+//
+//    @Override
+//    public Object getRefreshToken(String memberId) throws Exception {
+//        return memberRepository.getRefreshToken(memberId);
+//    }
+//
+//    @Override
+//    public void deleteRefreshToken(String memberId) throws Exception {
+////        Map<String, String> map = new HashMap<String, String>();
+////        map.put("memberId", memberId);
+////        map.put("token", null);
+//        memberRepository.deleteRefreshToken(memberId, null);
+//    }
 
 }

@@ -22,10 +22,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Member deleteByEmail(String memberId) throws  SQLException;
     @Query(value = "SELECT email, nickname from Member where email = :key or nickname = :key", nativeQuery = true)
     List<Member> getMemberList(@Param("key") String key) throws SQLException;
-    @Query(value = "SELECT token from Member where member_id = :memberId", nativeQuery = true)
-    Object getRefreshToken(@Param("memberId") String memberId) throws SQLException;
-    @Query(value = "update Member set token =:token where member_id = :memberId ", nativeQuery = true)
-    void saveRefreshToken(@Param("token") String token, @Param("memberId") String memberId) throws SQLException;
-    @Query(value = "update Member set token =:token where member_id = :memberId", nativeQuery = true)
-    void deleteRefreshToken(@Param("token") String token, @Param("memberId") String memberId) throws SQLException;
+//    @Query(value = "SELECT token from Member where member_id = :memberId", nativeQuery = true)
+//    Object getRefreshToken(@Param("memberId") String memberId) throws SQLException;
+//    @Query(value = "update Member set token =:token where member_id = :memberId ", nativeQuery = true)
+//    void saveRefreshToken(@Param("token") String token, @Param("memberId") String memberId) throws SQLException;
+//    @Query(value = "update Member set token =:token where member_id = :memberId", nativeQuery = true)
+//    void deleteRefreshToken(@Param("token") String token, @Param("memberId") String memberId) throws SQLException;
 }

@@ -9,12 +9,13 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.reminiscence.config.auth.EmailPasswordAuthenticationToken;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.auth0.jwt.JWT;
@@ -26,8 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
-
+public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
 
     // Authentication 객체 만들어서 리턴 => 의존 : AuthenticationManager
@@ -47,14 +47,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             e.printStackTrace();
         }
 
-        System.out.println("JwtAuthenticationFilter : "+loginRequestDto);
+        System.out.println("JwtAuthenticationFilter : " + loginRequestDto);
 
         // 이메일패스워드 토큰 생성
-        EmailPasswordAuthenticationToken authenticationToken =
-                new EmailPasswordAuthenticationToken(
-                        loginRequestDto.getEmail(),
-                        loginRequestDto.getPassword());
-
+        UsernamePasswordAuthenticationToken token=new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(),
+                loginRequestDto.getPassword());
         System.out.println("JwtAuthenticationFilter : 토큰생성완료");
 
         // authenticate() 함수가 호출 되면 인증 프로바이더가 유저 디테일 서비스의
@@ -67,10 +64,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // Tip: 인증 프로바이더의 디폴트 암호화 방식은 BCryptPasswordEncoder
         // 결론은 인증 프로바이더에게 알려줄 필요가 없음.
         Authentication authentication =
-                authenticationManager.authenticate(authenticationToken);
-
+                authenticationManager.authenticate(token);
         MemberDetail memberDetail = (MemberDetail) authentication.getPrincipal();
-        System.out.println("Authentication : "+memberDetail.getMember().getEmail());
+        if (memberDetail.getMember() != null)
+            System.out.println("Authentication : " + memberDetail.getMember().getEmail());
         return authentication;
     }
 
@@ -83,12 +80,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String jwtToken = JWT.create()
                 .withSubject(memberDetail.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.EXPIRATION_TIME))
+                .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
                 .withClaim("id", memberDetail.getMember().getId())
-                .withClaim("username", memberDetail.getMember().getName())
+                .withClaim("memberId", memberDetail.getMember().getEmail())
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
-        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+jwtToken);
+        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
+
     }
 
 }

@@ -2,7 +2,6 @@ package com.reminiscence.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.reminiscence.config.auth.EmailPasswordAuthenticationToken;
 import com.reminiscence.config.auth.MemberDetail;
 import com.reminiscence.domain.Member;
 import com.reminiscence.member.repository.MemberRepository;
@@ -10,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -22,7 +23,6 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
-
     private final Environment env;
     private final MemberRepository memberRepository;
     @Override
@@ -53,7 +53,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         if(memberId!=null){
             Member member=memberRepository.findById(Long.parseLong(memberId)).orElse(null);
             MemberDetail memberDetail =new MemberDetail(member);
-            EmailPasswordAuthenticationToken emailPasswordAuthenticationToken=new EmailPasswordAuthenticationToken(memberDetail.getMember().getEmail(),null, memberDetail.getAuthorities());
+            UsernamePasswordAuthenticationToken emailPasswordAuthenticationToken=new UsernamePasswordAuthenticationToken(memberDetail.getMember().getEmail(),null, memberDetail.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(emailPasswordAuthenticationToken);
         }
 

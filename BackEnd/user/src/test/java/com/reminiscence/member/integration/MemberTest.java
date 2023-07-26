@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.reminiscence.JwtService;
+//import com.reminiscence.JwtService;
 import com.reminiscence.domain.Member;
 import com.reminiscence.domain.Role;
 import com.reminiscence.member.dto.MemberJoinRequestDto;
@@ -27,6 +27,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -59,6 +60,9 @@ public class MemberTest {
     @Autowired
     MemberRepository memberRepository;
 
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
+
     String adminToken;
 
     String memberToken;
@@ -79,14 +83,14 @@ public class MemberTest {
                         .withRequestDefaults(prettyPrint())
                         .withResponseDefaults(prettyPrint()))
                 .build();
-        Member admin=memberRepository.findById(1L).orElse(null);
-        Member member=memberRepository.findById(2L).orElse(null);
-        adminToken= JWT.create()
-                .withClaim("memberId",String.valueOf(admin.getId()))
-                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
-        memberToken= JWT.create()
-                .withClaim("memberId",String.valueOf(member.getId()))
-                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
+//        Member admin=memberRepository.findById(1L).orElse(null);
+//        Member member=memberRepository.findById(2L).orElse(null);
+//        adminToken= JWT.create()
+//                .withClaim("memberId",String.valueOf(admin.getId()))
+//                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
+//        memberToken= JWT.create()
+//                .withClaim("memberId",String.valueOf(member.getId()))
+//                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
     }
 
     @Test
@@ -126,7 +130,10 @@ public class MemberTest {
         //then
         Member member = membersList.get(0);
         assertThat(member.getEmail()).isEqualTo(email);
-        assertThat(member.getPassword()).isEqualTo(password);
+        System.out.println(member.getPassword());
+        System.out.println(password);
+        System.out.println(bCryptPasswordEncoder.matches(password, member.getPassword()));
+        assertThat(bCryptPasswordEncoder.matches(password, member.getPassword())).isTrue();
         assertThat(member.getNickname()).isEqualTo(nickname);
         assertThat(member.getRole()).isEqualTo(Role.Member);
         assertThat(member.getGenderFm()).isEqualTo(genderFm);
@@ -253,7 +260,7 @@ public class MemberTest {
 
         memberRepository.save(Member.builder()
                 .email(email)
-                .password(password)
+                .password(bCryptPasswordEncoder.encode(password))
                 .nickname(nickname)
                 .role(Role.Member)
                 .genderFm(genderFm)
@@ -269,19 +276,21 @@ public class MemberTest {
                 .password(password)
                 .build();
 
-        mvc.perform(post("/api/member/login")
+//        assertThat(memberService.login(memberLoginRequestDto)).isNotNull();
+
+        mvc.perform(post("/login")
                         .content(objectMapper.writeValueAsString(memberLoginRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()); // 응답 status를 ok로 테스트
 //                .andExpect(jsonPath(email).value(email))
 //                .andExpect(jsonPath(password).value(password));
 
-        objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);;
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+//        objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);;
+//        objectMapper.registerModule(new JavaTimeModule());
+//        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        MemberResponseDto memberResponseDto = objectMapper.convertValue(memberRepository.findByEmailAndPassword(memberLoginRequestDto.getEmail(), memberLoginRequestDto.getPassword()), MemberResponseDto.class);
-        assertThat(memberResponseDto).isNotNull();
+//        MemberResponseDto memberResponseDto = objectMapper.convertValue(memberRepository.findByEmailAndPassword(memberLoginRequestDto.getEmail(), memberLoginRequestDto.getPassword()), MemberResponseDto.class);
+//        assertThat(memberResponseDto).isNotNull();
     }
 
 
