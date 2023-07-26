@@ -2,6 +2,7 @@ package com.reminiscence.article.framearticle.controller;
 
 import com.reminiscence.article.config.auth.UserDetail;
 import com.reminiscence.article.framearticle.dto.FrameArticleAndMemberRequestDto;
+import com.reminiscence.article.framearticle.dto.FrameArticleDeleteRequestDto;
 import com.reminiscence.article.framearticle.dto.FrameArticleRequestDto;
 import com.reminiscence.article.framearticle.service.FrameArticleService;
 import com.reminiscence.article.message.Response;
@@ -10,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -43,5 +41,16 @@ public class FrameArticleController {
                 .build();
         frameArticleService.writeFrameArticle(frameArticleAndMemberRequestDto);
         return new ResponseEntity<>(Response.of(FrameResponseMessage.FRAME_WRITE_SUCCESS),HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{frameArticleId}")
+    public ResponseEntity<Response> deleteFrameArticle(@AuthenticationPrincipal UserDetail userDetail,
+                                                       @PathVariable Long frameArticleId) {
+        FrameArticleDeleteRequestDto frameArticleDeleteRequestDto=FrameArticleDeleteRequestDto.builder()
+                .frameArticleId(frameArticleId)
+                .member(userDetail.getMember())
+                .build();
+        frameArticleService.deleteFrameArticle(frameArticleDeleteRequestDto);
+        return new ResponseEntity<>(Response.of(FrameResponseMessage.FRAME_DELETE_SUCCESS),HttpStatus.OK);
     }
 }

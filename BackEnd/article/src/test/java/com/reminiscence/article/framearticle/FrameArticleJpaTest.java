@@ -35,7 +35,7 @@ public class FrameArticleJpaTest {
         DummyFrameArticleRequestDto dummyFrameArticleRequestDto=new DummyFrameArticleRequestDto.Builder()
                 .name("test")
                 .subject("test")
-                .link("http://naver.com")
+                .link("http://special.com/image/21241test.jpg")
                 .isPublic(true)
                 .frameSpecification("A")
                 .build();
@@ -55,7 +55,7 @@ public class FrameArticleJpaTest {
                 .build();
 
         frameArticleRepository.save(frameArticle);
-
+        Assertions.assertThat(frameRepository.findById(frame.getId()).orElse(new Frame()).getType()).isEqualTo("jpg");
         Assertions.assertThat(frameRepository.findById(frame.getId()).orElse(new Frame()).getId()).isEqualTo(frame.getId());
         Assertions.assertThat(frameArticleRepository.findById(frameArticle.getId()).orElse(new FrameArticle()).getId()).isEqualTo(frameArticle.getId());
 
