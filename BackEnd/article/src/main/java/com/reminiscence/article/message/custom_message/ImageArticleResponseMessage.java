@@ -13,7 +13,7 @@ public enum ImageArticleResponseMessage implements ResponseMessage {
 
     private final String message;
 
-    private ImageArticleResponseMessage(String message) {
+    ImageArticleResponseMessage(String message) {
         this.message = message;
     }
 
