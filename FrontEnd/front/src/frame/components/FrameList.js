@@ -6,7 +6,8 @@ import "../css/Pagination.css";
 import React, { useState } from "react";
 // components
 import FrameCard from "./FrameCard";
-import sampleImg from "../assets/snoopy.png";
+// import sampleImg from "../assets/snoopy.png";
+import sampleImg from "../assets/luka.jpg";
 import CardModal from "./CardModal";
 // react-redux
 import { useSelector } from "react-redux";
@@ -20,30 +21,47 @@ export default function FrameList() {
     {
       id: 0,
       name: "snoopy",
-      imgSrc: { sampleImg },
-      writer: "sk",
-      likes: 10,
+      imageLink: { sampleImg },
+      author: "sk",
+      loverCnt: 10,
+      createDate: "2023-07-25T16:00:48",
+      loverYn: 1,
     },
     {
       id: 1,
       name: "snoopy2",
-      imgSrc: { sampleImg },
-      writer: "sk",
-      likes: 12,
+      imageLink: { sampleImg },
+      author: "sk",
+      loverCnt: 12,
+      createDate: "2023-07-25T16:00:48",
+      loverYn: 1,
     },
     {
       id: 2,
       name: "snoopy3",
-      imgSrc: { sampleImg },
-      writer: "sk",
-      likes: 20,
+      imageLink: { sampleImg },
+      author: "sk",
+      loverCnt: 20,
+      createDate: "2023-07-25T16:00:48",
+      loverYn: 0,
     },
     {
       id: 3,
       name: "snoopy4",
-      imgSrc: { sampleImg },
-      writer: "sk",
-      likes: 100,
+      imageLink: { sampleImg },
+      author: "sk",
+      loverCnt: 100,
+      createDate: "2023-07-25T16:00:48",
+      loverYn: 0,
+    },
+    {
+      id: 4,
+      name: "snoopy5",
+      imageLink: { sampleImg },
+      author: "sk",
+      loverCnt: 99,
+      createDate: "2023-07-25T16:00:48",
+      loverYn: 1,
     },
   ]);
 
@@ -65,9 +83,10 @@ export default function FrameList() {
           <FrameCard
             key={item.id}
             name={item.name}
-            imgSrc={item.imgSrc.sampleImg}
-            likes={item.likes}
-            writer={item.writer}
+            imageLink={item.imageLink.sampleImg}
+            loverCnt={item.loverCnt}
+            author={item.author}
+            loverYn={item.loverYn}
             // 모달 띄울때 사용하려고 전체 데이터 전달
             payload={item}
           />

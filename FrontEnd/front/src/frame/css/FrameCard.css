@@ -9,6 +9,7 @@
   align-items: center;
   padding: 0;
   margin-top: 20px;
+  position: relative;
 }
 
 .cardImg:hover {
@@ -16,9 +17,6 @@
 }
 
 @keyframes imgZoom {
-  from {
-  }
-
   to {
     background-color: white;
     transform: scale(2);
@@ -27,5 +25,43 @@
 @media (max-width: 600px) {
   .frameCard {
     margin: 20px auto;
+  }
+}
+
+/* 좋아요 */
+.heart-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.content {
+  padding: 0px;
+  display: flex;
+  cursor: pointer;
+}
+.content.heart-active {
+  border-color: #f9b9c4;
+  background: #fbd0d8;
+}
+.heart {
+  background: url("/src/frame/assets/likes.png") no-repeat;
+  background-position: left;
+  background-size: 2900%;
+  height: 90px;
+  width: 90px;
+}
+
+.heart.heart-active {
+  animation: animate 0.8s steps(28) 1;
+  background-position: right;
+}
+@keyframes animate {
+  0% {
+    background-position: left;
+  }
+  100% {
+    background-position: right;
   }
 }
