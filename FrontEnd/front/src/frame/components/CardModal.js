@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import "../css/CardModal.css";
 // react-redux
@@ -16,33 +16,44 @@ export default function CardModal() {
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    // 모달 열리면 본문 스크롤 방지
+    document.body.style.overflow = "hidden";
+    // 현재 보고 있는 스크롤의 왼쪽 top을 가운데 정렬할 기준 top으로 해줌
+    const modalbg = document.getElementsByClassName("modalBackdrop")[0]; // Get the first element with the class name
+    const currentTop = window.scrollY + "px";
+    modalbg.style.top = currentTop; // Set the top CSS property of the element
+  }, []); // Empty dependency array to run the effect only once when the component mounts
+
   return (
     <>
-      <div className="modalBackdrop"></div>
-      <div className="modal">
-        {loading ? (
-          <div>loading..</div>
-        ) : (
-          <>
-            {modalContent.name}
-            <br />
-            {modalContent.writer}
-            <br />
-            {/* .imgSrc에 추후 주의가 필요합니다. 이후 재설정이 필요합니다 */}
+      <div className="modalBackdrop">
+        <div className="modal">
+          {loading ? (
+            <div>loading..</div>
+          ) : (
+            <>
+              {modalContent.name}
+              <br />
+              {modalContent.author}
+              <br />
+              {/* .imgSrc에 추후 주의가 필요합니다. 이후 재설정이 필요합니다 */}
+              <img src={modalContent.imageLink.sampleImg} alt="프레임 이미지" />
+              <br />
 
-            <img src={modalContent.imgSrc.sampleImg} alt="프레임 이미지" />
-            <br />
-
-            {modalContent.likes}
-          </>
-        )}
-        <button
-          onClick={() => {
-            dispatch(closeModal());
-          }}
-        >
-          닫기
-        </button>
+              {modalContent.loverCnt}
+              <button
+                onClick={() => {
+                  // 모달 닫으면 본문 스크롤 허용
+                  document.body.style.overflow = "auto";
+                  dispatch(closeModal());
+                }}
+              >
+                닫기
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </>
   );

@@ -1,16 +1,10 @@
 /* 모달창을 화면 중앙. 최상단에 노출 */
-/* .modalContainer {
-  width: 100vw;
-  height: 100vh;
-  position: relative;
-} */
 
 .modalBackdrop {
   background-color: rgba(0, 0, 0, 0.4);
   width: 100vw;
   height: 100vh;
   position: absolute;
-  top: 0;
   left: 0;
 }
 
