@@ -1,6 +1,7 @@
 package com.reminiscence.article.domain;
 
 import com.reminiscence.article.BaseTimeEntity;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,6 +31,15 @@ public class Frame extends BaseTimeEntity {
     @Enumerated(value=EnumType.STRING)
     @Column(name="frame_specification", nullable = false)
     private FrameSpecification frameSpecification;
+
+    @Builder
+    public Frame(String name, String link, Character open_yn, String type, FrameSpecification frameSpecification) {
+        this.name = name;
+        this.link = link;
+        this.open_yn = open_yn;
+        this.type = type;
+        this.frameSpecification = frameSpecification;
+    }
 
 
 }

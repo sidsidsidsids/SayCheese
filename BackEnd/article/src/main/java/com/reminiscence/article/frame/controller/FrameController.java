@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/frame")
@@ -18,11 +20,12 @@ public class FrameController {
     private final FrameService frameService;
 
     @PostMapping("/presigned")
-    public ResponseEntity<PreSignedResponseDto> getPreSignedUrl(@RequestBody FrameRequestDto frameRequestDto) {
+    public ResponseEntity<PreSignedResponseDto> getPreSignedUrl(@Valid @RequestBody FrameRequestDto frameRequestDto) {
         String prefix = frameRequestDto.getFrameType().getValue();
         String fileName = frameRequestDto.getFrameName();
 
-//        PreSignedResponseDto preSignedResponseDto = frameService.getPreSignedUrl("200oks3bucket", prefix, fileName);
-//        return new ResponseEntity<>(preSignedResponseDto, HttpStatus.OK);
+        PreSignedResponseDto preSignedResponseDto = frameService.getPreSignedUrl("200oks3bucket", prefix, fileName);
+        return new ResponseEntity<>(preSignedResponseDto, HttpStatus.OK);
     }
+
 }

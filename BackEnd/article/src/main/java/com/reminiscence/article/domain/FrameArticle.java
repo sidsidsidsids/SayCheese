@@ -1,5 +1,6 @@
 package com.reminiscence.article.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,5 +18,12 @@ public class FrameArticle extends Article{
 
     @OneToOne(fetch = FetchType.LAZY)
     private Frame frame;
+
+    @Builder
+    public FrameArticle(String subject, Frame frame,Member member) {
+        super(member);
+        this.subject = subject;
+        this.frame = frame;
+    }
 
 }
