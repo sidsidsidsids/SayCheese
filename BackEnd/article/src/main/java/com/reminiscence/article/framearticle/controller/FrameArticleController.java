@@ -35,13 +35,13 @@ public class FrameArticleController {
      * Response : HttpStatus.OK
      */
     @PostMapping("")
-    public ResponseEntity<Response> saveImage(@AuthenticationPrincipal UserDetail userDetail,
+    public ResponseEntity<Response> writeFrameArticle(@AuthenticationPrincipal UserDetail userDetail,
                                               @Valid @RequestBody FrameArticleRequestDto frameArticleRequestDto) {
         FrameArticleAndMemberRequestDto frameArticleAndMemberRequestDto= FrameArticleAndMemberRequestDto.builder()
                 .member(userDetail.getMember())
                 .frameArticleRequestDto(frameArticleRequestDto)
                 .build();
-        frameArticleService.saveFrame(frameArticleAndMemberRequestDto);
+        frameArticleService.writeFrameArticle(frameArticleAndMemberRequestDto);
         return new ResponseEntity<>(Response.of(FrameResponseMessage.FRAME_WRITE_SUCCESS),HttpStatus.OK);
     }
 }

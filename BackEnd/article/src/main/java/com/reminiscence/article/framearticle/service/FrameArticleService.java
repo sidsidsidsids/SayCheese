@@ -6,5 +6,5 @@ import com.reminiscence.article.framearticle.dto.FrameArticleRequestDto;
 
 public interface FrameArticleService {
 
-    void saveFrame(FrameArticleAndMemberRequestDto frameArticleAndMemberRequestDto);
+    void writeFrameArticle(FrameArticleAndMemberRequestDto frameArticleAndMemberRequestDto);
 }

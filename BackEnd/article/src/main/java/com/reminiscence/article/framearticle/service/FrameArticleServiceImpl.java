@@ -18,7 +18,7 @@ public class FrameArticleServiceImpl implements FrameArticleService {
 
 
     @Override
-    public void saveFrame(FrameArticleAndMemberRequestDto frameArticleAndMemberRequestDto) {
+    public void writeFrameArticle(FrameArticleAndMemberRequestDto frameArticleAndMemberRequestDto) {
         Frame frame=FrameArticleAndMemberRequestDto.toEntity(frameArticleAndMemberRequestDto.getFrameArticleRequestDto());
         frameRepository.save(frame);
         FrameArticle frameArticle=FrameArticle.builder()
