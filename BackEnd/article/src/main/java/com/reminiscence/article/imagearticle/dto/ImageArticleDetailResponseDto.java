@@ -29,7 +29,16 @@ public class ImageArticleDetailResponseDto {
         this.loverCnt = loverCnt;
         this.loverYn = loverYn;
     }
-
+    public ImageArticleDetailResponseDto(Long memberId, Long imageId, String name, LocalDateTime createdDate,
+                                         String imgLink, Long loverCnt) {
+        this.memberId = memberId;
+        this.imageId = imageId;
+        this.name = name;
+        this.createdDate = createdDate;
+        this.imgLink = imgLink;
+        this.loverCnt = loverCnt;
+        this.loverYn = 0L;
+    }
     public void setTags(List<String> tags) {
         this.tags = tags;
     }

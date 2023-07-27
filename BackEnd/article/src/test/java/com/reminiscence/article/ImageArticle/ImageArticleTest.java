@@ -27,9 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -61,7 +58,7 @@ public class ImageArticleTest {
     String adminToken;
     String memberToken;
     @BeforeEach
-    public void init(RestDocumentationContextProvider restDocumentation) throws SQLException {
+    public void init(RestDocumentationContextProvider restDocumentation) {
         mvc= MockMvcBuilders.webAppContextSetup(applicationContext)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .apply(springSecurity())
@@ -95,7 +92,8 @@ public class ImageArticleTest {
                                 fieldWithPath("[].imageLink").description("이미지 링크"),
                                 fieldWithPath("[].loverCnt").description("좋아요 수"),
                                 fieldWithPath("[].createdDate").description("게시글 작성일"),
-                                fieldWithPath("[].author").description("게시글 작성자")
+                                fieldWithPath("[].author").description("게시글 작성자"),
+                                fieldWithPath("[].loverYn").description("좋아요 여부")
                         )
                         ));
     }
@@ -116,7 +114,8 @@ public class ImageArticleTest {
                                 fieldWithPath("[].imageLink").description("이미지 링크"),
                                 fieldWithPath("[].loverCnt").description("좋아요 수"),
                                 fieldWithPath("[].createdDate").description("게시글 작성일"),
-                                fieldWithPath("[].author").description("게시글 작성자")
+                                fieldWithPath("[].author").description("게시글 작성자"),
+                                fieldWithPath("[].loverYn").description("좋아요 여부")
                         )
                 ));
     }
@@ -137,7 +136,8 @@ public class ImageArticleTest {
                                 fieldWithPath("[].imageLink").description("이미지 링크"),
                                 fieldWithPath("[].loverCnt").description("좋아요 수"),
                                 fieldWithPath("[].createdDate").description("게시글 작성일"),
-                                fieldWithPath("[].author").description("게시글 작성자")
+                                fieldWithPath("[].author").description("게시글 작성자"),
+                                fieldWithPath("[].loverYn").description("좋아요 여부")
                         )
                 ));
     }
@@ -162,7 +162,8 @@ public class ImageArticleTest {
                                 fieldWithPath("[].imageLink").description("이미지 링크"),
                                 fieldWithPath("[].loverCnt").description("좋아요 수"),
                                 fieldWithPath("[].createdDate").description("게시글 작성일"),
-                                fieldWithPath("[].author").description("게시글 작성자")
+                                fieldWithPath("[].author").description("게시글 작성자"),
+                                fieldWithPath("[].loverYn").description("좋아요 여부")
                         )
                 ));
     }
@@ -183,7 +184,8 @@ public class ImageArticleTest {
                                 fieldWithPath("[].imageLink").description("이미지 링크"),
                                 fieldWithPath("[].loverCnt").description("좋아요 수"),
                                 fieldWithPath("[].createdDate").description("게시글 작성일"),
-                                fieldWithPath("[].author").description("게시글 작성자")
+                                fieldWithPath("[].author").description("게시글 작성자"),
+                                fieldWithPath("[].loverYn").description("좋아요 여부")
                         )
                 ));
     }
