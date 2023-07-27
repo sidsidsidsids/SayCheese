@@ -15,6 +15,14 @@ export default function CardModal() {
   const { modalContent } = useSelector((state) => state.modal);
 
   const dispatch = useDispatch();
+  // 좋아요 체크 되어있으면 like:1 안 했으면 :0
+  const [like, setLike] = useState(modalContent.loverYn);
+
+  function clickLike(event) {
+    event.stopPropagation();
+    setLike(!like);
+    // api 추가해야함
+  }
 
   useEffect(() => {
     // 모달 열리면 본문 스크롤 방지
@@ -33,23 +41,38 @@ export default function CardModal() {
             <div>loading..</div>
           ) : (
             <>
-              {modalContent.name}
-              <br />
-              {modalContent.author}
-              <br />
+              <div className="modal-name">{modalContent.name}</div>
+              <div className="modal-author">
+                {" "}
+                작성자 : {modalContent.author}
+              </div>
               {/* .imgSrc에 추후 주의가 필요합니다. 이후 재설정이 필요합니다 */}
               <img src={modalContent.imageLink.sampleImg} alt="프레임 이미지" />
-              <br />
 
-              {modalContent.loverCnt}
+              <div className="heart-btn" onClick={clickLike}>
+                <div className="heart-content">
+                  <span
+                    className={
+                      like === 1
+                        ? "heart full"
+                        : like === true
+                        ? "heart-active heart"
+                        : "heart"
+                    }
+                  ></span>
+                  <span className="numb">{modalContent.loverCnt}</span>
+                </div>
+              </div>
+
               <button
+                className="modalClose"
                 onClick={() => {
                   // 모달 닫으면 본문 스크롤 허용
                   document.body.style.overflow = "auto";
                   dispatch(closeModal());
                 }}
               >
-                닫기
+                X
               </button>
             </>
           )}

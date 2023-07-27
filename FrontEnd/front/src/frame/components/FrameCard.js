@@ -45,7 +45,11 @@ export default function FrameCard({
         <div className="content">
           <span
             className={
-              like === true || like === 1 ? "heart-active heart" : "heart"
+              like === 1
+                ? "heart full"
+                : like === true
+                ? "heart-active heart"
+                : "heart"
             }
           ></span>
         </div>
