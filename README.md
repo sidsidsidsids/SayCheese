@@ -15,6 +15,7 @@
       - [:pushpin: react](#pushpin-react)
       - [:pushpin: Redux](#pushpin-redux)
       - [:pushpin: Spring Security](#pushpin-spring-security)
+      - [:pushpin: Spring Cloud](#pushpin-spring-cloud)
       - [:pushpin: OAuth2](#pushpin-oauth2)
       - [:pushpin: Junit5](#pushpin-junit5)
       - [:pushpin: JPA](#pushpin-jpa)
@@ -207,6 +208,20 @@
 6. **암호화** : 사용자의 비밀번호를 안전하게 저장하고 검증
 
 7. **CSRF(Cross-Site Request Forgery) 방지** : CSRF 공격을 방지하기 위한 기능을 제공하여 웹 애플리케이션의 보안을 강화
+
+<br/>
+
+#### :pushpin: Spring Cloud
+
+Spring Cloud는 마이크로서비스를 쉽게 구축하고 관리할 수 있도록 도와줍니다.
+
+1. **서비스 디스커버리**: 서비스 디스커버리 서비스를 제공하여 마이크로서비스가 서로를 발견하고 통신할 수 있으며, 이를 통해 마이크로서비스가 동적으로 확장 가능하고 로드 밸런싱을 수행
+
+2. **분산 설정 관리**: 마이크로서비스의 설정을 중앙에서 관리하고 업데이트할 수 있는 기능을 제공
+
+3. **게이트웨이 기능**: Spring Cloud Gateway를 통해 API 게이트웨이를 구축
+
+4. **분산 추적과 모니터링**: Zipkin과 같은 분산 추적 시스템을 통해 성능을 모니터링
 
 <br/>
 
