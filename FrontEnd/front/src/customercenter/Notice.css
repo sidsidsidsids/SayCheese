@@ -10,6 +10,10 @@
   border: 0;
 }
 
+.NoticeTextSort {
+  text-align: left;
+}
+
 .NoticeMain {
   box-sizing: border-box;
   height: 408px;

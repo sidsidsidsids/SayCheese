@@ -1,23 +1,41 @@
 import { useState, useEffect } from "react";
 import "./NoticeList.css";
 import Paging from "./Paging";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
 function NoticeList() {
-  /* API통신 후 다시 페이지네이션 해봐야 함 */
   const [notices, setNotices] = useState([]); // 나타낼 공지사항
   const [count, setCount] = useState(0); // 공지사항 총 개수
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
-  const [postPerPage] = useState(5); // 페이지 당 공지사항 개수
-  const [indexOfLastPost, setIndexOfLastPost] = useState(0);
-  const [indexOfFirstPost, setIndexOfFirstPost] = useState(0);
-  const [currentPosts, setCurrentPosts] = useState(0);
+  const [postPerPage] = useState(10); // 페이지 당 공지사항 개수
 
   useEffect(() => {
-    setCount(notices.length);
-    setIndexOfLastPost(currentPage * postPerPage);
-    setIndexOfFirstPost(indexOfLastPost - postPerPage);
-    setCurrentPosts(notices.slice(indexOfFirstPost, indexOfLastPost));
-  }, [currentPage, indexOfFirstPost, indexOfLastPost, notices, postPerPage]);
+    getNoticeList();
+  }, [currentPage]);
+
+  async function getNoticeList() {
+    try {
+      console.log("시작");
+      const response = await axios.get(
+        `/api/article/notice?page=${currentPage}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "69420",
+          },
+        }
+      );
+      setNotices(response.data.noticeArticleVoList);
+      setCount(response.data.pageNavigator.totalDataCount);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const indexOfLastPost = currentPage * postPerPage;
+  const indexOfFirstPost = indexOfLastPost - postPerPage;
+  const currentPosts = notices.slice(indexOfFirstPost, indexOfLastPost);
 
   const setPage = (e) => {
     setCurrentPage(e);
@@ -33,47 +51,25 @@ function NoticeList() {
             <th className="TableCell1">번호</th>
             <th>제목</th>
             <th className="TableCell2">작성일</th>
-            <th className="TableCell2">조회수</th>
+            <th className="TableCell3">조회수</th>
           </tr>
         </thead>
-        {/* 레이아웃 짜기 위해 임의로 데이터 작성함 */}
         <tbody>
-          <tr>
-            <td>6</td>
-            <td>제목6</td>
-            <td>2023.07.15</td>
-            <td>324</td>
-          </tr>
-          <tr>
-            <td>5</td>
-            <td>제목5</td>
-            <td>2023.07.12</td>
-            <td>426</td>
-          </tr>
-          <tr>
-            <td>4</td>
-            <td>제목4</td>
-            <td>2023.07.11</td>
-            <td>493</td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>제목3</td>
-            <td>2023.07.08</td>
-            <td>522</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>제목2</td>
-            <td>2023.07.04</td>
-            <td>972</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>제목1</td>
-            <td>2023.07.01</td>
-            <td>1223</td>
-          </tr>
+          {notices.map((notice, index) => (
+            <tr key={index}>
+              <td>{notice.id}</td>
+              <td>
+                <Link
+                  className="NoticeTitle"
+                  to={`/customercenter/notice/${notice.id}`}
+                >
+                  {notice.subject}
+                </Link>
+              </td>
+              <td>{new Date(notice.createdDate).toLocaleDateString()}</td>
+              <td>{notice.hit}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
       <Paging page={currentPage} count={count} setPage={setPage} />

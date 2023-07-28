@@ -1,28 +1,45 @@
+import { useEffect, useState } from "react";
 import "./Notice.css";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import NoticeDetail from "./NoticeDetail";
 
-// db 연결 시 제목, 작성일, 조회수, 내용 수정해야 함
 function Notice() {
+  const { id } = useParams();
+  const [article, setArticle] = useState({});
+
+  useEffect(() => {
+    getArticle();
+  }, []);
+
+  async function getArticle() {
+    try {
+      const response = await axios.get(`/api/article/notice/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "69420",
+        },
+      });
+      console.log(response.data);
+      setArticle(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <div>
-      <h1>공지사항</h1>
-      <br className="stop-dragging" />
-      <hr className="NoticeLine" />
-      <h2>제목1</h2>
-      <div className="NoticeInfo">
-        <h4>관리자</h4>
-        <div className="NoticeInfo">
-          <h4>2023.07.17</h4>
-          <h4>&nbsp;&nbsp;조회 255</h4>
-        </div>
-      </div>
-      <hr className="NoticeLine" />
-      <div className="NoticeMain">
-        <br className="stop-dragging" />
-        내용내용
-        <br />
-        어쩌구저쩌구~~~
-      </div>
-      <hr className="NoticeLine" />
+      {article ? (
+        <NoticeDetail
+          id={article.id}
+          subject={article.subject}
+          createdDate={article.createdDate}
+          hit={article.hit}
+          content={article.content}
+        />
+      ) : (
+        <p>확인</p>
+      )}
     </div>
   );
 }

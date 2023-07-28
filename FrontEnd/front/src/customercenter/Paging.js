@@ -6,7 +6,7 @@ const Paging = ({ page, count, setPage }) => {
   return (
     <Pagination
       activePage={page}
-      itemsCountPerPage={5}
+      itemsCountPerPage={10}
       totalItemsCount={count}
       pageRangeDisplayed={5}
       prevPageText={"‹"}

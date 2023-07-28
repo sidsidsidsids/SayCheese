@@ -11,6 +11,7 @@ import ErrorPage from "./error-page";
 
 import CustomerCenter from "./customercenter/CustomerCenter";
 import NoticeList from "./customercenter/NoticeList";
+import Notice from "./customercenter/Notice";
 import Faq from "./customercenter/Faq";
 
 import User from "./user/User";
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
           {
             path: "notice/",
             element: <NoticeList />,
+          },
+          {
+            path: "notice/:id",
+            element: <Notice />,
           },
           {
             path: "faq/",
