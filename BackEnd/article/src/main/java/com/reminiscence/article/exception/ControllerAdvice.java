@@ -47,6 +47,11 @@ public class ControllerAdvice {
         ErrorResponse response=ErrorResponse.of(loverException.getHttpStatus().value(),loverException.getMessage());
         return new ResponseEntity<ErrorResponse>(response, loverException.getHttpStatus());
     }
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleFrameArticleException(FrameArticleException frameArticleException) {
+        ErrorResponse response=ErrorResponse.of(frameArticleException.getHttpStatus().value(),frameArticleException.getMessage());
+        return new ResponseEntity<ErrorResponse>(response, frameArticleException.getHttpStatus());
+    }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException methodArgumentNotValidException) {

@@ -384,4 +384,28 @@ insert into lover(member_id, article_id) values
 (1, 57),
 (2, 57);
 
+-- Test Frame Data
+insert into article(member_id, type, created_date) values
+(2, 'F', now()),
+(2, 'F', now()),
+(2, 'F', now()),
+(2, 'F', now()),
+(2, 'F', now()),
+(2, 'F', now());
+
+insert into frame(created_date,frame_specification,link,name,open_yn,type) values
+(now(),'A','www.naver.com','프레임 이름이에요1','Y','jpg'),
+(now(),'A','www.naver.com','프레임 이름이에요2','Y','jpg'),
+(now(),'A','www.naver.com','프레임 이름이에요3','Y','jpg'),
+(now(),'A','www.naver.com','프레임 이름이에요4','Y','jpg'),
+(now(),'A','www.naver.com','프레임 이름이에요5','Y','jpg'),
+(now(),'A','www.naver.com','프레임 이름이에요6','Y','jpg');
+
+insert into frame_article(subject,id, frame_id) values
+('제가 만든 거에요1', 68, 1),
+('제가 만든 거에요2', 69, 2),
+('제가 만든 거에요3', 70, 3),
+('제가 만든 거에요4', 71, 4),
+('제가 만든 거에요5', 72, 5),
+('제가 만든 거에요1', 73, 6);
 

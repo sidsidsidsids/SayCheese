@@ -10,6 +10,7 @@ import com.reminiscence.article.framearticle.dto.FrameArticleAndMemberRequestDto
 import com.reminiscence.article.framearticle.dto.FrameArticleDeleteRequestDto;
 import com.reminiscence.article.framearticle.dto.FrameArticleRequestDto;
 import com.reminiscence.article.framearticle.repository.FrameArticleRepository;
+import com.reminiscence.article.lover.repository.LoverRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class FrameArticleServiceImpl implements FrameArticleService {
     private final FrameArticleRepository frameArticleRepository;
     private final FrameRepository frameRepository;
+    private final LoverRepository loverRepository;
 
 
     @Override
@@ -36,16 +38,16 @@ public class FrameArticleServiceImpl implements FrameArticleService {
 
     @Override
     public void deleteFrameArticle(FrameArticleDeleteRequestDto frameArticleDeleteRequestDto) {
-//        FrameArticle frameArticle=frameArticleRepository.findById(frameArticleDeleteRequestDto.getFrameArticleId())
-//                .orElseThrow(()->new FrameArticleException(FrameArticleExceptionMessage.NOT_FOUND_DATA));
-//
-//        if(!frameArticle.getMember().getId().equals(frameArticleDeleteRequestDto.getMember().getId())){
-//            throw new FrameArticleException(FrameArticleExceptionMessage.INVALID_DELETE_AUTH);
-//        }
-//
-//        frameRepository.delete(frameArticle.getFrame());
-//
-//        frameArticleRepository.delete(frameArticle);
-        // 이후 lover 삭제 추가
+        FrameArticle frameArticle=frameArticleRepository.findById(frameArticleDeleteRequestDto.getFrameArticleId())
+                .orElseThrow(()->new FrameArticleException(FrameArticleExceptionMessage.NOT_FOUND_DATA));
+
+        if(!frameArticle.getMember().getId().equals(frameArticleDeleteRequestDto.getMember().getId())){
+            throw new FrameArticleException(FrameArticleExceptionMessage.INVALID_DELETE_AUTH);
+        }
+
+        Frame frame=frameArticle.getFrame();
+        loverRepository.deleteByArticleId(frameArticle.getId());
+
+        frameArticleRepository.delete(frameArticle);
     }
 }
