@@ -62,4 +62,32 @@ public class Member extends BaseTimeEntity {
         this.personalAgreement = personalAgreement;
     }
 
+
+    public void modifyPassword(String password) {
+        this.password=password;
+    }
+    public void modifyNickname(String nickname) {
+        this.nickname=nickname;
+    }
+    public void modifyGenderFm(char genderFm) {
+        this.genderFm=genderFm;
+    }
+    public void modifyAge(int age) {
+        this.age=age;
+    }
+    public void modifyName(String name) {
+        this.name=name;
+    }
+    public void modifyProfile(String profile) {
+        this.profile=profile;
+    }
+    public void modifySnsId(String snsId) {
+        this.snsId=snsId;
+    }
+    public void modifySnsType(String snsType) {
+        this.snsType=snsType;
+    }
+    public void modifyPersonalAgreement(char personalAgreement) {
+        this.personalAgreement=personalAgreement;
+    }
 }

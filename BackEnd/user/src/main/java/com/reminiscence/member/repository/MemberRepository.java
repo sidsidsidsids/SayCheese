@@ -16,10 +16,13 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findById(Long id);
-    Member findByEmailAndPassword(String email, String password) throws SQLException;
+//    Member findByEmailAndPassword(String email, String password) throws SQLException;
     Member findByEmail(String email) throws SQLException;
     Member findByNickname(String nickname) throws SQLException;
     Member deleteByEmail(String memberId) throws  SQLException;
+    List<Member> findAllByEmail(String memberId);
+
+//    List<Member> findAllByEmailOrNickname(String email) throws SQLException;
     @Query(value = "SELECT email, nickname from Member where email = :key or nickname = :key", nativeQuery = true)
     List<Member> getMemberList(@Param("key") String key) throws SQLException;
 //    @Query(value = "SELECT token from Member where member_id = :memberId", nativeQuery = true)

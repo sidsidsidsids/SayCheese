@@ -18,14 +18,3 @@ spring:
     port: 6379
 logging.level:
   org.hibernate.SQL: debug
-cloud:
-  aws:
-    credentials:
-      instance-profile: false
-      access-key: AKIA3EISLCMYYZ5MKYEZ
-      secret-key: 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
-    region:
-      auto: false
-      static: ap-northeast-2
-    stack:
-      auto: false

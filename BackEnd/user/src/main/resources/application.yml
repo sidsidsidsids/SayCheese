@@ -38,7 +38,9 @@ spring:
     name: member-service
   profiles:
     active: local
+    include: jwt
   security:
         user:
             name: user
             password: 1234
+

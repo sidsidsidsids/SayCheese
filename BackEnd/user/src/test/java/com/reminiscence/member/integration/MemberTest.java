@@ -3,6 +3,11 @@ package com.reminiscence.member.integration;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.reminiscence.filter.JwtProperties;
+import com.reminiscence.member.dto.MemberInfoUpdateRequestDto;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.http.MediaType;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -30,6 +35,7 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
@@ -130,9 +136,6 @@ public class MemberTest {
         //then
         Member member = membersList.get(0);
         assertThat(member.getEmail()).isEqualTo(email);
-        System.out.println(member.getPassword());
-        System.out.println(password);
-        System.out.println(bCryptPasswordEncoder.matches(password, member.getPassword()));
         assertThat(bCryptPasswordEncoder.matches(password, member.getPassword())).isTrue();
         assertThat(member.getNickname()).isEqualTo(nickname);
         assertThat(member.getRole()).isEqualTo(Role.Member);
@@ -281,7 +284,8 @@ public class MemberTest {
         mvc.perform(post("/login")
                         .content(objectMapper.writeValueAsString(memberLoginRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()); // 응답 status를 ok로 테스트
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andExpect(header().exists(HttpHeaders.AUTHORIZATION));
 //                .andExpect(jsonPath(email).value(email))
 //                .andExpect(jsonPath(password).value(password));
 
@@ -296,7 +300,7 @@ public class MemberTest {
 
     @Test
     @DisplayName("로그인 실패")
-    public void testLoginFail() throws SQLException {
+    public void testLoginFail() throws Exception {
         //given
         String email = "b088081@gmail.com";
         String password = "1234";
@@ -314,69 +318,186 @@ public class MemberTest {
                 .password("incorrect_password")
                 .build();
 
-        objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);;
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        MemberResponseDto memberResponseDto = objectMapper.convertValue(memberRepository.findByEmailAndPassword(memberLoginRequestDto.getEmail(), memberLoginRequestDto.getPassword()), MemberResponseDto.class);
+        mvc.perform(post("/login")
+                        .content(objectMapper.writeValueAsString(memberLoginRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized()) // 응답 status를 unauthorized로 테스트
+                .andExpect(header().doesNotExist(HttpHeaders.AUTHORIZATION));
 
-        assertThat(memberResponseDto).isNull();
+//        objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);;
+//        objectMapper.registerModule(new JavaTimeModule());
+//        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+//        MemberResponseDto memberResponseDto = objectMapper.convertValue(memberRepository.findByEmailAndPassword(memberLoginRequestDto.getEmail(), memberLoginRequestDto.getPassword()), MemberResponseDto.class);
+//
+//        assertThat(memberResponseDto).isNull();
     }
 
-//    @Test
-//    public void 이메일검색_닉네임검색() {
-//        //given
-//        String email = "b088081@gmail.com";
-//        String password = "1234";
-//
-//        memberRepository.save(Member.builder()
-//                .email(email)
-//                .password(password)
-//                .nickname("검정")
-//                .role(Role.Member)
-//                .genderFm('F')
-//                .age(31)
-//                .name("고무신")
-//                .profile("xxxxxxxx")
-//                .snsId("nosns")
-//                .snsType("facebook")
-//                .build());
-//
-//        //when
-//        List<Member> membersList = memberRepository.findAll();
-//
-//        //then
-//        Member member = membersList.get(0);
-//        assertThat(member.getEmail()).isEqualTo(email);
-//        assertThat(member.getPassword()).isEqualTo(password);
-//    }
-//
-//    @Test
-//    public void 계정삭제() {
-//        //given
-//        String email = "b088081@gmail.com";
-//        String password = "1234";
-//
-//        memberRepository.save(Member.builder()
-//                .email(email)
-//                .password(password)
-//                .nickname("검정")
-//                .role(Role.Member)
-//                .genderFm('F')
-//                .age(31)
-//                .name("고무신")
-//                .profile("xxxxxxxx")
-//                .snsId("nosns")
-//                .snsType("facebook")
-//                .build());
-//
-//        //when
-//        List<Member> membersList = memberRepository.findAll();
-//
-//        //then
-//        Member member = membersList.get(0);
-//        assertThat(member.getEmail()).isEqualTo(email);
-//        assertThat(member.getPassword()).isEqualTo(password);
-//    }
+    @Test
+    @DisplayName("회원정보 검색")
+    public void testSearchMember() throws Exception {
+        //given
+        String email = "b088081@gmail.com";
+        String password = "1234";
+        String nickname = "검정";
+        char genderFm = 'F';
+        int age = 31;
+        String name = "고무신";
+        String profile = "xxxxxxx";
+        String snsId = "nosns";
+        String snsType = "facebook";
+
+        memberRepository.save(Member.builder()
+                .email(email)
+                .password(bCryptPasswordEncoder.encode(password))
+                .nickname(nickname)
+                .role(Role.Member)
+                .genderFm(genderFm)
+                .age(age)
+                .name(name)
+                .profile(profile)
+                .snsId(snsId)
+                .snsType(snsType)
+                .build());
+
+        mvc.perform(get("/api/member/info/{memberId}", email)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()); // 응답 status를 ok로 테스트
+
+        //when
+        List<Member> membersList = memberRepository.findAll();
+
+        //then
+        Member member = membersList.get(0);
+        assertThat(member.getEmail()).isEqualTo(email);
+        assertThat(bCryptPasswordEncoder.matches(password, member.getPassword())).isTrue();
+        assertThat(member.getNickname()).isEqualTo(nickname);
+        assertThat(member.getRole()).isEqualTo(Role.Member);
+        assertThat(member.getGenderFm()).isEqualTo(genderFm);
+        assertThat(member.getAge()).isEqualTo(age);
+        assertThat(member.getName()).isEqualTo(name);
+        assertThat(member.getProfile()).isEqualTo(profile);
+        assertThat(member.getSnsId()).isEqualTo(snsId);
+        assertThat(member.getSnsType()).isEqualTo(snsType);
+    }
+    @Test
+    @DisplayName("회원정보 수정")
+    public void testUpdateMemberInfo() throws Exception {
+        //given
+        String email = "b088081@gmail.com";
+        String password = "1234";
+        String nickname = "검정";
+        char genderFm = 'F';
+        int age = 31;
+        String name = "고무신";
+        String profile = "xxxxxxx";
+        String snsId = "nosns";
+        String snsType = "facebook";
+
+        memberRepository.save(Member.builder()
+                .email(email)
+                .password(bCryptPasswordEncoder.encode(password))
+                .nickname("nickname")
+                .role(Role.Member)
+                .genderFm('F')
+                .age(30)
+                .name("name")
+                .profile("profile")
+                .snsId("snsId")
+                .snsType("snsType")
+                .build());
+
+        MemberLoginRequestDto memberLoginRequestDto = MemberLoginRequestDto.builder()
+                .email(email)
+                .password(password)
+                .build();
+
+        MvcResult result = mvc.perform(post("/login")
+                        .content(objectMapper.writeValueAsString(memberLoginRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andReturn();
+
+        MemberInfoUpdateRequestDto memberInfoUpdateRequestDto = MemberInfoUpdateRequestDto.builder()
+                .password(password)
+                .nickname(nickname)
+                .genderFm(genderFm)
+                .age(age)
+                .name(name)
+                .profile(profile)
+                .snsId(snsId)
+                .snsType(snsType)
+                .build();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", result.getResponse().getHeader(JwtProperties.HEADER_STRING));
+        mvc.perform(put("/api/member/modify")
+                        .headers(headers)
+                        .content(objectMapper.writeValueAsString(memberInfoUpdateRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()); // 응답 status를 ok로 테스트
+
+        //when
+        List<Member> membersList = memberRepository.findAll();
+
+        //then
+        Member member = membersList.get(0);
+        assertThat(member.getEmail()).isEqualTo(email);
+        assertThat(bCryptPasswordEncoder.matches(password, member.getPassword())).isTrue();
+        assertThat(member.getNickname()).isEqualTo(nickname);
+        assertThat(member.getRole()).isEqualTo(Role.Member);
+        assertThat(member.getGenderFm()).isEqualTo(genderFm);
+        assertThat(member.getAge()).isEqualTo(age);
+        assertThat(member.getName()).isEqualTo(name);
+        assertThat(member.getProfile()).isEqualTo(profile);
+        assertThat(member.getSnsId()).isEqualTo(snsId);
+        assertThat(member.getSnsType()).isEqualTo(snsType);
+    }
+
+    @Test
+    public void 계정삭제() throws Exception {
+        //given
+        String email = "b088081@gmail.com";
+        String password = "1234";
+
+        memberRepository.save(Member.builder()
+                .email(email)
+                .password(password)
+                .nickname("검정")
+                .role(Role.Member)
+                .genderFm('F')
+                .age(31)
+                .name("고무신")
+                .profile("xxxxxxxx")
+                .snsId("nosns")
+                .snsType("facebook")
+                .build());
+
+        MemberLoginRequestDto memberLoginRequestDto = MemberLoginRequestDto.builder()
+                .email(email)
+                .password(password)
+                .build();
+
+        MvcResult result = mvc.perform(post("/login")
+                        .content(objectMapper.writeValueAsString(memberLoginRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andReturn();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", result.getResponse().getHeader(JwtProperties.HEADER_STRING));
+        mvc.perform(delete("/api/member/delete")
+                        .headers(headers)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()); // 응답 status를 ok로 테스트
+
+        //when
+        List<Member> membersList = memberRepository.findAll();
+
+        //then
+        Member member = membersList.get(0);
+        assertThat(member.g()).isEqualTo(email);
+        assertThat(member.getPassword()).isEqualTo(password);
+    }
 //
 //    @Test
 //    public void 회원명단불러오기() {
@@ -407,63 +528,7 @@ public class MemberTest {
 //    }
 //
 //    @Test
-//    public void 토큰발급() {
-//        //given
-//        String email = "b088081@gmail.com";
-//        String password = "1234";
-//
-//        memberRepository.save(Member.builder()
-//                .email(email)
-//                .password(password)
-//                .nickname("검정")
-//                .role(Role.Member)
-//                .genderFm('F')
-//                .age(31)
-//                .name("고무신")
-//                .profile("xxxxxxxx")
-//                .snsId("nosns")
-//                .snsType("facebook")
-//                .build());
-//
-//        //when
-//        List<Member> membersList = memberRepository.findAll();
-//
-//        //then
-//        Member member = membersList.get(0);
-//        assertThat(member.getEmail()).isEqualTo(email);
-//        assertThat(member.getPassword()).isEqualTo(password);
-//    }
-//
-//    @Test
-//    public void 토큰삭제() {
-//        //given
-//        String email = "b088081@gmail.com";
-//        String password = "1234";
-//
-//        memberRepository.save(Member.builder()
-//                .email(email)
-//                .password(password)
-//                .nickname("검정")
-//                .role(Role.Member)
-//                .genderFm('F')
-//                .age(31)
-//                .name("고무신")
-//                .profile("xxxxxxxx")
-//                .snsId("nosns")
-//                .snsType("facebook")
-//                .build());
-//
-//        //when
-//        List<Member> membersList = memberRepository.findAll();
-//
-//        //then
-//        Member member = membersList.get(0);
-//        assertThat(member.getEmail()).isEqualTo(email);
-//        assertThat(member.getPassword()).isEqualTo(password);
-//    }
-//
-//    @Test
-//    public void 토큰재발급() {
+//    public void 로그아웃() {
 //        //given
 //        String email = "b088081@gmail.com";
 //        String password = "1234";

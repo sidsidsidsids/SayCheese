@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,13 +31,13 @@ import lombok.RequiredArgsConstructor;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
 
+    private final Environment env;
     // Authentication 객체 만들어서 리턴 => 의존 : AuthenticationManager
     // 인증 요청시에 실행되는 함수 => /login
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
 
-        System.out.println("JwtAuthenticationFilter : 진입");
 
         // request에 있는 email과 password를 파싱해서 자바 Object로 받기
         ObjectMapper om = new ObjectMapper();
@@ -81,11 +82,19 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String jwtToken = JWT.create()
                 .withSubject(memberDetail.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
-                .withClaim("id", memberDetail.getMember().getId())
-                .withClaim("memberId", memberDetail.getMember().getEmail())
-                .sign(Algorithm.HMAC512(JwtProperties.SECRET));
+//                .withClaim("id", memberDetail.getMember().getId())
+                .withClaim("memberId", String.valueOf(memberDetail.getMember().getId()))
+                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
+
+        String refreshToken = JWT.create()
+                .withSubject(memberDetail.getUsername())
+                .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
+//                .withClaim("id", memberDetail.getMember().getId())
+                .withClaim("memberId", String.valueOf(memberDetail.getMember().getId()))
+                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
 
         response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
+        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + refreshToken);
 
     }
 

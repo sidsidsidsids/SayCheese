@@ -1,6 +1,8 @@
 package com.reminiscence.member.controller;
 
 //import com.reminiscence.JwtServiceImpl;
+
+import com.reminiscence.config.auth.MemberDetail;
 import com.reminiscence.domain.Member;
 import com.reminiscence.member.dto.MemberJoinRequestDto;
 import com.reminiscence.member.dto.MemberLoginRequestDto;
@@ -13,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,10 +52,9 @@ public class MemberController {
     public ResponseEntity idCheck(@PathVariable("email") String email) throws Exception {
         logger.debug("idCheck email : {}", email);
         Member member = memberService.emailCheck(email);
-        if (member != null){
+        if (member != null) {
             return ResponseEntity.ok("이미 사용중인 아이디입니다.");
-        }
-        else {
+        } else {
             return ResponseEntity.ok("사용 가능한 아이디입니다.");
         }
     }
@@ -62,7 +64,7 @@ public class MemberController {
     public ResponseEntity nicknameCheck(@PathVariable("nickname") String nickname) throws Exception {
         logger.debug("nicknameCheck nickname : {}", nickname);
         Member member = memberService.nicknameCheck(nickname);
-        if(member != null){
+        if (member != null) {
             return ResponseEntity.ok("이미 사용중인 닉네임입니다.");
         } else {
             return ResponseEntity.ok("사용 가능한 닉네임입니다.");
@@ -70,10 +72,11 @@ public class MemberController {
     }
 
     @PutMapping("/modify")
-    public ResponseEntity modify(@RequestBody MemberInfoUpdateRequestDto requestDto)  {
+    public ResponseEntity modify(@AuthenticationPrincipal MemberDetail memberDetail, @RequestBody MemberInfoUpdateRequestDto requestDto) {
         Member member;
+        System.out.println(memberDetail);
         try {
-             member = memberService.updateMemberInfo(requestDto);
+            member = memberService.updateMemberInfo(memberDetail, requestDto);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -97,10 +100,18 @@ public class MemberController {
         return memberList;
     }
 
-    @DeleteMapping("/delete/{memberId}")
-    public ResponseEntity delete(@PathVariable("memberId") String memberId) throws Exception {
+    @DeleteMapping("/delete")
+    public ResponseEntity delete(@AuthenticationPrincipal MemberDetail memberDetail) throws Exception {
+        long memberId = memberDetail.getMember().getId();
         memberService.deleteMember(memberId);
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/info")
+    public ResponseEntity getInfo(@AuthenticationPrincipal MemberDetail memberDetail) throws Exception {
+        String memberId = memberDetail.getMember().getEmail();
+        Member member = memberService.getMemberInfo(memberId);
+        return new ResponseEntity(member, HttpStatus.OK);
     }
 
 //    @PostMapping("/login")

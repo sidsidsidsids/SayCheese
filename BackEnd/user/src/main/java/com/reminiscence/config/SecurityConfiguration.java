@@ -30,6 +30,7 @@ import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.sql.DataSource;
 
@@ -63,11 +64,12 @@ public class SecurityConfiguration {
                 .and()
                 .formLogin().disable()
                 .httpBasic().disable()
-                .addFilter(new JwtAuthenticationFilter(authenticationManager))
-                .addFilterAfter(new JwtAuthorizationFilter(env, memberRepository), JwtAuthenticationFilter.class)
+                .addFilter(new JwtAuthenticationFilter(authenticationManager,env))
+                .addFilterBefore(new JwtAuthorizationFilter(env, memberRepository), BasicAuthenticationFilter.class)
                 .authorizeRequests()
                     .antMatchers("/public").permitAll()
                     .antMatchers("/private").hasRole("USER")
+//                    .antMatchers(HttpMethod.PUT,"/api/member/**").authenticated()
                     .anyRequest().permitAll()
                     .and()
                 .logout()

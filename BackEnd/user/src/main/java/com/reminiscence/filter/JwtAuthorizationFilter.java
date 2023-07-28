@@ -42,18 +42,16 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
-
         // JWT 토큰에서 memberId 부분만 추출
         String memberId= JWT.require(Algorithm.HMAC512(secretKey)).build()
                 .verify(token)
                 .getClaim("memberId")
                 .asString();
-
         // token 값을 권한 처리를 위해 Authentication에 주입
         if(memberId!=null){
             Member member=memberRepository.findById(Long.parseLong(memberId)).orElse(null);
             MemberDetail memberDetail =new MemberDetail(member);
-            UsernamePasswordAuthenticationToken emailPasswordAuthenticationToken=new UsernamePasswordAuthenticationToken(memberDetail.getMember().getEmail(),null, memberDetail.getAuthorities());
+            UsernamePasswordAuthenticationToken emailPasswordAuthenticationToken=new UsernamePasswordAuthenticationToken(memberDetail,null, memberDetail.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(emailPasswordAuthenticationToken);
         }
 

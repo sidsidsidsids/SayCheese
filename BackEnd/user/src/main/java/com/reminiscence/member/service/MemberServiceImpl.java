@@ -4,14 +4,18 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.reminiscence.config.auth.MemberDetail;
 import com.reminiscence.domain.Member;
 import com.reminiscence.member.dto.*;
 import com.reminiscence.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 //import java.util.HashMap;
 import java.util.List;
@@ -76,9 +80,26 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member updateMemberInfo(MemberInfoUpdateRequestDto memberInfoUpdateRequestDto) throws Exception {
-        Member member = memberInfoUpdateRequestDto.toEntity();
-        return memberRepository.save(member);
+    @Transactional
+    public Member updateMemberInfo(MemberDetail memberDetail, MemberInfoUpdateRequestDto memberInfoUpdateRequestDto) throws Exception {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String memberId = authentication.getName();
+        Member member=memberRepository.findById(memberDetail.getMember().getId()).orElse(null);
+//        System.out.println(authentication.getPrincipal());
+//        System.out.println(authentication.getPrincipal());
+//        System.out.println(authentication.getPrincipal());
+//        member = memberRepository.findByEmail(memberId);
+
+        member.modifyPassword(bCryptPasswordEncoder.encode(memberInfoUpdateRequestDto.getPassword()));
+        member.modifyNickname(memberInfoUpdateRequestDto.getNickname());
+        member.modifyGenderFm(memberInfoUpdateRequestDto.getGenderFm());
+        member.modifyAge(memberInfoUpdateRequestDto.getAge());
+        member.modifyName(memberInfoUpdateRequestDto.getName());
+        member.modifyProfile(memberInfoUpdateRequestDto.getProfile());
+        member.modifySnsId(memberInfoUpdateRequestDto.getSnsId());
+        member.modifySnsType(memberInfoUpdateRequestDto.getSnsType());
+        member.modifyPersonalAgreement(memberInfoUpdateRequestDto.getPersonalAgreement());
+        return member;
     }
 
     @Override
@@ -88,8 +109,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<Member> getMemberList(String key) throws Exception {
-        List<Member> memberlist = memberRepository.getMemberList(key);
+    public List<Member> getMemberList(String key) {
+        List<Member> memberlist = memberRepository.findAllByEmail(key);
+//        List<Member> memberlist = memberRepository.getMemberList(key);
         return memberlist;
     }
 
@@ -100,8 +122,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void deleteMember(String memberId) throws Exception {
-        memberRepository.deleteByEmail(memberId);
+    public void deleteMember(long memberId) throws Exception {
+        memberRepository.deleteById(memberId);
     }
 
 //    @Override

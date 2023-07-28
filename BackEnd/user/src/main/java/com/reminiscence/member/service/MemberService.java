@@ -1,5 +1,6 @@
 package com.reminiscence.member.service;
 
+import com.reminiscence.config.auth.MemberDetail;
 import com.reminiscence.domain.Member;
 import com.reminiscence.member.dto.MemberJoinRequestDto;
 import com.reminiscence.member.dto.MemberLoginRequestDto;
@@ -19,9 +20,9 @@ public interface MemberService {
 	List<Member> getMemberList(String key) throws Exception;
     Member getMemberInfo(String memberId) throws Exception;
     Member updateMemberPassword(MemberUpdatePasswordRequestDto memberUpdatePasswordRequestDto) throws Exception;
-    Member updateMemberInfo(MemberInfoUpdateRequestDto memberInfoUpdateRequestDto) throws  Exception;
+    Member updateMemberInfo(MemberDetail memberDetail, MemberInfoUpdateRequestDto memberInfoUpdateRequestDto) throws  Exception;
 
-    void deleteMember(String memberId) throws Exception;
+    void deleteMember(long memberId) throws Exception;
 //    void saveRefreshToken(String memberid, String refreshToken) throws Exception;
 //    Object getRefreshToken(String memberid) throws Exception;
 //    void deleteRefreshToken(String memberid) throws Exception;
