@@ -3,6 +3,7 @@ package com.reminiscence.member.integration;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.reminiscence.filter.JwtProperties;
 import com.reminiscence.member.dto.MemberInfoUpdateRequestDto;
 import io.jsonwebtoken.Claims;
@@ -359,7 +360,24 @@ public class MemberTest {
                 .snsType(snsType)
                 .build());
 
-        mvc.perform(get("/api/member/info/{memberId}", email)
+
+        MemberLoginRequestDto memberLoginRequestDto = MemberLoginRequestDto.builder()
+                .email(email)
+                .password(password)
+                .build();
+
+
+        MvcResult result = mvc.perform(post("/login")
+                        .content(objectMapper.writeValueAsString(memberLoginRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andReturn();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", result.getResponse().getHeader(JwtProperties.HEADER_STRING));
+
+        mvc.perform(get("/api/member/info")
+                        .headers(headers)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()); // 응답 status를 ok로 테스트
 
@@ -454,20 +472,22 @@ public class MemberTest {
     }
 
     @Test
-    public void 계정삭제() throws Exception {
+    @DisplayName("계정삭제")
+    public void testDeleteMember() throws Exception {
         //given
         String email = "b088081@gmail.com";
         String password = "1234";
 
         memberRepository.save(Member.builder()
                 .email(email)
-                .password(password)
+                .password(bCryptPasswordEncoder.encode(password))
                 .nickname("검정")
                 .role(Role.Member)
                 .genderFm('F')
                 .age(31)
                 .name("고무신")
                 .profile("xxxxxxxx")
+                .delYn('N')
                 .snsId("nosns")
                 .snsType("facebook")
                 .build());
@@ -495,37 +515,100 @@ public class MemberTest {
 
         //then
         Member member = membersList.get(0);
-        assertThat(member.g()).isEqualTo(email);
-        assertThat(member.getPassword()).isEqualTo(password);
+        assertThat(member.getDelYn()).isEqualTo('Y');
+        assertThat(member.getEmail()).isEqualTo(email);
     }
-//
-//    @Test
-//    public void 회원명단불러오기() {
-//        //given
-//        String email = "b088081@gmail.com";
-//        String password = "1234";
-//
-//        memberRepository.save(Member.builder()
-//                .email(email)
-//                .password(password)
-//                .nickname("검정")
-//                .role(Role.Member)
-//                .genderFm('F')
-//                .age(31)
-//                .name("고무신")
-//                .profile("xxxxxxxx")
-//                .snsId("nosns")
-//                .snsType("facebook")
-//                .build());
-//
-//        //when
-//        List<Member> membersList = memberRepository.findAll();
+
+    @Test
+    @DisplayName("회원명단불러오기")
+    public void testGetMembersList() throws Exception {
+        //given
+        String email = "memories";
+        String nickname = "검정";
+
+        memberRepository.save(Member.builder()
+                .email("memories1@gmail.com")
+                .password(bCryptPasswordEncoder.encode("1234"))
+                .nickname("검정")
+                .role(Role.Member)
+                .genderFm('F')
+                .age(31)
+                .name("고무신")
+                .profile("xxxxxxxx")
+                .delYn('N')
+                .snsId("nosns")
+                .snsType("facebook")
+                .build());
+
+
+        memberRepository.save(Member.builder()
+                .email("memories2@gmail.com")
+                .password(bCryptPasswordEncoder.encode("1234"))
+                .nickname("빨강")
+                .role(Role.Member)
+                .genderFm('F')
+                .age(31)
+                .name("고무신")
+                .profile("xxxxxxxx")
+                .delYn('N')
+                .snsId("nosns")
+                .snsType("facebook")
+                .build());
+
+
+        memberRepository.save(Member.builder()
+                .email("memory1@gmail.com")
+                .password(bCryptPasswordEncoder.encode("1234"))
+                .nickname("검정색")
+                .role(Role.Member)
+                .genderFm('F')
+                .age(31)
+                .name("고무신")
+                .profile("xxxxxxxx")
+                .delYn('N')
+                .snsId("nosns")
+                .snsType("facebook")
+                .build());
+
+        // 이메일로 검색 시
+        MvcResult result1 = mvc.perform(get("/api/member/search-member/{email-nickname}", email)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andReturn();
+
+        //when
+
+        String response1 = result1.getResponse().getContentAsString();
+        System.out.println(response1);
+//        List<Member> membersList1 = objectMapper.readValue(response1, new TypeReference<List<Member>>(){});
+//        System.out.println(membersList1);
 //
 //        //then
-//        Member member = membersList.get(0);
-//        assertThat(member.getEmail()).isEqualTo(email);
-//        assertThat(member.getPassword()).isEqualTo(password);
-//    }
+//        assertThat(membersList1.size()).isEqualTo(2);
+//        Member member_email1 = membersList1.get(0);
+//        assertThat(member_email1.getEmail()).containsIgnoringCase(email);
+//        Member member_email2 = membersList1.get(1);
+//        assertThat(member_email2.getEmail()).containsIgnoringCase(email);
+
+        // 닉네임으로 검색 시
+        MvcResult result2 = mvc.perform(get("/api/member/search-member/{email-nickname}", nickname)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn(); // 응답 status를 ok로 테스트
+
+        //when
+        String response2 = result2.getResponse().getContentAsString();
+        System.out.println(response2);
+//        List<Member> membersList2 = objectMapper.readValue(response2, new TypeReference<List<Member>>(){});
+//        System.out.println(membersList1);
+//
+//        //then
+//        assertThat(membersList2.size()).isEqualTo(2);
+//        Member member_nickname1 = membersList2.get(0);
+//        assertThat(member_nickname1.getEmail()).containsIgnoringCase(nickname);
+//        Member member_nickname2 = membersList2.get(1);
+//        assertThat(member_nickname2.getEmail()).containsIgnoringCase(nickname);
+    }
 //
 //    @Test
 //    public void 로그아웃() {

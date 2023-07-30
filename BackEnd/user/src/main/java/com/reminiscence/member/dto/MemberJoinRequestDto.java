@@ -16,16 +16,13 @@ public class MemberJoinRequestDto {
     private String password;
     private String nickname;
     private Role role = Role.Member;
-    @Column(name = "gender_fm")
     private char genderFm;
     private int age;
     private String name;
     private String profile;
-    @Column(name = "sns_id")
+    private char delYn = 'N';
     private String snsId;
-    @Column(name = "sns_type")
     private String snsType;
-    @Column(name = "personal_agreement_yn")
     private char personalAgreement;
 
     @Builder
@@ -53,6 +50,7 @@ public class MemberJoinRequestDto {
                 .age(age)
                 .name(name)
                 .profile(profile)
+                .delYn(delYn)
                 .snsId(snsId)
                 .snsType(snsType)
                 .personalAgreement(personalAgreement)

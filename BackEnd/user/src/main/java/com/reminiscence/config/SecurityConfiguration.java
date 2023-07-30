@@ -70,6 +70,7 @@ public class SecurityConfiguration {
                     .antMatchers("/public").permitAll()
                     .antMatchers("/private").hasRole("USER")
 //                    .antMatchers(HttpMethod.PUT,"/api/member/**").authenticated()
+//                    .antMatchers(HttpMethod.DELETE,"/api/member/**").authenticated()
                     .anyRequest().permitAll()
                     .and()
                 .logout()

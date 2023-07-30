@@ -6,7 +6,6 @@ import lombok.Builder;
 import javax.persistence.Column;
 
 public class MemberUpdatePasswordRequestDto {
-    @Column(name="password", nullable = false)
     private String password;
 
     @Builder

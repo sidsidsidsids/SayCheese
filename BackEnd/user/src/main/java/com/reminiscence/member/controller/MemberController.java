@@ -95,9 +95,9 @@ public class MemberController {
     }
 
     @GetMapping("/search-member/{email-nickname}")
-    public List<Member> findMembers(@PathVariable("email-nickname") String key) throws Exception {
-        List<Member> memberList = memberService.getMemberList(key);
-        return memberList;
+    public ResponseEntity findMembers(@PathVariable("email-nickname") String emailNickname) throws Exception {
+        List<Member> memberList = memberService.getMemberList(emailNickname);
+        return new ResponseEntity<>(memberList, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")

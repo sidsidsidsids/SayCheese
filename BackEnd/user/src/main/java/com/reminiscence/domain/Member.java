@@ -38,6 +38,9 @@ public class Member extends BaseTimeEntity {
     @Column(name="profile")
     private String profile;
 
+    @Column(name="del_yn")
+    private char delYn;
+
     @Column(name="sns_id")
     private String snsId;
 
@@ -48,7 +51,7 @@ public class Member extends BaseTimeEntity {
     private char personalAgreement;
 
     @Builder
-    public Member(String email, String password, String nickname, Role role, char genderFm, int age, String name, String profile, String snsId, String snsType, char personalAgreement) {
+    public Member(String email, String password, String nickname, Role role, char genderFm, int age, String name, String profile, char delYn ,String snsId, String snsType, char personalAgreement) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
@@ -57,6 +60,7 @@ public class Member extends BaseTimeEntity {
         this.age = age;
         this.name = name;
         this.profile = profile;
+        this.delYn = delYn;
         this.snsId = snsId;
         this.snsType = snsType;
         this.personalAgreement = personalAgreement;
@@ -80,6 +84,9 @@ public class Member extends BaseTimeEntity {
     }
     public void modifyProfile(String profile) {
         this.profile=profile;
+    }
+    public void modifyDelYn(char delYn) {
+        this.delYn=delYn;
     }
     public void modifySnsId(String snsId) {
         this.snsId=snsId;

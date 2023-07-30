@@ -11,9 +11,7 @@ import javax.persistence.Column;
 @Getter
 @NoArgsConstructor
 public class MemberLoginRequestDto {
-    @Column(name="email", nullable = false)
     private String email;
-    @Column(name="password", nullable = false)
     private String password;
 
     @Builder

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 //import java.util.HashMap;
+import java.sql.SQLException;
 import java.util.List;
 //import java.util.Map;
 
@@ -82,13 +83,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public Member updateMemberInfo(MemberDetail memberDetail, MemberInfoUpdateRequestDto memberInfoUpdateRequestDto) throws Exception {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String memberId = authentication.getName();
         Member member=memberRepository.findById(memberDetail.getMember().getId()).orElse(null);
-//        System.out.println(authentication.getPrincipal());
-//        System.out.println(authentication.getPrincipal());
-//        System.out.println(authentication.getPrincipal());
-//        member = memberRepository.findByEmail(memberId);
 
         member.modifyPassword(bCryptPasswordEncoder.encode(memberInfoUpdateRequestDto.getPassword()));
         member.modifyNickname(memberInfoUpdateRequestDto.getNickname());
@@ -109,8 +104,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<Member> getMemberList(String key) {
-        List<Member> memberlist = memberRepository.findAllByEmail(key);
+    public List<Member> getMemberList(String key) throws SQLException {
+        List<Member> memberlist = memberRepository.getMemberList(key);
+        System.out.println(memberlist);
+        System.out.println(memberlist);
+        System.out.println(memberlist);
+        System.out.println(memberlist);
 //        List<Member> memberlist = memberRepository.getMemberList(key);
         return memberlist;
     }
@@ -123,7 +122,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void deleteMember(long memberId) throws Exception {
-        memberRepository.deleteById(memberId);
+        Member member = memberRepository.findById(memberId).orElse(null);
+        member.modifyDelYn('Y');
+        memberRepository.save(member);
     }
 
 //    @Override

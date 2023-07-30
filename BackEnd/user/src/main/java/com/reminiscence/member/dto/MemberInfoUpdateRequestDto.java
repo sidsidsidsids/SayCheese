@@ -11,23 +11,14 @@ import javax.persistence.Column;
 @NoArgsConstructor
 public class MemberInfoUpdateRequestDto {
 
-    @Column(name="password", nullable = false)
     private String password;
-    @Column(name="nickname", nullable = false)
     private String nickname;
-    @Column(name = "gender_fm")
     private char genderFm;
-    @Column(name="age")
     private int age;
-    @Column(name="name")
     private String name;
-    @Column(name="profile")
     private String profile;
-    @Column(name = "sns_id")
     private String snsId;
-    @Column(name = "sns_type")
     private String snsType;
-    @Column(name = "personal_agreement_yn")
     private char personalAgreement;
 
     @Builder
