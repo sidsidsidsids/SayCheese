@@ -43,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith({RestDocumentationExtension.class,SpringExtension.class})
 @SpringBootTest
 @Transactional
-public class ImageArticleTest {
+public class ImageArticleIntegrationTest {
     @Autowired
     WebApplicationContext applicationContext;
 
