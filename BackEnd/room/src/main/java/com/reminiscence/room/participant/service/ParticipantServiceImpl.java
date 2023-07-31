@@ -1,12 +1,10 @@
 package com.reminiscence.room.participant.service;
 
-import com.reminiscence.room.domain.Member;
+import com.reminiscence.room.config.auth.UserDetail;
 import com.reminiscence.room.domain.Participant;
 import com.reminiscence.room.domain.Room;
-import com.reminiscence.room.exception.customexception.MemberException;
 import com.reminiscence.room.exception.customexception.ParticipantException;
 import com.reminiscence.room.exception.customexception.RoomException;
-import com.reminiscence.room.exception.message.MemberExceptionMessage;
 import com.reminiscence.room.exception.message.ParticipantExceptionMessage;
 import com.reminiscence.room.exception.message.RoomExceptionMessage;
 import com.reminiscence.room.member.repository.MemberRepository;
@@ -28,19 +26,14 @@ public class ParticipantServiceImpl implements ParticipantService{
     private final RoomRepository roomRepository;
 
     @Override
-    public void writeParticipant(ParticipantWriteRequestDto requestDto, Long memberId) {
-        Optional<Member> member = memberRepository.findById(memberId);
-        member.orElseThrow(() ->
-                new MemberException(MemberExceptionMessage.NOT_FOUND_MEMBER));
-
+    public void writeParticipant(ParticipantWriteRequestDto requestDto, UserDetail userDetail) {
         Optional<Room> room = roomRepository.findByRoomCode(requestDto.getRoomCode());
         room.orElseThrow(()->
                 new RoomException(RoomExceptionMessage.NOT_FOUND_ROOM));
 
         Participant participant = Participant.builder()
-                .nickname(requestDto.getNickname())
                 .ownerYn(requestDto.getOwnerYn())
-                .member(member.get())
+                .member(userDetail.getMember())
                 .room(room.get())
                 .build();
         participantRepository.save(participant);

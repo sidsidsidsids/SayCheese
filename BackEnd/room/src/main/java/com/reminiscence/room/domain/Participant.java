@@ -13,7 +13,6 @@ public class Participant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nickname;
     @Column(name="owner_yn")
     private String ownerYn;
 
@@ -26,8 +25,7 @@ public class Participant {
     private Member member;
 
     @Builder
-    public Participant(String nickname, String ownerYn, Room room, Member member) {
-        this.nickname = nickname;
+    public Participant(String ownerYn, Room room, Member member) {
         this.ownerYn = ownerYn;
         this.room = room;
         this.member = member;
