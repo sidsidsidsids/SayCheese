@@ -1,10 +1,12 @@
 package com.reminiscence.config;
 
 import com.reminiscence.config.auth.MemberDetailService;
+import com.reminiscence.config.redis.RefreshTokenService;
 import com.reminiscence.filter.JwtAuthenticationFilter;
 import com.reminiscence.filter.JwtAuthorizationFilter;
 import com.reminiscence.handler.AccessDenyHandler;
 import com.reminiscence.handler.CustomAuthenticationEntryPoint;
+import com.reminiscence.handler.CustomLogoutSuccessHandler;
 import com.reminiscence.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,7 @@ public class SecurityConfiguration {
 
     private final Environment env;
     private final MemberDetailService memberDetailService;
+    private final RefreshTokenService refreshTokenService;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -64,17 +67,18 @@ public class SecurityConfiguration {
                 .and()
                 .formLogin().disable()
                 .httpBasic().disable()
-                .addFilter(new JwtAuthenticationFilter(authenticationManager,env))
+                .addFilter(new JwtAuthenticationFilter(authenticationManager, env, refreshTokenService))
                 .addFilterBefore(new JwtAuthorizationFilter(env, memberRepository), BasicAuthenticationFilter.class)
                 .authorizeRequests()
-                    .antMatchers("/public").permitAll()
-                    .antMatchers("/private").hasRole("USER")
-//                    .antMatchers(HttpMethod.PUT,"/api/member/**").authenticated()
-//                    .antMatchers(HttpMethod.DELETE,"/api/member/**").authenticated()
-                    .anyRequest().permitAll()
-                    .and()
+//                .antMatchers("/public").permitAll()
+//                .antMatchers("/private").hasRole("USER")
+                    .antMatchers(HttpMethod.PUT,"/api/member/**").authenticated()
+                    .antMatchers(HttpMethod.DELETE,"/api/member/**").authenticated()
+                .anyRequest().permitAll()
+                .and()
                 .logout()
-                    .logoutUrl("logout")
+                    .logoutUrl("/logout")
+                    .logoutSuccessHandler(new CustomLogoutSuccessHandler())
                     .logoutSuccessUrl("/public");
 //                .antMatchers("/api/article/image/**")
 //                .access("hasRole('ROLE_Member') or hasRole('ROLE_ADMIN')")

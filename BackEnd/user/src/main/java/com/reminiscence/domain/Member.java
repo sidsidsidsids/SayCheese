@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @Entity(name = "Member")
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Table(name="MEMBER", uniqueConstraints = {@UniqueConstraint(name="Unique_nickname",columnNames = {"nickname"}),
         @UniqueConstraint(name="Unique_email",columnNames = {"email"})})

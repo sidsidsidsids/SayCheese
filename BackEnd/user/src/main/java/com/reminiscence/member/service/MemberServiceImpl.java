@@ -104,12 +104,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<Member> getMemberList(String key) throws SQLException {
-        List<Member> memberlist = memberRepository.getMemberList(key);
-        System.out.println(memberlist);
-        System.out.println(memberlist);
-        System.out.println(memberlist);
-        System.out.println(memberlist);
+    public List<MemberSearchResponseDto> getMemberList(String key) throws SQLException {
+
+        List<MemberSearchResponseDto> memberlist = memberRepository.searchMembers(key);
 //        List<Member> memberlist = memberRepository.getMemberList(key);
         return memberlist;
     }

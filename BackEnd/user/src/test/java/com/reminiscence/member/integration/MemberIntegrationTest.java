@@ -1,26 +1,16 @@
 package com.reminiscence.member.integration;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.reminiscence.filter.JwtProperties;
 import com.reminiscence.member.dto.MemberInfoUpdateRequestDto;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.http.MediaType;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 //import com.reminiscence.JwtService;
 import com.reminiscence.domain.Member;
 import com.reminiscence.domain.Role;
 import com.reminiscence.member.dto.MemberJoinRequestDto;
 import com.reminiscence.member.dto.MemberLoginRequestDto;
-import com.reminiscence.member.dto.MemberResponseDto;
 import com.reminiscence.member.repository.MemberRepository;
 import com.reminiscence.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
@@ -51,14 +41,13 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @SpringBootTest
 @Transactional
 @Slf4j
-public class MemberTest {
+public class MemberIntegrationTest {
 
     @Autowired
     MemberService memberService;
@@ -472,8 +461,8 @@ public class MemberTest {
     }
 
     @Test
-    @DisplayName("계정삭제")
-    public void testDeleteMember() throws Exception {
+    @DisplayName("계정삭제 성공")
+    public void testDeleteMemberSuccess() throws Exception {
         //given
         String email = "b088081@gmail.com";
         String password = "1234";
@@ -516,6 +505,40 @@ public class MemberTest {
         //then
         Member member = membersList.get(0);
         assertThat(member.getDelYn()).isEqualTo('Y');
+        assertThat(member.getEmail()).isEqualTo(email);
+    }
+
+    @Test
+    @DisplayName("계정삭제 실패")
+    public void testDeleteMemberFailure() throws Exception {
+        //given
+        String email = "b088081@gmail.com";
+        String password = "1234";
+
+        memberRepository.save(Member.builder()
+                .email(email)
+                .password(bCryptPasswordEncoder.encode(password))
+                .nickname("검정")
+                .role(Role.Member)
+                .genderFm('F')
+                .age(31)
+                .name("고무신")
+                .profile("xxxxxxxx")
+                .delYn('N')
+                .snsId("nosns")
+                .snsType("facebook")
+                .build());
+
+        mvc.perform(delete("/api/member/delete")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized()); // 응답 status를 ok로 테스트
+
+        //when
+        List<Member> membersList = memberRepository.findAll();
+
+        //then
+        Member member = membersList.get(0);
+        assertThat(member.getDelYn()).isNotEqualTo('Y');
         assertThat(member.getEmail()).isEqualTo(email);
     }
 
@@ -577,18 +600,15 @@ public class MemberTest {
                 .andReturn();
 
         //when
-
         String response1 = result1.getResponse().getContentAsString();
-        System.out.println(response1);
-//        List<Member> membersList1 = objectMapper.readValue(response1, new TypeReference<List<Member>>(){});
-//        System.out.println(membersList1);
-//
-//        //then
-//        assertThat(membersList1.size()).isEqualTo(2);
-//        Member member_email1 = membersList1.get(0);
-//        assertThat(member_email1.getEmail()).containsIgnoringCase(email);
-//        Member member_email2 = membersList1.get(1);
-//        assertThat(member_email2.getEmail()).containsIgnoringCase(email);
+        List<Member> membersList1 = objectMapper.readValue(response1, new TypeReference<List<Member>>(){});
+
+        //then
+        assertThat(membersList1.size()).isEqualTo(2);
+        Member member_email1 = membersList1.get(0);
+        assertThat(member_email1.getEmail()).containsIgnoringCase(email);
+        Member member_email2 = membersList1.get(1);
+        assertThat(member_email2.getEmail()).containsIgnoringCase(email);
 
         // 닉네임으로 검색 시
         MvcResult result2 = mvc.perform(get("/api/member/search-member/{email-nickname}", nickname)
@@ -598,43 +618,91 @@ public class MemberTest {
 
         //when
         String response2 = result2.getResponse().getContentAsString();
-        System.out.println(response2);
-//        List<Member> membersList2 = objectMapper.readValue(response2, new TypeReference<List<Member>>(){});
-//        System.out.println(membersList1);
-//
-//        //then
-//        assertThat(membersList2.size()).isEqualTo(2);
-//        Member member_nickname1 = membersList2.get(0);
-//        assertThat(member_nickname1.getEmail()).containsIgnoringCase(nickname);
-//        Member member_nickname2 = membersList2.get(1);
-//        assertThat(member_nickname2.getEmail()).containsIgnoringCase(nickname);
+        List<Member> membersList2 = objectMapper.readValue(response2, new TypeReference<List<Member>>(){});
+
+        //then
+        assertThat(membersList2.size()).isEqualTo(2);
+        Member member_nickname1 = membersList2.get(0);
+        assertThat(member_nickname1.getNickname()).containsIgnoringCase(nickname);
+        Member member_nickname2 = membersList2.get(1);
+        assertThat(member_nickname2.getNickname()).containsIgnoringCase(nickname);
     }
-//
-//    @Test
-//    public void 로그아웃() {
-//        //given
-//        String email = "b088081@gmail.com";
-//        String password = "1234";
-//
-//        memberRepository.save(Member.builder()
-//                .email(email)
-//                .password(password)
-//                .nickname("검정")
-//                .role(Role.Member)
-//                .genderFm('F')
-//                .age(31)
-//                .name("고무신")
-//                .profile("xxxxxxxx")
-//                .snsId("nosns")
-//                .snsType("facebook")
-//                .build());
-//
-//        //when
-//        List<Member> membersList = memberRepository.findAll();
-//
-//        //then
-//        Member member = membersList.get(0);
-//        assertThat(member.getEmail()).isEqualTo(email);
-//        assertThat(member.getPassword()).isEqualTo(password);
-//    }
+
+    @Test
+    @DisplayName("로그아웃 성공 후 회원 정보 수정 실패")
+    public void testLogoutSuccess() throws Exception {
+        //given
+        String email = "b088081@gmail.com";
+        String password = "1234";
+        String nickname = "검정";
+        Role role = Role.Member;
+        char genderFm = 'F';
+        int age = 31;
+        String name = "고무신";
+        String profile = "xxxxxxx";
+        String snsId = "nosns";
+        String snsType = "facebook";
+
+        memberRepository.save(Member.builder()
+                .email(email)
+                .password(bCryptPasswordEncoder.encode(password))
+                .nickname("빨강")
+                .role(Role.Member)
+                .genderFm('M')
+                .age(34)
+                .name("나막신")
+                .profile("yyyyyyyyyy")
+                .snsId("snsno")
+                .snsType("twitter")
+                .build());
+
+        MemberLoginRequestDto memberLoginRequestDto = MemberLoginRequestDto.builder()
+                .email(email)
+                .password(password)
+                .build();
+
+        MvcResult loginResult = mvc.perform(post("/login")
+                        .content(objectMapper.writeValueAsString(memberLoginRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andReturn();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", loginResult.getResponse().getHeader(JwtProperties.HEADER_STRING));
+
+
+        MvcResult logoutResult = mvc.perform(get("/logout")
+                        .headers(headers)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andReturn();
+
+        MemberInfoUpdateRequestDto memberInfoUpdateRequestDto = MemberInfoUpdateRequestDto.builder()
+                .password(password)
+                .nickname(nickname)
+                .genderFm(genderFm)
+                .age(age)
+                .name(name)
+                .profile(profile)
+                .snsId(snsId)
+                .snsType(snsType)
+                .build();
+
+        headers.clear();
+        headers.add("Authorization", logoutResult.getResponse().getHeader(JwtProperties.HEADER_STRING));
+
+        mvc.perform(put("/api/member/modify")
+                        .headers(headers)
+                        .content(objectMapper.writeValueAsString(memberInfoUpdateRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized()); // 응답 status를 ok로 테스트
+
+        //when
+        List<Member> membersList = memberRepository.findAll();
+
+        //then
+        Member member = membersList.get(0);
+        assertThat(member.getNickname()).isNotEqualTo(nickname);
+        assertThat(member.getGenderFm()).isNotEqualTo(genderFm);
+    }
 }

@@ -4,30 +4,30 @@ package com.reminiscence.member.controller;
 
 import com.reminiscence.config.auth.MemberDetail;
 import com.reminiscence.domain.Member;
-import com.reminiscence.member.dto.MemberJoinRequestDto;
-import com.reminiscence.member.dto.MemberLoginRequestDto;
-import com.reminiscence.member.dto.MemberUpdatePasswordRequestDto;
-import com.reminiscence.member.dto.MemberInfoUpdateRequestDto;
+import com.reminiscence.member.dto.*;
 import com.reminiscence.member.service.MemberService;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/member")
+@Slf4j
 public class MemberController {
 
-    private final Logger logger = LoggerFactory.getLogger(MemberController.class);
     private static final String SUCCESS = "success";
     private static final String FAIL = "fail";
 
@@ -43,14 +43,19 @@ public class MemberController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity join(@RequestBody MemberJoinRequestDto requestDto) throws Exception {
-        logger.debug("MemberJoinRequestDto info : {}", requestDto);
+    public ResponseEntity join(@Valid @RequestBody MemberJoinRequestDto requestDto, BindingResult bindingResult) throws Exception {
+
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
+        }
+
+        log.debug("MemberJoinRequestDto info : {}", requestDto);
         return memberService.joinMember(requestDto);
     }
 
     @GetMapping("/join/{email}/id-check")
     public ResponseEntity idCheck(@PathVariable("email") String email) throws Exception {
-        logger.debug("idCheck email : {}", email);
+        log.debug("idCheck email : {}", email);
         Member member = memberService.emailCheck(email);
         if (member != null) {
             return ResponseEntity.ok("이미 사용중인 아이디입니다.");
@@ -62,7 +67,7 @@ public class MemberController {
     @GetMapping("/join/{nickname}/nickname-check")
     @ResponseBody
     public ResponseEntity nicknameCheck(@PathVariable("nickname") String nickname) throws Exception {
-        logger.debug("nicknameCheck nickname : {}", nickname);
+        log.debug("nicknameCheck nickname : {}", nickname);
         Member member = memberService.nicknameCheck(nickname);
         if (member != null) {
             return ResponseEntity.ok("이미 사용중인 닉네임입니다.");
@@ -72,7 +77,12 @@ public class MemberController {
     }
 
     @PutMapping("/modify")
-    public ResponseEntity modify(@AuthenticationPrincipal MemberDetail memberDetail, @RequestBody MemberInfoUpdateRequestDto requestDto) {
+    public ResponseEntity modify(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberInfoUpdateRequestDto requestDto, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
+        }
+
         Member member;
         System.out.println(memberDetail);
         try {
@@ -96,7 +106,7 @@ public class MemberController {
 
     @GetMapping("/search-member/{email-nickname}")
     public ResponseEntity findMembers(@PathVariable("email-nickname") String emailNickname) throws Exception {
-        List<Member> memberList = memberService.getMemberList(emailNickname);
+        List<MemberSearchResponseDto> memberList = memberService.getMemberList(emailNickname);
         return new ResponseEntity<>(memberList, HttpStatus.OK);
     }
 

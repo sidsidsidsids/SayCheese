@@ -2,10 +2,7 @@ package com.reminiscence.member.service;
 
 import com.reminiscence.config.auth.MemberDetail;
 import com.reminiscence.domain.Member;
-import com.reminiscence.member.dto.MemberJoinRequestDto;
-import com.reminiscence.member.dto.MemberLoginRequestDto;
-import com.reminiscence.member.dto.MemberUpdatePasswordRequestDto;
-import com.reminiscence.member.dto.MemberInfoUpdateRequestDto;
+import com.reminiscence.member.dto.*;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -17,7 +14,7 @@ public interface MemberService {
     Member emailCheck(String email) throws Exception;
     Member nicknameCheck(String nickname) throws Exception;
 //    /* Admin */
-	List<Member> getMemberList(String key) throws Exception;
+	List<MemberSearchResponseDto> getMemberList(String key) throws Exception;
     Member getMemberInfo(String memberId) throws Exception;
     Member updateMemberPassword(MemberUpdatePasswordRequestDto memberUpdatePasswordRequestDto) throws Exception;
     Member updateMemberInfo(MemberDetail memberDetail, MemberInfoUpdateRequestDto memberInfoUpdateRequestDto) throws  Exception;

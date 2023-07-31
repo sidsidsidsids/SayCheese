@@ -1,6 +1,11 @@
 server:
   port: 8080
 spring:
+  data:
+    redis:
+      host: '127.0.0.1'
+      port: 6379
+      password: 17171771
   datasource:
     url: jdbc:h2:tcp://localhost/~/test
     username: sa
@@ -13,8 +18,5 @@ spring:
       hibernate:
         format_sql: true
     defer-datasource-initialization: true
-  redis:
-    host: localhost
-    port: 6379
 logging.level:
   org.hibernate.SQL: debug
