@@ -11,6 +11,7 @@ import com.reminiscence.article.notice.dto.NoticeArticleAndMemberRequestDto;
 import com.reminiscence.article.notice.dto.NoticeArticleRequestDto;
 import com.reminiscence.article.notice.dto.NoticeArticleListResponseDto;
 import com.reminiscence.article.notice.dto.NoticeArticleResponseDto;
+import com.reminiscence.article.notice.dummy.DummyNoticeArticleRequestDto;
 import com.reminiscence.article.notice.repository.NoticeRepository;
 import com.reminiscence.article.notice.vo.NoticeArticleVo;
 import org.assertj.core.api.Assertions;
