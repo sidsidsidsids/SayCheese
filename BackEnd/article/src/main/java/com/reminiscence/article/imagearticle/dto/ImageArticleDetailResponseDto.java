@@ -12,28 +12,28 @@ public class ImageArticleDetailResponseDto {
 
     private Long memberId;
     private Long imageId;
-    private String name;
+    private String author;
     private LocalDateTime createdDate;
     private String imgLink;
     private Long loverCnt;
     private Long loverYn;
     private List<String> tags = new ArrayList<>();
 
-    public ImageArticleDetailResponseDto(Long memberId, Long imageId, String name, LocalDateTime createdDate,
+    public ImageArticleDetailResponseDto(Long memberId, Long imageId, String author, LocalDateTime createdDate,
                                          String imgLink, Long loverCnt, Long loverYn) {
         this.memberId = memberId;
         this.imageId = imageId;
-        this.name = name;
+        this.author = author;
         this.createdDate = createdDate;
         this.imgLink = imgLink;
         this.loverCnt = loverCnt;
         this.loverYn = loverYn;
     }
-    public ImageArticleDetailResponseDto(Long memberId, Long imageId, String name, LocalDateTime createdDate,
+    public ImageArticleDetailResponseDto(Long memberId, Long imageId, String author, LocalDateTime createdDate,
                                          String imgLink, Long loverCnt) {
         this.memberId = memberId;
         this.imageId = imageId;
-        this.name = name;
+        this.author = author;
         this.createdDate = createdDate;
         this.imgLink = imgLink;
         this.loverCnt = loverCnt;

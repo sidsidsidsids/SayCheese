@@ -125,7 +125,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
                 .select(Projections.constructor(ImageArticleDetailResponseDto.class,
                         QMember.member.id.as("memberId"),
                         QImage.image.id.as("imageId"),
-                        QMember.member.nickname.as("name"),
+                        QMember.member.nickname.as("author"),
                         QImageArticle.imageArticle.createdDate.as("createdDate"),
                         QImage.image.link.as("imgLink"),
                         ExpressionUtils.as(JPAExpressions.select(count(QLover.lover.id))

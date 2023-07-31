@@ -250,7 +250,7 @@ public class ImageArticleJpaTest{
         assertEquals("www.naver.com",imageArticle.getImgLink());
         assertEquals(1L, imageArticle.getMemberId());
         assertEquals(4, findTags.size());
-        assertEquals("se6816",imageArticle.getName());
+        assertEquals("se6816",imageArticle.getAuthor());
         assertEquals(1,imageArticle.getLoverYn());
         assertEquals(1,imageArticle.getLoverCnt());
     }
@@ -273,7 +273,7 @@ public class ImageArticleJpaTest{
         assertEquals("www.naver.com",imageArticle.getImgLink());
         assertEquals(1L, imageArticle.getMemberId());
         assertEquals(4, findTags.size());
-        assertEquals("se6816",imageArticle.getName());
+        assertEquals("se6816",imageArticle.getAuthor());
         assertEquals(0,imageArticle.getLoverYn());
         assertEquals(1,imageArticle.getLoverCnt());
     }

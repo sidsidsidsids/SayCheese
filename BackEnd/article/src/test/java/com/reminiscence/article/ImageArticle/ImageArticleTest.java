@@ -210,7 +210,7 @@ public class ImageArticleTest {
                         responseFields(
                                 fieldWithPath("memberId").description("회원 ID"),
                                 fieldWithPath("imageId").description("이미지 ID"),
-                                fieldWithPath("name").description("회원 닉네임"),
+                                fieldWithPath("author").description("회원 닉네임"),
                                 fieldWithPath("createdDate").description("게시글 작성일"),
                                 fieldWithPath("imgLink").description("이미지 링크"),
                                 fieldWithPath("loverCnt").description("좋아요 수"),
