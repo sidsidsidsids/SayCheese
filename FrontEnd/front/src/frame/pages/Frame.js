@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import "../css/Frame.css";
 // react router
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 // for 프레임 검색
 import FrameSearch from "../components/FrameSearch";
@@ -12,31 +12,27 @@ import FrameList from "../components/FrameList";
 import FrameCreate from "./FrameCreate";
 
 export default function Frame() {
-  // TabBarList 배열에 각각의 탭 항목을 정의합니다.
-  const TabBarList = [
-    { tabItem: "프레임 구경하기", content: "FrameList", router: "/frame/" },
+  // tabItems 배열에 각각의 탭 항목을 정의합니다.
+  const tabItems = [
+    { tabItem: "프레임 구경하기", component: <FrameList/>, router: "/frame/" },
     {
       tabItem: "프레임 만들기",
-      content: "FrameCreate",
+      component: <FrameCreate/>,
       router: "/frame/create/",
     },
   ];
   // 활성화된 탭을 위한 data 입니다
-  const [focusedItem, setFocusedItem] = useState(TabBarList[0].tabItem);
+  const location = useLocation().pathname;
+  const focusedItem = tabItems.find((item) => item.router === location);
 
-  console.log(window.location.pathname);
   return (
     <div className="frame">
       <div className="responsiveFrameTab">
         <FrameSearch />
       </div>
       <div className="frameTap">
-        {TabBarList.map((item, index) => (
+        {tabItems.map((item, index) => (
           <button
-            // 클릭하면 탭이 활성화 된 탭으로 저장됩니다
-            onClick={() => {
-              setFocusedItem(item.tabItem);
-            }}
             // 현재 선택된 탭인 경우에는 focused 클래스를 추가하여 배경색을 하얀색으로 변경합니다.
             className={`FrameButton ${
               focusedItem === item.tabItem ? "focused" : ""
@@ -44,7 +40,7 @@ export default function Frame() {
           >
             <Link
               key={index}
-              to={item.tabItem === "프레임 구경하기" ? "" : "/frame/create/"}
+              to={item.tabItem === "프레임 구경하기" ? "/frame/" : "/frame/create/"}
             >
               {item.tabItem}
             </Link>
@@ -52,9 +48,9 @@ export default function Frame() {
         ))}
 
         <div
-          // 검색창은 프레임 구경하기 탭이 활성화된 탭일 때 보이고 아닐 때는 숨깁니다.
+          // 검색창은 프레임 만들기 일때는 숨기고 구경하기 탭이 활성화된 때 보입니다.
           className={`frameSearchTab ${
-            focusedItem === TabBarList[1].tabItem ? "displayHide" : ""
+            focusedItem === tabItems[1].tabItem ? "displayHide" : ""
           }`}
         >
           <FrameSearch />
@@ -62,8 +58,7 @@ export default function Frame() {
       </div>
       {/* 활성화된 탭에 따라서 컨텐츠가 변경됩니다 */}
       <div className="frameSpace">
-        {window.location.pathname === TabBarList[0].router && <FrameList />}
-        {window.location.pathname === TabBarList[1].router && <FrameCreate />}
+        {focusedItem ? focusedItem.component : null}
       </div>
     </div>
   );

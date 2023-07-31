@@ -27,7 +27,7 @@ const router = createBrowserRouter([
       {
         path: "frame/",
         element: <Frame />,
-        children: [{ path: "create/", element: <FrameCreate /> }],
+        children: [{ path: "create/", element: <Frame/> }],
       },
       // 이제 이미지 게시판, 공지 게시판, 로그인 페이지, 마이페이지를 연결하면 됩니다.
     ],
