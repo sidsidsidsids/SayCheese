@@ -4,6 +4,7 @@ import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.JPAExpressions;
@@ -39,10 +40,11 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
                                 .where(QLover.lover.article.id.eq(QImageArticle.imageArticle.id)), "loverCnt"),
                         QImageArticle.imageArticle.createdDate.as("createdDate"),
                         QImageArticle.imageArticle.member.nickname.as("nickname"),
-                        ExpressionUtils.as(JPAExpressions.select(count(QLover.lover.id))
+                        ExpressionUtils.as(JPAExpressions.select(QLover.lover.id)
                                 .from(QLover.lover)
                                 .where(QLover.lover.article.id.eq(QImageArticle.imageArticle.id)
-                                        ,(QLover.lover.memberId.eq(memberId))), "loverYn")
+                                        ,(loverMemberIdEq(memberId)))
+                                .limit(1), "loverYn")
                 ))
                 .from(QImageArticle.imageArticle)
                 .join(QImageArticle.imageArticle.member, QMember.member)
@@ -81,17 +83,18 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
                                 .where(QLover.lover.article.id.eq(QImageArticle.imageArticle.id)), "loverCnt"),
                         QImageArticle.imageArticle.createdDate.as("createdDate"),
                         QImageArticle.imageArticle.member.nickname.as("nickname"),
-                        ExpressionUtils.as(JPAExpressions.select(count(QLover.lover.id))
+                        ExpressionUtils.as(JPAExpressions.select(QLover.lover.id)
                                 .from(QLover.lover)
                                 .where(QLover.lover.article.id.eq(QImageArticle.imageArticle.id)
-                                        ,(QLover.lover.memberId.eq(memberId))), "loverYn")
+                                        ,(loverMemberIdEq(memberId)))
+                                .limit(1), "loverYn")
                 ))
                 .from(QImageArticle.imageArticle)
                 .join(QImageArticle.imageArticle.member, QMember.member)
                 .join(QImageArticle.imageArticle.image, QImage.image)
                 .join(QImage.image.imageTags, QImageTag.imageTag)
                 .join(QImageTag.imageTag.tag, QTag.tag)
-                .where(QTag.tag.id.eq(tagId))
+                .where(tagIdEq(tagId))
                 .orderBy(getOrderSpecifiers(page))
                 .limit(page.getPageSize())
                 .fetch());
@@ -113,7 +116,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
                 .join(QImageArticle.imageArticle.image, QImage.image)
                 .join(QImage.image.imageTags, QImageTag.imageTag)
                 .join(QImageTag.imageTag.tag, QTag.tag)
-                .where(QTag.tag.id.eq(tagId))
+                .where(tagIdEq(tagId))
                 .orderBy(getOrderSpecifiers(page))
                 .limit(page.getPageSize())
                 .fetch());
@@ -156,7 +159,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
                 .from(QImageArticle.imageArticle)
                 .join(QImageArticle.imageArticle.member, QMember.member)
                 .join(QImageArticle.imageArticle.image, QImage.image)
-                .where(QImageArticle.imageArticle.id.eq(articleId))
+                .where(imageArticleIdEq(articleId))
                 .fetchOne());
     }
 
@@ -167,7 +170,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
                 .join(QImageArticle.imageArticle.image, QImage.image).fetchJoin()
                 .join(QImage.image.imageTags, QImageTag.imageTag).fetchJoin()
                 .join(QImageTag.imageTag.tag, QTag.tag).fetchJoin()
-                .where(QImageArticle.imageArticle.id.eq(id))
+                .where(imageArticleIdEq(id))
                 .fetchOne());
     }
 
@@ -175,7 +178,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
     public Optional<ImageArticle> findImageArticleOfMemberById(Long id) {
         return Optional.ofNullable(queryFactory.selectFrom(QImageArticle.imageArticle)
                 .innerJoin(QImageArticle.imageArticle.member).fetchJoin()
-                .where(QImageArticle.imageArticle.id.eq(id))
+                .where(imageArticleIdEq(id))
                 .fetchOne());
     }
 
@@ -208,5 +211,18 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
             return ORDERS.toArray(new OrderSpecifier[ORDERS.size()]);
         }
         return null;
+    }
+
+    private BooleanExpression loverMemberIdEq(Long memberId){
+        return QLover.lover.memberId.eq(memberId);
+    }
+
+
+    private BooleanExpression tagIdEq(Long tagId) {
+        return QTag.tag.id.eq(tagId);
+    }
+
+    private BooleanExpression imageArticleIdEq(Long imageArticleId) {
+        return QImageArticle.imageArticle.id.eq(imageArticleId);
     }
 }
