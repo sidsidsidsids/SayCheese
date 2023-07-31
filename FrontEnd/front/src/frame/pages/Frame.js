@@ -1,6 +1,8 @@
 // 프레임 메인 페이지입니다.
 import React, { useState } from "react";
 import "../css/Frame.css";
+// react router
+import { Link } from "react-router-dom";
 
 // for 프레임 검색
 import FrameSearch from "../components/FrameSearch";
@@ -12,12 +14,17 @@ import FrameCreate from "./FrameCreate";
 export default function Frame() {
   // TabBarList 배열에 각각의 탭 항목을 정의합니다.
   const TabBarList = [
-    { tabItem: "프레임 구경하기", content: "FrameList" },
-    { tabItem: "프레임 만들기", content: "FrameCreate" },
+    { tabItem: "프레임 구경하기", content: "FrameList", router: "/frame/" },
+    {
+      tabItem: "프레임 만들기",
+      content: "FrameCreate",
+      router: "/frame/create/",
+    },
   ];
   // 활성화된 탭을 위한 data 입니다
   const [focusedItem, setFocusedItem] = useState(TabBarList[0].tabItem);
 
+  console.log(window.location.pathname);
   return (
     <div className="frame">
       <div className="responsiveFrameTab">
@@ -35,7 +42,12 @@ export default function Frame() {
               focusedItem === item.tabItem ? "focused" : ""
             }`}
           >
-            {item.tabItem}
+            <Link
+              key={index}
+              to={item.tabItem === "프레임 구경하기" ? "" : "/frame/create/"}
+            >
+              {item.tabItem}
+            </Link>
           </button>
         ))}
 
@@ -50,8 +62,8 @@ export default function Frame() {
       </div>
       {/* 활성화된 탭에 따라서 컨텐츠가 변경됩니다 */}
       <div className="frameSpace">
-        {focusedItem === TabBarList[0].tabItem && <FrameList />}
-        {focusedItem === TabBarList[1].tabItem && <FrameCreate />}
+        {window.location.pathname === TabBarList[0].router && <FrameList />}
+        {window.location.pathname === TabBarList[1].router && <FrameCreate />}
       </div>
     </div>
   );
