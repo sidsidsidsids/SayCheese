@@ -1,10 +1,11 @@
 .room-footer {
-  display: inline-block;
+  display: flex;
   justify-content: center;
   align-items: center;
   font-size: 18px;
   font-weight: bold;
   border: 1px dashed black;
-  width: 99%;
-  height: 98%;
+  /* width: 80%; */
+  /* height: 98%; */
+  flex: 1 1 80%;
 }

@@ -1,10 +1,10 @@
-.room-photo {
+.timer {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   font-size: 18px;
   font-weight: bold;
-  border: 1px dashed black;
-  /* width: 80%; */
-  flex: 1 1 80%;
+  flex: 1 1 20%;
+  font-size: 26px;
 }

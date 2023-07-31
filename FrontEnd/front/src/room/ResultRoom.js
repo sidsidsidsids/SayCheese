@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { r_finish } from "../redux/roomStatus";
+import { statusAction } from "../redux/roomStates";
 import RoomButtons from "./RoomButtons";
 import RoomChat from "./RoomChat";
 import RoomFooter from "./RoomFooter";
@@ -16,7 +16,7 @@ function ResultRoom() {
         <RoomButtons
           onConfirm={() => {}}
           onClose={() => {
-            dispatch(r_finish())
+            dispatch(statusAction.end_room());
           }}
           buttonName1="버튼1"
           buttonName2="버튼2"

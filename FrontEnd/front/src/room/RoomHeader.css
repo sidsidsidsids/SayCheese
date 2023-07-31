@@ -1,9 +1,10 @@
 .room-header {
-  display: inline-block;
+  display: flex;
   justify-content: center;
   align-items: center;
   font-size: 18px;
   font-weight: bold;
   border: 1px dashed black;
-  width: 80%;
+  /* width: 80%; */
+  flex: 1 1 80%;
 }

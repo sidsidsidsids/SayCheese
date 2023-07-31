@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { start } from "../redux/roomStatus";
+import { statusAction } from "../redux/roomStates";
 import RoomButtons from "./RoomButtons";
 import RoomChat from "./RoomChat";
 import RoomFooter from "./RoomFooter";
@@ -9,15 +9,15 @@ import "./Room.css";
 
 function WaitRoom() {
   const dispatch = useDispatch();
-  const stat = useSelector((state) => state.status);
+  const stat = useSelector((state) => state.roomState);
   return (
-    // {roomStatus == "before" ? () : ()}
+    // {roomState == "before" ? () : ()}
     <div className="room-active">
       <div className="room-top">
         <RoomHeader />
         <RoomButtons
           onConfirm={() => {
-            dispatch(start());
+            dispatch(statusAction.start());
             console.log(stat);
           }}
           onClose={() => {}}

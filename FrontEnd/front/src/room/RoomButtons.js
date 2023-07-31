@@ -6,7 +6,6 @@ function RoomButtons({ onConfirm, onClose, buttonName1, buttonName2 }) {
       <button className="button" onClick={onConfirm}>
         {buttonName1}
       </button>
-      <br></br>
       <button className="button" onClick={onClose}>
         {buttonName2}
       </button>

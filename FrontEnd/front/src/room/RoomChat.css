@@ -5,6 +5,7 @@
   align-items: center;
   font-size: 18px;
   font-weight: bold;
-  border: 1px dashed black;
-  width: 19%;
+  /* border: 1px dashed black; */
+  /* width: 19%; */
+  flex: 1 1 20%;
 }

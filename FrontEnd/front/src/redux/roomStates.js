@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 export const statusSlice = createSlice({
-  name: "status",
+  name: "roomState",
   initialState: {
     startAction: false,
     afterAction: false,
@@ -18,8 +18,12 @@ export const statusSlice = createSlice({
     r_finish: (state) => {
       state.afterAction = false;
     },
+    end_room: (state) => {
+      state.afterAction = false;
+      state.startAction = false;
+    },
   },
 });
 
-export const { start, finish, r_start, r_finish } = statusSlice.actions;
+export const statusAction = statusSlice.actions;
 export default statusSlice.reducer;

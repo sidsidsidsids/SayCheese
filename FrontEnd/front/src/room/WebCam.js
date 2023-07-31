@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import io from "socket.io-client";
 
-function WebCam({width, height}) {
+function WebCam({ width, height }) {
   const socket = io();
   const videoRef = useRef(null);
 
@@ -27,14 +27,14 @@ function WebCam({width, height}) {
 
   return (
     <div style={{ border: "1px dashed black" }}>
-      <video
+      {/* <video
         ref={videoRef}
         width={width}
         height={height}
         autoPlay
         playsInline
         style={{ transform: "scaleX(-1)" }}
-      />
+      /> */}
     </div>
   );
 }

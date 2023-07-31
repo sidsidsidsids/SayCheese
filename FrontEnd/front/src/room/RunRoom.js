@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { finish, r_start } from "../redux/roomStatus";
+import { statusAction } from "../redux/roomStates";
 import RoomButtons from "./RoomButtons";
 import RoomChat from "./RoomChat";
 import RoomFooter from "./RoomFooter";
@@ -10,16 +10,16 @@ import "./Room.css";
 function RunRoom() {
   const dispatch = useDispatch();
   return (
-    // {roomStatus == "before" ? () : ()}
+    // {roomState == "before" ? () : ()}
     <div className="room-active">
       <div className="room-top">
         <RoomHeader />
         <RoomButtons
           onConfirm={() => {
-            dispatch(finish());
+            dispatch(statusAction.finish());
           }}
           onClose={() => {
-            dispatch(r_start());
+            dispatch(statusAction.r_start());
           }}
           buttonName1="촬영"
           buttonName2="버튼2"

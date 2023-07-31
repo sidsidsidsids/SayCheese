@@ -8,13 +8,18 @@ import w_Frame from "./assets/window_shape.PNG";
 function RoomCreateModal({ open, close }) {
   // 이동 위한 navigate 선언
   const navigate = useNavigate();
-  // 방 설정들
-  const [isModeActive, setIsModeActive] = useState(true);
-  // const [roomTime, setRoomTime] = useState(30);
-  const [isWindowFrame, setIsWindowFrame] = useState(true);
-  const [roomPassword, setRoomPassword] = useState("");
   // 모달 설정
   const [isComplete, setIsComplete] = useState(false);
+
+  // 방 설정들
+  // 방 모드
+  const [isModeActive, setIsModeActive] = useState(true);
+  // 방 인원
+  const [roomLimit, setRoomLimit] = useState(4);
+  // 프레임 격자
+  const [isWindowFrame, setIsWindowFrame] = useState(true);
+  // 방 비밀번호
+  const [roomPassword, setRoomPassword] = useState("");
   // 방 코드
   const [roomCode, setRoomCode] = useState("");
   async function codeCreation() {
@@ -46,7 +51,7 @@ function RoomCreateModal({ open, close }) {
   const handleConfirm = () => {
     console.log("## ## ## ## ## ## ## ");
     console.log("방 모드(isModeActive): ", isModeActive);
-    // console.log("방 시간(roomTime): ", roomTime);
+    console.log("방 인원(roomLimit): ", roomLimit);
     console.log("방 프레임(isWindowFrame): ", isWindowFrame);
     console.log("방 비밀번호(roomPassword): ", roomPassword);
     console.log("## ## ## ## ## ## ## ");
@@ -64,7 +69,7 @@ function RoomCreateModal({ open, close }) {
               <b>방 코드: </b>
               <input
                 className={roomCode}
-                placeholder={roomCode ? roomCode : "Sample Room Code"}
+                value={roomCode ? roomCode : "Sample Room Code"}
                 readOnly
               />
             </p>
@@ -74,7 +79,7 @@ function RoomCreateModal({ open, close }) {
               <b>방 초대 링크: </b>
               <input
                 className={roomInvite}
-                placeholder={
+                value={
                   roomInvite
                     ? roomInvite
                     : "www.sample.com/sample123/?sample456?/sample789?"
@@ -117,6 +122,32 @@ function RoomCreateModal({ open, close }) {
               </label>
             </p>
           </div>
+          {/* 방 인원수 설정 */}
+          <div className="limit-settings">
+            <p>
+              인원 수 설정
+              <input type="number" value={roomLimit} readOnly />명
+              <button
+                onClick={() => {
+                  if (roomLimit < 4) {
+                    setRoomLimit(roomLimit + 1);
+                  }
+                }}
+              >
+                +
+              </button>
+              <button
+                onClick={() => {
+                  if (roomLimit > 1) {
+                    setRoomLimit(roomLimit - 1);
+                  }
+                }}
+              >
+                -
+              </button>
+            </p>
+          </div>
+
           {/* 프레임 설정 */}
           <div className="frame-type">
             <p>
