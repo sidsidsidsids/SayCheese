@@ -8,3 +8,4 @@
 :sectnums:
 
 include::Room-API.adoc[]
+include::Participant-API.adoc[]
