@@ -2,14 +2,14 @@
 import "../css/FrameCreate.css";
 
 import CreateToolBar from "../components/FrameCreateToolBar";
-import CreateCanvas from "../components/FrameCreateCanvas";
+import CanvasArea from "../components/FrameCreateCanvas";
 
 export default function FrameCreate() {
   return (
     <div className="createWrapper">
       <div className="createSpace">
         <CreateToolBar />
-        <CreateCanvas />
+        <CanvasArea />
       </div>
     </div>
   );

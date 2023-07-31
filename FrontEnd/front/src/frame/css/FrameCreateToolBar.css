@@ -1,10 +1,11 @@
+/* 툴탭과 툴탭 디테일 정렬 */
 .ToolBar {
-  display: flex;
-  justify-content: flex-start;
+  display: grid;
+  grid-template-columns: 0.5fr 1fr 0fr; /* 의도치 않은 <canvasarear/>가 자동으로 생겨서 정렬을 망치기 때문에 0fr이 필요함  */
 }
-
+/* 툴탭*/
 .ToolBar:nth-child(n) {
-  margin: 10px;
+  margin: 20px;
 }
 
 .toolBarTap > li {
@@ -22,4 +23,9 @@
   background-color: #d9d9d9;
   width: 300px;
   border-radius: 30px;
+  padding: 10px;
+}
+
+.toolNotice {
+  color: #131111;
 }

@@ -1,9 +1,19 @@
 .createSpace {
-  display: flex;
-  align-items: center;
-  background: greenyellow;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  place-items: center;
+  justify-content: center;
+  min-width: 800px;
+  min-height: 60dvh;
 }
 
 .createWrapper {
   padding: 100px 0;
+}
+
+.createCanvas {
+  /* display: flex;
+  align-content: center;
+  justify-content: center; */
+  border: black 2px solid;
 }
