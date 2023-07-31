@@ -2,6 +2,7 @@ package com.reminiscence.room.exception;
 
 
 import com.reminiscence.room.exception.customexception.MemberException;
+import com.reminiscence.room.exception.customexception.ParticipantException;
 import com.reminiscence.room.exception.customexception.RoomException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,11 @@ public class ControllerAdvice {
         ErrorResponse response = ErrorResponse.of(roomException.getHttpStatus().value(), roomException.getMessage());
         return new ResponseEntity<ErrorResponse>(response, roomException.getHttpStatus());
     }
-
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleParticipantException(ParticipantException participantException) {
+        ErrorResponse response = ErrorResponse.of(participantException.getHttpStatus().value(), participantException.getMessage());
+        return new ResponseEntity<ErrorResponse>(response, participantException.getHttpStatus());
+    }
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException methodArgumentNotValidException) {
         ErrorResponse response = ErrorResponse.of(HttpStatus.BAD_REQUEST.value(), methodArgumentNotValidException.getBindingResult().getAllErrors().get(0).getDefaultMessage());
