@@ -44,8 +44,6 @@ public class FrameArticleServiceImpl implements FrameArticleService {
         if(!frameArticle.getMember().getId().equals(frameArticleDeleteRequestDto.getMember().getId())){
             throw new FrameArticleException(FrameArticleExceptionMessage.INVALID_DELETE_AUTH);
         }
-
-        Frame frame=frameArticle.getFrame();
         loverRepository.deleteByArticleId(frameArticle.getId());
 
         frameArticleRepository.delete(frameArticle);

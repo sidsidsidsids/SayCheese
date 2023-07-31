@@ -3,7 +3,6 @@ package com.reminiscence.article.framearticle;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.reminiscence.article.domain.FrameSpecification;
 import com.reminiscence.article.domain.Member;
 import com.reminiscence.article.framearticle.dummy.DummyFrameArticleRequestDto;
 import com.reminiscence.article.member.repository.MemberRepository;
@@ -31,10 +30,13 @@ import java.sql.SQLException;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -57,6 +59,7 @@ public class FrameArticleIntegrationTest {
 
     String memberToken;
 
+    String anotherMemberToken;
     @BeforeEach
     public void init(RestDocumentationContextProvider restDocumentation) throws SQLException {
         mvc= MockMvcBuilders.webAppContextSetup(applicationContext)
@@ -68,11 +71,15 @@ public class FrameArticleIntegrationTest {
                 .build();
         Member admin=memberRepository.findById(1L).orElse(null);
         Member member=memberRepository.findById(2L).orElse(null);
+        Member anotherMember=memberRepository.findById(3L).orElse(null);
         adminToken= JWT.create()
                 .withClaim("memberId",String.valueOf(admin.getId()))
                 .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
         memberToken= JWT.create()
                 .withClaim("memberId",String.valueOf(member.getId()))
+                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
+        anotherMemberToken= JWT.create()
+                .withClaim("memberId",String.valueOf(anotherMember.getId()))
                 .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
     }
 
@@ -167,5 +174,71 @@ public class FrameArticleIntegrationTest {
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지")
                         )
                 ));
+    }
+
+    @Test
+    @DisplayName("프레임 삭제 테스트(정상)")
+    public void deleteFrameArticleSuccessTest() throws Exception{
+        HttpHeaders httpHeaders=new HttpHeaders();
+        httpHeaders.add("Authorization","Bearer "+memberToken);
+        mvc.perform(delete("/api/article/frame/{frameArticleId}",68L)
+                        .headers(httpHeaders))
+                .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                        ),
+                        pathParameters(
+                                parameterWithName("frameArticleId").description("프레임 글번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지")
+                        )
+                ));
+
+    }
+    @Test
+    @DisplayName("프레임 삭제 테스트(타인의 글을 지우려고 할 때)")
+    public void deleteFrameArticleNoAuthFailTest() throws Exception{
+        HttpHeaders httpHeaders=new HttpHeaders();
+        httpHeaders.add("Authorization","Bearer "+anotherMemberToken);
+        mvc.perform(delete("/api/article/frame/{frameArticleId}",68L)
+                        .headers(httpHeaders))
+                .andExpect(status().isForbidden())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                        ),
+                        pathParameters(
+                                parameterWithName("frameArticleId").description("프레임 글번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지")
+                        )
+                ));
+
+    }
+    @Test
+    @DisplayName("프레임 삭제 테스트(존재하지 하지 않는 글을 지우려고 할 때)")
+    public void deleteFrameArticleNotExistsIdFailTest() throws Exception{
+        HttpHeaders httpHeaders=new HttpHeaders();
+        httpHeaders.add("Authorization","Bearer "+memberToken);
+        mvc.perform(delete("/api/article/frame/{frameArticleId}",1000000L)
+                        .headers(httpHeaders))
+                .andExpect(status().isNotFound())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                        ),
+                        pathParameters(
+                                parameterWithName("frameArticleId").description("프레임 글번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지")
+                        )
+                ));
+
     }
 }
