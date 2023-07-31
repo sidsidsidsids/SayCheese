@@ -47,7 +47,6 @@ export default function CreateToolBar() {
           <span className="toolNotice">{notice}</span>
           {focusedTool === ToolBarList[0].createItem && <Standard />}
         </div>
-        <canvasArea />
       </div>
     </>
   );
