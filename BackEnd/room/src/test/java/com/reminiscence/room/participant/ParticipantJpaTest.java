@@ -38,7 +38,6 @@ public class ParticipantJpaTest {
 
         // when
         Participant participant = Participant.builder()
-                .nickname("kkk")
                 .ownerYn("N")
                 .member(member)
                 .room(room)
@@ -49,7 +48,7 @@ public class ParticipantJpaTest {
         // then
         assertNotNull(findParticipant);
         assertEquals(participant.getId(), findParticipant.getId());
-        assertEquals(participant.getNickname(),findParticipant.getNickname());
+        assertEquals(member.getNickname(),findParticipant.getMember().getNickname());
         assertEquals(memberId, findParticipant.getMember().getId());
         assertEquals(roomCode, findParticipant.getRoom().getRoomCode());
         assertEquals(participant.getOwnerYn(), findParticipant.getOwnerYn());
