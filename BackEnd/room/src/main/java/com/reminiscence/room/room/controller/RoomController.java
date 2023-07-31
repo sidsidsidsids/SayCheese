@@ -29,7 +29,7 @@ public class RoomController {
     }
 
     @PostMapping
-    public ResponseEntity<Response> writeRoomList(
+    public ResponseEntity<Response> writeRoom(
             @RequestBody @Valid WriteRoomRequestDto requestDto) {
         roomService.writeRoom(requestDto);
         return new ResponseEntity(Response.of(RoomMessage.ROOM_WRITE_SUCCESS), HttpStatus.OK);
