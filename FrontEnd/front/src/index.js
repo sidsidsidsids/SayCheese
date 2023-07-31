@@ -18,8 +18,13 @@ import User from "./user/User";
 import Login from "./user/Login";
 import InfoAgreement from "./user/InfoAgreement";
 import SignUp from "./user/SignUp";
+import MyPage from "./user/MyPage";
 
 import Photo from "./photo/Photo";
+
+// Redux
+import { Provider } from "react-redux"; // React 앱에 Redux 스토어를 연결하기 위한 Provider
+import store from "./redux/store";
 
 const router = createBrowserRouter([
   {
@@ -70,6 +75,10 @@ const router = createBrowserRouter([
             path: "signup/",
             element: <SignUp />,
           },
+          {
+            path: "mypage/",
+            element: <MyPage />,
+          },
         ],
       },
       {
@@ -89,6 +98,8 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>
 );

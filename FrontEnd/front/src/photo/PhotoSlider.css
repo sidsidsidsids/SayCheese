@@ -26,3 +26,7 @@
 
 .PhotoSliderSort {
 }
+
+.PhotoCard:hover {
+  cursor: pointer;
+}

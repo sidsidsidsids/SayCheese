@@ -1,13 +1,31 @@
+import { useState } from "react";
 import "./PhotoCard.css";
+import { useDispatch } from "react-redux";
+import { openModal } from "../redux/features/modal/modalSlice";
 
-function PhotoCard({ name, imgSrc, likes }) {
+function PhotoCard({
+  author,
+  createdDate,
+  imageLink,
+  loverCnt,
+  loverYn,
+  tags,
+  payload,
+}) {
+  const dispatch = useDispatch();
+  // 좋아요 체크 되어있으면 like:1 안 했으면 :0
+  const [like, setLike] = useState(loverYn);
+
   return (
-    <div className="PhotoCard">
-      {name}
-      <br />
-      <img width="100px" src={imgSrc} />
-      <br />
-      likes:{likes}
+    <div
+      className="PhotoCard"
+      onClick={(event) => {
+        dispatch(openModal(payload));
+      }}
+    >
+      <img width="100px" src={imageLink} />
+      <div></div>
+      likes:{loverCnt}
     </div>
   );
 }

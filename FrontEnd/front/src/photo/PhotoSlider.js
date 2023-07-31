@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
+
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import "./PhotoSlider.css";
-import PhotoCard from "./PhotoCard";
-import sampleImg from "./assets/snoopy.png";
 
-function PhotoSlider() {
+import "./PhotoSlider.css";
+
+import PhotoCard from "./PhotoCard";
+
+function PhotoSlider({ photoList }) {
   const settings = {
     dots: true, // 페이지 번호 표시
     arrows: true, // 좌,우 버튼
@@ -38,47 +40,25 @@ function PhotoSlider() {
     ],
   };
 
-  const [photoList, setPhotoList] = useState([
-    {
-      id: 0,
-      name: "snoopy",
-      imgSrc: { sampleImg },
-      likes: 10,
-    },
-    {
-      id: 1,
-      name: "snoopy2",
-      imgSrc: { sampleImg },
-      likes: 12,
-    },
-    {
-      id: 2,
-      name: "snoopy3",
-      imgSrc: { sampleImg },
-      likes: 20,
-    },
-    {
-      id: 3,
-      name: "snoopy4",
-      imgSrc: { sampleImg },
-      likes: 100,
-    },
-  ]);
-
   return (
     <div>
-      <Slider {...settings}>
-        {photoList.map((item) => (
-          <div>
-            <PhotoCard
-              key={item.id}
-              name={item.name}
-              imgSrc={item.imgSrc.sampleImg}
-              likes={item.likes}
-            />
-          </div>
-        ))}
-      </Slider>
+      <div>
+        <Slider {...settings}>
+          {photoList.map((item) => (
+            <div>
+              <PhotoCard
+                key={item.id}
+                name={item.name}
+                imageLink={item.imageLink.sampleImg}
+                loverCnt={item.loverCnt}
+                loverYn={item.loverYn}
+                // 모달 띄울때 사용하려고 전체 데이터 전달
+                payload={item}
+              />
+            </div>
+          ))}
+        </Slider>
+      </div>
     </div>
   );
 }
