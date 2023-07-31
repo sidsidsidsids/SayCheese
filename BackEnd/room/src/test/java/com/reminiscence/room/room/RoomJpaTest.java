@@ -2,6 +2,7 @@ package com.reminiscence.room.room;
 
 import com.reminiscence.room.domain.Mode;
 import com.reminiscence.room.domain.Room;
+import com.reminiscence.room.participant.repository.ParticipantRepository;
 import com.reminiscence.room.room.repository.RoomRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,9 @@ public class RoomJpaTest {
 
     @Autowired
     private RoomRepository roomRepository;
+
+    @Autowired
+    private ParticipantRepository participantRepository;
 
     @Test
     @DisplayName("방 비밀번호 확인 테스트")
@@ -61,8 +65,11 @@ public class RoomJpaTest {
     public void deleteRoomTest(){
         // given
         String roomCode = "sessionA";
+        Room room = roomRepository.findByRoomCode(roomCode).orElse(null);
+        assertNotNull(room);
 
         // when
+        participantRepository.deleteByRoomId(room.getId());
         roomRepository.deleteByRoomCode(roomCode);
         Room findRoom = roomRepository.findByRoomCode(roomCode).orElse(null);
         // then

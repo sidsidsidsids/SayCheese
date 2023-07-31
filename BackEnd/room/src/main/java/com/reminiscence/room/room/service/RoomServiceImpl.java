@@ -3,6 +3,7 @@ package com.reminiscence.room.room.service;
 import com.reminiscence.room.domain.Room;
 import com.reminiscence.room.exception.customexception.RoomException;
 import com.reminiscence.room.exception.message.RoomExceptionMessage;
+import com.reminiscence.room.participant.repository.ParticipantRepository;
 import com.reminiscence.room.room.dto.WriteRoomRequestDto;
 import com.reminiscence.room.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class RoomServiceImpl implements RoomService{
     private final RoomRepository roomRepository;
+    private final ParticipantRepository participantRepository;
 
     @Override
     public void writeRoom(WriteRoomRequestDto requestDto) {
@@ -24,6 +26,9 @@ public class RoomServiceImpl implements RoomService{
 
     @Override
     public void deleteRoom(String roomCode) {
+        Optional<Room> room = roomRepository.findByRoomCode(roomCode);
+        room.orElseThrow(() -> new RoomException(RoomExceptionMessage.NOT_FOUND_ROOM));
+        participantRepository.deleteByRoomId(room.get().getId());
         roomRepository.deleteByRoomCode(roomCode);
     }
 

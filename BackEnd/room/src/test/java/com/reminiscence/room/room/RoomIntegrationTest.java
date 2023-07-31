@@ -25,6 +25,7 @@ import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
@@ -46,8 +47,9 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@Transactional
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-public class RoomTest {
+public class RoomIntegrationTest {
     @Autowired
     WebApplicationContext applicationContext;
 
@@ -70,7 +72,7 @@ public class RoomTest {
                         .withRequestDefaults(prettyPrint())
                         .withResponseDefaults(prettyPrint()))
                 .build();
-        Member guest = memberRepository.findById(1L).orElse(null);
+        Member guest = memberRepository.findById(5L).orElse(null);
         Member member = memberRepository.findById(2L).orElse(null);
         guestToken= JWT.create()
                 .withClaim("memberId",String.valueOf(guest.getId()))

@@ -19,4 +19,8 @@ public class DummyRoomCheckRequestDto {
     public DummyRoomCheckRequestDto(DummyRoomCheckRequestDto.Builder builder){
         this.password = builder.password;
     }
+
+    public String getPassword() {
+        return password;
+    }
 }
