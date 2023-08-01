@@ -1,31 +1,22 @@
 package com.reminiscence.filter;
 
 import java.io.IOException;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.reminiscence.config.redis.RefreshTokenService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.reminiscence.config.auth.MemberDetail;
 import com.reminiscence.member.dto.MemberLoginRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,21 +34,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final RefreshTokenService refreshTokenService;
 
+    private final JwtTokenProvider jwtTokenProvider;
+
     // Authentication 객체 만들어서 리턴 => 의존 : AuthenticationManager
     // 인증 요청시에 실행되는 함수 => /login
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
-        String username = obtainUsername(request);
-        String password = obtainPassword(request);
-        String refreshToken = getRefreshTokenFromCookie(request);
-        if (refreshToken != null) {
-            String userId = extractClaimValue(refreshToken, "memberId", env);
-            if (refreshToken.equals(refreshTokenService.getRefreshToken(userId))) {
-                Authentication authentication = new UsernamePasswordAuthenticationToken(username, password);
-                return authenticationManager.authenticate(authentication);
-            }
-        }
 
         // request에 있는 email과 password를 파싱해서 자바 Object로 받기
         ObjectMapper om = new ObjectMapper();
@@ -99,63 +82,32 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         MemberDetail memberDetail = (MemberDetail) authResult.getPrincipal();
 
-        String accessToken = JWT.create()
-                .withSubject(memberDetail.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION_TIME))
-//                .withClaim("id", memberDetail.getMember().getId())
-                .withClaim("memberId", String.valueOf(memberDetail.getMember().getId()))
-                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
+        Map<String, Object> customClaims = new HashMap<>();
+        customClaims.put("memberId", String.valueOf(memberDetail.getMember().getId()));
 
-        String refreshToken = JWT.create()
-                .withSubject(memberDetail.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION_TIME))
-//                .withClaim("id", memberDetail.getMember().getId())
-                .withClaim("memberId", String.valueOf(memberDetail.getMember().getId()))
-                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
+        String accessToken = jwtTokenProvider.generateToken(memberDetail.getUsername(), ACCESS_TOKEN_EXPIRATION_TIME, customClaims);
+        String refreshToken = jwtTokenProvider.generateToken(memberDetail.getUsername(), REFRESH_TOKEN_EXPIRATION_TIME, customClaims);
 
-        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + accessToken);
-        System.out.println(refreshToken);
-        System.out.println(REFRESH_TOKEN_EXPIRATION_TIME);
-        System.out.println(memberDetail.getMember().getId());
+//        String accessToken = JWT.create()
+//                .withSubject(memberDetail.getUsername())
+//                .withExpiresAt(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION_TIME))
+////                .withClaim("id", memberDetail.getMember().getId())
+//                .withClaim("memberId", String.valueOf(memberDetail.getMember().getId()))
+//                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
+//
+//        String refreshToken = JWT.create()
+//                .withSubject(memberDetail.getUsername())
+//                .withExpiresAt(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION_TIME))
+////                .withClaim("id", memberDetail.getMember().getId())
+//                .withClaim("memberId", String.valueOf(memberDetail.getMember().getId()))
+//                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
+        jwtTokenProvider.addHeaderAccessToken(response, accessToken);
+
+        // 사용자로부터 헤더 값으로 리프레시 토큰을 받는 것을 테스트하는 용도로, 실제 구현에서는 쿠키 값으로 전달하므로 빼야 함
+        jwtTokenProvider.addHeaderRefreshToken(response, refreshToken);
+
+//        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + accessToken);
         refreshTokenService.saveRefreshToken(String.valueOf(memberDetail.getMember().getId()), refreshToken, REFRESH_TOKEN_EXPIRATION_TIME);
-        addRefreshTokenToCookie(response, refreshToken);
-
-    }
-
-    public String getRefreshTokenFromCookie(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("refreshToken".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
-    }
-
-    public void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
-        Cookie cookie = new Cookie("refreshToken", refreshToken);
-        cookie.setHttpOnly(true); // JavaScript로 쿠키에 접근 불가능하도록 설정
-        cookie.setSecure(true);   // HTTPS 프로토콜을 통해 전송할 때만 쿠키 사용
-        cookie.setMaxAge(REFRESH_TOKEN_EXPIRATION_TIME); // 쿠키의 유효 기간 설정 (초 단위)
-        cookie.setPath("/");     // 쿠키의 경로 설정 (애플리케이션의 모든 경로에서 접근 가능하도록 설정)
-        response.addCookie(cookie);
-    }
-
-    public static String extractClaimValue(String token, String claimName, Environment env) {
-        try {
-            Jws<Claims> claimsJws = Jwts.parser()
-                    .setSigningKey(env.getProperty("jwt.secret"))
-                    .parseClaimsJws(token);
-
-            Claims claims = claimsJws.getBody();
-            return claims.get(claimName, String.class); // 클레임 값 가져오기
-
-        } catch (Exception e) {
-            // 토큰 파싱이 실패한 경우 또는 클레임이 없는 경우 예외 처리
-            e.printStackTrace();
-            return null;
-        }
+        jwtTokenProvider.addRefreshTokenToCookie(response, refreshToken);
     }
 }

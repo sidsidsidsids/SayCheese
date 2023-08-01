@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -70,6 +71,8 @@ public class MemberIntegrationTest {
     @Autowired
     private WebApplicationContext applicationContext;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
     @BeforeEach
     public void init(RestDocumentationContextProvider restDocumentation) throws SQLException {
         mvc= MockMvcBuilders.webAppContextSetup(applicationContext)
@@ -87,6 +90,10 @@ public class MemberIntegrationTest {
 //        memberToken= JWT.create()
 //                .withClaim("memberId",String.valueOf(member.getId()))
 //                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
+
+        memberRepository.deleteAll();
+        // H2 Database에서 auto_increment 값을 초기화하는 쿼리 실행
+        jdbcTemplate.execute("ALTER TABLE member ALTER COLUMN id RESTART WITH 1");
     }
 
     @Test

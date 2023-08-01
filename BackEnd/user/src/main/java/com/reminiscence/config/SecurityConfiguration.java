@@ -1,40 +1,29 @@
 package com.reminiscence.config;
 
-import com.reminiscence.config.auth.MemberDetailService;
 import com.reminiscence.config.redis.RefreshTokenService;
 import com.reminiscence.filter.JwtAuthenticationFilter;
 import com.reminiscence.filter.JwtAuthorizationFilter;
+import com.reminiscence.filter.JwtTokenProvider;
+import com.reminiscence.filter.JwtUtil;
 import com.reminiscence.handler.AccessDenyHandler;
 import com.reminiscence.handler.CustomAuthenticationEntryPoint;
 import com.reminiscence.handler.CustomLogoutSuccessHandler;
 import com.reminiscence.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-
-import javax.sql.DataSource;
 
 
 @EnableWebSecurity
@@ -43,8 +32,14 @@ import javax.sql.DataSource;
 public class SecurityConfiguration {
 
     private final Environment env;
-    private final MemberDetailService memberDetailService;
+
     private final RefreshTokenService refreshTokenService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -67,8 +62,8 @@ public class SecurityConfiguration {
                 .and()
                 .formLogin().disable()
                 .httpBasic().disable()
-                .addFilter(new JwtAuthenticationFilter(authenticationManager, env, refreshTokenService))
-                .addFilterBefore(new JwtAuthorizationFilter(env, memberRepository), BasicAuthenticationFilter.class)
+                .addFilter(new JwtAuthenticationFilter(authenticationManager, env, refreshTokenService, jwtTokenProvider))
+                .addFilterBefore(new JwtAuthorizationFilter(env, memberRepository, refreshTokenService, jwtTokenProvider, jwtUtil), BasicAuthenticationFilter.class)
                 .authorizeRequests()
 //                .antMatchers("/public").permitAll()
 //                .antMatchers("/private").hasRole("USER")
@@ -91,13 +86,11 @@ public class SecurityConfiguration {
         return http.build();
     }
 
-//    @Bean
-//    public FilterRegistrationBean<JwtAuthenticationFilter> jwtAuthenticationFilter() {
-//        FilterRegistrationBean<JwtAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
-//        registrationBean.setFilter(new JwtAuthenticationFilter(authenticationManager));
-//        registrationBean.addUrlPatterns("api/member/login"); // Filter가 적용될 URL 패턴 설정
-//        return registrationBean;
-//    }
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
 
     // 접근 설정 예외 경로 설정
 //    @Bean
@@ -105,6 +98,13 @@ public class SecurityConfiguration {
         return (web) -> web.ignoring().antMatchers("/**.html", "/**.css", "/img/**");
     }
 
+//    @Bean
+//    public FilterRegistrationBean<JwtAuthenticationFilter> jwtAuthenticationFilter() {
+//        FilterRegistrationBean<JwtAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
+//        registrationBean.setFilter(new JwtAuthenticationFilter(authenticationManager));
+//        registrationBean.addUrlPatterns("api/member/login"); // Filter가 적용될 URL 패턴 설정
+//        return registrationBean;
+//    }
     // using the WebSecurityConfigurerAdapter with an embedded DataSource that is initialized with the default schema and has a single user
 //    @Bean
 //    public DataSource dataSource() {
