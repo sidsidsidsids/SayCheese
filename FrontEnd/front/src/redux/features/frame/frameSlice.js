@@ -5,6 +5,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   height: 589.6,
   width: 207.8,
+  bgColor: "",
+  bgImg: "",
 };
 
 // 액션 생성 함수
@@ -20,16 +22,14 @@ const frameSlice = createSlice({
     Resize: (state, action) => {
       state.width = action.payload.width;
       state.height = action.payload.height;
-      console.log(state.width);
     },
-    // HorizontalResize: (state, action) => {
-    //   state.width = 589.6;
-    //   state.height = 207.8;
-    //   console.log(state.width, state.height);
-    // },
+    Repaint: (state, action) => {
+      state.bgColor = action.payload.color;
+      state.bgImg = action.payload.image;
+    },
   },
 });
 
-export const { Resize } = frameSlice.actions;
+export const { Resize, Repaint } = frameSlice.actions;
 
 export default frameSlice.reducer;
