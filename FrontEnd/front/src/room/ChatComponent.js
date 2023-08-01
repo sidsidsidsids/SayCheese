@@ -24,22 +24,23 @@ export default class ChatComponent extends Component {
 
   componentDidMount() {
     console.log("CHAT PROPS: ", this.props);
-    // this.props.user.session.on("signal:chat", (event) => {
-    //   console.log("EVENT DATA: ", event.data);
-    //   const data = JSON.parse(event.data);
-    //   console.log("DATA : ", data);
-    //   let messageList = this.state.messageList;
-    //   messageList.push({
-    //     connectionId: event.from.connectionId,
-    //     nickname: data.nickname,
-    //     message: data.message,
-    //   });
-    //   setTimeout(() => {
-    //     this.props.messageReceived();
-    //   }, 50);
-    //   this.setState({ messageList: messageList });
-    //   this.scrollToBottom();
-    // });
+    console.log("CHAT PROPS (USER): ", this.props.user);
+    this.props.user.on("signal:chat", (event) => {
+      console.log("EVENT DATA: ", event.data);
+      const data = JSON.parse(event.data);
+      console.log("DATA : ", data);
+      let messageList = this.state.messageList;
+      messageList.push({
+        connectionId: event.from.connectionId,
+        nickname: data.nickname,
+        message: data.message,
+      });
+      setTimeout(() => {
+        // this.props.messageReceived();
+      }, 50);
+      this.setState({ messageList: messageList });
+      this.scrollToBottom();
+    });
   }
 
   handleChange(event) {
@@ -59,9 +60,9 @@ export default class ChatComponent extends Component {
       if (message !== "" && message !== " ") {
         const data = {
           message: message,
-          nickname: this.props.user.myUsername,
+          nickname: this.props.myName,
         };
-        this.props.user.session.signal({
+        this.props.user.signal({
           data: JSON.stringify(data),
           type: "chat",
         });
@@ -101,7 +102,7 @@ export default class ChatComponent extends Component {
                 id="remoteUsers"
                 className={
                   "message" +
-                  (data.connectionId !== this.props.user.getConnectionId()
+                  (data.connectionId !== this.props.user.connection.connectionId
                     ? " left"
                     : " right")
                 }

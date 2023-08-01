@@ -1,7 +1,6 @@
 #chatContainer {
-    position: absolute;
-    z-index: 0;
-    width: 100%;
+  display: flex;
+    width: 20%;
     height: 100%;
   }
   
@@ -26,15 +25,9 @@
   
   #chatComponent {
     background-color: #b8b8b8;
-    position: absolute;
-    z-index: 99999;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
     margin: auto;
-    height: calc(100% - 30px);
-    width: calc(100% - 30px);
+    height: 100%;
+    width: 100%;
     border-radius: 20px;
   }
   
@@ -149,7 +142,6 @@
   /* End my messages */
   
   #messageInput {
-    position: absolute;
     bottom: 0px;
     width: 100%;
     background-color: #ffffff;

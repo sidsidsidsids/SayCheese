@@ -30,3 +30,14 @@
   box-shadow: 0 0 0 2px lightcoral inset;
   margin: 0;
 }
+.room-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+  border: 1px dashed black;
+  /* width: 80%; */
+  flex: 1 1 80%;
+}

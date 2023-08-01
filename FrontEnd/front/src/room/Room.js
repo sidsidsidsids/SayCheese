@@ -1,226 +1,128 @@
-import { useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { OpenVidu } from "openvidu-browser";
-import UserVideoComponent from "./UserVideoComponent";
+import html2canvas from "html2canvas";
 import axios from "axios";
 import "./Room.css";
-import { Component } from "react";
+import UserVideoComponent from "./UserVideoComponent";
 import RoomButtons from "./RoomButtons";
-import RoomChat from "./RoomChat";
 import RoomFooter from "./RoomFooter";
 import RoomHeader from "./RoomHeader";
 import RoomPhoto from "./RoomPhoto";
-
 import Timer from "./Timer";
-// import ChatComponent from "./ChatComponent";
+import ChatComponent from "./ChatComponent";
 
 const APPLICATION_SERVER_URL = "http://localhost:5000/";
-// const APPLICATION_SERVER_URL = "http://localhost:4443";
 const APPLICATION_SERVER_SECRET = "MY_SECRET";
-// const APPLICATION_SERVER_SECRET = 'SECRET';
+var chatData;
+const Room = () => {
+  const params = useParams();
+  const navigate = useNavigate();
+  const [mySessionId, setMySessionId] = useState(params.id);
+  const [myUserName, setMyUserName] = useState(
+    "test" + Math.floor(Math.random() * 100)
+  );
+  const [session, setSession] = useState(undefined);
+  const [mainStreamManager, setMainStreamManager] = useState(undefined);
+  const [publisher, setPublisher] = useState(undefined);
+  const [subscribers, setSubscribers] = useState([]);
+  const [roomStatus, setRoomStatus] = useState(0);
 
-class Room extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      mySessionId: undefined,
-      myUserName: undefined,
-      session: undefined,
-      mainStreamManager: undefined,
-      publisher: undefined,
-      subscribers: [],
-      prevSubscribers: [],
-      roomStatus: 0,
-      chatData: undefined,
+  useEffect(() => {
+    window.addEventListener("beforeunload", onbeforeunload);
+    console.log("USEEFFECT", params);
+    joinSession();
+    return () => {
+      window.removeEventListener("beforeunload", onbeforeunload);
     };
-    this.joinSession = this.joinSession.bind(this);
-    this.leaveSession = this.leaveSession.bind(this);
-    // this.switchCamera = this.switchCamera.bind(this);
-    this.handleChangeSessionId = this.handleChangeSessionId.bind(this);
-    this.handleChangeUserName = this.handleChangeUserName.bind(this);
-    this.handleMainVideoStream = this.handleMainVideoStream.bind(this);
-    this.onbeforeunload = this.onbeforeunload.bind(this);
-  }
-  componentDidMount() {
-    window.addEventListener("beforeunload", this.onbeforeunload);
-    this.setState({ mySessionId: "test" }); // mySessionId 이 방의 parameter 값으로 수정해야 함 !
-    this.joinSession();
-  }
+  }, [params.id]);
 
-  componentWillUnmount() {
-    window.removeEventListener("beforeunload", this.onbeforeunload);
-  }
+  const onbeforeunload = (event) => {
+    leaveSession();
+  };
 
-  componentDidUpdate(prev) {}
+  const deleteSubscriber = (streamManager) => {
+    setSubscribers((prevSubscribers) =>
+      prevSubscribers.filter((sub) => sub !== streamManager)
+    );
+  };
 
-  onbeforeunload(event) {
-    this.leaveSession();
-  }
+  const joinSession = () => {
+    const OV = new OpenVidu();
+    setSession(OV.initSession());
+    const mySession = OV.initSession();
 
-  handleChangeSessionId(event) {
-    this.setState({
-      mySessionId: event.target.value,
+    console.log(mySession);
+
+    mySession.on("streamCreated", (event) => {
+      const subscriber = mySession.subscribe(event.stream, undefined);
+      setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
     });
-  }
 
-  handleChangeUserName(event) {
-    this.setState({
-      myUserName: event.target.value,
+    mySession.on("streamDestroyed", (event) => {
+      deleteSubscriber(event.stream.streamManager);
     });
-  }
 
-  handleMainVideoStream(stream) {
-    if (this.state.mainStreamManager !== stream) {
-      this.setState({
-        mainStreamManager: stream,
-      });
-    }
-  }
+    mySession.on("exception", (exception) => {
+      console.warn(exception);
+    });
 
-  deleteSubscriber(streamManager) {
-    let subscribers = this.state.subscribers;
-    let index = subscribers.indexOf(streamManager, 0);
-    if (index > -1) {
-      subscribers.splice(index, 1);
-      this.setState({
-        subscribers: subscribers,
-      });
-    }
-  }
-  joinSession() {
-    // --- 1) Get an OpenVidu object ---
-    this.OV = new OpenVidu();
-
-    // --- 2) Init a session ---
-
-    this.setState(
-      {
-        session: this.OV.initSession(),
-      },
-      () => {
-        var mySession = this.state.session;
-        console.log(mySession);
-        // --- 3) Specify the actions when events take place in the session ---
-
-        // On every new Stream received...
-        mySession.on("streamCreated", (event) => {
-          // Subscribe to the Stream to receive it. Second parameter is undefined
-          // so OpenVidu doesn't create an HTML video by its own
-          var subscriber = mySession.subscribe(event.stream, undefined);
-          var subscribers = this.state.subscribers;
-          subscribers.push(subscriber);
-
-          // Update the state with the new subscribers
-          this.setState({
-            subscribers: subscribers,
+    getToken().then((token) => {
+      mySession
+        .connect(token)
+        .then(async () => {
+          chatData = mySession;
+          console.log(mySession, mySessionId);
+          const publisher = await OV.initPublisherAsync(undefined, {
+            audioSource: undefined,
+            videoSource: undefined,
+            publishAudio: true,
+            publishVideo: true,
+            resolution: "320x240",
+            frameRate: 30,
+            insertMode: "AFTER",
+            mirror: false,
           });
+
+          mySession.publish(publisher);
+
+          // 카메라 선택 옵션 넣을 때 사용됨
+          const devices = await OV.getDevices();
+          // const videoDevices = devices.filter((device) => device.kind === "videoinput");
+          // const currentVideoDeviceId = publisher.stream.getMediaStream().getVideoTracks()[0].getSettings().deviceId;
+          // const currentVideoDevice = videoDevices.find((device) => device.deviceId === currentVideoDeviceId);
+
+          setMainStreamManager(publisher);
+          setPublisher(publisher);
+        })
+        .catch((error) => {
+          console.log(
+            "There was an error connecting to the session:",
+            error.code,
+            error.message
+          );
         });
+    });
+  };
 
-        // On every Stream destroyed...
-        mySession.on("streamDestroyed", (event) => {
-          // Remove the stream from 'subscribers' array
-          this.deleteSubscriber(event.stream.streamManager);
-        });
-
-        // On every asynchronous exception...
-        mySession.on("exception", (exception) => {
-          console.warn(exception);
-        });
-
-        // --- 4) Connect to the session with a valid user token ---
-
-        // Get a token from the OpenVidu deployment
-        this.getToken().then((token) => {
-          // First param is the token got from the OpenVidu deployment. Second param can be retrieved by every user on event
-          // 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname
-          mySession
-            .connect(token)
-            .then(async () => {
-              // --- 5) Get your own camera stream ---
-              console.log(mySession);
-              console.log(mySession.connection.connectionId);
-              this.setState({
-                chatData: mySession,
-              });
-              console.log("occur");
-              // Init a publisher passing undefined as targetElement (we don't want OpenVidu to insert a video
-              // element: we will manage it on our own) and with the desired properties
-              let publisher = await this.OV.initPublisherAsync(undefined, {
-                audioSource: undefined, // The source of audio. If undefined default microphone
-                videoSource: undefined, // The source of video. If undefined default webcam
-                publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
-                publishVideo: true, // Whether you want to start publishing with your video enabled or not
-                resolution: "320x240", // The resolution of your video
-                frameRate: 30, // The frame rate of your video
-                insertMode: "APPEND", // How the video is inserted in the target element 'video-container'
-                mirror: false, // Whether to mirror your local video or not
-              });
-
-              // --- 6) Publish your stream ---
-
-              mySession.publish(publisher);
-
-              // Obtain the current video device in use
-              var devices = await this.OV.getDevices();
-              var videoDevices = devices.filter(
-                (device) => device.kind === "videoinput"
-              );
-              var currentVideoDeviceId = publisher.stream
-                .getMediaStream()
-                .getVideoTracks()[0]
-                .getSettings().deviceId;
-              var currentVideoDevice = videoDevices.find(
-                (device) => device.deviceId === currentVideoDeviceId
-              );
-
-              // Set the main video in the page to display our webcam and store our Publisher
-              this.setState({
-                currentVideoDevice: currentVideoDevice,
-                mainStreamManager: publisher,
-                publisher: publisher,
-              });
-            })
-            .catch((error) => {
-              console.log(
-                "There was an error connecting to the session:",
-                error.code,
-                error.message
-              );
-            });
-        });
-      }
-    );
-  }
-  leaveSession() {
-    // --- 7) Leave the session by calling 'disconnect' method over the Session object ---
-
-    const mySession = this.state.session;
-
-    if (mySession) {
-      mySession.disconnect();
+  const leaveSession = () => {
+    if (session) {
+      session.disconnect();
     }
 
-    // Empty all properties...
-    this.OV = null;
-    this.setState({
-      session: undefined,
-      subscribers: [],
-      // mySessionId: "SessionA",
-      // myUserName: "Participant" + Math.floor(Math.random() * 100),
-      mainStreamManager: undefined,
-      publisher: undefined,
-    });
-  }
+    setSession(undefined);
+    setSubscribers([]);
+    setMainStreamManager(undefined);
+    setPublisher(undefined);
+  };
 
-  getToken() {
-    return this.createSession(this.state.mySessionId).then((sessionId) =>
-      this.createToken(sessionId)
-    );
-  }
-  async createSession(sessionId) {
-    console.log("state", this.state);
-    console.log("sessionID", sessionId);
+  const getToken = async () => {
+    const sessionId = await createSession(mySessionId);
+    return createToken(sessionId);
+  };
+
+  const createSession = async (sessionId) => {
+    console.log("세션 아이디", sessionId);
     const response = await axios.post(
       APPLICATION_SERVER_URL + "api/sessions",
       { customSessionId: sessionId },
@@ -235,10 +137,10 @@ class Room extends Component {
         },
       }
     );
-    console.log("respons:", response);
-    return response.data; // The sessionId
-  }
-  async createToken(session) {
+    return response.data;
+  };
+
+  const createToken = async (session) => {
     const response = await axios.post(
       APPLICATION_SERVER_URL + "api/sessions/" + session + "/connections",
       {},
@@ -253,99 +155,78 @@ class Room extends Component {
         },
       }
     );
-    console.log(response);
-    return response.data; // The token
-  }
-  render() {
-    return (
-      // {roomState == "before" ? () : ()}
-      <div className="room">
-        {this.state.roomStatus === 2 ? (
-          // <ResultRoom />
-          <div className="room-active">
-            <div className="room-top">
-              <RoomHeader status={this.state.roomStatus} />
-              <RoomButtons
-                onConfirm={() => {
-                  const navigate = useNavigate();
-                  navigate("/main");
-                }}
-                onClose={() => {
-                  this.setState({ roomStatus: 1 });
-                }}
-                buttonName1="나가기"
-                buttonName2="사진 공유"
-              />
-            </div>
-            <div className="room-mid">
-              <RoomPhoto />
-              {/* {subscribers.map((sub, i) => (
-                <div key={sub.id} className="stream-container col-md-6 col-xs-6">
-                <span>{sub.id}</span>
-                <UserVideoComponent streamManager={sub} />
-                </div>
-              ))} */}
-              <RoomChat />
-            </div>
-            <div className="room-bot">
-              <RoomFooter status={this.state.roomStatus} />
-              <Timer minutes="5" seconds="0" />
-            </div>
+    return response.data;
+  };
+
+  const roomMainRef = useRef();
+
+  useEffect(() => {
+    if (roomStatus === 1) {
+      handleCapture();
+    }
+  }, [roomStatus]);
+
+  const handleCapture = () => {
+    if (roomStatus !== 1 || !roomMainRef.current) {
+      return;
+    }
+    html2canvas(roomMainRef.current).then((canvas) => {
+      console.log("CANVAS", canvas);
+      const image = new Image();
+      image.src = canvas.toDataURL("image/png");
+      document.body.appendChild(image);
+    });
+  };
+
+  return (
+    <div className="room">
+      {roomStatus === 2 ? (
+        <div className="room-active">
+          <div className="room-top">
+            <RoomHeader status={roomStatus} />
+            <RoomButtons
+              onConfirm={() => {
+                navigate("/");
+              }}
+              onClose={() => {
+                setRoomStatus(1);
+              }}
+              buttonName1="나가기"
+              buttonName2="사진 공유"
+            />
           </div>
-        ) : this.state.roomStatus === 1 ? (
-          // <RunRoom />
-          <div className="room-active">
-            <div className="room-top">
-              <RoomHeader status={this.state.roomStatus} />
-              <RoomButtons
-                onConfirm={() => {
-                  this.setState({ roomStatus: 2 });
-                }}
-                onClose={() => {
-                  this.setState({ roomStatus: 0 });
-                }}
-                buttonName1="촬영하기"
-                buttonName2="다시 찍기"
-              />
-            </div>
-            <div className="room-mid">
-              <RoomPhoto />
-              <RoomChat />
-              {/* <UserVideoComponent streamManager={this.state.publisher} />
-              {this.state.subscribers.map((sub, i) => (
-                <div
-                  key={sub.id}
-                  className="stream-container col-md-6 col-xs-6"
-                >
-                  <span>{sub.id}</span>
-                  <UserVideoComponent streamManager={sub} />
-                </div>
-              ))} */}
-            </div>
-            <div className="room-bot">
-              <RoomFooter status={this.state.roomStatus} />
-              <Timer minutes="0" seconds="30" />
-            </div>
+          <div className="room-mid">
+            <RoomPhoto />
+            {chatData && <ChatComponent user={chatData} />}
           </div>
-        ) : (
-          // <WaitRoom />
-          <div className="room-active">
-            <div className="room-top">
-              <RoomHeader status={this.state.roomStatus} />
-              <RoomButtons
-                onConfirm={() => {
-                  this.setState({ roomStatus: 1 });
-                  console.log(this.state);
-                }}
-                onClose={() => {}}
-                buttonName1="시작하기"
-                buttonName2="초대 링크"
+          <div className="room-bot">
+            <RoomFooter status={roomStatus} />
+            <Timer minutes="5" seconds="0" />
+          </div>
+        </div>
+      ) : roomStatus === 1 ? (
+        <div className="room-active">
+          <div className="room-top">
+            <RoomHeader status={roomStatus} />
+            <RoomButtons
+              onConfirm={() => {
+                setRoomStatus(2);
+              }}
+              onClose={() => {
+                setRoomStatus(0);
+              }}
+              buttonName1="촬영하기"
+              buttonName2="다시 찍기"
+            />
+          </div>
+          <div className="room-mid">
+            {/* <RoomPhoto /> */}
+            <div className="room-main">
+              <UserVideoComponent
+                streamManager={publisher}
+                myName={myUserName}
               />
-            </div>
-            <div className="room-mid">
-              {/* <RoomPhoto /> */}
-              <UserVideoComponent streamManager={this.state.publisher} />
-              {this.state.subscribers.map((sub, i) => (
+              {subscribers.map((sub, i) => (
                 <div
                   key={sub.id}
                   className="stream-container col-md-6 col-xs-6"
@@ -354,16 +235,53 @@ class Room extends Component {
                   <UserVideoComponent streamManager={sub} />
                 </div>
               ))}
-              {/* <RoomChat /> */}
-              {/* <ChatComponent user={this.chatData} /> */}
             </div>
-            <div className="room-bot">
-              <RoomFooter status={this.state.roomStatus} />
-            </div>
+            {chatData && <ChatComponent user={chatData} myName={myUserName} />}
           </div>
-        )}
-      </div>
-    );
-  }
-}
+          <div className="room-bot">
+            <RoomFooter status={roomStatus} />
+            <Timer minutes="0" seconds="30" />
+            <button onClick={handleCapture()}>캡처</button>
+          </div>
+        </div>
+      ) : (
+        <div className="room-active">
+          <div className="room-top">
+            <RoomHeader status={roomStatus} />
+            <RoomButtons
+              onConfirm={() => {
+                setRoomStatus(1);
+              }}
+              onClose={() => {}}
+              buttonName1="시작하기"
+              buttonName2="초대 링크"
+            />
+          </div>
+          <div className="room-mid">
+            <div className="room-main">
+              <UserVideoComponent
+                streamManager={publisher}
+                myName={myUserName}
+              />
+              {subscribers.map((sub, i) => (
+                <div
+                  key={sub.id}
+                  className="stream-container col-md-6 col-xs-6"
+                >
+                  <span>{sub.id}</span>
+                  <UserVideoComponent streamManager={sub} />
+                </div>
+              ))}
+            </div>
+            {chatData && <ChatComponent user={chatData} myName={myUserName} />}
+          </div>
+          <div className="room-bot">
+            <RoomFooter status={roomStatus} />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export default Room;
