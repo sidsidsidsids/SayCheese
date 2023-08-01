@@ -23,9 +23,8 @@ function PhotoCard({
         dispatch(openModal(payload));
       }}
     >
-      <img width="100px" src={imageLink} />
-      <div></div>
-      likes:{loverCnt}
+      <img width="200px" src={imageLink} />
+      <div>likes:{loverCnt}</div>
     </div>
   );
 }

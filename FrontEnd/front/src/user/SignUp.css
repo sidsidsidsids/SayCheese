@@ -5,7 +5,7 @@
 .SignUpBox {
   box-sizing: border-box;
   width: 600px;
-  height: 820px;
+  height: 1000px;
   flex-shrink: 0;
 
   border-radius: 10px;
@@ -107,10 +107,64 @@
   width: 90%;
 }
 
+.InfoInnerBox {
+  margin: 10px 0;
+  width: 525px;
+  height: 170px;
+  overflow: auto;
+
+  border-radius: 10px;
+  border: 1px solid #dadada;
+  background: white;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
+  text-align: left;
+}
+
+.InfoText {
+  padding: 0 15px;
+}
+
+.InfoText > p {
+  color: #929294;
+}
+
+.AgreeBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+input[type="checkbox"] {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  border: 1px solid #dadada;
+  position: relative;
+
+  accent-color: #ea5455;
+}
+
+input#AgreeCheckBtn + label {
+  cursor: pointer;
+}
+
+label {
+  margin: 0;
+  margin-left: 5px;
+  display: flex;
+  align-items: center;
+}
+
 .SignUpBtn {
   box-sizing: border-box;
   width: 520px;
   height: 50px;
   flex-shrink: 0;
-  margin: 20px 0;
+  margin: 20px 0 0;
+}
+
+.SignUpBtnSort {
+  display: flex;
+  justify-content: center;
 }

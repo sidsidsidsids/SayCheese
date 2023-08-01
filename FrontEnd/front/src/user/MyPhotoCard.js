@@ -5,9 +5,9 @@ function MyPhotoCard({ name, imgSrc, likes }) {
     <div className="MyPhotoCard">
       {name}
       <br />
-      <img width="100px" src={imgSrc} />
+      <img width="150px" src={imgSrc} />
       <br />
-      likes:{likes}
+      likes : {likes}
     </div>
   );
 }

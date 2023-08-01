@@ -6,9 +6,9 @@ import { useNavigate } from "react-router-dom";
 function Login() {
   const movePage = useNavigate();
 
-  // 개인정보 동의 페이지로 이동
-  const moveInfoAgreePage = () => {
-    movePage("/user/infoagree");
+  // 회원가입 페이지로 이동
+  const moveSignUpPage = () => {
+    movePage("/user/signup");
   };
 
   const [activeIndex, setActiveIndex] = useState(null);
@@ -58,7 +58,7 @@ function Login() {
             <Button
               className="LoginEtcBtn"
               text={"회원가입"}
-              onClick={moveInfoAgreePage}
+              onClick={moveSignUpPage}
             />
           </div>
         </div>

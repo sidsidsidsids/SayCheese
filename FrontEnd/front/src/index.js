@@ -16,7 +16,6 @@ import Faq from "./customercenter/Faq";
 
 import User from "./user/User";
 import Login from "./user/Login";
-import InfoAgreement from "./user/InfoAgreement";
 import SignUp from "./user/SignUp";
 import MyPage from "./user/MyPage";
 
@@ -66,10 +65,6 @@ const router = createBrowserRouter([
           {
             path: "login/",
             element: <Login />,
-          },
-          {
-            path: "infoagree/",
-            element: <InfoAgreement />,
           },
           {
             path: "signup/",
