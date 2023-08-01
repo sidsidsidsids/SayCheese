@@ -40,6 +40,7 @@ function PhotoModal() {
     try {
       const response = await axios.get(
         `/api/article/image/${modalContent.articleId}`,
+        // articleId에 해당하는 이미지 데이터 상세 정보 가져오기
         {
           headers: {
             "Content-Type": "application/json",
@@ -61,7 +62,11 @@ function PhotoModal() {
             <div>loading..</div>
           ) : (
             <div>
-              <img src={imageData.imgLink} className="ModalImg" />
+              <img
+                src={imageData.imgLink}
+                alt="네컷 이미지"
+                className="ModalImg"
+              />
               <hr className="ModalLine" />
               <div className="ModalContent">
                 <div className="ModalSort">
@@ -75,6 +80,7 @@ function PhotoModal() {
                       minute: "2-digit",
                       second: "2-digit",
                     })}
+                    {/* 날짜 형식 수정 - YYYY. MM. DD. 오후 hh:mm:ss 형식으로 */}
                   </div>
                 </div>
                 <div onClick={clickLike} className="PhotoLike">
@@ -89,6 +95,7 @@ function PhotoModal() {
                         # {tag}
                       </div>
                     ))}
+                  {/* 이미지 데이터에 tags가 존재할 경우 tags 보여주는 코드 */}
                 </div>
               </div>
 

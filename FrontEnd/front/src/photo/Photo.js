@@ -1,11 +1,12 @@
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 import "./Photo.css";
 import PhotoCategory from "./PhotoCategory";
 import PhotoSlider from "./PhotoSlider";
-import sampleImg from "./assets/snoopy.png";
-import { useSelector } from "react-redux";
 import PhotoModal from "./PhotoModal";
-import { useEffect, useState } from "react";
-import axios from "axios";
+
 function Photo() {
   const [photoListLike, setPhotoListLike] = useState([]); // 좋아요 순 이미지
   const [photoListRecent, setPhotoListRecent] = useState([]); // 최신 순 이미지

@@ -24,7 +24,7 @@ function PhotoCard({
         dispatch(openModal(payload));
       }}
     >
-      <img width="200px" src={imageLink} />
+      <img width="200px" src={imageLink} alt="네컷 이미지" />
       <div>likes:{loverCnt}</div>
     </div>
   );
