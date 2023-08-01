@@ -71,7 +71,44 @@
   margin: 20px 0;
 }
 
-.PhotoLike {
+.modal .Heartcontent {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal .Heart {
+  background: url("/src/photo/assets/likes.png") no-repeat;
+  background-position: left;
+  background-size: 2900%;
+  height: 90px;
+  width: 90px;
+  z-index: inherit;
+}
+
+.modal .HeartActive {
+  color: #000;
+}
+
+.modal .Heart.HeartActive {
+  animation: animate 0.8s steps(28) 1;
+  background-position: right;
+}
+@keyframes animate {
+  0% {
+    background-position: left;
+  }
+  100% {
+    background-position: right;
+  }
+}
+
+.modal .Heart.Full {
+  background-position: right;
+}
+
+.PhotoLikeNum {
   display: flex;
   justify-content: left;
   color: red;

@@ -16,7 +16,7 @@ function PhotoModal() {
 
   const dispatch = useDispatch();
   // 좋아요 체크 되어있으면 like:1 안 했으면 :0
-  const [like, setLike] = useState(modalContent.loverYn);
+  const [like, setLike] = useState(imageData.loverYn);
 
   function clickLike(event) {
     event.stopPropagation();
@@ -48,7 +48,9 @@ function PhotoModal() {
           },
         }
       );
+      console.log(modalContent.articleId);
       setImageData(response.data);
+      setLike(response.data.loverYn);
     } catch (error) {
       console.log(error);
     }
@@ -83,8 +85,19 @@ function PhotoModal() {
                     {/* 날짜 형식 수정 - YYYY. MM. DD. 오후 hh:mm:ss 형식으로 */}
                   </div>
                 </div>
-                <div onClick={clickLike} className="PhotoLike">
-                  {imageData.loverCnt}
+                <div onClick={clickLike} className="HeartBtn">
+                  <div className="Heartcontent">
+                    <span
+                      className={
+                        like === 1
+                          ? "Heart Full"
+                          : like === true
+                          ? "HeartActive Heart"
+                          : "Heart"
+                      }
+                    ></span>
+                    <span className="PhotoLikeNum">{imageData.loverCnt}</span>
+                  </div>
                 </div>
                 <div className="PhotoTagsSort">
                   {imageData &&
