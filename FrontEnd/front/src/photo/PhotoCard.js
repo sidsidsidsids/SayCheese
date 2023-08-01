@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { openModal } from "../redux/features/modal/modalSlice";
 
 function PhotoCard({
+  articleId,
   author,
   createdDate,
   imageLink,

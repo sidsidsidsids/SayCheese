@@ -26,6 +26,7 @@ function PhotoSlider({ photoList }) {
           slidesToScroll: 2,
           infinite: true,
           dots: true,
+          initialSlide: 0,
         },
       },
       {
@@ -35,6 +36,7 @@ function PhotoSlider({ photoList }) {
           slidesToScroll: 1,
           infinite: true,
           dots: true,
+          initialSlide: 0,
         },
       },
     ],
@@ -47,9 +49,9 @@ function PhotoSlider({ photoList }) {
           {photoList.map((item) => (
             <div>
               <PhotoCard
-                key={item.id}
+                key={item.articleId}
                 name={item.name}
-                imageLink={item.imageLink.sampleImg}
+                imageLink={item.imageLink}
                 loverCnt={item.loverCnt}
                 loverYn={item.loverYn}
                 // 모달 띄울때 사용하려고 전체 데이터 전달

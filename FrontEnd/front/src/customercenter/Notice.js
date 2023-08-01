@@ -20,7 +20,6 @@ function Notice() {
           "ngrok-skip-browser-warning": "69420",
         },
       });
-      console.log(response.data);
       setArticle(response.data);
     } catch (error) {
       console.log(error);

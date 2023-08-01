@@ -16,7 +16,6 @@ function NoticeList() {
 
   async function getNoticeList() {
     try {
-      console.log("시작");
       const response = await axios.get(
         `/api/article/notice?page=${currentPage}`,
         {

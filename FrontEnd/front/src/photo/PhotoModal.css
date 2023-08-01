@@ -62,13 +62,19 @@
 
 .ModalContent {
   padding: 10px 7.5%;
-  font-size: 20px;
+  font-size: 25px;
 }
 
 .ModalSort {
   display: flex;
   justify-content: space-between;
   margin: 20px 0;
+}
+
+.PhotoLike {
+  display: flex;
+  justify-content: left;
+  color: red;
 }
 
 .PhotoTagsSort {

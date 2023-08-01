@@ -2,15 +2,17 @@ import { useEffect, useState } from "react";
 import "./PhotoModal.css";
 import { useDispatch, useSelector } from "react-redux";
 import { closeModal } from "../redux/features/modal/modalSlice";
+import axios from "axios";
 
 function PhotoModal() {
   // 모달에 표시할 내용이 없으면 에러가 나지않게 로딩 상태를 표시
   const [loading] = useState(false);
 
   // 모달에 띄울 컨텐츠를 가져옵니다
-  // state는 젠처 리덕스 스토어를 의미하며, modal 리듀서에서 관리되는 상태 객체 modalContent를 추출합니다.
+  // state는 전체 리덕스 스토어를 의미하며, modal 리듀서에서 관리되는 상태 객체 modalContent를 추출합니다.
   const { isOpen } = useSelector((store) => store.modal);
   const { modalContent } = useSelector((state) => state.modal);
+  const [imageData, setImageData] = useState([]);
 
   const dispatch = useDispatch();
   // 좋아요 체크 되어있으면 like:1 안 했으면 :0
@@ -30,6 +32,27 @@ function PhotoModal() {
     modalbg.style.top = currentTop; // Set the top CSS property of the element
   }, []);
 
+  useEffect(() => {
+    getImageData();
+  }, []);
+
+  async function getImageData() {
+    try {
+      const response = await axios.get(
+        `/api/article/image/${modalContent.articleId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "69420",
+          },
+        }
+      );
+      setImageData(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <div>
       <div className="modalBackdrop">
@@ -38,35 +61,34 @@ function PhotoModal() {
             <div>loading..</div>
           ) : (
             <div>
-              <img
-                src={modalContent.imageLink.sampleImg}
-                className="ModalImg"
-              />
+              <img src={imageData.imgLink} className="ModalImg" />
               <hr className="ModalLine" />
               <div className="ModalContent">
                 <div className="ModalSort">
-                  <div>{modalContent.author}</div>
+                  <div>{imageData.author}</div>
                   <div>
-                    {new Date(modalContent.createdDate).toLocaleString(
-                      "ko-KR",
-                      {
-                        year: "numeric",
-                        month: "2-digit",
-                        day: "2-digit",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit",
-                      }
-                    )}
+                    {new Date(imageData.createdDate).toLocaleString("ko-KR", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                    })}
                   </div>
                 </div>
-                <div onClick={clickLike}>{modalContent.loverCnt}</div>
+                <div onClick={clickLike} className="PhotoLike">
+                  {imageData.loverCnt}
+                </div>
                 <div className="PhotoTagsSort">
-                  {modalContent.tags.map((tag, index) => (
-                    <div key={index} className="PhotoTags">
-                      # {tag}
-                    </div>
-                  ))}
+                  {imageData &&
+                    imageData.tags &&
+                    imageData.tags.length !== 0 &&
+                    imageData.tags.map((tag, index) => (
+                      <div key={index} className="PhotoTags">
+                        # {tag}
+                      </div>
+                    ))}
                 </div>
               </div>
 
