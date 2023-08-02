@@ -34,6 +34,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
     public Optional<List<ImageArticleListResponseDto>> findMemberCommonImageArticles(Pageable page, Long memberId) {
         return Optional.ofNullable(queryFactory
                 .select(Projections.constructor(ImageArticleListResponseDto.class,
+                        QImageArticle.imageArticle.id.as("articleId"),
                         QImage.image.link.as("imageLink"),
                         ExpressionUtils.as(JPAExpressions.select(count(QLover.lover.id))
                                 .from(QLover.lover)
@@ -58,6 +59,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
     public Optional<List<ImageArticleListResponseDto>> findNonMemberCommonImageArticles(Pageable page) {
         return Optional.ofNullable(queryFactory
                 .select(Projections.constructor(ImageArticleListResponseDto.class,
+                        QImageArticle.imageArticle.id.as("articleId"),
                         QImage.image.link.as("imageLink"),
                         ExpressionUtils.as(JPAExpressions.select(count(QLover.lover.id))
                                 .from(QLover.lover)
@@ -77,6 +79,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
     public Optional<List<ImageArticleListResponseDto>> findMemberTagImageArticles(Long tagId, Pageable page, Long memberId) {
         return Optional.ofNullable(queryFactory
                 .select(Projections.constructor(ImageArticleListResponseDto.class,
+                        QImageArticle.imageArticle.id.as("articleId"),
                         QImage.image.link.as("imageLink"),
                         ExpressionUtils.as(JPAExpressions.select(count(QLover.lover.id))
                                 .from(QLover.lover)
@@ -104,6 +107,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
     public Optional<List<ImageArticleListResponseDto>> findNonMemberTagImageArticles(Long tagId, Pageable page) {
         return Optional.ofNullable(queryFactory
                 .select(Projections.constructor(ImageArticleListResponseDto.class,
+                        QImageArticle.imageArticle.id.as("articleId"),
                         QImage.image.link.as("imageLink"),
                         ExpressionUtils.as(JPAExpressions.select(count(QLover.lover.id))
                                 .from(QLover.lover)
@@ -134,9 +138,10 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
                         ExpressionUtils.as(JPAExpressions.select(count(QLover.lover.id))
                                 .from(QLover.lover)
                                 .where(QLover.lover.article.id.eq(articleId)),"loverCnt"),
-                        ExpressionUtils.as(JPAExpressions.select(count(QLover.lover.id))
+                        ExpressionUtils.as(JPAExpressions.select(QLover.lover.id)
                                 .from(QLover.lover)
-                                .where(QLover.lover.article.id.eq(articleId),QLover.lover.memberId.eq(memberId)),"loverYn")))
+                                .where(QLover.lover.article.id.eq(articleId),loverMemberIdEq(memberId))
+                                .limit(1),"loverYn")))
                 .from(QImageArticle.imageArticle)
                 .join(QImageArticle.imageArticle.member, QMember.member)
                 .join(QImageArticle.imageArticle.image, QImage.image)
@@ -155,7 +160,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
                         QImage.image.link.as("imgLink"),
                         ExpressionUtils.as(JPAExpressions.select(count(QLover.lover.id))
                                 .from(QLover.lover)
-                                .where(QLover.lover.article.id.eq(articleId)),"loverCnt")))
+                                .where(loverArticleIdEq(articleId)),"loverCnt")))
                 .from(QImageArticle.imageArticle)
                 .join(QImageArticle.imageArticle.member, QMember.member)
                 .join(QImageArticle.imageArticle.image, QImage.image)
@@ -216,8 +221,9 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
     private BooleanExpression loverMemberIdEq(Long memberId){
         return QLover.lover.memberId.eq(memberId);
     }
-
-
+    private BooleanExpression loverArticleIdEq(Long articleId){
+        return QLover.lover.article.id.eq(articleId);
+    }
     private BooleanExpression tagIdEq(Long tagId) {
         return QTag.tag.id.eq(tagId);
     }

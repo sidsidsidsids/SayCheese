@@ -10,13 +10,15 @@ import java.time.LocalDateTime;
 @ToString
 public class ImageArticleListResponseDto {
 
+    private Long articleId;
     private String imageLink;
     private Long loverCnt;
     private LocalDateTime createdDate;
     private String author;
     private Long loverYn;
 
-    public ImageArticleListResponseDto(String imageLink, Long loverCnt, LocalDateTime createdDate, String author, Long loverYn) {
+    public ImageArticleListResponseDto(Long articleId, String imageLink, Long loverCnt, LocalDateTime createdDate, String author, Long loverYn) {
+        this.articleId = articleId;
         this.imageLink = imageLink;
         this.loverCnt = loverCnt;
         this.createdDate = createdDate;
@@ -28,7 +30,8 @@ public class ImageArticleListResponseDto {
         }
     }
 
-    public ImageArticleListResponseDto(String imageLink, Long loverCnt, LocalDateTime createdDate, String author) {
+    public ImageArticleListResponseDto(Long articleId, String imageLink, Long loverCnt, LocalDateTime createdDate, String author) {
+        this.articleId = articleId;
         this.imageLink = imageLink;
         this.loverCnt = loverCnt;
         this.createdDate = createdDate;

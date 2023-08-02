@@ -89,6 +89,7 @@ public class ImageArticleIntegrationTest {
                                 headerWithName("Authorization").description("로그인 성공한 토큰")
                         ),
                         responseFields(
+                                fieldWithPath("[].articleId").description("게시글 ID"),
                                 fieldWithPath("[].imageLink").description("이미지 링크"),
                                 fieldWithPath("[].loverCnt").description("좋아요 수"),
                                 fieldWithPath("[].createdDate").description("게시글 작성일"),
@@ -111,6 +112,7 @@ public class ImageArticleIntegrationTest {
                                 headerWithName("Authorization").description("로그인 성공한 토큰")
                         ),
                         responseFields(
+                                fieldWithPath("[].articleId").description("게시글 ID"),
                                 fieldWithPath("[].imageLink").description("이미지 링크"),
                                 fieldWithPath("[].loverCnt").description("좋아요 수"),
                                 fieldWithPath("[].createdDate").description("게시글 작성일"),
@@ -133,6 +135,7 @@ public class ImageArticleIntegrationTest {
                                 headerWithName("Authorization").description("로그인 성공한 토큰")
                         ),
                         responseFields(
+                                fieldWithPath("[].articleId").description("게시글 ID"),
                                 fieldWithPath("[].imageLink").description("이미지 링크"),
                                 fieldWithPath("[].loverCnt").description("좋아요 수"),
                                 fieldWithPath("[].createdDate").description("게시글 작성일"),
@@ -159,6 +162,7 @@ public class ImageArticleIntegrationTest {
                                 parameterWithName("tagId").description("태그 아이디")
                         ),
                         responseFields(
+                                fieldWithPath("[].articleId").description("게시글 ID"),
                                 fieldWithPath("[].imageLink").description("이미지 링크"),
                                 fieldWithPath("[].loverCnt").description("좋아요 수"),
                                 fieldWithPath("[].createdDate").description("게시글 작성일"),
@@ -181,6 +185,7 @@ public class ImageArticleIntegrationTest {
                                 headerWithName("Authorization").description("로그인 성공한 토큰")
                         ),
                         responseFields(
+                                fieldWithPath("[].articleId").description("게시글 ID"),
                                 fieldWithPath("[].imageLink").description("이미지 링크"),
                                 fieldWithPath("[].loverCnt").description("좋아요 수"),
                                 fieldWithPath("[].createdDate").description("게시글 작성일"),
