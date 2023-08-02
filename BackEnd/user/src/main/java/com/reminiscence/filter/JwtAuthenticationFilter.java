@@ -26,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 import static com.reminiscence.filter.JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME;
 import static com.reminiscence.filter.JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME;
 
-@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
 
@@ -35,6 +34,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private final RefreshTokenService refreshTokenService;
 
     private final JwtTokenProvider jwtTokenProvider;
+
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, Environment env, RefreshTokenService refreshTokenService, JwtTokenProvider jwtTokenProvider,String processUrl) {
+        this.authenticationManager = authenticationManager;
+        this.env = env;
+        this.refreshTokenService = refreshTokenService;
+        this.jwtTokenProvider = jwtTokenProvider;
+        setFilterProcessesUrl(processUrl);
+    }
 
     // Authentication 객체 만들어서 리턴 => 의존 : AuthenticationManager
     // 인증 요청시에 실행되는 함수 => /login

@@ -15,7 +15,7 @@ public class MemberJoinRequestDto {
     private String email;
     private String password;
     private String nickname;
-    private Role role = Role.Member;
+    private Role role = Role.MEMBER;
     private char genderFm;
     private int age;
     private String name;
@@ -30,7 +30,7 @@ public class MemberJoinRequestDto {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
-        this.role = Role.Member;
+        this.role = Role.MEMBER;
         this.genderFm = genderFm;
         this.age = age;
         this.name = name;

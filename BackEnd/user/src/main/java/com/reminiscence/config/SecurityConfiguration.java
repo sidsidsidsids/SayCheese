@@ -20,6 +20,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -62,7 +63,7 @@ public class SecurityConfiguration {
                 .and()
                 .formLogin().disable()
                 .httpBasic().disable()
-                .addFilter(new JwtAuthenticationFilter(authenticationManager, env, refreshTokenService, jwtTokenProvider))
+                .addFilter(new JwtAuthenticationFilter(authenticationManager, env, refreshTokenService, jwtTokenProvider,"/api/login"))
                 .addFilterBefore(new JwtAuthorizationFilter(env, memberRepository, refreshTokenService, jwtTokenProvider, jwtUtil), BasicAuthenticationFilter.class)
                 .authorizeRequests()
 //                .antMatchers("/public").permitAll()
@@ -75,6 +76,7 @@ public class SecurityConfiguration {
                     .logoutUrl("/logout")
                     .logoutSuccessHandler(new CustomLogoutSuccessHandler())
                     .logoutSuccessUrl("/public");
+//                .and().apply(new Custom())
 //                .antMatchers("/api/article/image/**")
 //                .access("hasRole('ROLE_Member') or hasRole('ROLE_ADMIN')")
 //                .antMatchers("/api/admin/**")
@@ -85,6 +87,19 @@ public class SecurityConfiguration {
         http.exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint());
         return http.build();
     }
+
+
+//    public class Custom extends AbstractHttpConfigurer<Custom, HttpSecurity> {
+//        @Override
+//        public void configure(HttpSecurity http) throws Exception {
+//            AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
+//            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, env, refreshTokenService, jwtTokenProvider);
+//            jwtAuthenticationFilter.setFilterProcessesUrl("/api/login");
+//            http
+//                    .addFilter(jwtAuthenticationFilter);
+//
+//        }
+//    }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
