@@ -33,6 +33,7 @@ export default function CreateToolBar() {
           {toolBarItems.map((item, index) => (
             <li
               // 클릭 시 해당 도구를 선택된 도구로 설정합니다.
+              key={index}
               onClick={(e) => {
                 setFocusedTool(item.toolBarItem);
               }}

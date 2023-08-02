@@ -14,10 +14,10 @@ import FrameCreate from "./FrameCreate";
 export default function Frame() {
   // tabItems 배열에 각각의 탭 항목을 정의합니다.
   const tabItems = [
-    { tabItem: "프레임 구경하기", component: <FrameList/>, router: "/frame/" },
+    { tabItem: "프레임 구경하기", component: <FrameList />, router: "/frame/" },
     {
       tabItem: "프레임 만들기",
-      component: <FrameCreate/>,
+      component: <FrameCreate />,
       router: "/frame/create/",
     },
   ];
@@ -33,14 +33,17 @@ export default function Frame() {
       <div className="frameTap">
         {tabItems.map((item, index) => (
           <button
+            key={index}
             // 현재 선택된 탭인 경우에는 focused 클래스를 추가하여 배경색을 하얀색으로 변경합니다.
-            className={`FrameButton ${
-              focusedItem === item ? "focused" : ""
-            }`}
+            className={`FrameButton ${focusedItem === item ? "focused" : ""}`}
           >
             <Link
               key={index}
-              to={item.tabItem === "프레임 구경하기" ? "/frame/" : "/frame/create/"}
+              to={
+                item.tabItem === "프레임 구경하기"
+                  ? "/frame/"
+                  : "/frame/create/"
+              }
             >
               {item.tabItem}
             </Link>
