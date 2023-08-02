@@ -4,13 +4,15 @@ import { OpenVidu } from "openvidu-browser";
 import html2canvas from "html2canvas";
 import axios from "axios";
 import "./Room.css";
-import UserVideoComponent from "./UserVideoComponent";
 import RoomButtons from "./RoomButtons";
 import RoomFooter from "./RoomFooter";
 import RoomHeader from "./RoomHeader";
 import RoomPhoto from "./RoomPhoto";
-import Timer from "./Timer";
+import UserVideoComponent from "./UserVideoComponent";
 import ChatComponent from "./ChatComponent";
+import Timer from "./Timer";
+
+import sampleImage from "./assets/sample.jpg";
 
 const APPLICATION_SERVER_URL = "http://localhost:5000/";
 const APPLICATION_SERVER_SECRET = "MY_SECRET";
@@ -18,6 +20,8 @@ var chatData;
 const Room = () => {
   const params = useParams();
   const navigate = useNavigate();
+
+  const [roomManager, setRoomManager] = useState(undefined);
   const [mySessionId, setMySessionId] = useState(params.id);
   const [myUserName, setMyUserName] = useState(
     "test" + Math.floor(Math.random() * 100)
@@ -30,8 +34,14 @@ const Room = () => {
 
   useEffect(() => {
     window.addEventListener("beforeunload", onbeforeunload);
-    console.log("USEEFFECT", params);
     joinSession();
+    setTimeout(() => {
+      // 첫 유저면 방장
+      if (subscribers.length === 0) {
+        console.log("방장됨", subscribers, session);
+        setRoomManager(myUserName);
+      }
+    }, 5000);
     return () => {
       window.removeEventListener("beforeunload", onbeforeunload);
     };
@@ -71,7 +81,9 @@ const Room = () => {
       mySession
         .connect(token)
         .then(async () => {
+          // 채팅창에 보낼 데이터셋
           chatData = mySession;
+
           console.log(mySession, mySessionId);
           const publisher = await OV.initPublisherAsync(undefined, {
             audioSource: undefined,
@@ -80,7 +92,7 @@ const Room = () => {
             publishVideo: true,
             resolution: "320x240",
             frameRate: 30,
-            insertMode: "AFTER",
+            insertMode: "APPEND",
             mirror: false,
           });
 
@@ -158,26 +170,21 @@ const Room = () => {
     return response.data;
   };
 
-  const roomMainRef = useRef();
-
-  useEffect(() => {
-    if (roomStatus === 1) {
-      handleCapture();
-    }
-  }, [roomStatus]);
-
   const handleCapture = () => {
-    if (roomStatus !== 1 || !roomMainRef.current) {
-      return;
-    }
-    html2canvas(roomMainRef.current).then((canvas) => {
+    const range = document.querySelector(".room-main");
+    html2canvas(range, { scale: 4, backgroundColor: null }).then((canvas) => {
       console.log("CANVAS", canvas);
       const image = new Image();
       image.src = canvas.toDataURL("image/png");
+      console.log(image);
+      console.log(roomManager);
       document.body.appendChild(image);
+      range.style.backgroundImage = `url(${image.src})`;
+      // range.style.backgroundSize = "cover";
     });
   };
 
+  const gameMode = () => {};
   return (
     <div className="room">
       {roomStatus === 2 ? (
@@ -221,7 +228,20 @@ const Room = () => {
           </div>
           <div className="room-mid">
             {/* <RoomPhoto /> */}
-            <div className="room-main">
+            <div
+              className="room-main"
+              style={{
+                backgroundImage: `url('${sampleImage}')`,
+                backgroundSize: "contain",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+              }}
+            ></div>
+            {chatData && <ChatComponent user={chatData} myName={myUserName} />}
+          </div>
+          <div className="room-bot">
+            {/* <RoomFooter status={roomStatus} /> */}
+            <div className="video-container">
               <UserVideoComponent
                 streamManager={publisher}
                 myName={myUserName}
@@ -236,12 +256,33 @@ const Room = () => {
                 </div>
               ))}
             </div>
-            {chatData && <ChatComponent user={chatData} myName={myUserName} />}
-          </div>
-          <div className="room-bot">
-            <RoomFooter status={roomStatus} />
+            <button
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "row",
+              }}
+              onClick={
+                handleCapture
+                // const range = document.querySelector(".room-main");
+                // html2canvas(range, { scale: 1.0, backgroundColor: null }).then(
+                //   (canvas) => {
+                //     console.log("CANVAS", canvas);
+                //     const image = new Image();
+                //     image.src = canvas.toDataURL("image/png");
+                //     console.log(image);
+                //     document.body.appendChild(image);
+                //     range.style.backgroundImage = `url(${image.src})`;
+                //     range.style.backgroundSize = "cover";
+                //   }
+                // );
+              }
+              disabled={!roomManager}
+            >
+              캡처
+            </button>
             <Timer minutes="0" seconds="30" />
-            <button onClick={handleCapture()}>캡처</button>
           </div>
         </div>
       ) : (
@@ -252,7 +293,12 @@ const Room = () => {
               onConfirm={() => {
                 setRoomStatus(1);
               }}
-              onClose={() => {}}
+              onClose={() => {
+                console.log(mySessionId);
+                console.log(myUserName);
+                console.log(publisher);
+                console.log(subscribers);
+              }}
               buttonName1="시작하기"
               buttonName2="초대 링크"
             />

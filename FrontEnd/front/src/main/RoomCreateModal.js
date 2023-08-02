@@ -25,10 +25,14 @@ function RoomCreateModal({ open, close }) {
   async function codeCreation() {
     let isValid = false;
     while (!isValid) {
-      let tmpCode = Math.random().toString(36).substring(2, 11);
+      let tmpCode = Math.random().toString(36).substring(2, 10);
       isValid = await isValidCode(tmpCode);
       if (isValid) {
-        setRoomCode(tmpCode);
+        if (isWindowFrame) {
+          setRoomCode(roomLimit + "1" + tmpCode);
+        } else {
+          setRoomCode(roomLimit + "0" + tmpCode);
+        }
       }
     }
   }
