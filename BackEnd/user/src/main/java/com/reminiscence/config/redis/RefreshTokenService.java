@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 public class RefreshTokenService {
 
     private final RedisTemplate<String, Object> redisTemplate;
-    private static final String REFRESH_TOKEN_KEY_PREFIX = "refresh-token:";
+    private static final String REFRESH_TOKEN_KEY_PREFIX = "Bearer ";
 
     public RefreshTokenService(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;

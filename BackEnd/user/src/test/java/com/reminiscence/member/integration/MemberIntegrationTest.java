@@ -24,6 +24,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -125,7 +126,8 @@ public class MemberIntegrationTest {
         mvc.perform(post("/api/member/join")
                 .content(objectMapper.writeValueAsString(memberJoinRequestDto))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()); // 응답 status를 ok로 테스트
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"));
 
         //when
         List<Member> membersList = memberRepository.findAll();
@@ -135,7 +137,7 @@ public class MemberIntegrationTest {
         assertThat(member.getEmail()).isEqualTo(email);
         assertThat(bCryptPasswordEncoder.matches(password, member.getPassword())).isTrue();
         assertThat(member.getNickname()).isEqualTo(nickname);
-        assertThat(member.getRole()).isEqualTo(Role.Member);
+        assertThat(member.getRole()).isEqualTo(Role.MEMBER);
         assertThat(member.getGenderFm()).isEqualTo(genderFm);
         assertThat(member.getAge()).isEqualTo(age);
         assertThat(member.getName()).isEqualTo(name);
@@ -185,7 +187,9 @@ public class MemberIntegrationTest {
         mvc.perform(post("/api/member/join")
                         .content(objectMapper.writeValueAsString(memberJoinRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isAlreadyReported()); // 응답 status를 alreadyReported로 테스트
+                .andExpect(status().isAlreadyReported())// 응답 status를 alreadyReported로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"));
+
 
         //when
         List<Member> membersList = memberRepository.findAll();
@@ -235,13 +239,143 @@ public class MemberIntegrationTest {
         mvc.perform(post("/api/member/join")
                         .content(objectMapper.writeValueAsString(memberJoinRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isConflict()); // 응답 status를 conflict로 테스트
+                .andExpect(status().isConflict()) // 응답 status를 conflict로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"));
 
         //when
         List<Member> membersList = memberRepository.findAll();
 
         //then
         assertThat(membersList.size()).isOne();
+    }
+
+
+    @Test
+    @DisplayName("아이디(이메일) 중복확인 성공 테스트")
+    public void testIdCheckSuccess() throws Exception {
+        //given
+        String email = "b088081@gmail.com";
+        String password = "1234";
+        String nickname = "검정";
+        char genderFm = 'F';
+        int age = 31;
+        String name = "고무신";
+        String profile = "xxxxxxx";
+        String snsId = "nosns";
+        String snsType = "facebook";
+
+        memberRepository.save(Member.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .genderFm(genderFm)
+                .age(age)
+                .name(name)
+                .profile(profile)
+                .snsId(snsId)
+                .snsType(snsType)
+                .build());
+
+        mvc.perform(get("/join/{email}/id-check", "another-email")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"));
+    }
+
+    @Test
+    @DisplayName("아이디(이메일) 중복확인 실패 테스트")
+    public void testIdCheckFailure() throws Exception {
+        //given
+        String email = "b088081@gmail.com";
+        String password = "1234";
+        String nickname = "검정";
+        char genderFm = 'F';
+        int age = 31;
+        String name = "고무신";
+        String profile = "xxxxxxx";
+        String snsId = "nosns";
+        String snsType = "facebook";
+
+        memberRepository.save(Member.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .genderFm(genderFm)
+                .age(age)
+                .name(name)
+                .profile(profile)
+                .snsId(snsId)
+                .snsType(snsType)
+                .build());
+
+        mvc.perform(get("/join/{email}/id-check", email)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest()) // 응답 status를 BadRequest로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"));
+    }
+
+    @Test
+    @DisplayName("닉네임 중복확인 성공 테스트")
+    public void testNicknameCheckSuccess() throws Exception {
+        //given
+        String email = "b088081@gmail.com";
+        String password = "1234";
+        String nickname = "검정";
+        char genderFm = 'F';
+        int age = 31;
+        String name = "고무신";
+        String profile = "xxxxxxx";
+        String snsId = "nosns";
+        String snsType = "facebook";
+
+        memberRepository.save(Member.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .genderFm(genderFm)
+                .age(age)
+                .name(name)
+                .profile(profile)
+                .snsId(snsId)
+                .snsType(snsType)
+                .build());
+
+        mvc.perform(get("/join/{email}/nickname-check", "another-nickname")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"));
+    }
+
+    @Test
+    @DisplayName("닉네임 중복확인 실패 테스트")
+    public void testNicknameCheckFailure() throws Exception {
+        //given
+        String email = "b088081@gmail.com";
+        String password = "1234";
+        String nickname = "검정";
+        char genderFm = 'F';
+        int age = 31;
+        String name = "고무신";
+        String profile = "xxxxxxx";
+        String snsId = "nosns";
+        String snsType = "facebook";
+
+        memberRepository.save(Member.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .genderFm(genderFm)
+                .age(age)
+                .name(name)
+                .profile(profile)
+                .snsId(snsId)
+                .snsType(snsType)
+                .build());
+
+        mvc.perform(get("/join/{email}/nickname-check", nickname)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest()) // 응답 status를 BadRequest로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"));
     }
 
     @Test
@@ -262,7 +396,7 @@ public class MemberIntegrationTest {
                 .email(email)
                 .password(bCryptPasswordEncoder.encode(password))
                 .nickname(nickname)
-                .role(Role.Member)
+                .role(Role.MEMBER)
                 .genderFm(genderFm)
                 .age(age)
                 .name(name)
@@ -278,11 +412,12 @@ public class MemberIntegrationTest {
 
 //        assertThat(memberService.login(memberLoginRequestDto)).isNotNull();
 
-        mvc.perform(post("/login")
+        mvc.perform(post("/api/login")
                         .content(objectMapper.writeValueAsString(memberLoginRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) // 응답 status를 ok로 테스트
-                .andExpect(header().exists(HttpHeaders.AUTHORIZATION));
+                .andExpect(header().exists(HttpHeaders.AUTHORIZATION))
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"));
 //                .andExpect(jsonPath(email).value(email))
 //                .andExpect(jsonPath(password).value(password));
 
@@ -307,7 +442,7 @@ public class MemberIntegrationTest {
                 .email(email)
                 .password(password)
                 .nickname(nickname)
-                .role(Role.Member)
+                .role(Role.MEMBER)
                 .build());
 
         MemberLoginRequestDto memberLoginRequestDto = MemberLoginRequestDto.builder()
@@ -315,11 +450,12 @@ public class MemberIntegrationTest {
                 .password("incorrect_password")
                 .build();
 
-        mvc.perform(post("/login")
+        mvc.perform(post("/api/login")
                         .content(objectMapper.writeValueAsString(memberLoginRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized()) // 응답 status를 unauthorized로 테스트
-                .andExpect(header().doesNotExist(HttpHeaders.AUTHORIZATION));
+                .andExpect(header().doesNotExist(HttpHeaders.AUTHORIZATION))
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"));
 
 //        objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);;
 //        objectMapper.registerModule(new JavaTimeModule());
@@ -331,7 +467,7 @@ public class MemberIntegrationTest {
 
     @Test
     @DisplayName("회원정보 검색")
-    public void testSearchMember() throws Exception {
+    public void testGetMemberInfo() throws Exception {
         //given
         String email = "b088081@gmail.com";
         String password = "1234";
@@ -347,7 +483,7 @@ public class MemberIntegrationTest {
                 .email(email)
                 .password(bCryptPasswordEncoder.encode(password))
                 .nickname(nickname)
-                .role(Role.Member)
+                .role(Role.MEMBER)
                 .genderFm(genderFm)
                 .age(age)
                 .name(name)
@@ -363,10 +499,11 @@ public class MemberIntegrationTest {
                 .build();
 
 
-        MvcResult result = mvc.perform(post("/login")
+        MvcResult result = mvc.perform(post("/api/login")
                         .content(objectMapper.writeValueAsString(memberLoginRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"))
                 .andReturn();
 
         HttpHeaders headers = new HttpHeaders();
@@ -375,7 +512,8 @@ public class MemberIntegrationTest {
         mvc.perform(get("/api/member/info")
                         .headers(headers)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()); // 응답 status를 ok로 테스트
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"));
 
         //when
         List<Member> membersList = memberRepository.findAll();
@@ -385,7 +523,7 @@ public class MemberIntegrationTest {
         assertThat(member.getEmail()).isEqualTo(email);
         assertThat(bCryptPasswordEncoder.matches(password, member.getPassword())).isTrue();
         assertThat(member.getNickname()).isEqualTo(nickname);
-        assertThat(member.getRole()).isEqualTo(Role.Member);
+        assertThat(member.getRole()).isEqualTo(Role.MEMBER);
         assertThat(member.getGenderFm()).isEqualTo(genderFm);
         assertThat(member.getAge()).isEqualTo(age);
         assertThat(member.getName()).isEqualTo(name);
@@ -411,7 +549,7 @@ public class MemberIntegrationTest {
                 .email(email)
                 .password(bCryptPasswordEncoder.encode(password))
                 .nickname("nickname")
-                .role(Role.Member)
+                .role(Role.MEMBER)
                 .genderFm('F')
                 .age(30)
                 .name("name")
@@ -425,10 +563,11 @@ public class MemberIntegrationTest {
                 .password(password)
                 .build();
 
-        MvcResult result = mvc.perform(post("/login")
+        MvcResult result = mvc.perform(post("/api/login")
                         .content(objectMapper.writeValueAsString(memberLoginRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"))
                 .andReturn();
 
         MemberInfoUpdateRequestDto memberInfoUpdateRequestDto = MemberInfoUpdateRequestDto.builder()
@@ -448,7 +587,8 @@ public class MemberIntegrationTest {
                         .headers(headers)
                         .content(objectMapper.writeValueAsString(memberInfoUpdateRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()); // 응답 status를 ok로 테스트
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"));
 
         //when
         List<Member> membersList = memberRepository.findAll();
@@ -458,7 +598,7 @@ public class MemberIntegrationTest {
         assertThat(member.getEmail()).isEqualTo(email);
         assertThat(bCryptPasswordEncoder.matches(password, member.getPassword())).isTrue();
         assertThat(member.getNickname()).isEqualTo(nickname);
-        assertThat(member.getRole()).isEqualTo(Role.Member);
+        assertThat(member.getRole()).isEqualTo(Role.MEMBER);
         assertThat(member.getGenderFm()).isEqualTo(genderFm);
         assertThat(member.getAge()).isEqualTo(age);
         assertThat(member.getName()).isEqualTo(name);
@@ -478,7 +618,7 @@ public class MemberIntegrationTest {
                 .email(email)
                 .password(bCryptPasswordEncoder.encode(password))
                 .nickname("검정")
-                .role(Role.Member)
+                .role(Role.MEMBER)
                 .genderFm('F')
                 .age(31)
                 .name("고무신")
@@ -493,10 +633,11 @@ public class MemberIntegrationTest {
                 .password(password)
                 .build();
 
-        MvcResult result = mvc.perform(post("/login")
+        MvcResult result = mvc.perform(post("/api/login")
                         .content(objectMapper.writeValueAsString(memberLoginRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"))
                 .andReturn();
 
         HttpHeaders headers = new HttpHeaders();
@@ -504,7 +645,8 @@ public class MemberIntegrationTest {
         mvc.perform(delete("/api/member/delete")
                         .headers(headers)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()); // 응답 status를 ok로 테스트
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"));
 
         //when
         List<Member> membersList = memberRepository.findAll();
@@ -526,7 +668,7 @@ public class MemberIntegrationTest {
                 .email(email)
                 .password(bCryptPasswordEncoder.encode(password))
                 .nickname("검정")
-                .role(Role.Member)
+                .role(Role.MEMBER)
                 .genderFm('F')
                 .age(31)
                 .name("고무신")
@@ -538,7 +680,8 @@ public class MemberIntegrationTest {
 
         mvc.perform(delete("/api/member/delete")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized()); // 응답 status를 ok로 테스트
+                .andExpect(status().isUnauthorized()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"));
 
         //when
         List<Member> membersList = memberRepository.findAll();
@@ -560,7 +703,7 @@ public class MemberIntegrationTest {
                 .email("memories1@gmail.com")
                 .password(bCryptPasswordEncoder.encode("1234"))
                 .nickname("검정")
-                .role(Role.Member)
+                .role(Role.MEMBER)
                 .genderFm('F')
                 .age(31)
                 .name("고무신")
@@ -575,7 +718,7 @@ public class MemberIntegrationTest {
                 .email("memories2@gmail.com")
                 .password(bCryptPasswordEncoder.encode("1234"))
                 .nickname("빨강")
-                .role(Role.Member)
+                .role(Role.MEMBER)
                 .genderFm('F')
                 .age(31)
                 .name("고무신")
@@ -590,7 +733,7 @@ public class MemberIntegrationTest {
                 .email("memory1@gmail.com")
                 .password(bCryptPasswordEncoder.encode("1234"))
                 .nickname("검정색")
-                .role(Role.Member)
+                .role(Role.MEMBER)
                 .genderFm('F')
                 .age(31)
                 .name("고무신")
@@ -604,6 +747,7 @@ public class MemberIntegrationTest {
         MvcResult result1 = mvc.perform(get("/api/member/search-member/{email-nickname}", email)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"))
                 .andReturn();
 
         //when
@@ -621,6 +765,7 @@ public class MemberIntegrationTest {
         MvcResult result2 = mvc.perform(get("/api/member/search-member/{email-nickname}", nickname)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"))
                 .andReturn(); // 응답 status를 ok로 테스트
 
         //when
@@ -642,7 +787,7 @@ public class MemberIntegrationTest {
         String email = "b088081@gmail.com";
         String password = "1234";
         String nickname = "검정";
-        Role role = Role.Member;
+        Role role = Role.MEMBER;
         char genderFm = 'F';
         int age = 31;
         String name = "고무신";
@@ -654,7 +799,7 @@ public class MemberIntegrationTest {
                 .email(email)
                 .password(bCryptPasswordEncoder.encode(password))
                 .nickname("빨강")
-                .role(Role.Member)
+                .role(Role.MEMBER)
                 .genderFm('M')
                 .age(34)
                 .name("나막신")
@@ -668,10 +813,11 @@ public class MemberIntegrationTest {
                 .password(password)
                 .build();
 
-        MvcResult loginResult = mvc.perform(post("/login")
+        MvcResult loginResult = mvc.perform(post("/api/login")
                         .content(objectMapper.writeValueAsString(memberLoginRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"))
                 .andReturn();
 
         HttpHeaders headers = new HttpHeaders();
@@ -682,6 +828,7 @@ public class MemberIntegrationTest {
                         .headers(headers)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"))
                 .andReturn();
 
         MemberInfoUpdateRequestDto memberInfoUpdateRequestDto = MemberInfoUpdateRequestDto.builder()
@@ -702,7 +849,8 @@ public class MemberIntegrationTest {
                         .headers(headers)
                         .content(objectMapper.writeValueAsString(memberInfoUpdateRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized()); // 응답 status를 ok로 테스트
+                .andExpect(status().isUnauthorized()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"));
 
         //when
         List<Member> membersList = memberRepository.findAll();

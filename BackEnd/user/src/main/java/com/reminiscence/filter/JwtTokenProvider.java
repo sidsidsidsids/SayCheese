@@ -64,35 +64,37 @@ public class JwtTokenProvider {
         }
     }
 
-    public String getRefreshTokenFromCookie(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("refreshToken".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
-    }
+    // refreshToken을 쿠키에서 추출할 경우
+//    public String getRefreshTokenFromCookie(HttpServletRequest request) {
+//        Cookie[] cookies = request.getCookies();
+//        if (cookies != null) {
+//            for (Cookie cookie : cookies) {
+//                if ("refreshToken".equals(cookie.getName())) {
+//                    return cookie.getValue();
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
-    public void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
-        Cookie cookie = new Cookie("refreshToken", refreshToken);
-        cookie.setHttpOnly(true); // JavaScript로 쿠키에 접근 불가능하도록 설정
-        cookie.setSecure(true);   // HTTPS 프로토콜을 통해 전송할 때만 쿠키 사용
-        cookie.setMaxAge(REFRESH_TOKEN_EXPIRATION_TIME); // 쿠키의 유효 기간 설정 (초 단위)
-        cookie.setPath("/");     // 쿠키의 경로 설정 (애플리케이션의 모든 경로에서 접근 가능하도록 설정)
-        response.addCookie(cookie);
-    }
+    // refreshToken을 쿠키에 담을 경우
+//    public void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
+//        Cookie cookie = new Cookie("refreshToken", refreshToken);
+//        cookie.setHttpOnly(true); // JavaScript로 쿠키에 접근 불가능하도록 설정
+//        cookie.setSecure(true);   // HTTPS 프로토콜을 통해 전송할 때만 쿠키 사용
+//        cookie.setMaxAge(REFRESH_TOKEN_EXPIRATION_TIME); // 쿠키의 유효 기간 설정 (초 단위)
+//        cookie.setPath("/");     // 쿠키의 경로 설정 (애플리케이션의 모든 경로에서 접근 가능하도록 설정)
+//        response.addCookie(cookie);
+//    }
 
     // 어세스 토큰 헤더 설정
     public void addHeaderAccessToken(HttpServletResponse response, String accessToken) {
-        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + JwtProperties.ACCESS_TOKEN_PREFIX + accessToken);
+        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + accessToken);
     }
 
     // 리프레시 토큰 헤더 설정
     // 사용자로부터 헤더 값으로 리프레시 토큰을 받는 것을 테스트하는 용도로, 실제 구현에서는 쿠키 값으로 전달하므로 빼야 함
     public void addHeaderRefreshToken(HttpServletResponse response, String refreshToken) {
-        response.addHeader(JwtProperties.ACCESS_TOKEN_PREFIX, JwtProperties.TOKEN_PREFIX + refreshToken);
+        response.addHeader(JwtProperties.REFRESH_TOKEN_HEADER, JwtProperties.TOKEN_PREFIX + refreshToken);
     }
 }

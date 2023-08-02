@@ -43,23 +43,23 @@ public class JwtUtil {
         }
     }
 
-    // Request의 Header에서 AccessToken 값을 가져옵니다. "Authorization" : "Bearer AccessToken:"
+    // Request의 Header에서 AccessToken 값을 가져옵니다. "Authorization" : "Bearer "
     public String resolveAccessToken(HttpServletRequest request) {
         String requestHeader = request.getHeader(JwtProperties.HEADER_STRING);
-        String tokenPrefix = JwtProperties.TOKEN_PREFIX+JwtProperties.ACCESS_TOKEN_PREFIX;
+//        String tokenPrefix = JwtProperties.TOKEN_PREFIX+JwtProperties.ACCESS_TOKEN_PREFIX;
 
-        if(requestHeader != null && requestHeader.startsWith(tokenPrefix))
-            return requestHeader.substring(tokenPrefix.length());
+        if(requestHeader != null && requestHeader.startsWith(JwtProperties.TOKEN_PREFIX))
+            return requestHeader.substring(JwtProperties.TOKEN_PREFIX.length());
         return null;
     }
 
-    // Request의 Header에서 RefreshToken 값을 가져옵니다. "Authorization" : "Bearer RefreshToken:"
+    // Request의 Header에서 RefreshToken 값을 가져옵니다. "Authorization" : "Bearer "
     public String resolveRefreshToken(HttpServletRequest request) {
         String requestHeader = request.getHeader(JwtProperties.HEADER_STRING);
-        String tokenPrefix = JwtProperties.TOKEN_PREFIX+JwtProperties.REFRESH_TOKEN_PREFIX;
+//        String tokenPrefix = JwtProperties.TOKEN_PREFIX+JwtProperties.REFRESH_TOKEN_PREFIX;
 
-        if(requestHeader != null && requestHeader.startsWith(tokenPrefix))
-            return requestHeader.substring(tokenPrefix.length());
+        if(requestHeader != null && requestHeader.startsWith(JwtProperties.TOKEN_PREFIX))
+            return requestHeader.substring(JwtProperties.TOKEN_PREFIX.length());
         return null;
     }
 

@@ -7,6 +7,8 @@ import com.reminiscence.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -28,24 +30,16 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+
         // 헤더에서 JWT 를 받아옵니다.
-        String accessToken = null;
-        String refreshToken = null;
-        // 토큰 유무 확인
         String header=request.getHeader(JWTKey.REQUIRED_HEADER);
-        System.out.println(header);
+        // 토큰 유무 확인
         if(header==null || !header.startsWith(JWTKey.TOKEN_PREFIX)){
             chain.doFilter(request,response);
             return;
-        } else if (request.getHeader(JWTKey.REQUIRED_HEADER).startsWith(JWTKey.TOKEN_PREFIX+JwtProperties.ACCESS_TOKEN_PREFIX)) {
-            accessToken = jwtUtil.resolveAccessToken(request);
-        } else if (request.getHeader(JWTKey.REQUIRED_HEADER).startsWith(JWTKey.TOKEN_PREFIX+JwtProperties.REFRESH_TOKEN_PREFIX)) {
-            refreshToken = jwtUtil.resolveRefreshToken(request);
         }
-        System.out.println(accessToken);
-        System.out.println(refreshToken);
 
-//        String token=header.substring(JWTKey.TOKEN_PREFIX.length()).trim();
+        String accessToken = header.substring(JWTKey.TOKEN_PREFIX.length()).trim();
         String secretKey=env.getProperty("jwt.secret");
         logger.debug("secretKey: "+ secretKey);
         if(secretKey==null) {
@@ -65,30 +59,19 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             Member member=memberRepository.findById(Long.parseLong(memberId)).orElse(null);
             MemberDetail memberDetail = new MemberDetail(member);
             // accessToken이 검증될 경우
-            if (!jwtTokenProvider.isTokenExpired(accessToken)){
-                UsernamePasswordAuthenticationToken emailPasswordAuthenticationToken=new UsernamePasswordAuthenticationToken(memberDetail,null, memberDetail.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(emailPasswordAuthenticationToken);
-            }
-            // refreshTokenToken이 검증될 경우
-            else if(refreshTokenService.getRefreshToken(memberId) != null && jwtTokenProvider.validateToken(refreshTokenService.getRefreshToken(memberId), memberDetail)){
-
-                UsernamePasswordAuthenticationToken emailPasswordAuthenticationToken=new UsernamePasswordAuthenticationToken(memberDetail,null, memberDetail.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(emailPasswordAuthenticationToken);
+            if (jwtTokenProvider.isTokenExpired(accessToken)){
+                String errorMessage = "Access 토큰이 만료되었습니다.";
+                response.setStatus(HttpStatus.FORBIDDEN.value());
+                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                response.getWriter().write("{\"error\":\"" + errorMessage + "\"}");
+                return;
             }
 
             UsernamePasswordAuthenticationToken emailPasswordAuthenticationToken=new UsernamePasswordAuthenticationToken(memberDetail,null, memberDetail.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(emailPasswordAuthenticationToken);
         }
-////        String username = obtainUsername(request);
-////        String password = obtainPassword(request);
-//        String refreshToken = jwtUtil.getRefreshTokenFromCookie(request);
-////        System.out.println(username);
-////        System.out.println(username);
-////        System.out.println(password);
-////        System.out.println(password);
 //        if (refreshToken != null) {
 //            String userId = jwtUtil.extractClaimValue(refreshToken, "memberId", env);
-////            System.out.println(username);
 //            System.out.println(userId);
 ////            if(jwtUtil.validateToken(refreshTokenService.getRefreshToken()))
 //            if (refreshToken.equals(refreshTokenService.getRefreshToken(userId))) {

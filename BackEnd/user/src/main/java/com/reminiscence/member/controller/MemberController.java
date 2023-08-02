@@ -3,13 +3,12 @@ package com.reminiscence.member.controller;
 //import com.reminiscence.JwtServiceImpl;
 
 import com.reminiscence.config.auth.MemberDetail;
+import com.reminiscence.config.redis.RefreshTokenService;
 import com.reminiscence.domain.Member;
+import com.reminiscence.filter.JwtTokenProvider;
 import com.reminiscence.member.dto.*;
 import com.reminiscence.member.service.MemberService;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.reminiscence.filter.JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME;
+
 @RestController
 @RequestMapping("/api/member")
 @Slf4j
@@ -31,8 +32,11 @@ public class MemberController {
     private static final String SUCCESS = "success";
     private static final String FAIL = "fail";
 
-//    @Autowired
-//    private JwtServiceImpl jwtService;
+    @Autowired
+    private RefreshTokenService refreshTokenService;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     private MemberService memberService;
@@ -58,7 +62,7 @@ public class MemberController {
         log.debug("idCheck email : {}", email);
         Member member = memberService.emailCheck(email);
         if (member != null) {
-            return ResponseEntity.ok("이미 사용중인 아이디입니다.");
+            return ResponseEntity.badRequest().body("이미 사용중인 아이디입니다.");
         } else {
             return ResponseEntity.ok("사용 가능한 아이디입니다.");
         }
@@ -70,7 +74,7 @@ public class MemberController {
         log.debug("nicknameCheck nickname : {}", nickname);
         Member member = memberService.nicknameCheck(nickname);
         if (member != null) {
-            return ResponseEntity.ok("이미 사용중인 닉네임입니다.");
+            return ResponseEntity.badRequest().body("이미 사용중인 닉네임입니다.");
         } else {
             return ResponseEntity.ok("사용 가능한 닉네임입니다.");
         }
@@ -122,6 +126,32 @@ public class MemberController {
         String memberId = memberDetail.getMember().getEmail();
         Member member = memberService.getMemberInfo(memberId);
         return new ResponseEntity(member, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(@AuthenticationPrincipal MemberDetail memberDetail, HttpServletRequest request)
+            throws Exception {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = HttpStatus.ACCEPTED;
+        String refreshToken = request.getHeader("Authorization");
+        log.debug("token : {}, memberDetail : {}", refreshToken, memberDetail);
+        if (jwtTokenProvider.isTokenExpired(refreshToken)) {
+            if (refreshToken.equals(refreshTokenService.getRefreshToken(String.valueOf(memberDetail.getMember().getId())))) {
+                Map<String, Object> customClaims = new HashMap<>();
+                customClaims.put("memberId", String.valueOf(memberDetail.getMember().getId()));
+                String accessToken = jwtTokenProvider.generateToken(memberDetail.getUsername(), ACCESS_TOKEN_EXPIRATION_TIME, customClaims);
+                log.debug("token : {}", accessToken);
+                log.debug("정상적으로 액세스토큰 재발급!!!");
+                resultMap.put("access-token", accessToken);
+                resultMap.put("message", SUCCESS);
+                status = HttpStatus.ACCEPTED;
+            }
+        } else {
+            log.debug("리프레쉬토큰도 사용불가!!!!!!!");
+            status = HttpStatus.UNAUTHORIZED;
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
 
 //    @PostMapping("/login")
