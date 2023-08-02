@@ -53,7 +53,7 @@ export default function Frame() {
         <div
           // 검색창은 프레임 만들기 일때는 숨기고 구경하기 탭이 활성화된 때 보입니다.
           className={`frameSearchTab ${
-            focusedItem === tabItems[1].tabItem ? "displayHide" : ""
+            focusedItem === tabItems[1] ? "displayHide" : ""
           }`}
         >
           <FrameSearch />

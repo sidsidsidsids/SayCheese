@@ -34,56 +34,76 @@ const HorizontalPlainBlock = (left, top) =>
     globalCompositeOperation: "destination-out", // 이 도형이 겹쳐지는 부분은 사라집니다
   });
 
-// 기본 프레임 골격 잡기 로직 시작
+// Canvas를 만들기 시작
 const CanvasArea = () => {
   const canvasRef = useRef(null);
   const canvas = useRef(null);
-  // useSelector를 통해 Redux store에서 프레임의 width와 height 값을 가져옵니다
-  // 기본은 사다리형
+  // store에서 canvas에 사용할 재료들을 가져옴
   const { width, height, bgColor, bgImg } = useSelector((store) => store.frame);
+  // 배경 만들기
+  console.log(width, height, bgColor, bgImg);
 
-  // 1. 배경 깔기 (공통)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-
-  // Declare bg variable before the if-else block
-  let bg;
-
-  bg = new fabric.Rect({
-    width: width,
-    height: height,
-    left: 0,
-    top: 0,
-    fill: bgColor ? bgColor : "#0912",
-    lockMovementX: true, // 움직이지 않도록 합니다
-    lockMovementY: true,
-    lockRotation: true,
-    selectable: false, // 선택 불가능
-  });
-
-  if (bgImg === true) {
-    new fabric.Image.fromURL(bgImg, function (Img) {
-      bg = Img.set({
-        left: 0,
-        top: 0,
-        // scaleX: width / Img.width, // 사진 캔버스에 맞게 리사이즈
-        // scaleY: height / Img.height,
-        lockMovementX: true, // 움직이지 않도록 합니다
-        lockMovementY: true,
-        lockRotation: true,
-        selectable: false, // 선택 불가능
-      });
-    });
-  }
   useEffect(() => {
     // useEffect를 사용하여 캔버스를 초기화하고 사다리형과 창문형에 맞게 투명한 블록들을 추가합니다. height와 width의 변화에 따라 캔버스의 크기를 조정합니다.
     canvas.current = new fabric.Canvas(canvasRef.current, {
       height: height, // 초기 크기는 사다리형
       width: width,
     });
+    // 배경 만들기
+    const makeBackground = (bgImg, width, height, bgColor) => {
+      return new Promise((resolve, reject) => {
+        if (bgImg != null) {
+          fabric.Image.fromURL(
+            bgImg,
+            function (Img) {
+              // 업로드된 이미지가 프레임 보다 작으면 확대합니다
+              if (Img.height < height) {
+                Img.scaleToHeight(height);
+              }
+              if (Img.width < width) {
+                Img.scaleToWidth(width);
+              }
+              Img.set({
+                lockMovementX: true, // 움직이지 않도록 합니다
+                lockMovementY: true,
+                lockRotation: true,
+                selectable: false, // 선택 불가능
+              });
+              resolve(Img);
+            },
+            null,
+            { crossOrigin: "Anonymous" }
+          ); // CORS 이슈를 처리하기 위한 옵션
+        } else {
+          const rect = new fabric.Rect({
+            width: width,
+            height: height,
+            left: 0,
+            top: 0,
+            fill: bgColor ? bgColor : "#0912",
+            lockMovementX: true,
+            lockMovementY: true,
+            lockRotation: true,
+            selectable: false,
+          });
+          resolve(rect);
+        }
+      });
+    };
 
+    makeBackground(bgImg, width, height, bgColor)
+      .then((bg) => {
+        console.log(bg);
+        canvas.current.add(bg);
+
+        addPlainBlocks();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    // 만들어진 배경에 빈칸 뚫기
     const addPlainBlocks = () => {
-      canvas.current.add(bg);
-
       if (height > width) {
         // 사다리형
         for (let i = 0; i < 4; i++) {
@@ -107,7 +127,7 @@ const CanvasArea = () => {
     return () => {
       canvas.current.dispose();
     };
-  }, [width, height, bgColor, bgImg, bg]); // width, height, bg 바뀔 때마다 리렌더
+  }, [width, height, bgColor, bgImg]); // width, height, bg 바뀔 때마다 리렌더
 
   // handleDownload 함수를 통해 캔버스 이미지를 다운로드할 수 있습니다
   function handleDownload() {
@@ -119,7 +139,6 @@ const CanvasArea = () => {
     link.click();
     document.body.removeChild(link);
   }
-
   return (
     <>
       <canvas ref={canvasRef} className="createCanvas" id="canvas" />

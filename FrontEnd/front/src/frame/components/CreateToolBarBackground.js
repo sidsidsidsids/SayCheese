@@ -1,15 +1,16 @@
 // 프레임 배경을 바꾸는 툴의 디테일 컴포넌트입니다
 import React, { useState, useRef } from "react";
 // third party
-import { useDispatch } from "react-redux";
-
-import { Repaint } from "../../redux/features/frame/frameSlice";
+import { useDispatch, useSelector } from "react-redux";
+// redux
+import { Repaint, RemoveBgImg } from "../../redux/features/frame/frameSlice";
 
 export default function BgColor() {
   const [customColor, setCustomColor] = useState();
   const [imgFile, setImgFile] = useState();
   const imgRef = useRef();
 
+  const { bgColor, bgImg } = useSelector((store) => store.frame);
   const dispatch = useDispatch();
 
   // 이미지 업로드 input의 onChange
@@ -19,23 +20,27 @@ export default function BgColor() {
     reader.readAsDataURL(file);
     reader.onloadend = () => {
       setImgFile(reader.result);
-      console.log(reader.result);
+      // image: imgFile이면 안된다.
+      // 리액트 컴포넌트는 일종의 스냅샷이기때문에 지금 이상태에서
+      // reader.result와 imgFile은 서로 다르다!!!
+      // 그래서 바로바로 반영이 안되고 딜레이가 생기는 것이었다
+      const payload = { color: customColor, image: reader.result };
+      dispatch(Repaint(payload));
     };
-    const payload = { color: customColor, image: imgFile };
-    dispatch(Repaint(payload));
   };
   // 배경색 input 의 onChange
   const colorPick = (e) => {
     setCustomColor(e.target.value);
-    const payload = { color: customColor, image: imgFile };
+    const payload = { color: e.target.value, image: imgFile };
     dispatch(Repaint(payload));
   };
+
   return (
     <>
       <br></br>
       <label htmlFor="bgColor">색을 선택할 수 있습니다.</label>
       <br />
-      <input id="bgColor" type="color" onChange={colorPick} />
+      <input id="bgColor" type="color" value={bgColor} onChange={colorPick} />
 
       <br></br>
       <label htmlFor="bgImage">색을 선택할 수 있습니다.</label>
@@ -48,8 +53,16 @@ export default function BgColor() {
         onChange={saveImgFile}
       />
       <div>이미지 미리보기 </div>
-      <img width="100px" src={imgFile} />
-      <div>이미지 제거하기 </div>
+      <img width="100px" src={bgImg} />
+      <div
+        onClick={() => {
+          console.log("이미지 제거, imgFile");
+          setImgFile(null);
+          dispatch(RemoveBgImg());
+        }}
+      >
+        이미지 제거하기{" "}
+      </div>
     </>
   );
 }

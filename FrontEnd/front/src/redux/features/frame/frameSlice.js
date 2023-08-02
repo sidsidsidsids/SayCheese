@@ -17,19 +17,28 @@ const frameSlice = createSlice({
   initialState,
   // 리듀서 맵
   reducers: {
-    // 리듀서 함수
-    // 아래 코드는 리듀서와 액션 생성자 함수가 분리되지 않은 형태로 작성함
+    // 프레임 규격
     Resize: (state, action) => {
       state.width = action.payload.width;
       state.height = action.payload.height;
     },
+    // 프레임 배경 색과 배경 이미지
     Repaint: (state, action) => {
-      state.bgColor = action.payload.color;
-      state.bgImg = action.payload.image;
+      if (
+        state.bgImg !== action.payload.image ||
+        state.bgColor !== action.payload.color
+      ) {
+        state.bgColor = action.payload.color;
+        state.bgImg = action.payload.image;
+      }
+    },
+
+    RemoveBgImg: (state) => {
+      state.bgImg = "";
     },
   },
 });
 
-export const { Resize, Repaint } = frameSlice.actions;
+export const { Resize, Repaint, RemoveBgImg } = frameSlice.actions;
 
 export default frameSlice.reducer;
