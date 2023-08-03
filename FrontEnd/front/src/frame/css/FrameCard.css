@@ -1,0 +1,70 @@
+/* 카드 */
+.frameCard {
+  width: 230px;
+  height: 230px;
+  border: #d9d9d9 1px solid;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+  margin-left: 30px;
+  position: relative;
+}
+/* 카드 이미지 호버 확대 */
+.cardImg:hover {
+  animation: imgZoom 2s forwards;
+}
+
+@keyframes imgZoom {
+  to {
+    background-color: white;
+    transform: scale(2);
+  }
+}
+@media (max-width: 600px) {
+  .frameCard {
+    margin: 20px auto;
+  }
+}
+
+/* 프레임 카드 좋아요 */
+.frameCard .heart-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.frameCard .content {
+  padding: 0px;
+  display: flex;
+  cursor: pointer;
+}
+
+.frameCard .heart {
+  background: url("/src/frame/assets/likes.png") no-repeat;
+  background-position: left;
+  background-size: 2900%;
+  height: 90px;
+  width: 90px;
+}
+
+.heart.heart-active {
+  animation: animate 0.8s steps(28) 1;
+  background-position: right;
+}
+@keyframes animate {
+  0% {
+    background-position: left;
+  }
+  100% {
+    background-position: right;
+  }
+}
+
+/* 처음 렌더링할때 좋아요 이미 누른 작품은 핑크색으로 하트 바꾸기 위해서 */
+.heart.full {
+  background-position: right;
+}
