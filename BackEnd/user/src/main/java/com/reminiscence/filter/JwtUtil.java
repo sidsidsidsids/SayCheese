@@ -34,7 +34,7 @@ public class JwtUtil {
                     .parseClaimsJws(token);
 
             Claims claims = claimsJws.getBody();
-            return claims.get(claimName, String.class); // 클레임 값 가져오기
+            return String.valueOf(claims.get(claimName)); // 클레임 값 가져오기
 
         } catch (Exception e) {
             // 토큰 파싱이 실패한 경우 또는 클레임이 없는 경우 예외 처리

@@ -446,37 +446,61 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="회원가입-API">회원가입 API</h3>
 <div class="paragraph">
-<p>operation::MemberIntegrationTest/testJoinMemberSuccess[snippets='http-request,request-headers,request-fields,http-response,response-fields']</p>
+<p>operation::MemberIntegrationTest/testJoinMemberSuccess[snippets='http-request,request-fields,http-response,response-fields']</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_회원가입_api이메일_중복">회원가입 API(이메일 중복)</h3>
 <div class="paragraph">
-<p>operation::MemberIntegrationTest/testJoinMemberFailure_DuplicatedEmail[snippets='http-request,request-headers,request-fields,http-response']</p>
+<p>operation::MemberIntegrationTest/testJoinMemberFailure_DuplicatedEmail[snippets='http-request,request-fields,http-response,response-fields']</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_회원가입_api닉네임_중복">회원가입 API(닉네임 중복)</h3>
 <div class="paragraph">
-<p>operation::MemberIntegrationTest/testJoinMemberFailure_DuplicatedNickname[snippets='http-request,request-headers,request-fields,http-response,response-fields']</p>
+<p>operation::MemberIntegrationTest/testJoinMemberFailure_DuplicatedNickname[snippets='http-request,request-fields,http-response,response-fields']</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="중복확인-API">이메일 중복확인 API(정상)</h3>
+<div class="paragraph">
+<p>operation::MemberIntegrationTest/testIdCheckSuccess[snippets='http-request,path-parameters,http-response,response-fields']</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_이메일_중복확인_api이메일_중복">이메일 중복확인 API(이메일 중복)</h3>
+<div class="paragraph">
+<p>operation::MemberIntegrationTest/testIdCheckFailure[snippets='http-request,path-parameters,http-response,response-fields']</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_닉네임_중복확인_api정상">닉네임 중복확인 API(정상)</h3>
+<div class="paragraph">
+<p>operation::MemberIntegrationTest/testNicknameCheckSuccess[snippets='http-request,path-parameters,http-response,response-fields']</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_닉네임_중복확인_api닉네임_중복">닉네임 중복확인 API(닉네임 중복)</h3>
+<div class="paragraph">
+<p>operation::MemberIntegrationTest/testNicknameCheckFailure[snippets='http-request,path-parameters,http-response,response-fields']</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="로그인-API">로그인 API</h3>
 <div class="paragraph">
-<p>operation::MemberIntegrationTest/testLoginSuccess[snippets='http-request,request-headers,request-fields,http-response,response-fields']</p>
+<p>operation::MemberIntegrationTest/testLoginSuccess[snippets='http-request,request-fields,http-response,response-fields']</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_로그인_api비밀번호_다를_경우">로그인 API(비밀번호 다를 경우)</h3>
 <div class="paragraph">
-<p>operation::MemberIntegrationTest/testLoginFail[snippets='http-request,request-headers,request-fields,http-response']</p>
+<p>operation::MemberIntegrationTest/testLoginFail[snippets='http-request,request-fields,http-response,response-fields']</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="회원정보-API">회원정보 검색 API</h3>
+<h3 id="회원정보-API">회원정보 조회 API</h3>
 <div class="paragraph">
-<p>operation::MemberIntegrationTest/testSearchMember[snippets='http-request,request-headers,request-fields,http-response,response-fields']</p>
+<p>operation::MemberIntegrationTest/testGetMemberInfo[snippets='http-request,request-headers,http-response,response-fields']</p>
 </div>
 </div>
 <div class="sect2">
@@ -488,13 +512,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="계정삭제-API">계정삭제 API(정상)</h3>
 <div class="paragraph">
-<p>operation::MemberIntegrationTest/testDeleteMemberSuccess[snippets='http-request,request-parameters,http-response,response-fields']</p>
+<p>operation::MemberIntegrationTest/testDeleteMemberSuccess[snippets='http-request,request-headers,http-response,response-fields']</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_계정삭제_api잘못된_사용자_접근_시">계정삭제 API(잘못된 사용자 접근 시)</h3>
 <div class="paragraph">
-<p>operation::MemberIntegrationTest/testDeleteMemberFailure[snippets='http-request,request-parameters,http-response,response-fields']</p>
+<p>operation::MemberIntegrationTest/testDeleteMemberFailure[snippets='http-request,http-response,response-fields']</p>
 </div>
 </div>
 <div class="sect2">
@@ -506,7 +530,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="로그아웃-API">로그아웃 API(로그아웃 성공 후 회원 정보 수정 실패)</h3>
 <div class="paragraph">
-<p>operation::MemberIntegrationTest/testLogoutSuccess[snippets='http-request,path-parameters,http-response,response-fields']</p>
+<p>operation::MemberIntegrationTest/testLogoutSuccess[snippets='http-request,request-fields,http-response,response-fields']</p>
 </div>
 </div>
 </div>
@@ -515,7 +539,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-08-02 16:04:05 +0900
+Last updated 2023-08-03 13:13:26 +0900
 </div>
 </div>
 </body>

@@ -15,9 +15,9 @@ public interface MemberService {
     Member nicknameCheck(String nickname) throws Exception;
 //    /* Admin */
 	List<MemberSearchResponseDto> getMemberList(String key) throws Exception;
-    Member getMemberInfo(String memberId) throws Exception;
+    MemberInfoResponseDto getMemberInfo(String memberId) throws Exception;
     Member updateMemberPassword(MemberUpdatePasswordRequestDto memberUpdatePasswordRequestDto) throws Exception;
-    Member updateMemberInfo(MemberDetail memberDetail, MemberInfoUpdateRequestDto memberInfoUpdateRequestDto) throws  Exception;
+    ResponseEntity updateMemberInfo(MemberDetail memberDetail, MemberInfoUpdateRequestDto memberInfoUpdateRequestDto) throws  Exception;
 
     void deleteMember(long memberId) throws Exception;
 //    void saveRefreshToken(String memberid, String refreshToken) throws Exception;

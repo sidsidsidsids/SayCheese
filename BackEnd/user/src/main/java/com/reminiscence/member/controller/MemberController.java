@@ -8,6 +8,8 @@ import com.reminiscence.domain.Member;
 import com.reminiscence.filter.JwtTokenProvider;
 import com.reminiscence.member.dto.*;
 import com.reminiscence.member.service.MemberService;
+import com.reminiscence.message.Response;
+import com.reminiscence.message.custom_message.MemberResponseMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
@@ -31,12 +34,6 @@ public class MemberController {
 
     private static final String SUCCESS = "success";
     private static final String FAIL = "fail";
-
-    @Autowired
-    private RefreshTokenService refreshTokenService;
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     private MemberService memberService;
@@ -62,9 +59,9 @@ public class MemberController {
         log.debug("idCheck email : {}", email);
         Member member = memberService.emailCheck(email);
         if (member != null) {
-            return ResponseEntity.badRequest().body("이미 사용중인 아이디입니다.");
+            return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_ID_CHECK_FAILURE), HttpStatus.BAD_REQUEST);
         } else {
-            return ResponseEntity.ok("사용 가능한 아이디입니다.");
+            return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_ID_CHECK_SUCCESS), HttpStatus.OK);
         }
     }
 
@@ -74,32 +71,24 @@ public class MemberController {
         log.debug("nicknameCheck nickname : {}", nickname);
         Member member = memberService.nicknameCheck(nickname);
         if (member != null) {
-            return ResponseEntity.badRequest().body("이미 사용중인 닉네임입니다.");
+            return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_NICKNAME_CHECK_FAILURE), HttpStatus.BAD_REQUEST);
         } else {
-            return ResponseEntity.ok("사용 가능한 닉네임입니다.");
+            return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_NICKNAME_CHECK_SUCCESS), HttpStatus.OK);
         }
     }
 
     @PutMapping("/modify")
-    public ResponseEntity modify(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberInfoUpdateRequestDto requestDto, BindingResult bindingResult) {
+    public ResponseEntity modify(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberInfoUpdateRequestDto requestDto, BindingResult bindingResult) throws Exception {
 
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
         }
-
-        Member member;
-        System.out.println(memberDetail);
-        try {
-            member = memberService.updateMemberInfo(memberDetail, requestDto);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return new ResponseEntity<>(member, HttpStatus.OK);
+        return memberService.updateMemberInfo(memberDetail, requestDto);
     }
 
     @GetMapping("/find-password/{memberId}")
     public Member findPassword(@PathVariable("memberId") String memberId) throws Exception {
-        Member member = memberService.getMemberInfo(memberId);
+        Member member = memberService.emailCheck(memberId);
         return member;
     }
 
@@ -118,40 +107,14 @@ public class MemberController {
     public ResponseEntity delete(@AuthenticationPrincipal MemberDetail memberDetail) throws Exception {
         long memberId = memberDetail.getMember().getId();
         memberService.deleteMember(memberId);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_DELETE_SUCCESS), HttpStatus.OK);
     }
 
     @GetMapping("/info")
-    public ResponseEntity getInfo(@AuthenticationPrincipal MemberDetail memberDetail) throws Exception {
+    public ResponseEntity<MemberInfoResponseDto> getInfo(@AuthenticationPrincipal MemberDetail memberDetail) throws Exception {
         String memberId = memberDetail.getMember().getEmail();
-        Member member = memberService.getMemberInfo(memberId);
-        return new ResponseEntity(member, HttpStatus.OK);
-    }
-
-
-    @PostMapping("/refresh")
-    public ResponseEntity<?> refreshToken(@AuthenticationPrincipal MemberDetail memberDetail, HttpServletRequest request)
-            throws Exception {
-        Map<String, Object> resultMap = new HashMap<>();
-        HttpStatus status = HttpStatus.ACCEPTED;
-        String refreshToken = request.getHeader("Authorization");
-        log.debug("token : {}, memberDetail : {}", refreshToken, memberDetail);
-        if (jwtTokenProvider.isTokenExpired(refreshToken)) {
-            if (refreshToken.equals(refreshTokenService.getRefreshToken(String.valueOf(memberDetail.getMember().getId())))) {
-                Map<String, Object> customClaims = new HashMap<>();
-                customClaims.put("memberId", String.valueOf(memberDetail.getMember().getId()));
-                String accessToken = jwtTokenProvider.generateToken(memberDetail.getUsername(), ACCESS_TOKEN_EXPIRATION_TIME, customClaims);
-                log.debug("token : {}", accessToken);
-                log.debug("정상적으로 액세스토큰 재발급!!!");
-                resultMap.put("access-token", accessToken);
-                resultMap.put("message", SUCCESS);
-                status = HttpStatus.ACCEPTED;
-            }
-        } else {
-            log.debug("리프레쉬토큰도 사용불가!!!!!!!");
-            status = HttpStatus.UNAUTHORIZED;
-        }
-        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+        MemberInfoResponseDto memberInfoResponseDto = memberService.getMemberInfo(memberId);
+        return new ResponseEntity<MemberInfoResponseDto>(memberInfoResponseDto, HttpStatus.OK);
     }
 
 //    @PostMapping("/login")

@@ -8,6 +8,8 @@ import com.reminiscence.config.auth.MemberDetail;
 import com.reminiscence.domain.Member;
 import com.reminiscence.member.dto.*;
 import com.reminiscence.member.repository.MemberRepository;
+import com.reminiscence.message.Response;
+import com.reminiscence.message.custom_message.MemberResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 //import java.util.HashMap;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 //import java.util.Map;
 
 
@@ -57,17 +61,17 @@ public class MemberServiceImpl implements MemberService {
 //    }
 
     @Override
-    public ResponseEntity joinMember(MemberJoinRequestDto memberJoinRequestDto) throws Exception {
+    public ResponseEntity<Response> joinMember(MemberJoinRequestDto memberJoinRequestDto) throws Exception {
         memberJoinRequestDto.setPassword(bCryptPasswordEncoder.encode(memberJoinRequestDto.getPassword()));
         Member member = memberJoinRequestDto.toEntity();
         // 이메일 중복 시 HttpStatus를 Already_Reported 상태로 응답 전달
         if (memberRepository.findByEmail(member.getEmail()) != null)
-            return new ResponseEntity<>(null, HttpStatus.ALREADY_REPORTED);
+            return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_JOIN_FAILURE_EAMIL_DUPLICATED), HttpStatus.ALREADY_REPORTED);
         // 닉네임 중복 시 HttpStatus를 Conflict 상태로 응답 전달
         if (memberRepository.findByNickname(member.getNickname()) != null)
-            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-
-        return new ResponseEntity<>(memberRepository.save(member), HttpStatus.OK);
+            return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_JOIN_FAILURE_NICKNAME_DUPLICATED), HttpStatus.CONFLICT);
+        memberRepository.save(member);
+        return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_JOIN_SUCCESS), HttpStatus.OK);
     }
 
     @Override
@@ -82,8 +86,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Member updateMemberInfo(MemberDetail memberDetail, MemberInfoUpdateRequestDto memberInfoUpdateRequestDto) throws Exception {
-        Member member=memberRepository.findById(memberDetail.getMember().getId()).orElse(null);
+    public ResponseEntity updateMemberInfo(MemberDetail memberDetail, MemberInfoUpdateRequestDto memberInfoUpdateRequestDto) throws Exception {
+        Member member = memberRepository.findById(memberDetail.getMember().getId()).orElse(null);
 
         member.modifyPassword(bCryptPasswordEncoder.encode(memberInfoUpdateRequestDto.getPassword()));
         member.modifyNickname(memberInfoUpdateRequestDto.getNickname());
@@ -94,13 +98,45 @@ public class MemberServiceImpl implements MemberService {
         member.modifySnsId(memberInfoUpdateRequestDto.getSnsId());
         member.modifySnsType(memberInfoUpdateRequestDto.getSnsType());
         member.modifyPersonalAgreement(memberInfoUpdateRequestDto.getPersonalAgreement());
-        return member;
+        Map<String, Object> response = new HashMap<>();
+
+        MemberInfoResponseDto memberInfoResponseDto = MemberInfoResponseDto.builder()
+                .email(member.getEmail())
+                .nickname(member.getNickname())
+                .genderFm(member.getGenderFm())
+                .age(member.getAge())
+                .name(member.getName())
+                .profile(member.getProfile())
+                .snsId(member.getSnsId())
+                .snsType(member.getSnsType())
+                .personalAgreement(member.getPersonalAgreement())
+                .build();
+
+        response.put("Member", memberInfoResponseDto);
+        response.put("message", Response.of(MemberResponseMessage.MEMBER_UPDATE_SUCCESS));
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Override
-    public Member getMemberInfo(String memberId) throws Exception {
+    public MemberInfoResponseDto getMemberInfo(String memberId) throws Exception {
         Member member = memberRepository.findByEmail(memberId);
-        return member;
+
+        MemberInfoResponseDto memberInfoResponseDto = MemberInfoResponseDto.builder()
+                .email(member.getEmail())
+                .nickname(member.getNickname())
+                .genderFm(member.getGenderFm())
+                .age(member.getAge())
+                .name(member.getName())
+                .profile(member.getProfile())
+                .snsId(member.getSnsId())
+                .snsType(member.getSnsType())
+                .personalAgreement(member.getPersonalAgreement())
+                .build();
+//        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);;
+//        objectMapper.registerModule(new JavaTimeModule());
+//        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+//        MemberInfoResponseDto memberInfoResponseDto = objectMapper.convertValue(member, MemberInfoResponseDto.class);
+        return memberInfoResponseDto;
     }
 
     @Override

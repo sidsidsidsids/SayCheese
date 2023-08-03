@@ -2,15 +2,10 @@ package com.reminiscence.member.repository;
 
 
 import com.reminiscence.domain.Member;
-import com.reminiscence.member.dto.MemberResponseDto;
-import com.reminiscence.member.dto.MemberSearchResponseDto;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 

@@ -4,26 +4,40 @@
 
 [[회원가입-API]]
 === 회원가입 API
-operation::MemberIntegrationTest/testJoinMemberSuccess[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+operation::MemberIntegrationTest/testJoinMemberSuccess[snippets='http-request,request-fields,http-response,response-fields']
 
 === 회원가입 API(이메일 중복)
-operation::MemberIntegrationTest/testJoinMemberFailure_DuplicatedEmail[snippets='http-request,request-headers,request-fields,http-response']
+operation::MemberIntegrationTest/testJoinMemberFailure_DuplicatedEmail[snippets='http-request,request-fields,http-response,response-fields']
 
 === 회원가입 API(닉네임 중복)
-operation::MemberIntegrationTest/testJoinMemberFailure_DuplicatedNickname[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+operation::MemberIntegrationTest/testJoinMemberFailure_DuplicatedNickname[snippets='http-request,request-fields,http-response,response-fields']
+
+[[중복확인-API]]
+
+=== 이메일 중복확인 API(정상)
+operation::MemberIntegrationTest/testIdCheckSuccess[snippets='http-request,path-parameters,http-response,response-fields']
+
+=== 이메일 중복확인 API(이메일 중복)
+operation::MemberIntegrationTest/testIdCheckFailure[snippets='http-request,path-parameters,http-response,response-fields']
+
+=== 닉네임 중복확인 API(정상)
+operation::MemberIntegrationTest/testNicknameCheckSuccess[snippets='http-request,path-parameters,http-response,response-fields']
+
+=== 닉네임 중복확인 API(닉네임 중복)
+operation::MemberIntegrationTest/testNicknameCheckFailure[snippets='http-request,path-parameters,http-response,response-fields']
 
 [[로그인-API]]
 
 === 로그인 API
-operation::MemberIntegrationTest/testLoginSuccess[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+operation::MemberIntegrationTest/testLoginSuccess[snippets='http-request,request-fields,http-response,response-fields']
 
 === 로그인 API(비밀번호 다를 경우)
-operation::MemberIntegrationTest/testLoginFail[snippets='http-request,request-headers,request-fields,http-response']
+operation::MemberIntegrationTest/testLoginFail[snippets='http-request,request-fields,http-response,response-fields']
 
 [[회원정보-API]]
 
 === 회원정보 조회 API
-operation::MemberIntegrationTest/testGetMemberInfo[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+operation::MemberIntegrationTest/testGetMemberInfo[snippets='http-request,request-headers,http-response,response-fields']
 
 === 회원정보 수정 API
 operation::MemberIntegrationTest/testUpdateMemberInfo[snippets='http-request,request-headers,request-fields,http-response,response-fields']
@@ -31,10 +45,10 @@ operation::MemberIntegrationTest/testUpdateMemberInfo[snippets='http-request,req
 [[계정삭제-API]]
 
 === 계정삭제 API(정상)
-operation::MemberIntegrationTest/testDeleteMemberSuccess[snippets='http-request,request-parameters,http-response,response-fields']
+operation::MemberIntegrationTest/testDeleteMemberSuccess[snippets='http-request,request-headers,http-response,response-fields']
 
 === 계정삭제 API(잘못된 사용자 접근 시)
-operation::MemberIntegrationTest/testDeleteMemberFailure[snippets='http-request,request-parameters,http-response,response-fields']
+operation::MemberIntegrationTest/testDeleteMemberFailure[snippets='http-request,http-response,response-fields']
 
 [[회원명단불러오기-API]]
 
@@ -44,4 +58,4 @@ operation::MemberIntegrationTest/testGetMembersList[snippets='http-request,path-
 [[로그아웃-API]]
 
 === 로그아웃 API(로그아웃 성공 후 회원 정보 수정 실패)
-operation::MemberIntegrationTest/testLogoutSuccess[snippets='http-request,path-parameters,http-response,response-fields']
+operation::MemberIntegrationTest/testLogoutSuccess[snippets='http-request,request-fields,http-response,response-fields']

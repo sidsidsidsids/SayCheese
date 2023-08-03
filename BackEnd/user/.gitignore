@@ -1,9 +1,10 @@
 HELP.md
 .gradle
-application-server.yml
+.yml
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
+#!**/src/main/**/data.sql
 !**/src/test/**/build/
 
 ### STS ###
@@ -36,3 +37,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Config ###
+application.yml
+application-jwt.yml
+application-local.yml
+application-server.yml

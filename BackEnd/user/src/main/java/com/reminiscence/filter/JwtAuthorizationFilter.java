@@ -59,13 +59,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             Member member=memberRepository.findById(Long.parseLong(memberId)).orElse(null);
             MemberDetail memberDetail = new MemberDetail(member);
             // accessToken이 검증될 경우
-            if (jwtTokenProvider.isTokenExpired(accessToken)){
-                String errorMessage = "Access 토큰이 만료되었습니다.";
-                response.setStatus(HttpStatus.FORBIDDEN.value());
-                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                response.getWriter().write("{\"error\":\"" + errorMessage + "\"}");
-                return;
-            }
 
             UsernamePasswordAuthenticationToken emailPasswordAuthenticationToken=new UsernamePasswordAuthenticationToken(memberDetail,null, memberDetail.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(emailPasswordAuthenticationToken);
@@ -79,6 +72,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 ////                SecurityContextHolder.getContext().setAuthentication(authentication);
 //            }
 //        }
+
+        if (!jwtTokenProvider.isTokenExpired(accessToken)){
+            String errorMessage = "Access 토큰이 만료되었습니다.";
+            response.sendError(HttpStatus.UNAUTHORIZED.value(), errorMessage);
+//                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+//                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+//                response.getWriter().write("{\"error\":\"" + errorMessage + "\"}");
+            return;
+        }
 
         chain.doFilter(request,response);
     }
