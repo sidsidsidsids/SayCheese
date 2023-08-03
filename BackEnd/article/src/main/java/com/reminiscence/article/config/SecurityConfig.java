@@ -26,6 +26,8 @@ public class SecurityConfig {
         http.addFilterBefore(new JWTAuthorizationFilter(env,memberRepository), BasicAuthenticationFilter.class);
         http.authorizeRequests().antMatchers(HttpMethod.GET,"/api/article/notice").permitAll()
                 .and()
+                .authorizeRequests().antMatchers("/actuator/**").access("hasRole('ADMIN')")
+                .and()
                 .authorizeRequests().antMatchers("/api/article/notice").access("hasRole('ADMIN')")
                 .and()
                 .authorizeRequests().antMatchers(HttpMethod.GET,"/api/article/notice/**").permitAll()
