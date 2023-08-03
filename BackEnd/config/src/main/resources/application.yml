@@ -9,4 +9,5 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/se6816/spring-cloud-config
+          uri: https://github.com/se6816/sayCheese_config
+          default-label: master

@@ -8,5 +8,7 @@
 :sectnums:
 
 include::ImageArticle-API.adoc[]
+include::Lover-API.adoc[]
+include::Image-API.adoc[]
 include::Notice-API.adoc[]
 include::Faq-API.adoc[]
