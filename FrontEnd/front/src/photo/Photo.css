@@ -1,0 +1,18 @@
+.PhotoBox {
+  border-radius: 30px;
+  background-color: white;
+  min-height: 70vh;
+
+  padding: 40px 60px;
+
+  overflow: auto;
+}
+
+.PhotoAllSort {
+  margin-bottom: 50px;
+}
+
+.CategorySort {
+  display: flex;
+  align-items: flex-start;
+}

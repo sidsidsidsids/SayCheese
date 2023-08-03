@@ -16,3 +16,24 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+::-webkit-scrollbar {
+  width: 10px;
+  background-color: white;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #ea5455;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #dadada;
+  border-radius: 10px;
+}
+.BackColor {
+  background: linear-gradient(180deg, #fbc8d4 0%, #9795f0 100%);
+  width: 100vw;
+  height: 100vh;
+  padding: 20px 0;
+}

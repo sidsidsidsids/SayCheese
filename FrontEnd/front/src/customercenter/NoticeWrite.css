@@ -1,0 +1,40 @@
+.NoticeInput {
+  width: 85%;
+  height: 30px;
+  border: 0 solid;
+  border-radius: 5px;
+  cursor: pointer;
+
+  font-size: 18px;
+  font-family: "Black Han Sans";
+}
+
+.NoticeInput:focus {
+  outline: none;
+}
+
+.NoticeInputLine {
+  border: 1px solid #dadada;
+  padding: 10px 0;
+  margin: 20px 0;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px 0px rgba(218, 218, 218, 0.25);
+}
+
+.NoticeInputLine.focused {
+  border-color: #9795f0;
+}
+
+.NoticeTextArea {
+  border: 0 solid;
+  border-radius: 5px;
+  cursor: pointer;
+  resize: none;
+
+  font-size: 18px;
+  font-family: "Black Han Sans";
+}
+
+.NoticeTextArea:focus {
+  outline: none;
+}
