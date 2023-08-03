@@ -5,8 +5,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   height: 589.6,
   width: 207.8,
-  bgColor: "",
-  bgImg: "",
+  bgColor: "#000000",
+  bgImg: false,
 };
 
 // 액션 생성 함수
@@ -25,16 +25,18 @@ const frameSlice = createSlice({
     // 프레임 배경 색과 배경 이미지
     Repaint: (state, action) => {
       if (
-        state.bgImg !== action.payload.image ||
-        state.bgColor !== action.payload.color
+        action.payload.image !== undefined &&
+        state.bgImg !== action.payload.image
       ) {
-        state.bgColor = action.payload.color;
         state.bgImg = action.payload.image;
+      }
+      if (state.bgImg !== action.payload.image) {
+        state.bgColor = action.payload.color;
       }
     },
 
     RemoveBgImg: (state) => {
-      state.bgImg = "";
+      state.bgImg = false;
     },
   },
 });

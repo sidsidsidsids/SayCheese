@@ -1,5 +1,6 @@
 // 프레임의 기초가 되는 골격을 잡는 툴바의 디테일 컴포넌트입니다.
 import React, { useEffect, useRef } from "react";
+import "../css/FrameCreateCanvas.css";
 // third party
 import { fabric } from "fabric";
 import { useSelector } from "react-redux";
@@ -52,7 +53,7 @@ const CanvasArea = () => {
     // 배경 만들기
     const makeBackground = (bgImg, width, height, bgColor) => {
       return new Promise((resolve, reject) => {
-        if (bgImg != null) {
+        if (bgImg !== false) {
           fabric.Image.fromURL(
             bgImg,
             function (Img) {
@@ -80,7 +81,7 @@ const CanvasArea = () => {
             height: height,
             left: 0,
             top: 0,
-            fill: bgColor ? bgColor : "#0912",
+            fill: bgColor,
             lockMovementX: true,
             lockMovementY: true,
             lockRotation: true,
@@ -93,9 +94,7 @@ const CanvasArea = () => {
 
     makeBackground(bgImg, width, height, bgColor)
       .then((bg) => {
-        console.log(bg);
         canvas.current.add(bg);
-
         addPlainBlocks();
       })
       .catch((error) => {
@@ -140,10 +139,15 @@ const CanvasArea = () => {
     document.body.removeChild(link);
   }
   return (
-    <>
-      <canvas ref={canvasRef} className="createCanvas" id="canvas" />
+    <div className="canvasBackground">
+      <canvas
+        ref={canvasRef}
+        className="createCanvas"
+        name="canvas"
+        id="canvas"
+      />
       <button onClick={handleDownload}>다운로드</button>
-    </>
+    </div>
   );
 };
 

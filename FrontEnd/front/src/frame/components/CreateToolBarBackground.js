@@ -53,11 +53,14 @@ export default function BgColor() {
         onChange={saveImgFile}
       />
       <div>이미지 미리보기 </div>
-      <img width="100px" src={bgImg} />
+      {bgImg ? (
+        <img width="100px" src={bgImg} alt="배경 이미지 미리보기" />
+      ) : (
+        <br />
+      )}
       <div
         onClick={() => {
-          console.log("이미지 제거, imgFile");
-          setImgFile(null);
+          setImgFile(false);
           dispatch(RemoveBgImg());
         }}
       >
