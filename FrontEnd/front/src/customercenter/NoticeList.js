@@ -72,6 +72,11 @@ function NoticeList() {
         </tbody>
       </table>
       <Paging page={currentPage} count={count} setPage={setPage} />
+      <div className="NoticeWriteBtnSort">
+        <Link className="NoticeWriteBtn" to="/customercenter/notice/write">
+          글 작성
+        </Link>
+      </div>
     </div>
   );
 }

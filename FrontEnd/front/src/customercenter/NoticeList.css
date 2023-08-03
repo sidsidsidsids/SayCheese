@@ -50,3 +50,17 @@ tbody tr:hover a {
   width: 15%;
 }
 /* 셀 너비 조정 */
+
+.NoticeWriteBtnSort {
+  display: flex;
+  justify-content: right;
+}
+
+.NoticeWriteBtn {
+  text-decoration: none;
+  color: darkgrey;
+}
+
+.NoticeWriteBtn:hover {
+  color: black;
+}

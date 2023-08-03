@@ -1,11 +1,14 @@
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 
 import "./Photo.css";
 import PhotoCategory from "./PhotoCategory";
 import PhotoSlider from "./PhotoSlider";
 import PhotoModal from "./PhotoModal";
+
+import { AuthContext } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function Photo() {
   const [photoListLike, setPhotoListLike] = useState([]); // 좋아요 순 이미지
