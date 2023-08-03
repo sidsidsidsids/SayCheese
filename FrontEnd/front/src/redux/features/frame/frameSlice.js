@@ -7,6 +7,7 @@ const initialState = {
   width: 207.8,
   bgColor: "#000000",
   bgImg: false,
+  objects: [],
 };
 
 // 액션 생성 함수
@@ -30,7 +31,7 @@ const frameSlice = createSlice({
       ) {
         state.bgImg = action.payload.image;
       }
-      if (state.bgImg !== action.payload.image) {
+      if (state.bgColor !== action.payload.Color) {
         state.bgColor = action.payload.color;
       }
     },
@@ -38,9 +39,19 @@ const frameSlice = createSlice({
     RemoveBgImg: (state) => {
       state.bgImg = false;
     },
+    // 프레임 오브젝트
+    Decorate: (state, action) => {
+      state.objects.push(action.payload);
+      console.log("(*ᴗ͈ˬᴗ͈)ꕤ*.ﾟ");
+      console.log(state.objects.length);
+    },
+    Undecorate: (state) => {
+      console.log("언데코");
+    },
   },
 });
 
-export const { Resize, Repaint, RemoveBgImg } = frameSlice.actions;
+export const { Resize, Repaint, RemoveBgImg, Decorate, Undecorate } =
+  frameSlice.actions;
 
 export default frameSlice.reducer;

@@ -5,6 +5,51 @@ import "../css/FrameCreateCanvas.css";
 import { fabric } from "fabric";
 import { useSelector } from "react-redux";
 
+// 이미지 배경 만들기 함수입니다
+const makeBackground = (bgImg, width, height) => {
+  return new Promise((resolve, reject) => {
+    if (bgImg !== false) {
+      fabric.Image.fromURL(
+        bgImg,
+        function (Img) {
+          // 업로드된 이미지가 프레임 보다 작으면 확대합니다
+          if (Img.height < height) {
+            Img.scaleToHeight(height);
+          }
+          if (Img.width < width) {
+            Img.scaleToWidth(width);
+          }
+          Img.set({
+            lockMovementX: true, // 움직이지 않도록 합니다
+            lockMovementY: true,
+            lockRotation: true,
+            selectable: false, // 선택 불가능
+          });
+          resolve(Img);
+        },
+        null,
+        { crossOrigin: "Anonymous" }
+      ); // CORS 이슈를 처리하기 위한 옵션
+    }
+  });
+};
+
+// 만들어진 배경에 빈칸 뚫기
+const addPlainBlocks = (canvas, height, width) => {
+  if (height > width) {
+    // 사다리형
+    for (let i = 0; i < 4; i++) {
+      canvas.add(VerticalPlainBlock(19, 19 + i * 120));
+    }
+  } else {
+    // 창문형
+    for (let i = 0; i < 4; i++) {
+      canvas.add(
+        HorizontalPlainBlock(32 + (i % 2) * 229, 29 + Math.floor(i / 2) * 176)
+      );
+    }
+  }
+};
 //사다리 기본형 프레임 투명 칸 만드는 함수입니다
 const VerticalPlainBlock = (left, top) =>
   new fabric.Rect({
@@ -34,94 +79,49 @@ const HorizontalPlainBlock = (left, top) =>
     selectable: false, // 선택 불가능
     globalCompositeOperation: "destination-out", // 이 도형이 겹쳐지는 부분은 사라집니다
   });
+// 프레임 꾸미기 함수입니다
+const DecorateObjects = (objects, canvas) => {
+  console.log(objects.length);
+  if (objects.length > 0) {
+    objects.map((item) => {
+      fabric.Image.fromURL(item, function (Img) {
+        Img.set({
+          // borderColor: "#800080",
+        });
+        console.log("dfsdfsdjkfhskjdhfkjshdkjhskjdfhkj", Img);
+      });
+    });
+  }
+};
 
 // Canvas를 만들기 시작
 const CanvasArea = () => {
   const canvasRef = useRef(null);
   const canvas = useRef(null);
   // store에서 canvas에 사용할 재료들을 가져옴
-  const { width, height, bgColor, bgImg } = useSelector((store) => store.frame);
-  // 배경 만들기
-  console.log(width, height, bgColor, bgImg);
+  const { width, height, bgColor, bgImg, objects } = useSelector(
+    (store) => store.frame
+  );
 
   useEffect(() => {
     // useEffect를 사용하여 캔버스를 초기화하고 사다리형과 창문형에 맞게 투명한 블록들을 추가합니다. height와 width의 변화에 따라 캔버스의 크기를 조정합니다.
     canvas.current = new fabric.Canvas(canvasRef.current, {
       height: height, // 초기 크기는 사다리형
       width: width,
+      hoverCursor: "pointer",
     });
-    // 배경 만들기
-    const makeBackground = (bgImg, width, height, bgColor) => {
-      return new Promise((resolve, reject) => {
-        if (bgImg !== false) {
-          fabric.Image.fromURL(
-            bgImg,
-            function (Img) {
-              // 업로드된 이미지가 프레임 보다 작으면 확대합니다
-              if (Img.height < height) {
-                Img.scaleToHeight(height);
-              }
-              if (Img.width < width) {
-                Img.scaleToWidth(width);
-              }
-              Img.set({
-                lockMovementX: true, // 움직이지 않도록 합니다
-                lockMovementY: true,
-                lockRotation: true,
-                selectable: false, // 선택 불가능
-              });
-              resolve(Img);
-            },
-            null,
-            { crossOrigin: "Anonymous" }
-          ); // CORS 이슈를 처리하기 위한 옵션
-        } else {
-          const rect = new fabric.Rect({
-            width: width,
-            height: height,
-            left: 0,
-            top: 0,
-            fill: bgColor,
-            lockMovementX: true,
-            lockMovementY: true,
-            lockRotation: true,
-            selectable: false,
-          });
-          resolve(rect);
-        }
-      });
-    };
-
-    makeBackground(bgImg, width, height, bgColor)
+    // 컬러 백그라운드 만들기
+    canvas.current.backgroundColor = bgColor;
+    addPlainBlocks(canvas.current, height, width);
+    // 이미지 있으면 이미지 백그라운드 만들기
+    makeBackground(bgImg, width, height)
       .then((bg) => {
         canvas.current.add(bg);
-        addPlainBlocks();
+        addPlainBlocks(canvas.current, height, width);
       })
       .catch((error) => {
         console.error(error);
       });
-
-    // 만들어진 배경에 빈칸 뚫기
-    const addPlainBlocks = () => {
-      if (height > width) {
-        // 사다리형
-        for (let i = 0; i < 4; i++) {
-          canvas.current.add(VerticalPlainBlock(19, 19 + i * 120));
-        }
-      } else {
-        // 창문형
-        for (let i = 0; i < 4; i++) {
-          canvas.current.add(
-            HorizontalPlainBlock(
-              32 + (i % 2) * 229,
-              29 + Math.floor(i / 2) * 176
-            )
-          );
-        }
-      }
-    };
-
-    addPlainBlocks();
 
     return () => {
       canvas.current.dispose();
@@ -138,6 +138,7 @@ const CanvasArea = () => {
     link.click();
     document.body.removeChild(link);
   }
+  DecorateObjects(objects, canvas.current);
   return (
     <div className="canvasBackground">
       <canvas
