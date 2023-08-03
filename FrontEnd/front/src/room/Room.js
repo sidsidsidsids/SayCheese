@@ -14,18 +14,21 @@ import Timer from "./Timer";
 
 import sampleImage from "./assets/sample.jpg";
 
+// 로컬 전환 : APPLICATION SERVER 관련 , createToken URL
 const APPLICATION_SERVER_URL = "http://localhost:5000/";
 const APPLICATION_SERVER_SECRET = "MY_SECRET";
+// const APPLICATION_SERVER_URL = "https://i9a401.p.ssafy.io/openvidu/";
+// const APPLICATION_SERVER_SECRET = "my_secret";
 var chatData;
 const Room = () => {
   const params = useParams();
   const navigate = useNavigate();
 
-  const [roomManager, setRoomManager] = useState(undefined);
   const [mySessionId, setMySessionId] = useState(params.id);
   const [myUserName, setMyUserName] = useState(
     "test" + Math.floor(Math.random() * 100)
   );
+  const [isHost, setHost] = useState(false);
   const [session, setSession] = useState(undefined);
   const [mainStreamManager, setMainStreamManager] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined);
@@ -35,13 +38,6 @@ const Room = () => {
   useEffect(() => {
     window.addEventListener("beforeunload", onbeforeunload);
     joinSession();
-    setTimeout(() => {
-      // 첫 유저면 방장
-      if (subscribers.length === 0) {
-        console.log("방장됨", subscribers, session);
-        setRoomManager(myUserName);
-      }
-    }, 5000);
     return () => {
       window.removeEventListener("beforeunload", onbeforeunload);
     };
@@ -129,10 +125,51 @@ const Room = () => {
   };
 
   const getToken = async () => {
-    const sessionId = await createSession(mySessionId);
-    return createToken(sessionId);
+    return sessionCheck(mySessionId).then((sessionExists) => {
+      if (sessionExists) {
+        console.log("참가자로");
+        return createToken(mySessionId);
+      } else {
+        console.log("방장으로");
+        setHost(true);
+        return createSession(mySessionId).then((sessionId) =>
+          createToken(sessionId)
+        );
+      }
+    });
   };
+  const sessionCheck = async (sessionId) => {
+    try {
+      const response = await axios.get(
+        `${APPLICATION_SERVER_URL}api/sessions/${sessionId}`,
+        {
+          headers: {
+            Authorization: `Basic ${btoa(
+              `OPENVIDUAPP:${APPLICATION_SERVER_SECRET}`
+            )}`,
+          },
+        }
+      );
 
+      console.log(response);
+
+      // Check the response status and return true or false accordingly
+      if (response.status === 200) {
+        console.log("20000000000");
+        return true;
+      } else if (response.status === 404) {
+        console.log("40404040404");
+        return false;
+      } else {
+        console.log("버그");
+        return false;
+      }
+    } catch (error) {
+      // If there was an error, return false
+      console.error("Error checking session:", error);
+      return false;
+    }
+  };
   const createSession = async (sessionId) => {
     console.log("세션 아이디", sessionId);
     const response = await axios.post(
@@ -152,9 +189,10 @@ const Room = () => {
     return response.data;
   };
 
-  const createToken = async (session) => {
+  const createToken = async (sessionId) => {
     const response = await axios.post(
-      APPLICATION_SERVER_URL + "api/sessions/" + session + "/connections",
+      APPLICATION_SERVER_URL + "api/sessions/" + sessionId + "/connections",
+      // APPLICATION_SERVER_URL + "api/sessions/" + sessionId + "/connection",
       {},
       {
         headers: {
@@ -167,7 +205,9 @@ const Room = () => {
         },
       }
     );
+    console.log(response);
     return response.data;
+    // return response.data.token;
   };
 
   const handleCapture = () => {
@@ -177,7 +217,6 @@ const Room = () => {
       const image = new Image();
       image.src = canvas.toDataURL("image/png");
       console.log(image);
-      console.log(roomManager);
       document.body.appendChild(image);
       range.style.backgroundImage = `url(${image.src})`;
       // range.style.backgroundSize = "cover";
@@ -257,28 +296,14 @@ const Room = () => {
               ))}
             </div>
             <button
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: "row",
-              }}
-              onClick={
-                handleCapture
-                // const range = document.querySelector(".room-main");
-                // html2canvas(range, { scale: 1.0, backgroundColor: null }).then(
-                //   (canvas) => {
-                //     console.log("CANVAS", canvas);
-                //     const image = new Image();
-                //     image.src = canvas.toDataURL("image/png");
-                //     console.log(image);
-                //     document.body.appendChild(image);
-                //     range.style.backgroundImage = `url(${image.src})`;
-                //     range.style.backgroundSize = "cover";
-                //   }
-                // );
-              }
-              disabled={!roomManager}
+              // style={{
+              //   display: "flex",
+              //   justifyContent: "center",
+              //   alignItems: "center",
+              //   flexDirection: "row",
+              // }}
+              onClick={handleCapture}
+              disabled={!isHost}
             >
               캡처
             </button>
@@ -310,11 +335,7 @@ const Room = () => {
                 myName={myUserName}
               />
               {subscribers.map((sub, i) => (
-                <div
-                  key={sub.id}
-                  className="stream-container col-md-6 col-xs-6"
-                >
-                  <span>{sub.id}</span>
+                <div key={i} className="stream-container col-md-6 col-xs-6">
                   <UserVideoComponent streamManager={sub} />
                 </div>
               ))}
