@@ -1,0 +1,13 @@
+.MyPhotoCard {
+  width: 260px;
+  height: 260px;
+
+  border: #d9d9d9 1px solid;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin: auto;
+}

@@ -1,13 +1,12 @@
 import "./CenterMain.css";
-import NoticeList from "./NoticeList";
-import Notice from "./Notice";
-import Faq from "./Faq";
+import { Outlet } from "react-router";
 
 // 공지사항과 자주 묻는 질문 나타내는 부분
 function CenterMain() {
   return (
     <div className="CenterMain">
-      <Faq />
+      <Outlet />
+      {/* 공지사항 또는 자주 묻는 질문 라우터 */}
     </div>
   );
 }

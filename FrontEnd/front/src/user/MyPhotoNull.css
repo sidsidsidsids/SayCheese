@@ -1,0 +1,13 @@
+.MyPhotoNull {
+  width: 260px;
+  height: 260px;
+
+  border: white 1px solid;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin: auto;
+}
