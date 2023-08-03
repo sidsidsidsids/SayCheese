@@ -1,0 +1,17 @@
+[[좋아요-API]]
+== 좋아요 API
+
+
+[[Lover-작성-API]]
+=== 좋아요 추가(정상) API
+operation::LoverTest/insertLoverSuccessTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+
+=== 삭제된 게시글 좋아요 추가(비정상) API
+operation::LoverTest/insertLoverFailTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+
+[[Lover-삭제-API]]
+=== 좋아요 취소(정상) API
+operation::LoverTest/deleteLoverSuccessTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+
+=== 삭제된 게시글 좋아요 취소(비정상) API
+operation::LoverTest/deleteLoverFailTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']
