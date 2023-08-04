@@ -1,0 +1,12 @@
+[[이미지-API]]
+== 이미지 API
+
+
+[[Image-작성-API]]
+=== PreSignUrl 생성 (정상) API
+operation::ImageIntegrationTest/createPreSignedUrlTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+
+
+[[Lover-삭제-API]]
+=== 이미지 소유자 삭제(정상) API
+operation::ImageIntegrationTest/deleteImageOwnerSuccessTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']

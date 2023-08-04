@@ -1,0 +1,6 @@
+[[FAQ-API]]
+== FAQ-API
+
+[[FAQ-조회]]
+=== FAQ-목록-조회
+operation::FaqIntegrationTest/getFaqListSuccessTest[snippets='http-request,request-parameters,http-response,response-fields']
