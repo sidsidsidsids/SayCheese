@@ -1,0 +1,24 @@
+[[FrameArticle-API]]
+== FrameArticle API
+
+
+[[FrameArticle-작성-API]]
+=== FrameArticle 작성 API(정상)
+operation::FrameArticleIntegrationTest/writeFrameArticleTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+
+=== FrameArticle 작성 API(비로그인 시도 시)
+operation::FrameArticleIntegrationTest/writeFrameArticleNotAuthFailTest[snippets='http-request,request-fields,http-response']
+
+=== FrameArticle 작성 API(잘못된 값이 들어올 시)
+operation::FrameArticleIntegrationTest/writeFrameArticleValidFailTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+
+[[FrameArticle-수정-API]]
+=== FrameArticle 수정 API(정상)
+operation::FrameArticleIntegrationTest/deleteFrameArticleSuccessTest[snippets='http-request,request-headers,path-parameters,http-response,response-fields']
+
+=== FrameArticle 수정 API(자신이 글이 아닌 글 삭제 시도 시)
+operation::FrameArticleIntegrationTest/deleteFrameArticleNoAuthFailTest[snippets='http-request,request-headers,path-parameters,http-response,response-fields']
+
+=== FrameArticle 수정 API(없는 글을 삭제하려고 할 시)
+operation::FrameArticleIntegrationTest/deleteFrameArticleNotExistsIdFailTest[snippets='http-request,request-headers,path-parameters,http-response,response-fields']
+
