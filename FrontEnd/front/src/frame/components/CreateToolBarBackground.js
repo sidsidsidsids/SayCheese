@@ -4,6 +4,8 @@ import React, { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 // redux
 import { Repaint, RemoveBgImg } from "../../redux/features/frame/frameSlice";
+// css
+import "../css/CreateToolBarBackground.css";
 
 export default function BgColor() {
   const [customColor, setCustomColor] = useState();
@@ -16,7 +18,7 @@ export default function BgColor() {
   // 이미지 업로드 input의 onChange
   const saveImgFile = () => {
     const file = imgRef.current.files[0];
-    const reader = new FileReader();
+    var reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
       setImgFile(reader.result);
@@ -33,6 +35,13 @@ export default function BgColor() {
     setCustomColor(e.target.value);
     const payload = { color: e.target.value, image: imgFile };
     dispatch(Repaint(payload));
+  };
+
+  // 파일 인풋 값 초기화
+  const resetInput = () => {
+    imgRef.current.value = ""; // 파일 선택을 리셋
+    setImgFile(false); // 이미지 파일 상태 초기화
+    dispatch(RemoveBgImg()); // Redux 액션을 사용하여 배경 이미지 상태 초기화
   };
 
   return (
@@ -60,8 +69,7 @@ export default function BgColor() {
       )}
       <div
         onClick={() => {
-          setImgFile(false);
-          dispatch(RemoveBgImg());
+          resetInput();
         }}
       >
         이미지 제거하기{" "}
