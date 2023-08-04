@@ -1,14 +1,19 @@
 spring:
-  profiles:
-    active: local
+  sql:
+    init:
+      mode: always
+  datasource:
+    url: jdbc:h2:mem:test
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
 jwt:
   secret: secret-key
   expiration: 86400000
-
-
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:7000/eureka

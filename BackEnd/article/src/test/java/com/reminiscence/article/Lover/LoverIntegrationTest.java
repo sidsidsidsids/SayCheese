@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-public class LoverTest {
+public class LoverIntegrationTest {
 
     @Autowired
     LoverRepository loverRepository;

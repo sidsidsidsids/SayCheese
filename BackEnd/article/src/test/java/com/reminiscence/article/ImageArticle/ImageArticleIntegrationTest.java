@@ -43,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith({RestDocumentationExtension.class,SpringExtension.class})
 @SpringBootTest
 @Transactional
-public class ImageArticleTest {
+public class ImageArticleIntegrationTest {
     @Autowired
     WebApplicationContext applicationContext;
 
@@ -89,6 +89,7 @@ public class ImageArticleTest {
                                 headerWithName("Authorization").description("로그인 성공한 토큰")
                         ),
                         responseFields(
+                                fieldWithPath("[].articleId").description("게시글 ID"),
                                 fieldWithPath("[].imageLink").description("이미지 링크"),
                                 fieldWithPath("[].loverCnt").description("좋아요 수"),
                                 fieldWithPath("[].createdDate").description("게시글 작성일"),
@@ -111,6 +112,7 @@ public class ImageArticleTest {
                                 headerWithName("Authorization").description("로그인 성공한 토큰")
                         ),
                         responseFields(
+                                fieldWithPath("[].articleId").description("게시글 ID"),
                                 fieldWithPath("[].imageLink").description("이미지 링크"),
                                 fieldWithPath("[].loverCnt").description("좋아요 수"),
                                 fieldWithPath("[].createdDate").description("게시글 작성일"),
@@ -133,6 +135,7 @@ public class ImageArticleTest {
                                 headerWithName("Authorization").description("로그인 성공한 토큰")
                         ),
                         responseFields(
+                                fieldWithPath("[].articleId").description("게시글 ID"),
                                 fieldWithPath("[].imageLink").description("이미지 링크"),
                                 fieldWithPath("[].loverCnt").description("좋아요 수"),
                                 fieldWithPath("[].createdDate").description("게시글 작성일"),
@@ -159,6 +162,7 @@ public class ImageArticleTest {
                                 parameterWithName("tagId").description("태그 아이디")
                         ),
                         responseFields(
+                                fieldWithPath("[].articleId").description("게시글 ID"),
                                 fieldWithPath("[].imageLink").description("이미지 링크"),
                                 fieldWithPath("[].loverCnt").description("좋아요 수"),
                                 fieldWithPath("[].createdDate").description("게시글 작성일"),
@@ -181,6 +185,7 @@ public class ImageArticleTest {
                                 headerWithName("Authorization").description("로그인 성공한 토큰")
                         ),
                         responseFields(
+                                fieldWithPath("[].articleId").description("게시글 ID"),
                                 fieldWithPath("[].imageLink").description("이미지 링크"),
                                 fieldWithPath("[].loverCnt").description("좋아요 수"),
                                 fieldWithPath("[].createdDate").description("게시글 작성일"),
@@ -210,7 +215,7 @@ public class ImageArticleTest {
                         responseFields(
                                 fieldWithPath("memberId").description("회원 ID"),
                                 fieldWithPath("imageId").description("이미지 ID"),
-                                fieldWithPath("name").description("회원 닉네임"),
+                                fieldWithPath("author").description("회원 닉네임"),
                                 fieldWithPath("createdDate").description("게시글 작성일"),
                                 fieldWithPath("imgLink").description("이미지 링크"),
                                 fieldWithPath("loverCnt").description("좋아요 수"),
