@@ -7,7 +7,7 @@ const initialState = {
   width: 207.8,
   bgColor: "#000000",
   bgImg: false,
-  objects: [],
+  objects: false,
 };
 
 // 액션 생성 함수
@@ -25,13 +25,14 @@ const frameSlice = createSlice({
     },
     // 프레임 배경 색과 배경 이미지
     Repaint: (state, action) => {
-      if (
-        action.payload.image !== undefined &&
-        state.bgImg !== action.payload.image
-      ) {
+      if (action.payload.image !== undefined) {
         state.bgImg = action.payload.image;
       }
-      if (state.bgColor !== action.payload.Color) {
+      if (
+        action.payload.color !== undefined &&
+        state.bgColor !== action.payload.Color
+      ) {
+        console.log(action.payload.color);
         state.bgColor = action.payload.color;
       }
     },
@@ -41,9 +42,9 @@ const frameSlice = createSlice({
     },
     // 프레임 오브젝트
     Decorate: (state, action) => {
-      state.objects.push(action.payload);
+      state.objects = action.payload;
       console.log("(*ᴗ͈ˬᴗ͈)ꕤ*.ﾟ");
-      console.log(state.objects.length);
+      console.log("스티커 파일함에 담긴 수", state.objects.length);
     },
     Undecorate: (state) => {
       console.log("언데코");
