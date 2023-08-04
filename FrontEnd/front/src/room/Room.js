@@ -15,10 +15,10 @@ import Timer from "./Timer";
 import sampleImage from "./assets/sample.jpg";
 
 // 로컬 전환 : APPLICATION SERVER 관련 , createToken URL
-const APPLICATION_SERVER_URL = "http://localhost:5000/";
-const APPLICATION_SERVER_SECRET = "MY_SECRET";
-// const APPLICATION_SERVER_URL = "https://i9a401.p.ssafy.io/openvidu/";
-// const APPLICATION_SERVER_SECRET = "my_secret";
+// const APPLICATION_SERVER_URL = "http://localhost:5000/";
+// const APPLICATION_SERVER_SECRET = "MY_SECRET";
+const APPLICATION_SERVER_URL = "https://i9a401.p.ssafy.io/openvidu/";
+const APPLICATION_SERVER_SECRET = "my_secret";
 var chatData;
 const Room = () => {
   const params = useParams();
@@ -91,8 +91,9 @@ const Room = () => {
             insertMode: "APPEND",
             mirror: false,
           });
-
+          console.log(publisher);
           mySession.publish(publisher);
+          // update
 
           // 카메라 선택 옵션 넣을 때 사용됨
           const devices = await OV.getDevices();
@@ -132,8 +133,8 @@ const Room = () => {
       } else {
         console.log("방장으로");
         setHost(true);
-        return createSession(mySessionId).then((sessionId) =>
-          createToken(sessionId)
+        return createSession(mySessionId).then((session) =>
+          createToken(session.sessionId)
         );
       }
     });
@@ -147,6 +148,9 @@ const Room = () => {
             Authorization: `Basic ${btoa(
               `OPENVIDUAPP:${APPLICATION_SERVER_SECRET}`
             )}`,
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,POST",
           },
         }
       );
@@ -190,9 +194,9 @@ const Room = () => {
   };
 
   const createToken = async (sessionId) => {
+    console.log(sessionId);
     const response = await axios.post(
-      APPLICATION_SERVER_URL + "api/sessions/" + sessionId + "/connections",
-      // APPLICATION_SERVER_URL + "api/sessions/" + sessionId + "/connection",
+      APPLICATION_SERVER_URL + "api/sessions/" + sessionId + "/connection",
       {},
       {
         headers: {
@@ -206,8 +210,7 @@ const Room = () => {
       }
     );
     console.log(response);
-    return response.data;
-    // return response.data.token;
+    return response.data.token;
   };
 
   const handleCapture = () => {
