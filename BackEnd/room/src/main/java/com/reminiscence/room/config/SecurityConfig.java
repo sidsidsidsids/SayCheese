@@ -26,6 +26,8 @@ public class SecurityConfig {
         http.addFilterBefore(new JWTAuthorizationFilter(env,memberRepository), BasicAuthenticationFilter.class);
         http.authorizeRequests().antMatchers("/api/room").permitAll()
                 .and()
+                .authorizeRequests().antMatchers("/api/room/**").permitAll()
+                .and()
                 .authorizeRequests().antMatchers("/docs/**").permitAll()
                 .and()
                 .authorizeRequests().anyRequest().authenticated();
