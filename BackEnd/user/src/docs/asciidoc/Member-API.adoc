@@ -59,3 +59,11 @@ operation::MemberIntegrationTest/testGetMembersList[snippets='http-request,path-
 
 === 로그아웃 API(로그아웃 성공 후 회원 정보 수정 실패)
 operation::MemberIntegrationTest/testLogoutSuccess[snippets='http-request,request-fields,http-response,response-fields']
+
+[[JwtToken검증-API]]
+
+=== AccessToken 만료 여부 판별
+operation::MemberIntegrationTest/testAccessTokenExpiredConfirmed[snippets='http-request,http-response']
+
+=== (AccessToken 만료 시) RefreshToken 검증 통해 AccessToken 재발급
+operation::MemberIntegrationTest/testRefreshSuccess[snippets='http-request,http-response']

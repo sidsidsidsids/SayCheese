@@ -2,7 +2,9 @@ package com.reminiscence.member.controller;
 
 import com.reminiscence.config.auth.MemberDetail;
 import com.reminiscence.config.redis.RefreshTokenService;
+import com.reminiscence.filter.JwtProperties;
 import com.reminiscence.filter.JwtTokenProvider;
+import com.reminiscence.filter.JwtUtil;
 import com.reminiscence.message.Response;
 import com.reminiscence.message.custom_message.AuthResponseMessage;
 import lombok.extern.slf4j.Slf4j;
@@ -31,13 +33,16 @@ public class AuthController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
 
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(@AuthenticationPrincipal MemberDetail memberDetail, HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 //        Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.ACCEPTED;
-        String refreshToken = request.getHeader("Authorization");
+        String refreshToken = jwtUtil.resolveRefreshToken(request);
         Object message = null;
         log.debug("token : {}, memberDetail : {}", refreshToken, memberDetail);
         if (jwtTokenProvider.isTokenExpired(refreshToken)) {

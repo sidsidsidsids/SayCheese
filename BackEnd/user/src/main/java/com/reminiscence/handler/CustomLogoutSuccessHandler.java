@@ -15,15 +15,17 @@ import java.io.IOException;
 //@RequiredArgsConstructor
 public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 
-//    private final RefreshTokenService refreshTokenService;
-//    private final JwtUtil jwtUtil;
+    private RefreshTokenService refreshTokenService;
+    private JwtUtil jwtUtil;
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         response.setHeader(JwtProperties.HEADER_STRING, ""); // 테스트 용 (헤더 내 Accesss 토큰 제거) -> 추후 redis 설정 완료 시 변경 필요
+
 //        String accessToken = request.getHeader(JwtProperties.HEADER_STRING);
 //        String refreshToken = request.getHeader(JwtProperties.REFRESH_TOKEN_HEADER);
 //        refreshTokenService.deleteRefreshToken(refreshToken);
-//        // accessToken BlackList 설정
+
+        // accessToken BlackList 설정
 
     }
 }

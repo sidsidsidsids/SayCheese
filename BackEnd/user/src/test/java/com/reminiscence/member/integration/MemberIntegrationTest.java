@@ -105,15 +105,6 @@ public class MemberIntegrationTest {
                         .withResponseDefaults(prettyPrint()))
                 .build();
 
-//        Member admin=memberRepository.findById(1L).orElse(null);
-//        Member member=memberRepository.findById(2L).orElse(null);
-//        adminToken= JWT.create()
-//                .withClaim("memberId",String.valueOf(admin.getId()))
-//                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
-//        memberToken= JWT.create()
-//                .withClaim("memberId",String.valueOf(member.getId()))
-//                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
-
         memberRepository.deleteAll();
         // H2 Database에서 auto_increment 값을 초기화하는 쿼리 실행
 //        jdbcTemplate.execute("ALTER TABLE member ALTER COLUMN id RESTART WITH 1");
@@ -152,35 +143,20 @@ public class MemberIntegrationTest {
                 .andExpect(status().isOk()) // 응답 status를 ok로 테스트
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                         requestFields(
-                                fieldWithPath("email").type(JsonFieldType.STRING).description("아이디(이메일)").attributes(key("constraints").value("제목은 최소 3글자, 20글자 이하")),
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("아이디(이메일)").attributes(key("constraints").value("이메일 유효성 검사 제한")),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 최소 8자 이상")),
                                 fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임").attributes(key("constraints").value("닉네임은 최소 2자 이상, 최대 20자 이하, 공백이나 특수 기호 포함되지 않도록 제한, 중복 제한")),
-                                fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별"),
-                                fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이"),
+                                fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별").attributes(key("constraints").value("")),
+                                fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이").attributes(key("constraints").value("")),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("이름").attributes(key("constraints").value("이름 입력 필수")),
-                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필"),
-                                fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디"),
-                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정")
+                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value("")),
+                                fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디").attributes(key("constraints").value("")),
+                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value(""))
                         ),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
                         )
                 ));
-
-//        //when
-//        Member member = memberRepository.findByEmail(email);
-//
-//        //then
-//        assertThat(member.getEmail()).isEqualTo(email);
-//        assertThat(bCryptPasswordEncoder.matches(password, member.getPassword())).isTrue();
-//        assertThat(member.getNickname()).isEqualTo(nickname);
-//        assertThat(member.getRole()).isEqualTo(Role.MEMBER);
-//        assertThat(member.getGenderFm()).isEqualTo(genderFm);
-//        assertThat(member.getAge()).isEqualTo(age);
-//        assertThat(member.getName()).isEqualTo(name);
-//        assertThat(member.getProfile()).isEqualTo(profile);
-//        assertThat(member.getSnsId()).isEqualTo(snsId);
-//        assertThat(member.getSnsType()).isEqualTo(snsType);
     }
 
     @Test
@@ -230,23 +206,17 @@ public class MemberIntegrationTest {
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("중복된 아이디(이메일)").attributes(key("constraints").value("제목은 최소 3글자, 20글자 이하")),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 최소 8자 이상")),
                                 fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임").attributes(key("constraints").value("닉네임은 최소 2자 이상, 최대 20자 이하, 공백이나 특수 기호 포함되지 않도록 제한, 중복 제한")),
-                                fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별"),
-                                fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이"),
+                                fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별").attributes(key("constraints").value("")),
+                                fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이").attributes(key("constraints").value("")),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("이름").attributes(key("constraints").value("이름 입력 필수")),
-                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필"),
-                                fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디"),
-                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정")
+                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value("")),
+                                fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디").attributes(key("constraints").value("")),
+                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value(""))
                         ),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
                         )
                 ));
-
-//        //when
-//        List<Member> membersList = memberRepository.findAll();
-//
-//        //then
-//        assertThat(membersList.size()).isOne();
     }
 
     @Test
@@ -296,23 +266,17 @@ public class MemberIntegrationTest {
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("아이디(이메일)").attributes(key("constraints").value("제목은 최소 3글자, 20글자 이하")),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 최소 8자 이상")),
                                 fieldWithPath("nickname").type(JsonFieldType.STRING).description("중복된 닉네임").attributes(key("constraints").value("닉네임은 최소 2자 이상, 최대 20자 이하, 공백이나 특수 기호 포함되지 않도록 제한, 중복 제한")),
-                                fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별"),
-                                fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이"),
+                                fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별").attributes(key("constraints").value("")),
+                                fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이").attributes(key("constraints").value("")),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("이름").attributes(key("constraints").value("이름 입력 필수")),
-                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필"),
-                                fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디"),
-                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정")
+                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value("")),
+                                fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디").attributes(key("constraints").value("")),
+                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value(""))
                         ),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
                         )
                 ));
-
-//        //when
-//        List<Member> membersList = memberRepository.findAll();
-//
-//        //then
-//        assertThat(membersList.size()).isOne();
     }
 
 
@@ -512,7 +476,6 @@ public class MemberIntegrationTest {
                 .password(password)
                 .build();
 
-//        assertThat(memberService.login(memberLoginRequestDto)).isNotNull();
 
         mvc.perform(post("/api/login")
                         .content(objectMapper.writeValueAsString(memberLoginRequestDto))
@@ -521,19 +484,10 @@ public class MemberIntegrationTest {
                 .andExpect(header().exists(HttpHeaders.AUTHORIZATION))
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                         requestFields(
-                                fieldWithPath("email").type(JsonFieldType.STRING).description("아이디(이메일)"),
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호")
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("아이디(이메일)").attributes(key("constraints").value("")),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value(""))
                         )
                 ));
-//                .andExpect(jsonPath(email).value(email))
-//                .andExpect(jsonPath(password).value(password));
-
-//        objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);;
-//        objectMapper.registerModule(new JavaTimeModule());
-//        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-//        MemberResponseDto memberResponseDto = objectMapper.convertValue(memberRepository.findByEmailAndPassword(memberLoginRequestDto.getEmail(), memberLoginRequestDto.getPassword()), MemberResponseDto.class);
-//        assertThat(memberResponseDto).isNotNull();
     }
 
 
@@ -564,17 +518,10 @@ public class MemberIntegrationTest {
                 .andExpect(header().doesNotExist(HttpHeaders.AUTHORIZATION))
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                         requestFields(
-                                fieldWithPath("email").type(JsonFieldType.STRING).description("아이디(이메일)"),
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("틀린 비밀번호")
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("아이디(이메일)").attributes(key("constraints").value("")),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("틀린 비밀번호").attributes(key("constraints").value(""))
                         )
                 ));
-
-//        objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);;
-//        objectMapper.registerModule(new JavaTimeModule());
-//        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-//        MemberResponseDto memberResponseDto = objectMapper.convertValue(memberRepository.findByEmailAndPassword(memberLoginRequestDto.getEmail(), memberLoginRequestDto.getPassword()), MemberResponseDto.class);
-//
-//        assertThat(memberResponseDto).isNull();
     }
 
     @Test
@@ -642,22 +589,6 @@ public class MemberIntegrationTest {
                                 fieldWithPath("personalAgreement").type(JsonFieldType.STRING).description("개인정보제공 동의 여부")
                         )
                 ));
-
-//        //when
-//        List<Member> membersList = memberRepository.findAll();
-//
-//        //then
-//        Member member = membersList.get(0);
-//        assertThat(member.getEmail()).isEqualTo(email);
-//        assertThat(bCryptPasswordEncoder.matches(password, member.getPassword())).isTrue();
-//        assertThat(member.getNickname()).isEqualTo(nickname);
-//        assertThat(member.getRole()).isEqualTo(Role.MEMBER);
-//        assertThat(member.getGenderFm()).isEqualTo(genderFm);
-//        assertThat(member.getAge()).isEqualTo(age);
-//        assertThat(member.getName()).isEqualTo(name);
-//        assertThat(member.getProfile()).isEqualTo(profile);
-//        assertThat(member.getSnsId()).isEqualTo(snsId);
-//        assertThat(member.getSnsType()).isEqualTo(snsType);
     }
 
     @Test
@@ -724,13 +655,13 @@ public class MemberIntegrationTest {
                         requestFields(
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 최소 8자 이상")),
                                 fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임").attributes(key("constraints").value("닉네임은 최소 2자 이상, 최대 20자 이하, 공백이나 특수 기호 포함되지 않도록 제한, 중복 제한")),
-                                fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별"),
-                                fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이"),
+                                fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별").attributes(key("constraints").value("")),
+                                fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이").attributes(key("constraints").value("")),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("이름").attributes(key("constraints").value("이름 입력 필수")),
-                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필"),
-                                fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디"),
-                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정"),
-                                fieldWithPath("personalAgreement").type(JsonFieldType.STRING).description("개인정보제공 동의 여부")
+                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value("")),
+                                fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디").attributes(key("constraints").value("")),
+                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value("")),
+                                fieldWithPath("personalAgreement").type(JsonFieldType.STRING).description("개인정보제공 동의 여부").attributes(key("constraints").value("체크 필수"))
                         ),
                         responseFields(
                                 fieldWithPath("message.message").type(JsonFieldType.STRING).description("API 응답 메시지"),
@@ -745,22 +676,6 @@ public class MemberIntegrationTest {
                                 fieldWithPath("Member.personalAgreement").type(JsonFieldType.STRING).description("개인정보제공 동의 여부")
                         )
                 ));
-
-//        //when
-//        List<Member> membersList = memberRepository.findAll();
-//
-//        //then
-//        Member member = membersList.get(0);
-//        assertThat(member.getEmail()).isEqualTo(email);
-//        assertThat(bCryptPasswordEncoder.matches(password, member.getPassword())).isTrue();
-//        assertThat(member.getNickname()).isEqualTo(nickname);
-//        assertThat(member.getRole()).isEqualTo(Role.MEMBER);
-//        assertThat(member.getGenderFm()).isEqualTo(genderFm);
-//        assertThat(member.getAge()).isEqualTo(age);
-//        assertThat(member.getName()).isEqualTo(name);
-//        assertThat(member.getProfile()).isEqualTo(profile);
-//        assertThat(member.getSnsId()).isEqualTo(snsId);
-//        assertThat(member.getSnsType()).isEqualTo(snsType);
     }
 
     @Test
@@ -1031,13 +946,13 @@ public class MemberIntegrationTest {
                         requestFields(
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 최소 8자 이상")),
                                 fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임").attributes(key("constraints").value("닉네임은 최소 2자 이상, 최대 20자 이하, 공백이나 특수 기호 포함되지 않도록 제한, 중복 제한")),
-                                fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별"),
-                                fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이"),
+                                fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별").attributes(key("constraints").value("")),
+                                fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이").attributes(key("constraints").value("")),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("이름").attributes(key("constraints").value("이름 입력 필수")),
-                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필"),
-                                fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디"),
-                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정"),
-                                fieldWithPath("personalAgreement").type(JsonFieldType.STRING).description("개인정보제공 동의 여부")
+                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value("")),
+                                fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디").attributes(key("constraints").value("")),
+                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value("")),
+                                fieldWithPath("personalAgreement").type(JsonFieldType.STRING).description("개인정보제공 동의 여부").attributes(key("constraints").value("체크 필수"))
                         )
                 ));
 
@@ -1107,9 +1022,76 @@ public class MemberIntegrationTest {
                 .andReturn();
     }
 
+    @Test
+    @DisplayName("(AccessToken 만료 시) RefreshToken 검증 통해 AccessToken 재발급")
+    public void testRefreshSuccess() throws Exception {
+        //given
+        String email = "saycheese@gmail.com";
+        String password = "1234";
+        String nickname = "검정";
+        Role role = Role.MEMBER;
+        char genderFm = 'F';
+        int age = 31;
+        String name = "고무신";
+        String profile = "xxxxxxx";
+        String snsId = "nosns";
+        String snsType = "facebook";
+
+        memberRepository.save(Member.builder()
+                .email(email)
+                .password(bCryptPasswordEncoder.encode(password))
+                .nickname("빨강")
+                .role(Role.MEMBER)
+                .genderFm('M')
+                .age(34)
+                .name("나막신")
+                .profile("yyyyyyyyyy")
+                .snsId("snsno")
+                .snsType("twitter")
+                .build());
+
+        MemberLoginRequestDto memberLoginRequestDto = MemberLoginRequestDto.builder()
+                .email(email)
+                .password(password)
+                .build();
+
+        MvcResult loginResult = mvc.perform(post("/api/login")
+                        .content(objectMapper.writeValueAsString(memberLoginRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"))
+                .andReturn();
+
+        String accessToken = loginResult.getResponse().getHeader(JwtProperties.HEADER_STRING);
+        String refreshToken = loginResult.getResponse().getHeader(JwtProperties.REFRESH_TOKEN_HEADER);
+
+        HttpHeaders headers = new HttpHeaders();
+        Map<String, Object> claim = new HashMap<>();
+        String username = jwtTokenProvider.getUsernameFromToken(accessToken);
+        claim.put("memberId", memberRepository.findByEmail(username).getId());
+        String expiredAccessToken = jwtTokenProvider.generateToken(username, 0, claim);
+        headers.add(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+expiredAccessToken);
+
+        mvc.perform(get("/api/member/info")
+                        .headers(headers)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized()) // 응답 status를 unauthorized로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"));
+
+        headers.set(JwtProperties.HEADER_STRING, refreshToken);
+
+        mvc.perform(post("/refresh")
+                        .headers(headers)
+                        .content(objectMapper.writeValueAsString(memberLoginRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"))
+                .andReturn();
+    }
+
 //    @Test
-//    @DisplayName("(AccessToken 만료 시) RefreshToken 검증 통해 AccessToken 재발급")
-//    public void testRefreshSuccess() throws Exception {
+//    @DisplayName("AccessToken와 RefreshToken 모두 만료 시 로그인 요청 알림")
+//    public void testRefreshFail() throws Exception {
 //        //given
 //        String email = "saycheese@gmail.com";
 //        String password = "1234";
@@ -1147,15 +1129,15 @@ public class MemberIntegrationTest {
 //                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"))
 //                .andReturn();
 //
+//        String accessToken = loginResult.getResponse().getHeader(JwtProperties.HEADER_STRING);
 //        String refreshToken = loginResult.getResponse().getHeader(JwtProperties.REFRESH_TOKEN_HEADER);
 //
 //        HttpHeaders headers = new HttpHeaders();
-//        String accessToken = loginResult.getResponse().getHeader(JwtProperties.HEADER_STRING);
 //        Map<String, Object> claim = new HashMap<>();
 //        String username = jwtTokenProvider.getUsernameFromToken(accessToken);
 //        claim.put("memberId", memberRepository.findByEmail(username).getId());
-//        accessToken = jwtTokenProvider.generateToken(username, 0, claim);
-//        headers.add(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+accessToken);
+//        String expiredAccessToken = jwtTokenProvider.generateToken(username, 0, claim);
+//        headers.add(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+expiredAccessToken);
 //
 //        mvc.perform(get("/api/member/info")
 //                        .headers(headers)
@@ -1163,27 +1145,18 @@ public class MemberIntegrationTest {
 //                .andExpect(status().isUnauthorized()) // 응답 status를 unauthorized로 테스트
 //                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"));
 //
-//        headers.clear();
+//        String expiredRefreshToken = jwtTokenProvider.generateToken(username, 0, claim);
+//        headers.set(JwtProperties.HEADER_STRING, expiredRefreshToken);
 //
-//        headers.add(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+refreshToken);
-//
-//        MvcResult mvcResult = mvc.perform(post("/refresh")
+//        mvc.perform(post("/refresh")
 //                        .headers(headers)
 //                        .content(objectMapper.writeValueAsString(memberLoginRequestDto))
 //                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+//                .andExpect(status().isUnauthorized()) // 응답 status를 ok로 테스트
 //                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"))
 //                .andReturn();
-//
-//        assertThat(mvcResult.getResponse().getHeader(JwtProperties.HEADER_STRING)).isNotEqualTo(accessToken);
-//        assertThat(mvcResult.getResponse().getHeader(JwtProperties.REFRESH_TOKEN_HEADER)).isNotEqualTo(accessToken);
 //    }
 
-//    @Test
-//    @DisplayName("AccessToken와 RefreshToken 모두 만료 시 로그인 요청 알림")
-//    public void testRefreshFail(){
-//
-//    }
 //    @Test
 //    @DisplayName("로그아웃 시 AccessToken 블랙리스트 설정 후 해당 AccessToken 접근 제한")
 //    public void testAccessTokenBlacklist(){

@@ -1,6 +1,0 @@
-jwt:
-  secret: secret-key
-  key: key
-  live:
-    atk: 60000
-    rtk: 300000
