@@ -1,10 +1,10 @@
-package com.reminiscence.user;
+package com.reminiscence.member;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class UserApplicationTests {
+class MemberApplicationTests {
 
 	@Test
 	void contextLoads() {

@@ -1,0 +1,10 @@
+= REST Docs 문서 만들기 (200OK)
+:toc: left
+:toclevels: 2
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:sectlinks:
+:sectnums:
+
+include::Member-API.adoc[]

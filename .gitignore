@@ -43,3 +43,4 @@ application.yml
 application-jwt.yml
 application-local.yml
 application-server.yml
+**/data.sql
