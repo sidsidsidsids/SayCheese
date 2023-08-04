@@ -1,6 +1,5 @@
-package com.reminiscence.article.notice;
+package com.reminiscence.article.notice.dummy;
 
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 public class DummyNoticeArticleRequestDto {
     private String subject;
     private String content;

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.17">
+<meta name="generator" content="Asciidoctor 2.0.20">
 <title>REST Docs 문서 만들기 (200OK)</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -84,10 +84,10 @@ code{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;
 ul,ol,dl{line-height:1.6;margin-bottom:1.25em;list-style-position:outside;font-family:inherit}
 ul,ol{margin-left:1.5em}
 ul li ul,ul li ol{margin-left:1.25em;margin-bottom:0}
-ul.square li ul,ul.circle li ul,ul.disc li ul{list-style:inherit}
-ul.square{list-style-type:square}
 ul.circle{list-style-type:circle}
 ul.disc{list-style-type:disc}
+ul.square{list-style-type:square}
+ul.circle ul:not([class]),ul.disc ul:not([class]),ul.square ul:not([class]){list-style:inherit}
 ol li ul,ol li ol{margin-left:1.25em;margin-bottom:0}
 dl dt{margin-bottom:.3125em;font-weight:bold}
 dl dd{margin-bottom:1.25em}
@@ -208,13 +208,10 @@ table.tableblock.fit-content>caption.title{white-space:nowrap;width:0}
 .admonitionblock>table td.content{padding-left:1.125em;padding-right:1.25em;border-left:1px solid #dddddf;color:rgba(0,0,0,.6);word-wrap:anywhere}
 .admonitionblock>table td.content>:last-child>:last-child{margin-bottom:0}
 .exampleblock>.content{border:1px solid #e6e6e6;margin-bottom:1.25em;padding:1.25em;background:#fff;border-radius:4px}
-.exampleblock>.content>:first-child{margin-top:0}
-.exampleblock>.content>:last-child{margin-bottom:0}
 .sidebarblock{border:1px solid #dbdbd6;margin-bottom:1.25em;padding:1.25em;background:#f3f3f2;border-radius:4px}
-.sidebarblock>:first-child{margin-top:0}
-.sidebarblock>:last-child{margin-bottom:0}
 .sidebarblock>.content>.title{color:#7a2518;margin-top:0;text-align:center}
-.exampleblock>.content>:last-child>:last-child,.exampleblock>.content .olist>ol>li:last-child>:last-child,.exampleblock>.content .ulist>ul>li:last-child>:last-child,.exampleblock>.content .qlist>ol>li:last-child>:last-child,.sidebarblock>.content>:last-child>:last-child,.sidebarblock>.content .olist>ol>li:last-child>:last-child,.sidebarblock>.content .ulist>ul>li:last-child>:last-child,.sidebarblock>.content .qlist>ol>li:last-child>:last-child{margin-bottom:0}
+.exampleblock>.content>:first-child,.sidebarblock>.content>:first-child{margin-top:0}
+.exampleblock>.content>:last-child,.exampleblock>.content>:last-child>:last-child,.exampleblock>.content .olist>ol>li:last-child>:last-child,.exampleblock>.content .ulist>ul>li:last-child>:last-child,.exampleblock>.content .qlist>ol>li:last-child>:last-child,.sidebarblock>.content>:last-child,.sidebarblock>.content>:last-child>:last-child,.sidebarblock>.content .olist>ol>li:last-child>:last-child,.sidebarblock>.content .ulist>ul>li:last-child>:last-child,.sidebarblock>.content .qlist>ol>li:last-child>:last-child{margin-bottom:0}
 .literalblock pre,.listingblock>.content>pre{border-radius:4px;overflow-x:auto;padding:1em;font-size:.8125em}
 @media screen and (min-width:768px){.literalblock pre,.listingblock>.content>pre{font-size:.90625em}}
 @media screen and (min-width:1280px){.literalblock pre,.listingblock>.content>pre{font-size:1em}}
@@ -393,7 +390,7 @@ b.conum *{color:inherit!important}
 dt,th.tableblock,td.content,div.footnote{text-rendering:optimizeLegibility}
 h1,h2,p,td.content,span.alt,summary{letter-spacing:-.01em}
 p strong,td.content strong,div.footnote strong{letter-spacing:-.005em}
-p,blockquote,dt,td.content,span.alt,summary{font-size:1.0625rem}
+p,blockquote,dt,td.content,td.hdlist1,span.alt,summary{font-size:1.0625rem}
 p{margin-bottom:1.25rem}
 .sidebarblock p,.sidebarblock dt,.sidebarblock td.content,p.tableblock{font-size:1em}
 .exampleblock>.content{background:#fffef7;border-color:#e0e0dc;box-shadow:0 1px 4px #e0e0dc}
@@ -461,37 +458,47 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_imagearticle_삭제_api잘못된_사용자_접근할_때_2">1.13. ImageArticle 삭제 API(잘못된 사용자 접근할 때)</a></li>
 </ul>
 </li>
-<li><a href="#좋아요-API">2. 좋아요 API</a>
+<li><a href="#FrameArticle-API">2. FrameArticle API</a>
 <ul class="sectlevel2">
-<li><a href="#Lover-작성-API">2.1. 좋아요 추가(정상) API</a></li>
-<li><a href="#_삭제된_게시글_좋아요_추가비정상_api">2.2. 삭제된 게시글 좋아요 추가(비정상) API</a></li>
-<li><a href="#Lover-삭제-API">2.3. 좋아요 취소(정상) API</a></li>
-<li><a href="#_삭제된_게시글_좋아요_취소비정상_api">2.4. 삭제된 게시글 좋아요 취소(비정상) API</a></li>
+<li><a href="#FrameArticle-작성-API">2.1. FrameArticle 작성 API(정상)</a></li>
+<li><a href="#_framearticle_작성_api비로그인_시도_시">2.2. FrameArticle 작성 API(비로그인 시도 시)</a></li>
+<li><a href="#_framearticle_작성_api잘못된_값이_들어올_시">2.3. FrameArticle 작성 API(잘못된 값이 들어올 시)</a></li>
+<li><a href="#FrameArticle-수정-API">2.4. FrameArticle 수정 API(정상)</a></li>
+<li><a href="#_framearticle_수정_api자신이_글이_아닌_글_삭제_시도_시">2.5. FrameArticle 수정 API(자신이 글이 아닌 글 삭제 시도 시)</a></li>
+<li><a href="#_framearticle_수정_api없는_글을_삭제하려고_할_시">2.6. FrameArticle 수정 API(없는 글을 삭제하려고 할 시)</a></li>
 </ul>
 </li>
-<li><a href="#이미지-API">3. 이미지 API</a>
+<li><a href="#좋아요-API">3. 좋아요 API</a>
 <ul class="sectlevel2">
-<li><a href="#Image-작성-API">3.1. PreSignUrl 생성 (정상) API</a></li>
-<li><a href="#Lover-삭제-API">3.2. 이미지 소유자 삭제(정상) API</a></li>
+<li><a href="#Lover-작성-API">3.1. 좋아요 추가(정상) API</a></li>
+<li><a href="#_삭제된_게시글_좋아요_추가비정상_api">3.2. 삭제된 게시글 좋아요 추가(비정상) API</a></li>
+<li><a href="#Lover-삭제-API">3.3. 좋아요 취소(정상) API</a></li>
+<li><a href="#_삭제된_게시글_좋아요_취소비정상_api">3.4. 삭제된 게시글 좋아요 취소(비정상) API</a></li>
 </ul>
 </li>
-<li><a href="#Notice-API">4. Notice API</a>
+<li><a href="#이미지-API">4. 이미지 API</a>
 <ul class="sectlevel2">
-<li><a href="#Notice-작성-API">4.1. Notice 작성 API</a></li>
-<li><a href="#_notice_작성_api일반_사용자_시도_시">4.2. Notice 작성 API(일반 사용자 시도 시)</a></li>
-<li><a href="#_notice_작성_api글이_짧을_경우">4.3. Notice 작성 API(글이 짧을 경우)</a></li>
-<li><a href="#Notice-수정-API">4.4. Notice 수정 API</a></li>
-<li><a href="#_notice_수정_api일반_사용자_시도_시">4.5. Notice 수정 API(일반 사용자 시도 시)</a></li>
-<li><a href="#_notice_수정_api글이_짧을_경우">4.6. Notice 수정 API(글이 짧을 경우)</a></li>
-<li><a href="#_notice_수정_api없는_번호인_경우">4.7. Notice 수정 API(없는 번호인 경우)</a></li>
-<li><a href="#Notice-조회-API">4.8. Notice 목록 조회 API(정상)</a></li>
-<li><a href="#Notice-상세-조회-API">4.9. Notice 상세 조회 API(정상)</a></li>
-<li><a href="#_notice_상세_조회_api잘못된_번호가_들어올_시">4.10. Notice 상세 조회 API(잘못된 번호가 들어올 시)</a></li>
+<li><a href="#Image-작성-API">4.1. PreSignUrl 생성 (정상) API</a></li>
+<li><a href="#Lover-삭제-API">4.2. 이미지 소유자 삭제(정상) API</a></li>
 </ul>
 </li>
-<li><a href="#FAQ-API">5. FAQ-API</a>
+<li><a href="#Notice-API">5. Notice API</a>
 <ul class="sectlevel2">
-<li><a href="#FAQ-조회">5.1. FAQ-목록-조회</a></li>
+<li><a href="#Notice-작성-API">5.1. Notice 작성 API</a></li>
+<li><a href="#_notice_작성_api일반_사용자_시도_시">5.2. Notice 작성 API(일반 사용자 시도 시)</a></li>
+<li><a href="#_notice_작성_api글이_짧을_경우">5.3. Notice 작성 API(글이 짧을 경우)</a></li>
+<li><a href="#Notice-수정-API">5.4. Notice 수정 API</a></li>
+<li><a href="#_notice_수정_api일반_사용자_시도_시">5.5. Notice 수정 API(일반 사용자 시도 시)</a></li>
+<li><a href="#_notice_수정_api글이_짧을_경우">5.6. Notice 수정 API(글이 짧을 경우)</a></li>
+<li><a href="#_notice_수정_api없는_번호인_경우">5.7. Notice 수정 API(없는 번호인 경우)</a></li>
+<li><a href="#Notice-조회-API">5.8. Notice 목록 조회 API(정상)</a></li>
+<li><a href="#Notice-상세-조회-API">5.9. Notice 상세 조회 API(정상)</a></li>
+<li><a href="#_notice_상세_조회_api잘못된_번호가_들어올_시">5.10. Notice 상세 조회 API(잘못된 번호가 들어올 시)</a></li>
+</ul>
+</li>
+<li><a href="#FAQ-API">6. FAQ-API</a>
+<ul class="sectlevel2">
+<li><a href="#FAQ-조회">6.1. FAQ-목록-조회</a></li>
 </ul>
 </li>
 </ul>
@@ -529,6 +536,9 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -536,68 +546,58 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 1438
+Content-Length: 1258
 
 [ {
   "imageLink" : "www.google.com",
   "loverCnt" : 3,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 1
-}, {
-  "imageLink" : "link3",
-  "loverCnt" : 2,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 1
-}, {
-  "imageLink" : "link5",
-  "loverCnt" : 2,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 1
-}, {
-  "imageLink" : "link4",
-  "loverCnt" : 2,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 1
-}, {
-  "imageLink" : "link2",
-  "loverCnt" : 2,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 1
-}, {
-  "imageLink" : "link1",
-  "loverCnt" : 2,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 1
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6816"
 }, {
   "imageLink" : "www.daum.com",
   "loverCnt" : 2,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 1
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
+}, {
+  "imageLink" : "link1",
+  "loverCnt" : 2,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
+}, {
+  "imageLink" : "link2",
+  "loverCnt" : 2,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
+}, {
+  "imageLink" : "link3",
+  "loverCnt" : 2,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
+}, {
+  "imageLink" : "link5",
+  "loverCnt" : 2,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6816"
+}, {
+  "imageLink" : "link4",
+  "loverCnt" : 2,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6816"
 }, {
   "imageLink" : "www.naver.com",
   "loverCnt" : 1,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 1
-}, {
-  "imageLink" : "link12",
-  "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6817",
-  "loverYn" : 0
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6816"
 }, {
   "imageLink" : "link11",
   "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6817",
-  "loverYn" : 0
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6817"
+}, {
+  "imageLink" : "link12",
+  "loverCnt" : 0,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6817"
 } ]</code></pre>
 </div>
 </div>
@@ -648,63 +648,53 @@ Content-Length: 1438
 <pre class="highlightjs highlight nowrap"><code class="language-none hljs">[ {
   "imageLink" : "www.google.com",
   "loverCnt" : 3,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 1
-}, {
-  "imageLink" : "link3",
-  "loverCnt" : 2,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 1
-}, {
-  "imageLink" : "link5",
-  "loverCnt" : 2,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 1
-}, {
-  "imageLink" : "link4",
-  "loverCnt" : 2,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 1
-}, {
-  "imageLink" : "link2",
-  "loverCnt" : 2,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 1
-}, {
-  "imageLink" : "link1",
-  "loverCnt" : 2,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 1
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6816"
 }, {
   "imageLink" : "www.daum.com",
   "loverCnt" : 2,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 1
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
+}, {
+  "imageLink" : "link1",
+  "loverCnt" : 2,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
+}, {
+  "imageLink" : "link2",
+  "loverCnt" : 2,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
+}, {
+  "imageLink" : "link3",
+  "loverCnt" : 2,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
+}, {
+  "imageLink" : "link5",
+  "loverCnt" : 2,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6816"
+}, {
+  "imageLink" : "link4",
+  "loverCnt" : 2,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6816"
 }, {
   "imageLink" : "www.naver.com",
   "loverCnt" : 1,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 1
-}, {
-  "imageLink" : "link12",
-  "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6817",
-  "loverYn" : 0
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6816"
 }, {
   "imageLink" : "link11",
   "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6817",
-  "loverYn" : 0
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6817"
+}, {
+  "imageLink" : "link12",
+  "loverCnt" : 0,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6817"
 } ]</code></pre>
 </div>
 </div>
@@ -745,11 +735,6 @@ Content-Length: 1438
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">게시글 작성자</p></td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].loverYn</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">좋아요 여부</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -782,6 +767,9 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -789,68 +777,58 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 1431
+Content-Length: 1246
 
 [ {
-  "imageLink" : "link3",
-  "loverCnt" : 2,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 1
-}, {
-  "imageLink" : "link4",
-  "loverCnt" : 2,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 1
-}, {
   "imageLink" : "link2",
   "loverCnt" : 2,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 1
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
+}, {
+  "imageLink" : "link7",
+  "loverCnt" : 0,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
+}, {
+  "imageLink" : "link12",
+  "loverCnt" : 0,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6817"
+}, {
+  "imageLink" : "link11",
+  "loverCnt" : 0,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6817"
+}, {
+  "imageLink" : "link15",
+  "loverCnt" : 0,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
 }, {
   "imageLink" : "www.google.com",
   "loverCnt" : 3,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 1
-}, {
-  "imageLink" : "link10",
-  "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6817",
-  "loverYn" : 0
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6816"
 }, {
   "imageLink" : "link1",
   "loverCnt" : 2,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 1
-}, {
-  "imageLink" : "link8",
-  "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 0
-}, {
-  "imageLink" : "link6",
-  "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 0
-}, {
-  "imageLink" : "www.naver.com",
-  "loverCnt" : 1,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 1
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
 }, {
   "imageLink" : "link14",
   "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 0
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6816"
+}, {
+  "imageLink" : "link6",
+  "loverCnt" : 0,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6816"
+}, {
+  "imageLink" : "link13",
+  "loverCnt" : 0,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6817"
 } ]</code></pre>
 </div>
 </div>
@@ -899,65 +877,55 @@ Content-Length: 1431
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-none hljs">[ {
-  "imageLink" : "link3",
-  "loverCnt" : 2,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 1
-}, {
-  "imageLink" : "link4",
-  "loverCnt" : 2,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 1
-}, {
   "imageLink" : "link2",
   "loverCnt" : 2,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 1
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
+}, {
+  "imageLink" : "link7",
+  "loverCnt" : 0,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
+}, {
+  "imageLink" : "link12",
+  "loverCnt" : 0,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6817"
+}, {
+  "imageLink" : "link11",
+  "loverCnt" : 0,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6817"
+}, {
+  "imageLink" : "link15",
+  "loverCnt" : 0,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
 }, {
   "imageLink" : "www.google.com",
   "loverCnt" : 3,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 1
-}, {
-  "imageLink" : "link10",
-  "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6817",
-  "loverYn" : 0
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6816"
 }, {
   "imageLink" : "link1",
   "loverCnt" : 2,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 1
-}, {
-  "imageLink" : "link8",
-  "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 0
-}, {
-  "imageLink" : "link6",
-  "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 0
-}, {
-  "imageLink" : "www.naver.com",
-  "loverCnt" : 1,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 1
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
 }, {
   "imageLink" : "link14",
   "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 0
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6816"
+}, {
+  "imageLink" : "link6",
+  "loverCnt" : 0,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6816"
+}, {
+  "imageLink" : "link13",
+  "loverCnt" : 0,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6817"
 } ]</code></pre>
 </div>
 </div>
@@ -998,11 +966,6 @@ Content-Length: 1431
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">게시글 작성자</p></td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].loverYn</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">좋아요 여부</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -1035,6 +998,9 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -1042,68 +1008,58 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 1427
+Content-Length: 1244
 
 [ {
-  "imageLink" : "link9",
+  "imageLink" : "link15",
   "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 0
-}, {
-  "imageLink" : "link10",
-  "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6817",
-  "loverYn" : 0
-}, {
-  "imageLink" : "link8",
-  "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 0
-}, {
-  "imageLink" : "link7",
-  "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 0
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
 }, {
   "imageLink" : "link14",
   "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 0
-}, {
-  "imageLink" : "link12",
-  "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6817",
-  "loverYn" : 0
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6816"
 }, {
   "imageLink" : "link13",
   "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6817",
-  "loverYn" : 0
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6817"
 }, {
-  "imageLink" : "link11",
+  "imageLink" : "link12",
   "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6817",
-  "loverYn" : 0
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6817"
 }, {
-  "imageLink" : "link15",
+  "imageLink" : "link6",
   "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 0
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6816"
 }, {
-  "imageLink" : "www.google.com",
-  "loverCnt" : 3,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 1
+  "imageLink" : "link10",
+  "loverCnt" : 0,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6817"
+}, {
+  "imageLink" : "link9",
+  "loverCnt" : 0,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
+}, {
+  "imageLink" : "link8",
+  "loverCnt" : 0,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
+}, {
+  "imageLink" : "link7",
+  "loverCnt" : 0,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
+}, {
+  "imageLink" : "www.daum.com",
+  "loverCnt" : 2,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
 } ]</code></pre>
 </div>
 </div>
@@ -1152,65 +1108,55 @@ Content-Length: 1427
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-none hljs">[ {
-  "imageLink" : "link9",
+  "imageLink" : "link15",
   "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 0
-}, {
-  "imageLink" : "link10",
-  "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6817",
-  "loverYn" : 0
-}, {
-  "imageLink" : "link8",
-  "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 0
-}, {
-  "imageLink" : "link7",
-  "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 0
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
 }, {
   "imageLink" : "link14",
   "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 0
-}, {
-  "imageLink" : "link12",
-  "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6817",
-  "loverYn" : 0
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6816"
 }, {
   "imageLink" : "link13",
   "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6817",
-  "loverYn" : 0
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6817"
 }, {
-  "imageLink" : "link11",
+  "imageLink" : "link12",
   "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6817",
-  "loverYn" : 0
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6817"
 }, {
-  "imageLink" : "link15",
+  "imageLink" : "link6",
   "loverCnt" : 0,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6815",
-  "loverYn" : 0
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6816"
 }, {
-  "imageLink" : "www.google.com",
-  "loverCnt" : 3,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 1
+  "imageLink" : "link10",
+  "loverCnt" : 0,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6817"
+}, {
+  "imageLink" : "link9",
+  "loverCnt" : 0,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
+}, {
+  "imageLink" : "link8",
+  "loverCnt" : 0,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
+}, {
+  "imageLink" : "link7",
+  "loverCnt" : 0,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
+}, {
+  "imageLink" : "www.daum.com",
+  "loverCnt" : 2,
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6815"
 } ]</code></pre>
 </div>
 </div>
@@ -1251,11 +1197,6 @@ Content-Length: 1427
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">게시글 작성자</p></td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].loverYn</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">좋아요 여부</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -1288,6 +1229,9 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -1295,14 +1239,13 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 151
+Content-Length: 133
 
 [ {
   "imageLink" : "www.naver.com",
   "loverCnt" : 1,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 1
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6816"
 } ]</code></pre>
 </div>
 </div>
@@ -1375,9 +1318,8 @@ Content-Length: 151
 <pre class="highlightjs highlight nowrap"><code class="language-none hljs">[ {
   "imageLink" : "www.naver.com",
   "loverCnt" : 1,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 1
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6816"
 } ]</code></pre>
 </div>
 </div>
@@ -1418,11 +1360,6 @@ Content-Length: 151
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">게시글 작성자</p></td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].loverYn</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">좋아요 여부</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -1455,6 +1392,9 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -1462,14 +1402,13 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 151
+Content-Length: 133
 
 [ {
   "imageLink" : "www.naver.com",
   "loverCnt" : 1,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 1
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6816"
 } ]</code></pre>
 </div>
 </div>
@@ -1520,9 +1459,8 @@ Content-Length: 151
 <pre class="highlightjs highlight nowrap"><code class="language-none hljs">[ {
   "imageLink" : "www.naver.com",
   "loverCnt" : 1,
-  "createdDate" : "2023-07-26T14:46:10.425128",
-  "author" : "se6816",
-  "loverYn" : 1
+  "createdDate" : "2023-07-31T15:49:22.928251",
+  "author" : "se6816"
 } ]</code></pre>
 </div>
 </div>
@@ -1563,11 +1501,6 @@ Content-Length: 151
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">게시글 작성자</p></td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].loverYn</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">좋아요 여부</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -1600,6 +1533,9 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -1613,10 +1549,10 @@ Content-Length: 254
   "memberId" : 1,
   "imageId" : 1,
   "name" : "se6816",
-  "createdDate" : "2023-07-26T14:46:10.425128",
+  "createdDate" : "2023-07-31T15:49:22.928251",
   "imgLink" : "www.naver.com",
   "loverCnt" : 1,
-  "loverYn" : 1,
+  "loverYn" : 0,
   "tags" : [ "귀엽게", "멋있게", "시크하게", "성숙하게" ]
 }</code></pre>
 </div>
@@ -1691,10 +1627,10 @@ Content-Length: 254
   "memberId" : 1,
   "imageId" : 1,
   "name" : "se6816",
-  "createdDate" : "2023-07-26T14:46:10.425128",
+  "createdDate" : "2023-07-31T15:49:22.928251",
   "imgLink" : "www.naver.com",
   "loverCnt" : 1,
-  "loverYn" : 1,
+  "loverYn" : 0,
   "tags" : [ "귀엽게", "멋있게", "시크하게", "성숙하게" ]
 }</code></pre>
 </div>
@@ -1788,6 +1724,9 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 404 Not Found
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -1913,6 +1852,9 @@ Host: localhost:8080
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -2045,6 +1987,9 @@ Host: localhost:8080
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 404 Not Found
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -2179,6 +2124,9 @@ Host: localhost:8080
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -2303,6 +2251,9 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 404 Not Found
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -2428,6 +2379,9 @@ Host: localhost:8080
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -2560,6 +2514,9 @@ Host: localhost:8080
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -2661,23 +2618,32 @@ Content-Length: 88
 </div>
 </div>
 <div class="sect1">
-<h2 id="좋아요-API"><a class="link" href="#좋아요-API">2. 좋아요 API</a></h2>
+<h2 id="FrameArticle-API"><a class="link" href="#FrameArticle-API">2. FrameArticle API</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="Lover-작성-API"><a class="link" href="#Lover-작성-API">2.1. 좋아요 추가(정상) API</a></h3>
+<h3 id="FrameArticle-작성-API"><a class="link" href="#FrameArticle-작성-API">2.1. FrameArticle 작성 API(정상)</a></h3>
 <div class="sect3">
-<h4 id="Lover-작성-API_http_request"><a class="link" href="#Lover-작성-API_http_request">2.1.1. HTTP request</a></h4>
+<h4 id="FrameArticle-작성-API_http_request"><a class="link" href="#FrameArticle-작성-API_http_request">2.1.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/article/lover/image/58 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/article/frame HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjIifQ.OUP4gSxVM-CV0JeNYLxTtbwY9B0YGuS1PYjss9X0y5a9Q61g7Gjb43RsTVTK7L-EVhPvHS-DuUBN9Chy2SLgVg
-Host: localhost:8080</code></pre>
+Content-Length: 131
+Host: localhost:8080
+
+{
+  "name" : "test",
+  "link" : "http://naver.com",
+  "isPublic" : true,
+  "frameSpecification" : "A",
+  "subject" : "test"
+}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Lover-작성-API_request_headers"><a class="link" href="#Lover-작성-API_request_headers">2.1.2. Request headers</a></h4>
+<h4 id="FrameArticle-작성-API_request_headers"><a class="link" href="#FrameArticle-작성-API_request_headers">2.1.2. Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -2698,16 +2664,64 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="Lover-작성-API_request_fields"><a class="link" href="#Lover-작성-API_request_fields">2.1.3. Request fields</a></h4>
-<div class="paragraph">
-<p>Snippet request-fields not found for operation::LoverTest/insertLoverSuccessTest</p>
-</div>
+<h4 id="FrameArticle-작성-API_request_fields"><a class="link" href="#FrameArticle-작성-API_request_fields">2.1.3. Request fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Constraints</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프레임 이름</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>최소 3글자, 100글자 이하</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>link</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프레임 링크 주소</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>최소 3글자, 최대 1000글자</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isPublic</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">공개 여부</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>true or false</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>frameSpecification</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프레임 타입</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A or B</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>subject</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프레임 게시글 제목</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>최소 3글자, 20글자 이하</em></p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
-<h4 id="Lover-작성-API_http_response"><a class="link" href="#Lover-작성-API_http_response">2.1.4. HTTP response</a></h4>
+<h4 id="FrameArticle-작성-API_http_response"><a class="link" href="#FrameArticle-작성-API_http_response">2.1.4. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -2715,519 +2729,816 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 58
+Content-Length: 67
 
 {
-  "message" : "좋아요가 추가되었습니다.."
+  "message" : "글이 성공적으로 작성되었습니다."
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Lover-작성-API_response_fields"><a class="link" href="#Lover-작성-API_response_fields">2.1.5. Response fields</a></h4>
+<h4 id="FrameArticle-작성-API_response_fields"><a class="link" href="#FrameArticle-작성-API_response_fields">2.1.5. Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 메시지</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_framearticle_작성_api비로그인_시도_시"><a class="link" href="#_framearticle_작성_api비로그인_시도_시">2.2. FrameArticle 작성 API(비로그인 시도 시)</a></h3>
+<div class="sect3">
+<h4 id="_framearticle_작성_api비로그인_시도_시_http_request"><a class="link" href="#_framearticle_작성_api비로그인_시도_시_http_request">2.2.1. HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/article/frame HTTP/1.1
+Content-Type: application/json
+Content-Length: 133
+Host: localhost:8080
+
+{
+  "name" : "test2",
+  "link" : "http://naver.com",
+  "isPublic" : true,
+  "frameSpecification" : "A",
+  "subject" : "test2"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_framearticle_작성_api비로그인_시도_시_request_fields"><a class="link" href="#_framearticle_작성_api비로그인_시도_시_request_fields">2.2.2. Request fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Constraints</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프레임 이름</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>최소 3글자, 100글자 이하</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>link</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프레임 링크 주소</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>최소 3글자, 최대 1000글자</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isPublic</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">공개 여부</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>true or false</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>frameSpecification</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프레임 타입</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A or B</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>subject</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프레임 게시글 제목</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>최소 3글자, 20글자 이하</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_framearticle_작성_api비로그인_시도_시_http_response"><a class="link" href="#_framearticle_작성_api비로그인_시도_시_http_response">2.2.3. HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 401 Unauthorized
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_framearticle_작성_api잘못된_값이_들어올_시"><a class="link" href="#_framearticle_작성_api잘못된_값이_들어올_시">2.3. FrameArticle 작성 API(잘못된 값이 들어올 시)</a></h3>
+<div class="sect3">
+<h4 id="_framearticle_작성_api잘못된_값이_들어올_시_http_request"><a class="link" href="#_framearticle_작성_api잘못된_값이_들어올_시_http_request">2.3.1. HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/article/frame HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjIifQ.OUP4gSxVM-CV0JeNYLxTtbwY9B0YGuS1PYjss9X0y5a9Q61g7Gjb43RsTVTK7L-EVhPvHS-DuUBN9Chy2SLgVg
+Content-Length: 133
+Host: localhost:8080
+
+{
+  "name" : "test2",
+  "link" : "http://naver.com",
+  "isPublic" : true,
+  "frameSpecification" : "C",
+  "subject" : "test2"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_framearticle_작성_api잘못된_값이_들어올_시_request_headers"><a class="link" href="#_framearticle_작성_api잘못된_값이_들어올_시_request_headers">2.3.2. Request headers</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인 성공한 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_framearticle_작성_api잘못된_값이_들어올_시_request_fields"><a class="link" href="#_framearticle_작성_api잘못된_값이_들어올_시_request_fields">2.3.3. Request fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Constraints</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프레임 이름</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>최소 3글자, 100글자 이하</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>link</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프레임 링크 주소</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>최소 3글자, 최대 1000글자</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isPublic</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">공개 여부</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>true or false</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>frameSpecification</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프레임 타입</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A or B</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>subject</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프레임 게시글 제목</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>최소 3글자, 20글자 이하</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_framearticle_작성_api잘못된_값이_들어올_시_http_response"><a class="link" href="#_framearticle_작성_api잘못된_값이_들어올_시_http_response">2.3.4. HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 73
+
+{
+  "httpStatus" : 400,
+  "message" : "규격을 선택해주세요"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_framearticle_작성_api잘못된_값이_들어올_시_response_fields"><a class="link" href="#_framearticle_작성_api잘못된_값이_들어올_시_response_fields">2.3.5. Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>httpStatus</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 메시지</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="FrameArticle-수정-API"><a class="link" href="#FrameArticle-수정-API">2.4. FrameArticle 수정 API(정상)</a></h3>
+<div class="sect3">
+<h4 id="FrameArticle-수정-API_http_request"><a class="link" href="#FrameArticle-수정-API_http_request">2.4.1. HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/article/frame/68 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjIifQ.OUP4gSxVM-CV0JeNYLxTtbwY9B0YGuS1PYjss9X0y5a9Q61g7Gjb43RsTVTK7L-EVhPvHS-DuUBN9Chy2SLgVg
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="FrameArticle-수정-API_request_headers"><a class="link" href="#FrameArticle-수정-API_request_headers">2.4.2. Request headers</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인 성공한 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="FrameArticle-수정-API_path_parameters"><a class="link" href="#FrameArticle-수정-API_path_parameters">2.4.3. Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/article/frame/{frameArticleId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>frameArticleId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프레임 글번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="FrameArticle-수정-API_http_response"><a class="link" href="#FrameArticle-수정-API_http_response">2.4.4. HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 77
+
+{
+  "message" : "프레임 글이 성공적으로 삭제되었습니다."
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="FrameArticle-수정-API_response_fields"><a class="link" href="#FrameArticle-수정-API_response_fields">2.4.5. Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 메시지</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_framearticle_수정_api자신이_글이_아닌_글_삭제_시도_시"><a class="link" href="#_framearticle_수정_api자신이_글이_아닌_글_삭제_시도_시">2.5. FrameArticle 수정 API(자신이 글이 아닌 글 삭제 시도 시)</a></h3>
+<div class="sect3">
+<h4 id="_framearticle_수정_api자신이_글이_아닌_글_삭제_시도_시_http_request"><a class="link" href="#_framearticle_수정_api자신이_글이_아닌_글_삭제_시도_시_http_request">2.5.1. HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/article/frame/68 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjMifQ.KBFjd8ng6dZvKpfCcQ5revRd6RUvZQRSOTus-SKa6kbZPBlfMYEmWotWK3A0yeIjqTed94O39j5byCBvrYLkeg
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_framearticle_수정_api자신이_글이_아닌_글_삭제_시도_시_request_headers"><a class="link" href="#_framearticle_수정_api자신이_글이_아닌_글_삭제_시도_시_request_headers">2.5.2. Request headers</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인 성공한 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_framearticle_수정_api자신이_글이_아닌_글_삭제_시도_시_path_parameters"><a class="link" href="#_framearticle_수정_api자신이_글이_아닌_글_삭제_시도_시_path_parameters">2.5.3. Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/article/frame/{frameArticleId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>frameArticleId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프레임 글번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_framearticle_수정_api자신이_글이_아닌_글_삭제_시도_시_http_response"><a class="link" href="#_framearticle_수정_api자신이_글이_아닌_글_삭제_시도_시_http_response">2.5.4. HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 403 Forbidden
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 85
+
+{
+  "httpStatus" : 403,
+  "message" : "글을 삭제할 권한이 없습니다."
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_framearticle_수정_api자신이_글이_아닌_글_삭제_시도_시_response_fields"><a class="link" href="#_framearticle_수정_api자신이_글이_아닌_글_삭제_시도_시_response_fields">2.5.5. Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>httpStatus</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 메시지</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_framearticle_수정_api없는_글을_삭제하려고_할_시"><a class="link" href="#_framearticle_수정_api없는_글을_삭제하려고_할_시">2.6. FrameArticle 수정 API(없는 글을 삭제하려고 할 시)</a></h3>
+<div class="sect3">
+<h4 id="_framearticle_수정_api없는_글을_삭제하려고_할_시_http_request"><a class="link" href="#_framearticle_수정_api없는_글을_삭제하려고_할_시_http_request">2.6.1. HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/article/frame/1000000 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjIifQ.OUP4gSxVM-CV0JeNYLxTtbwY9B0YGuS1PYjss9X0y5a9Q61g7Gjb43RsTVTK7L-EVhPvHS-DuUBN9Chy2SLgVg
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_framearticle_수정_api없는_글을_삭제하려고_할_시_request_headers"><a class="link" href="#_framearticle_수정_api없는_글을_삭제하려고_할_시_request_headers">2.6.2. Request headers</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인 성공한 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_framearticle_수정_api없는_글을_삭제하려고_할_시_path_parameters"><a class="link" href="#_framearticle_수정_api없는_글을_삭제하려고_할_시_path_parameters">2.6.3. Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/article/frame/{frameArticleId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>frameArticleId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프레임 글번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_framearticle_수정_api없는_글을_삭제하려고_할_시_http_response"><a class="link" href="#_framearticle_수정_api없는_글을_삭제하려고_할_시_http_response">2.6.4. HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 404 Not Found
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 88
+
+{
+  "httpStatus" : 404,
+  "message" : "프레임 글이 존재하지 않습니다."
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_framearticle_수정_api없는_글을_삭제하려고_할_시_response_fields"><a class="link" href="#_framearticle_수정_api없는_글을_삭제하려고_할_시_response_fields">2.6.5. Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>httpStatus</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 메시지</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="좋아요-API"><a class="link" href="#좋아요-API">3. 좋아요 API</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="Lover-작성-API"><a class="link" href="#Lover-작성-API">3.1. 좋아요 추가(정상) API</a></h3>
+<div class="sect3">
+<h4 id="Lover-작성-API_http_request"><a class="link" href="#Lover-작성-API_http_request">3.1.1. HTTP request</a></h4>
+<div class="paragraph">
+<p>Snippet http-request not found for operation::LoverTest/insertLoverSuccessTest</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Lover-작성-API_request_headers"><a class="link" href="#Lover-작성-API_request_headers">3.1.2. Request headers</a></h4>
+<div class="paragraph">
+<p>Snippet request-headers not found for operation::LoverTest/insertLoverSuccessTest</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Lover-작성-API_request_fields"><a class="link" href="#Lover-작성-API_request_fields">3.1.3. Request fields</a></h4>
+<div class="paragraph">
+<p>Snippet request-fields not found for operation::LoverTest/insertLoverSuccessTest</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Lover-작성-API_http_response"><a class="link" href="#Lover-작성-API_http_response">3.1.4. HTTP response</a></h4>
+<div class="paragraph">
+<p>Snippet http-response not found for operation::LoverTest/insertLoverSuccessTest</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Lover-작성-API_response_fields"><a class="link" href="#Lover-작성-API_response_fields">3.1.5. Response fields</a></h4>
 <div class="paragraph">
 <p>Snippet response-fields not found for operation::LoverTest/insertLoverSuccessTest</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_삭제된_게시글_좋아요_추가비정상_api"><a class="link" href="#_삭제된_게시글_좋아요_추가비정상_api">2.2. 삭제된 게시글 좋아요 추가(비정상) API</a></h3>
+<h3 id="_삭제된_게시글_좋아요_추가비정상_api"><a class="link" href="#_삭제된_게시글_좋아요_추가비정상_api">3.2. 삭제된 게시글 좋아요 추가(비정상) API</a></h3>
 <div class="sect3">
-<h4 id="_삭제된_게시글_좋아요_추가비정상_api_http_request"><a class="link" href="#_삭제된_게시글_좋아요_추가비정상_api_http_request">2.2.1. HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/article/lover/image/100 HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjIifQ.OUP4gSxVM-CV0JeNYLxTtbwY9B0YGuS1PYjss9X0y5a9Q61g7Gjb43RsTVTK7L-EVhPvHS-DuUBN9Chy2SLgVg
-Host: localhost:8080</code></pre>
-</div>
+<h4 id="_삭제된_게시글_좋아요_추가비정상_api_http_request"><a class="link" href="#_삭제된_게시글_좋아요_추가비정상_api_http_request">3.2.1. HTTP request</a></h4>
+<div class="paragraph">
+<p>Snippet http-request not found for operation::LoverTest/insertLoverFailTest</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_삭제된_게시글_좋아요_추가비정상_api_request_headers"><a class="link" href="#_삭제된_게시글_좋아요_추가비정상_api_request_headers">2.2.2. Request headers</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">로그인 성공한 토큰</p></td>
-</tr>
-</tbody>
-</table>
+<h4 id="_삭제된_게시글_좋아요_추가비정상_api_request_headers"><a class="link" href="#_삭제된_게시글_좋아요_추가비정상_api_request_headers">3.2.2. Request headers</a></h4>
+<div class="paragraph">
+<p>Snippet request-headers not found for operation::LoverTest/insertLoverFailTest</p>
+</div>
 </div>
 <div class="sect3">
-<h4 id="_삭제된_게시글_좋아요_추가비정상_api_request_fields"><a class="link" href="#_삭제된_게시글_좋아요_추가비정상_api_request_fields">2.2.3. Request fields</a></h4>
+<h4 id="_삭제된_게시글_좋아요_추가비정상_api_request_fields"><a class="link" href="#_삭제된_게시글_좋아요_추가비정상_api_request_fields">3.2.3. Request fields</a></h4>
 <div class="paragraph">
 <p>Snippet request-fields not found for operation::LoverTest/insertLoverFailTest</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_삭제된_게시글_좋아요_추가비정상_api_http_response"><a class="link" href="#_삭제된_게시글_좋아요_추가비정상_api_http_response">2.2.4. HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 404 Not Found
-Content-Type: application/json;charset=UTF-8
-X-Content-Type-Options: nosniff
-X-XSS-Protection: 1; mode=block
-Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-Pragma: no-cache
-Expires: 0
-X-Frame-Options: DENY
-Content-Length: 99
-
-{
-  "httpStatus" : 404,
-  "message" : "해당 이미지 게시글을 찾을 수 없습니다."
-}</code></pre>
-</div>
+<h4 id="_삭제된_게시글_좋아요_추가비정상_api_http_response"><a class="link" href="#_삭제된_게시글_좋아요_추가비정상_api_http_response">3.2.4. HTTP response</a></h4>
+<div class="paragraph">
+<p>Snippet http-response not found for operation::LoverTest/insertLoverFailTest</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_삭제된_게시글_좋아요_추가비정상_api_response_fields"><a class="link" href="#_삭제된_게시글_좋아요_추가비정상_api_response_fields">2.2.5. Response fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>httpStatus</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HTTP 상태코드</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">에러 메시지</p></td>
-</tr>
-</tbody>
-</table>
+<h4 id="_삭제된_게시글_좋아요_추가비정상_api_response_fields"><a class="link" href="#_삭제된_게시글_좋아요_추가비정상_api_response_fields">3.2.5. Response fields</a></h4>
+<div class="paragraph">
+<p>Snippet response-fields not found for operation::LoverTest/insertLoverFailTest</p>
+</div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="Lover-삭제-API"><a class="link" href="#Lover-삭제-API">2.3. 좋아요 취소(정상) API</a></h3>
+<h3 id="Lover-삭제-API"><a class="link" href="#Lover-삭제-API">3.3. 좋아요 취소(정상) API</a></h3>
 <div class="sect3">
-<h4 id="Lover-삭제-API_http_request"><a class="link" href="#Lover-삭제-API_http_request">2.3.1. HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/article/lover/image/50 HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjIifQ.OUP4gSxVM-CV0JeNYLxTtbwY9B0YGuS1PYjss9X0y5a9Q61g7Gjb43RsTVTK7L-EVhPvHS-DuUBN9Chy2SLgVg
-Host: localhost:8080</code></pre>
-</div>
+<h4 id="Lover-삭제-API_http_request"><a class="link" href="#Lover-삭제-API_http_request">3.3.1. HTTP request</a></h4>
+<div class="paragraph">
+<p>Snippet http-request not found for operation::LoverTest/deleteLoverSuccessTest</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Lover-삭제-API_request_headers"><a class="link" href="#Lover-삭제-API_request_headers">2.3.2. Request headers</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">로그인 성공한 토큰</p></td>
-</tr>
-</tbody>
-</table>
+<h4 id="Lover-삭제-API_request_headers"><a class="link" href="#Lover-삭제-API_request_headers">3.3.2. Request headers</a></h4>
+<div class="paragraph">
+<p>Snippet request-headers not found for operation::LoverTest/deleteLoverSuccessTest</p>
+</div>
 </div>
 <div class="sect3">
-<h4 id="Lover-삭제-API_request_fields"><a class="link" href="#Lover-삭제-API_request_fields">2.3.3. Request fields</a></h4>
+<h4 id="Lover-삭제-API_request_fields"><a class="link" href="#Lover-삭제-API_request_fields">3.3.3. Request fields</a></h4>
 <div class="paragraph">
 <p>Snippet request-fields not found for operation::LoverTest/deleteLoverSuccessTest</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Lover-삭제-API_http_response"><a class="link" href="#Lover-삭제-API_http_response">2.3.4. HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-X-Content-Type-Options: nosniff
-X-XSS-Protection: 1; mode=block
-Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-Pragma: no-cache
-Expires: 0
-X-Frame-Options: DENY
-Content-Length: 57
-
-{
-  "message" : "좋아요가 취소되었습니다."
-}</code></pre>
-</div>
+<h4 id="Lover-삭제-API_http_response"><a class="link" href="#Lover-삭제-API_http_response">3.3.4. HTTP response</a></h4>
+<div class="paragraph">
+<p>Snippet http-response not found for operation::LoverTest/deleteLoverSuccessTest</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Lover-삭제-API_response_fields"><a class="link" href="#Lover-삭제-API_response_fields">2.3.5. Response fields</a></h4>
+<h4 id="Lover-삭제-API_response_fields"><a class="link" href="#Lover-삭제-API_response_fields">3.3.5. Response fields</a></h4>
 <div class="paragraph">
 <p>Snippet response-fields not found for operation::LoverTest/deleteLoverSuccessTest</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_삭제된_게시글_좋아요_취소비정상_api"><a class="link" href="#_삭제된_게시글_좋아요_취소비정상_api">2.4. 삭제된 게시글 좋아요 취소(비정상) API</a></h3>
+<h3 id="_삭제된_게시글_좋아요_취소비정상_api"><a class="link" href="#_삭제된_게시글_좋아요_취소비정상_api">3.4. 삭제된 게시글 좋아요 취소(비정상) API</a></h3>
 <div class="sect3">
-<h4 id="_삭제된_게시글_좋아요_취소비정상_api_http_request"><a class="link" href="#_삭제된_게시글_좋아요_취소비정상_api_http_request">2.4.1. HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/article/lover/image/100 HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjIifQ.OUP4gSxVM-CV0JeNYLxTtbwY9B0YGuS1PYjss9X0y5a9Q61g7Gjb43RsTVTK7L-EVhPvHS-DuUBN9Chy2SLgVg
-Host: localhost:8080</code></pre>
-</div>
+<h4 id="_삭제된_게시글_좋아요_취소비정상_api_http_request"><a class="link" href="#_삭제된_게시글_좋아요_취소비정상_api_http_request">3.4.1. HTTP request</a></h4>
+<div class="paragraph">
+<p>Snippet http-request not found for operation::LoverTest/deleteLoverFailTest</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_삭제된_게시글_좋아요_취소비정상_api_request_headers"><a class="link" href="#_삭제된_게시글_좋아요_취소비정상_api_request_headers">2.4.2. Request headers</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">로그인 성공한 토큰</p></td>
-</tr>
-</tbody>
-</table>
+<h4 id="_삭제된_게시글_좋아요_취소비정상_api_request_headers"><a class="link" href="#_삭제된_게시글_좋아요_취소비정상_api_request_headers">3.4.2. Request headers</a></h4>
+<div class="paragraph">
+<p>Snippet request-headers not found for operation::LoverTest/deleteLoverFailTest</p>
+</div>
 </div>
 <div class="sect3">
-<h4 id="_삭제된_게시글_좋아요_취소비정상_api_request_fields"><a class="link" href="#_삭제된_게시글_좋아요_취소비정상_api_request_fields">2.4.3. Request fields</a></h4>
+<h4 id="_삭제된_게시글_좋아요_취소비정상_api_request_fields"><a class="link" href="#_삭제된_게시글_좋아요_취소비정상_api_request_fields">3.4.3. Request fields</a></h4>
 <div class="paragraph">
 <p>Snippet request-fields not found for operation::LoverTest/deleteLoverFailTest</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_삭제된_게시글_좋아요_취소비정상_api_http_response"><a class="link" href="#_삭제된_게시글_좋아요_취소비정상_api_http_response">2.4.4. HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 404 Not Found
-Content-Type: application/json;charset=UTF-8
-X-Content-Type-Options: nosniff
-X-XSS-Protection: 1; mode=block
-Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-Pragma: no-cache
-Expires: 0
-X-Frame-Options: DENY
-Content-Length: 89
-
-{
-  "httpStatus" : 404,
-  "message" : "해당 좋아요를 찾을 수 없습니다."
-}</code></pre>
-</div>
+<h4 id="_삭제된_게시글_좋아요_취소비정상_api_http_response"><a class="link" href="#_삭제된_게시글_좋아요_취소비정상_api_http_response">3.4.4. HTTP response</a></h4>
+<div class="paragraph">
+<p>Snippet http-response not found for operation::LoverTest/deleteLoverFailTest</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_삭제된_게시글_좋아요_취소비정상_api_response_fields"><a class="link" href="#_삭제된_게시글_좋아요_취소비정상_api_response_fields">2.4.5. Response fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>httpStatus</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HTTP 상태코드</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">에러 메시지</p></td>
-</tr>
-</tbody>
-</table>
+<h4 id="_삭제된_게시글_좋아요_취소비정상_api_response_fields"><a class="link" href="#_삭제된_게시글_좋아요_취소비정상_api_response_fields">3.4.5. Response fields</a></h4>
+<div class="paragraph">
+<p>Snippet response-fields not found for operation::LoverTest/deleteLoverFailTest</p>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="이미지-API"><a class="link" href="#이미지-API">3. 이미지 API</a></h2>
+<h2 id="이미지-API"><a class="link" href="#이미지-API">4. 이미지 API</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="Image-작성-API"><a class="link" href="#Image-작성-API">3.1. PreSignUrl 생성 (정상) API</a></h3>
+<h3 id="Image-작성-API"><a class="link" href="#Image-작성-API">4.1. PreSignUrl 생성 (정상) API</a></h3>
 <div class="sect3">
-<h4 id="Image-작성-API_http_request"><a class="link" href="#Image-작성-API_http_request">3.1.1. HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/image/presigned HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A
-Content-Length: 58
-Host: localhost:8080
-
-{
-  "imageName" : "test.jpg",
-  "imageType" : "image"
-}</code></pre>
-</div>
+<h4 id="Image-작성-API_http_request"><a class="link" href="#Image-작성-API_http_request">4.1.1. HTTP request</a></h4>
+<div class="paragraph">
+<p>Snippet http-request not found for operation::ImageTest/createPreSignedUrlTest</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Image-작성-API_request_headers"><a class="link" href="#Image-작성-API_request_headers">3.1.2. Request headers</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">로그인 성공한 토큰</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="Image-작성-API_request_fields"><a class="link" href="#Image-작성-API_request_fields">3.1.3. Request fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Constraints</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>imageName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">이미지 이름</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Not Null</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>imageType</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">이미지 타입</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>[Image, Frame, Profile]</em></p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="Image-작성-API_http_response"><a class="link" href="#Image-작성-API_http_response">3.1.4. HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-X-Content-Type-Options: nosniff
-X-XSS-Protection: 1; mode=block
-Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-Pragma: no-cache
-Expires: 0
-X-Frame-Options: DENY
-Content-Length: 486
-
-{
-  "preSignUrl" : "https://200oks3bucket.s3.ap-northeast-2.amazonaws.com/image/ca5ad991-beaf-4b44-8451-659c6f900bc8test.jpg?x-amz-acl=public-read&amp;X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Date=20230726T054613Z&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Expires=119&amp;X-Amz-Credential=AKIA3EISLCMYYZ5MKYEZ%2F20230726%2Fap-northeast-2%2Fs3%2Faws4_request&amp;X-Amz-Signature=7527dbe2c7afd103da6bb06598974ceab0e88af4067f9d12e0ad68e5d53ad524",
-  "fileName" : "ca5ad991-beaf-4b44-8451-659c6f900bc8test.jpg"
-}</code></pre>
-</div>
+<h4 id="Image-작성-API_request_headers"><a class="link" href="#Image-작성-API_request_headers">4.1.2. Request headers</a></h4>
+<div class="paragraph">
+<p>Snippet request-headers not found for operation::ImageTest/createPreSignedUrlTest</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Image-작성-API_response_fields"><a class="link" href="#Image-작성-API_response_fields">3.1.5. Response fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>preSignUrl</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">이미지 업로드 URL</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fileName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">UUID로 저장될 파일 이름</p></td>
-</tr>
-</tbody>
-</table>
+<h4 id="Image-작성-API_request_fields"><a class="link" href="#Image-작성-API_request_fields">4.1.3. Request fields</a></h4>
+<div class="paragraph">
+<p>Snippet request-fields not found for operation::ImageTest/createPreSignedUrlTest</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Image-작성-API_http_response"><a class="link" href="#Image-작성-API_http_response">4.1.4. HTTP response</a></h4>
+<div class="paragraph">
+<p>Snippet http-response not found for operation::ImageTest/createPreSignedUrlTest</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Image-작성-API_response_fields"><a class="link" href="#Image-작성-API_response_fields">4.1.5. Response fields</a></h4>
+<div class="paragraph">
+<p>Snippet response-fields not found for operation::ImageTest/createPreSignedUrlTest</p>
+</div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="Lover-삭제-API"><a class="link" href="#Lover-삭제-API">3.2. 이미지 소유자 삭제(정상) API</a></h3>
+<h3 id="Lover-삭제-API"><a class="link" href="#Lover-삭제-API">4.2. 이미지 소유자 삭제(정상) API</a></h3>
 <div class="sect3">
-<h4 id="Lover-삭제-API_http_request"><a class="link" href="#Lover-삭제-API_http_request">3.2.1. HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/image HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjIifQ.OUP4gSxVM-CV0JeNYLxTtbwY9B0YGuS1PYjss9X0y5a9Q61g7Gjb43RsTVTK7L-EVhPvHS-DuUBN9Chy2SLgVg
-Content-Length: 21
-Host: localhost:8080
-
-{
-  "imageId" : 2
-}</code></pre>
-</div>
+<h4 id="Lover-삭제-API_http_request"><a class="link" href="#Lover-삭제-API_http_request">4.2.1. HTTP request</a></h4>
+<div class="paragraph">
+<p>Snippet http-request not found for operation::ImageTest/deleteImageOwnerSuccessTest</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Lover-삭제-API_request_headers"><a class="link" href="#Lover-삭제-API_request_headers">3.2.2. Request headers</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">로그인 성공한 토큰</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="Lover-삭제-API_request_fields"><a class="link" href="#Lover-삭제-API_request_fields">3.2.3. Request fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Constraints</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>imageId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">이미지 ID</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Not Null</em></p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="Lover-삭제-API_http_response"><a class="link" href="#Lover-삭제-API_http_response">3.2.4. HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-X-Content-Type-Options: nosniff
-X-XSS-Protection: 1; mode=block
-Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-Pragma: no-cache
-Expires: 0
-X-Frame-Options: DENY
-Content-Length: 45
-
-{
-  "message" : "이미지 삭제 성공"
-}</code></pre>
-</div>
+<h4 id="Lover-삭제-API_request_headers"><a class="link" href="#Lover-삭제-API_request_headers">4.2.2. Request headers</a></h4>
+<div class="paragraph">
+<p>Snippet request-headers not found for operation::ImageTest/deleteImageOwnerSuccessTest</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Lover-삭제-API_response_fields"><a class="link" href="#Lover-삭제-API_response_fields">3.2.5. Response fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">이미지 소유자 삭제 성공 메시지</p></td>
-</tr>
-</tbody>
-</table>
+<h4 id="Lover-삭제-API_request_fields"><a class="link" href="#Lover-삭제-API_request_fields">4.2.3. Request fields</a></h4>
+<div class="paragraph">
+<p>Snippet request-fields not found for operation::ImageTest/deleteImageOwnerSuccessTest</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Lover-삭제-API_http_response"><a class="link" href="#Lover-삭제-API_http_response">4.2.4. HTTP response</a></h4>
+<div class="paragraph">
+<p>Snippet http-response not found for operation::ImageTest/deleteImageOwnerSuccessTest</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Lover-삭제-API_response_fields"><a class="link" href="#Lover-삭제-API_response_fields">4.2.5. Response fields</a></h4>
+<div class="paragraph">
+<p>Snippet response-fields not found for operation::ImageTest/deleteImageOwnerSuccessTest</p>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="Notice-API"><a class="link" href="#Notice-API">4. Notice API</a></h2>
+<h2 id="Notice-API"><a class="link" href="#Notice-API">5. Notice API</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="Notice-작성-API"><a class="link" href="#Notice-작성-API">4.1. Notice 작성 API</a></h3>
+<h3 id="Notice-작성-API"><a class="link" href="#Notice-작성-API">5.1. Notice 작성 API</a></h3>
 <div class="sect3">
-<h4 id="Notice-작성-API_http_request"><a class="link" href="#Notice-작성-API_http_request">4.1.1. HTTP request</a></h4>
+<h4 id="Notice-작성-API_http_request"><a class="link" href="#Notice-작성-API_http_request">5.1.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/article/notice HTTP/1.1
@@ -3244,7 +3555,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="Notice-작성-API_request_headers"><a class="link" href="#Notice-작성-API_request_headers">4.1.2. Request headers</a></h4>
+<h4 id="Notice-작성-API_request_headers"><a class="link" href="#Notice-작성-API_request_headers">5.1.2. Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -3265,7 +3576,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="Notice-작성-API_request_fields"><a class="link" href="#Notice-작성-API_request_fields">4.1.3. Request fields</a></h4>
+<h4 id="Notice-작성-API_request_fields"><a class="link" href="#Notice-작성-API_request_fields">5.1.3. Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -3298,10 +3609,13 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="Notice-작성-API_http_response"><a class="link" href="#Notice-작성-API_http_response">4.1.4. HTTP response</a></h4>
+<h4 id="Notice-작성-API_http_response"><a class="link" href="#Notice-작성-API_http_response">5.1.4. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -3318,7 +3632,7 @@ Content-Length: 64
 </div>
 </div>
 <div class="sect3">
-<h4 id="Notice-작성-API_response_fields"><a class="link" href="#Notice-작성-API_response_fields">4.1.5. Response fields</a></h4>
+<h4 id="Notice-작성-API_response_fields"><a class="link" href="#Notice-작성-API_response_fields">5.1.5. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -3343,9 +3657,9 @@ Content-Length: 64
 </div>
 </div>
 <div class="sect2">
-<h3 id="_notice_작성_api일반_사용자_시도_시"><a class="link" href="#_notice_작성_api일반_사용자_시도_시">4.2. Notice 작성 API(일반 사용자 시도 시)</a></h3>
+<h3 id="_notice_작성_api일반_사용자_시도_시"><a class="link" href="#_notice_작성_api일반_사용자_시도_시">5.2. Notice 작성 API(일반 사용자 시도 시)</a></h3>
 <div class="sect3">
-<h4 id="_notice_작성_api일반_사용자_시도_시_http_request"><a class="link" href="#_notice_작성_api일반_사용자_시도_시_http_request">4.2.1. HTTP request</a></h4>
+<h4 id="_notice_작성_api일반_사용자_시도_시_http_request"><a class="link" href="#_notice_작성_api일반_사용자_시도_시_http_request">5.2.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/article/notice HTTP/1.1
@@ -3362,7 +3676,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_notice_작성_api일반_사용자_시도_시_request_headers"><a class="link" href="#_notice_작성_api일반_사용자_시도_시_request_headers">4.2.2. Request headers</a></h4>
+<h4 id="_notice_작성_api일반_사용자_시도_시_request_headers"><a class="link" href="#_notice_작성_api일반_사용자_시도_시_request_headers">5.2.2. Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -3383,7 +3697,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_notice_작성_api일반_사용자_시도_시_request_fields"><a class="link" href="#_notice_작성_api일반_사용자_시도_시_request_fields">4.2.3. Request fields</a></h4>
+<h4 id="_notice_작성_api일반_사용자_시도_시_request_fields"><a class="link" href="#_notice_작성_api일반_사용자_시도_시_request_fields">5.2.3. Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -3416,10 +3730,13 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_notice_작성_api일반_사용자_시도_시_http_response"><a class="link" href="#_notice_작성_api일반_사용자_시도_시_http_response">4.2.4. HTTP response</a></h4>
+<h4 id="_notice_작성_api일반_사용자_시도_시_http_response"><a class="link" href="#_notice_작성_api일반_사용자_시도_시_http_response">5.2.4. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 403 Forbidden
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -3432,9 +3749,9 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_notice_작성_api글이_짧을_경우"><a class="link" href="#_notice_작성_api글이_짧을_경우">4.3. Notice 작성 API(글이 짧을 경우)</a></h3>
+<h3 id="_notice_작성_api글이_짧을_경우"><a class="link" href="#_notice_작성_api글이_짧을_경우">5.3. Notice 작성 API(글이 짧을 경우)</a></h3>
 <div class="sect3">
-<h4 id="_notice_작성_api글이_짧을_경우_http_request"><a class="link" href="#_notice_작성_api글이_짧을_경우_http_request">4.3.1. HTTP request</a></h4>
+<h4 id="_notice_작성_api글이_짧을_경우_http_request"><a class="link" href="#_notice_작성_api글이_짧을_경우_http_request">5.3.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/article/notice HTTP/1.1
@@ -3451,7 +3768,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_notice_작성_api글이_짧을_경우_request_headers"><a class="link" href="#_notice_작성_api글이_짧을_경우_request_headers">4.3.2. Request headers</a></h4>
+<h4 id="_notice_작성_api글이_짧을_경우_request_headers"><a class="link" href="#_notice_작성_api글이_짧을_경우_request_headers">5.3.2. Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -3472,7 +3789,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_notice_작성_api글이_짧을_경우_request_fields"><a class="link" href="#_notice_작성_api글이_짧을_경우_request_fields">4.3.3. Request fields</a></h4>
+<h4 id="_notice_작성_api글이_짧을_경우_request_fields"><a class="link" href="#_notice_작성_api글이_짧을_경우_request_fields">5.3.3. Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -3505,10 +3822,13 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_notice_작성_api글이_짧을_경우_http_response"><a class="link" href="#_notice_작성_api글이_짧을_경우_http_response">4.3.4. HTTP response</a></h4>
+<h4 id="_notice_작성_api글이_짧을_경우_http_response"><a class="link" href="#_notice_작성_api글이_짧을_경우_http_response">5.3.4. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -3526,7 +3846,7 @@ Content-Length: 105
 </div>
 </div>
 <div class="sect3">
-<h4 id="_notice_작성_api글이_짧을_경우_response_fields"><a class="link" href="#_notice_작성_api글이_짧을_경우_response_fields">4.3.5. Response fields</a></h4>
+<h4 id="_notice_작성_api글이_짧을_경우_response_fields"><a class="link" href="#_notice_작성_api글이_짧을_경우_response_fields">5.3.5. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -3556,9 +3876,9 @@ Content-Length: 105
 </div>
 </div>
 <div class="sect2">
-<h3 id="Notice-수정-API"><a class="link" href="#Notice-수정-API">4.4. Notice 수정 API</a></h3>
+<h3 id="Notice-수정-API"><a class="link" href="#Notice-수정-API">5.4. Notice 수정 API</a></h3>
 <div class="sect3">
-<h4 id="Notice-수정-API_http_request"><a class="link" href="#Notice-수정-API_http_request">4.4.1. HTTP request</a></h4>
+<h4 id="Notice-수정-API_http_request"><a class="link" href="#Notice-수정-API_http_request">5.4.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /api/article/notice/2 HTTP/1.1
@@ -3575,7 +3895,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="Notice-수정-API_request_headers"><a class="link" href="#Notice-수정-API_request_headers">4.4.2. Request headers</a></h4>
+<h4 id="Notice-수정-API_request_headers"><a class="link" href="#Notice-수정-API_request_headers">5.4.2. Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -3596,7 +3916,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="Notice-수정-API_request_fields"><a class="link" href="#Notice-수정-API_request_fields">4.4.3. Request fields</a></h4>
+<h4 id="Notice-수정-API_request_fields"><a class="link" href="#Notice-수정-API_request_fields">5.4.3. Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -3629,10 +3949,35 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="Notice-수정-API_http_response"><a class="link" href="#Notice-수정-API_http_response">4.4.4. HTTP response</a></h4>
+<h4 id="Notice-수정-API_path_parameters"><a class="link" href="#Notice-수정-API_path_parameters">5.4.4. Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/article/notice/{noticeArticleId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>noticeArticleId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">공지 글 번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="Notice-수정-API_http_response"><a class="link" href="#Notice-수정-API_http_response">5.4.5. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -3649,7 +3994,7 @@ Content-Length: 64
 </div>
 </div>
 <div class="sect3">
-<h4 id="Notice-수정-API_response_fields"><a class="link" href="#Notice-수정-API_response_fields">4.4.5. Response fields</a></h4>
+<h4 id="Notice-수정-API_response_fields"><a class="link" href="#Notice-수정-API_response_fields">5.4.6. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -3674,9 +4019,9 @@ Content-Length: 64
 </div>
 </div>
 <div class="sect2">
-<h3 id="_notice_수정_api일반_사용자_시도_시"><a class="link" href="#_notice_수정_api일반_사용자_시도_시">4.5. Notice 수정 API(일반 사용자 시도 시)</a></h3>
+<h3 id="_notice_수정_api일반_사용자_시도_시"><a class="link" href="#_notice_수정_api일반_사용자_시도_시">5.5. Notice 수정 API(일반 사용자 시도 시)</a></h3>
 <div class="sect3">
-<h4 id="_notice_수정_api일반_사용자_시도_시_http_request"><a class="link" href="#_notice_수정_api일반_사용자_시도_시_http_request">4.5.1. HTTP request</a></h4>
+<h4 id="_notice_수정_api일반_사용자_시도_시_http_request"><a class="link" href="#_notice_수정_api일반_사용자_시도_시_http_request">5.5.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /api/article/notice/2 HTTP/1.1
@@ -3693,7 +4038,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_notice_수정_api일반_사용자_시도_시_request_headers"><a class="link" href="#_notice_수정_api일반_사용자_시도_시_request_headers">4.5.2. Request headers</a></h4>
+<h4 id="_notice_수정_api일반_사용자_시도_시_request_headers"><a class="link" href="#_notice_수정_api일반_사용자_시도_시_request_headers">5.5.2. Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -3714,7 +4059,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_notice_수정_api일반_사용자_시도_시_request_fields"><a class="link" href="#_notice_수정_api일반_사용자_시도_시_request_fields">4.5.3. Request fields</a></h4>
+<h4 id="_notice_수정_api일반_사용자_시도_시_request_fields"><a class="link" href="#_notice_수정_api일반_사용자_시도_시_request_fields">5.5.3. Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -3747,10 +4092,35 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_notice_수정_api일반_사용자_시도_시_http_response"><a class="link" href="#_notice_수정_api일반_사용자_시도_시_http_response">4.5.4. HTTP response</a></h4>
+<h4 id="_notice_수정_api일반_사용자_시도_시_path_parameters"><a class="link" href="#_notice_수정_api일반_사용자_시도_시_path_parameters">5.5.4. Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/article/notice/{noticeArticleId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>noticeArticleId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">공지 글 번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_notice_수정_api일반_사용자_시도_시_http_response"><a class="link" href="#_notice_수정_api일반_사용자_시도_시_http_response">5.5.5. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 403 Forbidden
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -3763,9 +4133,9 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_notice_수정_api글이_짧을_경우"><a class="link" href="#_notice_수정_api글이_짧을_경우">4.6. Notice 수정 API(글이 짧을 경우)</a></h3>
+<h3 id="_notice_수정_api글이_짧을_경우"><a class="link" href="#_notice_수정_api글이_짧을_경우">5.6. Notice 수정 API(글이 짧을 경우)</a></h3>
 <div class="sect3">
-<h4 id="_notice_수정_api글이_짧을_경우_http_request"><a class="link" href="#_notice_수정_api글이_짧을_경우_http_request">4.6.1. HTTP request</a></h4>
+<h4 id="_notice_수정_api글이_짧을_경우_http_request"><a class="link" href="#_notice_수정_api글이_짧을_경우_http_request">5.6.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /api/article/notice/2 HTTP/1.1
@@ -3782,7 +4152,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_notice_수정_api글이_짧을_경우_request_headers"><a class="link" href="#_notice_수정_api글이_짧을_경우_request_headers">4.6.2. Request headers</a></h4>
+<h4 id="_notice_수정_api글이_짧을_경우_request_headers"><a class="link" href="#_notice_수정_api글이_짧을_경우_request_headers">5.6.2. Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -3803,7 +4173,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_notice_수정_api글이_짧을_경우_request_fields"><a class="link" href="#_notice_수정_api글이_짧을_경우_request_fields">4.6.3. Request fields</a></h4>
+<h4 id="_notice_수정_api글이_짧을_경우_request_fields"><a class="link" href="#_notice_수정_api글이_짧을_경우_request_fields">5.6.3. Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -3836,10 +4206,35 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_notice_수정_api글이_짧을_경우_http_response"><a class="link" href="#_notice_수정_api글이_짧을_경우_http_response">4.6.4. HTTP response</a></h4>
+<h4 id="_notice_수정_api글이_짧을_경우_path_parameters"><a class="link" href="#_notice_수정_api글이_짧을_경우_path_parameters">5.6.4. Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/article/notice/{noticeArticleId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>noticeArticleId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">공지 글 번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_notice_수정_api글이_짧을_경우_http_response"><a class="link" href="#_notice_수정_api글이_짧을_경우_http_response">5.6.5. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -3857,7 +4252,7 @@ Content-Length: 105
 </div>
 </div>
 <div class="sect3">
-<h4 id="_notice_수정_api글이_짧을_경우_response_fields"><a class="link" href="#_notice_수정_api글이_짧을_경우_response_fields">4.6.5. Response fields</a></h4>
+<h4 id="_notice_수정_api글이_짧을_경우_response_fields"><a class="link" href="#_notice_수정_api글이_짧을_경우_response_fields">5.6.6. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -3887,9 +4282,9 @@ Content-Length: 105
 </div>
 </div>
 <div class="sect2">
-<h3 id="_notice_수정_api없는_번호인_경우"><a class="link" href="#_notice_수정_api없는_번호인_경우">4.7. Notice 수정 API(없는 번호인 경우)</a></h3>
+<h3 id="_notice_수정_api없는_번호인_경우"><a class="link" href="#_notice_수정_api없는_번호인_경우">5.7. Notice 수정 API(없는 번호인 경우)</a></h3>
 <div class="sect3">
-<h4 id="_notice_수정_api없는_번호인_경우_http_request"><a class="link" href="#_notice_수정_api없는_번호인_경우_http_request">4.7.1. HTTP request</a></h4>
+<h4 id="_notice_수정_api없는_번호인_경우_http_request"><a class="link" href="#_notice_수정_api없는_번호인_경우_http_request">5.7.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /api/article/notice/10000 HTTP/1.1
@@ -3906,7 +4301,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_notice_수정_api없는_번호인_경우_request_headers"><a class="link" href="#_notice_수정_api없는_번호인_경우_request_headers">4.7.2. Request headers</a></h4>
+<h4 id="_notice_수정_api없는_번호인_경우_request_headers"><a class="link" href="#_notice_수정_api없는_번호인_경우_request_headers">5.7.2. Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -3927,7 +4322,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_notice_수정_api없는_번호인_경우_request_fields"><a class="link" href="#_notice_수정_api없는_번호인_경우_request_fields">4.7.3. Request fields</a></h4>
+<h4 id="_notice_수정_api없는_번호인_경우_request_fields"><a class="link" href="#_notice_수정_api없는_번호인_경우_request_fields">5.7.3. Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -3960,10 +4355,35 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_notice_수정_api없는_번호인_경우_http_response"><a class="link" href="#_notice_수정_api없는_번호인_경우_http_response">4.7.4. HTTP response</a></h4>
+<h4 id="_notice_수정_api없는_번호인_경우_path_parameters"><a class="link" href="#_notice_수정_api없는_번호인_경우_path_parameters">5.7.4. Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/article/notice/{noticeArticleId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>noticeArticleId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">공지 글 번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_notice_수정_api없는_번호인_경우_http_response"><a class="link" href="#_notice_수정_api없는_번호인_경우_http_response">5.7.5. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -3981,7 +4401,7 @@ Content-Length: 105
 </div>
 </div>
 <div class="sect3">
-<h4 id="_notice_수정_api없는_번호인_경우_response_fields"><a class="link" href="#_notice_수정_api없는_번호인_경우_response_fields">4.7.5. Response fields</a></h4>
+<h4 id="_notice_수정_api없는_번호인_경우_response_fields"><a class="link" href="#_notice_수정_api없는_번호인_경우_response_fields">5.7.6. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -4011,9 +4431,9 @@ Content-Length: 105
 </div>
 </div>
 <div class="sect2">
-<h3 id="Notice-조회-API"><a class="link" href="#Notice-조회-API">4.8. Notice 목록 조회 API(정상)</a></h3>
+<h3 id="Notice-조회-API"><a class="link" href="#Notice-조회-API">5.8. Notice 목록 조회 API(정상)</a></h3>
 <div class="sect3">
-<h4 id="Notice-조회-API_http_request"><a class="link" href="#Notice-조회-API_http_request">4.8.1. HTTP request</a></h4>
+<h4 id="Notice-조회-API_http_request"><a class="link" href="#Notice-조회-API_http_request">5.8.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/article/notice?page=3 HTTP/1.1
@@ -4023,7 +4443,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Notice-조회-API_request_parameters"><a class="link" href="#Notice-조회-API_request_parameters">4.8.2. Request parameters</a></h4>
+<h4 id="Notice-조회-API_request_parameters"><a class="link" href="#Notice-조회-API_request_parameters">5.8.2. Request parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -4044,10 +4464,13 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="Notice-조회-API_http_response"><a class="link" href="#Notice-조회-API_http_response">4.8.3. HTTP response</a></h4>
+<h4 id="Notice-조회-API_http_response"><a class="link" href="#Notice-조회-API_http_response">5.8.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -4070,68 +4493,68 @@ Content-Length: 1740
     "subject" : "약관 변경",
     "writer" : "se6816",
     "hit" : 0,
-    "createdDate" : "2023-07-26T14:46:10.423138"
+    "createdDate" : "2023-07-31T15:49:22.910252"
   }, {
     "id" : 28,
     "subject" : "서비스 이용 안내",
     "writer" : "se6816",
     "hit" : 0,
-    "createdDate" : "2023-07-26T14:46:10.423138"
+    "createdDate" : "2023-07-31T15:49:22.910252"
   }, {
     "id" : 27,
     "subject" : "서비스 장애 안내",
     "writer" : "se6816",
     "hit" : 0,
-    "createdDate" : "2023-07-26T14:46:10.423138"
+    "createdDate" : "2023-07-31T15:49:22.910252"
   }, {
     "id" : 26,
     "subject" : "시스템 점검",
     "writer" : "se6816",
     "hit" : 0,
-    "createdDate" : "2023-07-26T14:46:10.423138"
+    "createdDate" : "2023-07-31T15:49:22.910252"
   }, {
     "id" : 25,
     "subject" : "약관 변경",
     "writer" : "se6816",
     "hit" : 0,
-    "createdDate" : "2023-07-26T14:46:10.423138"
+    "createdDate" : "2023-07-31T15:49:22.910252"
   }, {
     "id" : 24,
     "subject" : "배송 지연",
     "writer" : "se6816",
     "hit" : 0,
-    "createdDate" : "2023-07-26T14:46:10.423138"
+    "createdDate" : "2023-07-31T15:49:22.910252"
   }, {
     "id" : 23,
     "subject" : "회원 혜택 변경",
     "writer" : "se6816",
     "hit" : 0,
-    "createdDate" : "2023-07-26T14:46:10.423138"
+    "createdDate" : "2023-07-31T15:49:22.910252"
   }, {
     "id" : 22,
     "subject" : "서비스 점검",
     "writer" : "se6816",
     "hit" : 0,
-    "createdDate" : "2023-07-26T14:46:10.423138"
+    "createdDate" : "2023-07-31T15:49:22.910252"
   }, {
     "id" : 21,
     "subject" : "이벤트 안내",
     "writer" : "se6816",
     "hit" : 128,
-    "createdDate" : "2023-07-26T14:46:10.423138"
+    "createdDate" : "2023-07-31T15:49:22.910252"
   }, {
     "id" : 20,
     "subject" : "보안 강화 조치",
     "writer" : "se6816",
     "hit" : 0,
-    "createdDate" : "2023-07-26T14:46:10.423138"
+    "createdDate" : "2023-07-31T15:49:22.910252"
   } ]
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Notice-조회-API_response_fields"><a class="link" href="#Notice-조회-API_response_fields">4.8.4. Response fields</a></h4>
+<h4 id="Notice-조회-API_response_fields"><a class="link" href="#Notice-조회-API_response_fields">5.8.4. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -4211,9 +4634,9 @@ Content-Length: 1740
 </div>
 </div>
 <div class="sect2">
-<h3 id="Notice-상세-조회-API"><a class="link" href="#Notice-상세-조회-API">4.9. Notice 상세 조회 API(정상)</a></h3>
+<h3 id="Notice-상세-조회-API"><a class="link" href="#Notice-상세-조회-API">5.9. Notice 상세 조회 API(정상)</a></h3>
 <div class="sect3">
-<h4 id="Notice-상세-조회-API_http_request"><a class="link" href="#Notice-상세-조회-API_http_request">4.9.1. HTTP request</a></h4>
+<h4 id="Notice-상세-조회-API_http_request"><a class="link" href="#Notice-상세-조회-API_http_request">5.9.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/article/notice/1 HTTP/1.1
@@ -4223,7 +4646,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Notice-상세-조회-API_path_parameters"><a class="link" href="#Notice-상세-조회-API_path_parameters">4.9.2. Path parameters</a></h4>
+<h4 id="Notice-상세-조회-API_path_parameters"><a class="link" href="#Notice-상세-조회-API_path_parameters">5.9.2. Path parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/article/notice/{noticeArticleId}</caption>
 <colgroup>
@@ -4245,10 +4668,13 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="Notice-상세-조회-API_http_response"><a class="link" href="#Notice-상세-조회-API_http_response">4.9.3. HTTP response</a></h4>
+<h4 id="Notice-상세-조회-API_http_response"><a class="link" href="#Notice-상세-조회-API_http_response">5.9.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -4263,14 +4689,14 @@ Content-Length: 182
   "subject" : "오전 점검 안내",
   "content" : "10시 점검입니다",
   "writer" : "se6816",
-  "createdDate" : "2023-07-26T14:46:10.423138",
+  "createdDate" : "2023-07-31T15:49:22.910252",
   "hit" : 0
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Notice-상세-조회-API_response_fields"><a class="link" href="#Notice-상세-조회-API_response_fields">4.9.4. Response fields</a></h4>
+<h4 id="Notice-상세-조회-API_response_fields"><a class="link" href="#Notice-상세-조회-API_response_fields">5.9.4. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -4320,9 +4746,9 @@ Content-Length: 182
 </div>
 </div>
 <div class="sect2">
-<h3 id="_notice_상세_조회_api잘못된_번호가_들어올_시"><a class="link" href="#_notice_상세_조회_api잘못된_번호가_들어올_시">4.10. Notice 상세 조회 API(잘못된 번호가 들어올 시)</a></h3>
+<h3 id="_notice_상세_조회_api잘못된_번호가_들어올_시"><a class="link" href="#_notice_상세_조회_api잘못된_번호가_들어올_시">5.10. Notice 상세 조회 API(잘못된 번호가 들어올 시)</a></h3>
 <div class="sect3">
-<h4 id="_notice_상세_조회_api잘못된_번호가_들어올_시_http_request"><a class="link" href="#_notice_상세_조회_api잘못된_번호가_들어올_시_http_request">4.10.1. HTTP request</a></h4>
+<h4 id="_notice_상세_조회_api잘못된_번호가_들어올_시_http_request"><a class="link" href="#_notice_상세_조회_api잘못된_번호가_들어올_시_http_request">5.10.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/article/notice/1000000 HTTP/1.1
@@ -4332,7 +4758,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_notice_상세_조회_api잘못된_번호가_들어올_시_path_parameters"><a class="link" href="#_notice_상세_조회_api잘못된_번호가_들어올_시_path_parameters">4.10.2. Path parameters</a></h4>
+<h4 id="_notice_상세_조회_api잘못된_번호가_들어올_시_path_parameters"><a class="link" href="#_notice_상세_조회_api잘못된_번호가_들어올_시_path_parameters">5.10.2. Path parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/article/notice/{noticeArticleId}</caption>
 <colgroup>
@@ -4354,10 +4780,13 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_notice_상세_조회_api잘못된_번호가_들어올_시_http_response"><a class="link" href="#_notice_상세_조회_api잘못된_번호가_들어올_시_http_response">4.10.3. HTTP response</a></h4>
+<h4 id="_notice_상세_조회_api잘못된_번호가_들어올_시_http_response"><a class="link" href="#_notice_상세_조회_api잘못된_번호가_들어올_시_http_response">5.10.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 404 Not Found
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -4375,7 +4804,7 @@ Content-Length: 79
 </div>
 </div>
 <div class="sect3">
-<h4 id="_notice_상세_조회_api잘못된_번호가_들어올_시_response_fields"><a class="link" href="#_notice_상세_조회_api잘못된_번호가_들어올_시_response_fields">4.10.4. Response fields</a></h4>
+<h4 id="_notice_상세_조회_api잘못된_번호가_들어올_시_response_fields"><a class="link" href="#_notice_상세_조회_api잘못된_번호가_들어올_시_response_fields">5.10.4. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -4407,12 +4836,12 @@ Content-Length: 79
 </div>
 </div>
 <div class="sect1">
-<h2 id="FAQ-API"><a class="link" href="#FAQ-API">5. FAQ-API</a></h2>
+<h2 id="FAQ-API"><a class="link" href="#FAQ-API">6. FAQ-API</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="FAQ-조회"><a class="link" href="#FAQ-조회">5.1. FAQ-목록-조회</a></h3>
+<h3 id="FAQ-조회"><a class="link" href="#FAQ-조회">6.1. FAQ-목록-조회</a></h3>
 <div class="sect3">
-<h4 id="FAQ-조회_http_request"><a class="link" href="#FAQ-조회_http_request">5.1.1. HTTP request</a></h4>
+<h4 id="FAQ-조회_http_request"><a class="link" href="#FAQ-조회_http_request">6.1.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/faq?page=3 HTTP/1.1
@@ -4422,7 +4851,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="FAQ-조회_request_parameters"><a class="link" href="#FAQ-조회_request_parameters">5.1.2. Request parameters</a></h4>
+<h4 id="FAQ-조회_request_parameters"><a class="link" href="#FAQ-조회_request_parameters">6.1.2. Request parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -4443,10 +4872,13 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="FAQ-조회_http_response"><a class="link" href="#FAQ-조회_http_response">5.1.3. HTTP response</a></h4>
+<h4 id="FAQ-조회_http_response"><a class="link" href="#FAQ-조회_http_response">6.1.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -4510,7 +4942,7 @@ Content-Length: 1848
 </div>
 </div>
 <div class="sect3">
-<h4 id="FAQ-조회_response_fields"><a class="link" href="#FAQ-조회_response_fields">5.1.4. Response fields</a></h4>
+<h4 id="FAQ-조회_response_fields"><a class="link" href="#FAQ-조회_response_fields">6.1.4. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -4584,14 +5016,14 @@ Content-Length: 1848
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-07-26 14:35:14 +0900
+Last updated 2023-07-31 15:57:06 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
 <script>
 if (!hljs.initHighlighting.called) {
   hljs.initHighlighting.called = true
-  ;[].slice.call(document.querySelectorAll('pre.highlight > code')).forEach(function (el) { hljs.highlightBlock(el) })
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
 }
 </script>
 </body>
