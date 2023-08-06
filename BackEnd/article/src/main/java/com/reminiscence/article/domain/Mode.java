@@ -1,22 +1,22 @@
-package com.reminiscence.article.image.dto;
+package com.reminiscence.article.domain;
+
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum ImageType {
-    IMAGE("image"),
-    FRAME("frame"),
-    PROFILE("profile");
+public enum Mode {
+    GAME("game"),
+    NORMAL("normal");
 
     private final String value;
 
-    ImageType(String value) {
+    Mode(String value) {
         this.value = value;
     }
 
     @JsonCreator
-    public static ImageType from(String value) {
-        for (ImageType type : ImageType.values()) {
+    public static Mode from(String value) {
+        for (Mode type : Mode.values()) {
             if (type.getValue().equals(value)) {
                 return type;
             }
