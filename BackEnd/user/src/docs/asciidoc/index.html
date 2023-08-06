@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.20">
-<title>Member API</title>
+<title>REST Docs 문서 만들기 (200OK)</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -432,41 +432,73 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 #footer-text{color:rgba(0,0,0,.6);font-size:.9em}}
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
 </head>
-<body class="article">
+<body class="book toc2 toc-left">
 <div id="header">
+<h1>REST Docs 문서 만들기 (200OK)</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#Member-API">1. Member API</a>
+<ul class="sectlevel2">
+<li><a href="#회원가입-API">1.1. 회원가입 API</a></li>
+<li><a href="#_회원가입_api이메일_중복">1.2. 회원가입 API(이메일 중복)</a></li>
+<li><a href="#_회원가입_api닉네임_중복">1.3. 회원가입 API(닉네임 중복)</a></li>
+<li><a href="#중복확인-API">1.4. 이메일 중복확인 API(정상)</a></li>
+<li><a href="#_이메일_중복확인_api이메일_중복">1.5. 이메일 중복확인 API(이메일 중복)</a></li>
+<li><a href="#_닉네임_중복확인_api정상">1.6. 닉네임 중복확인 API(정상)</a></li>
+<li><a href="#_닉네임_중복확인_api닉네임_중복">1.7. 닉네임 중복확인 API(닉네임 중복)</a></li>
+<li><a href="#로그인-API">1.8. 로그인 API</a></li>
+<li><a href="#_로그인_api비밀번호_다를_경우">1.9. 로그인 API(비밀번호 다를 경우)</a></li>
+<li><a href="#회원정보-API">1.10. 회원정보 조회 API</a></li>
+<li><a href="#_회원정보_수정_api">1.11. 회원정보 수정 API</a></li>
+<li><a href="#계정삭제-API">1.12. 계정삭제 API(정상)</a></li>
+<li><a href="#_계정삭제_api잘못된_사용자_접근_시">1.13. 계정삭제 API(잘못된 사용자 접근 시)</a></li>
+<li><a href="#회원명단불러오기-API">1.14. 회원명단불러오기 API</a></li>
+<li><a href="#로그아웃-API">1.15. 로그아웃 API</a></li>
+<li><a href="#JwtToken검증-API">1.16. AccessToken 만료 여부 판별(만료 시)</a></li>
+<li><a href="#_accesstoken_만료_시_refreshtoken_검증_통해_accesstoken_재발급">1.17. (AccessToken 만료 시) RefreshToken 검증 통해 AccessToken 재발급</a></li>
+<li><a href="#_accesstoken와_refreshtoken_모두_만료_시">1.18. AccessToken와 RefreshToken 모두 만료 시</a></li>
+<li><a href="#_로그아웃_시_accesstoken_블랙리스트_설정_후_해당_accesstoken_접근_제한">1.19. 로그아웃 시 AccessToken 블랙리스트 설정 후 해당 AccessToken 접근 제한</a></li>
+<li><a href="#_로그아웃_시_redis_내_refreshtoken_삭제_후_refreshtoken_접근_제한">1.20. 로그아웃 시 Redis 내 RefreshToken 삭제 후 RefreshToken 접근 제한</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="Member-API">Member API</h2>
+<h2 id="Member-API"><a class="link" href="#Member-API">1. Member API</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="회원가입-API">회원가입 API</h3>
+<h3 id="회원가입-API"><a class="link" href="#회원가입-API">1.1. 회원가입 API</a></h3>
 <div class="sect3">
-<h4 id="회원가입-API_http_request">HTTP request</h4>
+<h4 id="회원가입-API_http_request"><a class="link" href="#회원가입-API_http_request">1.1.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">POST /api/member/join HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/member/join HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 225
 Host: localhost:8080
 
 {
-  &quot;email&quot; : &quot;saycheese@gmail.com&quot;,
-  &quot;password&quot; : &quot;1234&quot;,
-  &quot;nickname&quot; : &quot;검정&quot;,
-  &quot;genderFm&quot; : &quot;F&quot;,
-  &quot;age&quot; : 31,
-  &quot;name&quot; : &quot;고무신&quot;,
-  &quot;profile&quot; : &quot;xxxxxxx&quot;,
-  &quot;snsId&quot; : &quot;nosns&quot;,
-  &quot;snsType&quot; : &quot;facebook&quot;
+  "email" : "saycheese@gmail.com",
+  "password" : "1234",
+  "nickname" : "검정",
+  "genderFm" : "F",
+  "age" : 31,
+  "name" : "고무신",
+  "profile" : "xxxxxxx",
+  "snsId" : "nosns",
+  "snsType" : "facebook"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="회원가입-API_request_fields">Request fields</h4>
+<h4 id="회원가입-API_request_fields"><a class="link" href="#회원가입-API_request_fields">1.1.2. Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -541,10 +573,10 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="회원가입-API_http_response">HTTP response</h4>
+<h4 id="회원가입-API_http_response"><a class="link" href="#회원가입-API_http_response">1.1.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
@@ -558,13 +590,13 @@ X-Frame-Options: DENY
 Content-Length: 61
 
 {
-  &quot;message&quot; : &quot;회원 가입이 완료되었습니다.&quot;
+  "message" : "회원 가입이 완료되었습니다."
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="회원가입-API_response_fields">Response fields</h4>
+<h4 id="회원가입-API_response_fields"><a class="link" href="#회원가입-API_response_fields">1.1.4. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -589,32 +621,32 @@ Content-Length: 61
 </div>
 </div>
 <div class="sect2">
-<h3 id="_회원가입_api이메일_중복">회원가입 API(이메일 중복)</h3>
+<h3 id="_회원가입_api이메일_중복"><a class="link" href="#_회원가입_api이메일_중복">1.2. 회원가입 API(이메일 중복)</a></h3>
 <div class="sect3">
-<h4 id="_회원가입_api이메일_중복_http_request">HTTP request</h4>
+<h4 id="_회원가입_api이메일_중복_http_request"><a class="link" href="#_회원가입_api이메일_중복_http_request">1.2.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">POST /api/member/join HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/member/join HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 231
 Host: localhost:8080
 
 {
-  &quot;email&quot; : &quot;saycheese@gmail.com&quot;,
-  &quot;password&quot; : &quot;password&quot;,
-  &quot;nickname&quot; : &quot;nickname&quot;,
-  &quot;genderFm&quot; : &quot;F&quot;,
-  &quot;age&quot; : 31,
-  &quot;name&quot; : &quot;고무신&quot;,
-  &quot;profile&quot; : &quot;xxxxxxx&quot;,
-  &quot;snsId&quot; : &quot;nosns&quot;,
-  &quot;snsType&quot; : &quot;facebook&quot;
+  "email" : "saycheese@gmail.com",
+  "password" : "password",
+  "nickname" : "nickname",
+  "genderFm" : "F",
+  "age" : 31,
+  "name" : "고무신",
+  "profile" : "xxxxxxx",
+  "snsId" : "nosns",
+  "snsType" : "facebook"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_회원가입_api이메일_중복_request_fields">Request fields</h4>
+<h4 id="_회원가입_api이메일_중복_request_fields"><a class="link" href="#_회원가입_api이메일_중복_request_fields">1.2.2. Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -689,10 +721,10 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_회원가입_api이메일_중복_http_response">HTTP response</h4>
+<h4 id="_회원가입_api이메일_중복_http_response"><a class="link" href="#_회원가입_api이메일_중복_http_response">1.2.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 208 Already Reported
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 208 Already Reported
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
@@ -706,13 +738,13 @@ X-Frame-Options: DENY
 Content-Length: 51
 
 {
-  &quot;message&quot; : &quot;아이디가 중복됩니다.&quot;
+  "message" : "아이디가 중복됩니다."
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_회원가입_api이메일_중복_response_fields">Response fields</h4>
+<h4 id="_회원가입_api이메일_중복_response_fields"><a class="link" href="#_회원가입_api이메일_중복_response_fields">1.2.4. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -737,32 +769,32 @@ Content-Length: 51
 </div>
 </div>
 <div class="sect2">
-<h3 id="_회원가입_api닉네임_중복">회원가입 API(닉네임 중복)</h3>
+<h3 id="_회원가입_api닉네임_중복"><a class="link" href="#_회원가입_api닉네임_중복">1.3. 회원가입 API(닉네임 중복)</a></h3>
 <div class="sect3">
-<h4 id="_회원가입_api닉네임_중복_http_request">HTTP request</h4>
+<h4 id="_회원가입_api닉네임_중복_http_request"><a class="link" href="#_회원가입_api닉네임_중복_http_request">1.3.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">POST /api/member/join HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/member/join HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 215
 Host: localhost:8080
 
 {
-  &quot;email&quot; : &quot;email&quot;,
-  &quot;password&quot; : &quot;password&quot;,
-  &quot;nickname&quot; : &quot;검정&quot;,
-  &quot;genderFm&quot; : &quot;F&quot;,
-  &quot;age&quot; : 31,
-  &quot;name&quot; : &quot;고무신&quot;,
-  &quot;profile&quot; : &quot;xxxxxxx&quot;,
-  &quot;snsId&quot; : &quot;nosns&quot;,
-  &quot;snsType&quot; : &quot;facebook&quot;
+  "email" : "email",
+  "password" : "password",
+  "nickname" : "검정",
+  "genderFm" : "F",
+  "age" : 31,
+  "name" : "고무신",
+  "profile" : "xxxxxxx",
+  "snsId" : "nosns",
+  "snsType" : "facebook"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_회원가입_api닉네임_중복_request_fields">Request fields</h4>
+<h4 id="_회원가입_api닉네임_중복_request_fields"><a class="link" href="#_회원가입_api닉네임_중복_request_fields">1.3.2. Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -837,10 +869,10 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_회원가입_api닉네임_중복_http_response">HTTP response</h4>
+<h4 id="_회원가입_api닉네임_중복_http_response"><a class="link" href="#_회원가입_api닉네임_중복_http_response">1.3.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 409 Conflict
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 409 Conflict
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
@@ -854,13 +886,13 @@ X-Frame-Options: DENY
 Content-Length: 51
 
 {
-  &quot;message&quot; : &quot;닉네임이 중복됩니다.&quot;
+  "message" : "닉네임이 중복됩니다."
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_회원가입_api닉네임_중복_response_fields">Response fields</h4>
+<h4 id="_회원가입_api닉네임_중복_response_fields"><a class="link" href="#_회원가입_api닉네임_중복_response_fields">1.3.4. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -885,19 +917,19 @@ Content-Length: 51
 </div>
 </div>
 <div class="sect2">
-<h3 id="중복확인-API">이메일 중복확인 API(정상)</h3>
+<h3 id="중복확인-API"><a class="link" href="#중복확인-API">1.4. 이메일 중복확인 API(정상)</a></h3>
 <div class="sect3">
-<h4 id="중복확인-API_http_request">HTTP request</h4>
+<h4 id="중복확인-API_http_request"><a class="link" href="#중복확인-API_http_request">1.4.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">GET /api/member/join/another-email/id-check HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/member/join/another-email/id-check HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="중복확인-API_path_parameters">Path parameters</h4>
+<h4 id="중복확인-API_path_parameters"><a class="link" href="#중복확인-API_path_parameters">1.4.2. Path parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/member/join/{email}/id-check</caption>
 <colgroup>
@@ -919,10 +951,10 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="중복확인-API_http_response">HTTP response</h4>
+<h4 id="중복확인-API_http_response"><a class="link" href="#중복확인-API_http_response">1.4.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
@@ -936,13 +968,13 @@ X-Frame-Options: DENY
 Content-Length: 58
 
 {
-  &quot;message&quot; : &quot;사용 가능한 아이디입니다.&quot;
+  "message" : "사용 가능한 아이디입니다."
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="중복확인-API_response_fields">Response fields</h4>
+<h4 id="중복확인-API_response_fields"><a class="link" href="#중복확인-API_response_fields">1.4.4. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -967,19 +999,19 @@ Content-Length: 58
 </div>
 </div>
 <div class="sect2">
-<h3 id="_이메일_중복확인_api이메일_중복">이메일 중복확인 API(이메일 중복)</h3>
+<h3 id="_이메일_중복확인_api이메일_중복"><a class="link" href="#_이메일_중복확인_api이메일_중복">1.5. 이메일 중복확인 API(이메일 중복)</a></h3>
 <div class="sect3">
-<h4 id="_이메일_중복확인_api이메일_중복_http_request">HTTP request</h4>
+<h4 id="_이메일_중복확인_api이메일_중복_http_request"><a class="link" href="#_이메일_중복확인_api이메일_중복_http_request">1.5.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">GET /api/member/join/saycheese@gmail.com/id-check HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/member/join/saycheese@gmail.com/id-check HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_이메일_중복확인_api이메일_중복_path_parameters">Path parameters</h4>
+<h4 id="_이메일_중복확인_api이메일_중복_path_parameters"><a class="link" href="#_이메일_중복확인_api이메일_중복_path_parameters">1.5.2. Path parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/member/join/{email}/id-check</caption>
 <colgroup>
@@ -1001,10 +1033,10 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_이메일_중복확인_api이메일_중복_http_response">HTTP response</h4>
+<h4 id="_이메일_중복확인_api이메일_중복_http_response"><a class="link" href="#_이메일_중복확인_api이메일_중복_http_response">1.5.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 400 Bad Request
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
@@ -1018,13 +1050,13 @@ X-Frame-Options: DENY
 Content-Length: 61
 
 {
-  &quot;message&quot; : &quot;이미 사용중인 아이디입니다.&quot;
+  "message" : "이미 사용중인 아이디입니다."
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_이메일_중복확인_api이메일_중복_response_fields">Response fields</h4>
+<h4 id="_이메일_중복확인_api이메일_중복_response_fields"><a class="link" href="#_이메일_중복확인_api이메일_중복_response_fields">1.5.4. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1049,19 +1081,19 @@ Content-Length: 61
 </div>
 </div>
 <div class="sect2">
-<h3 id="_닉네임_중복확인_api정상">닉네임 중복확인 API(정상)</h3>
+<h3 id="_닉네임_중복확인_api정상"><a class="link" href="#_닉네임_중복확인_api정상">1.6. 닉네임 중복확인 API(정상)</a></h3>
 <div class="sect3">
-<h4 id="_닉네임_중복확인_api정상_http_request">HTTP request</h4>
+<h4 id="_닉네임_중복확인_api정상_http_request"><a class="link" href="#_닉네임_중복확인_api정상_http_request">1.6.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">GET /api/member/join/another-nickname/nickname-check HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/member/join/another-nickname/nickname-check HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_닉네임_중복확인_api정상_path_parameters">Path parameters</h4>
+<h4 id="_닉네임_중복확인_api정상_path_parameters"><a class="link" href="#_닉네임_중복확인_api정상_path_parameters">1.6.2. Path parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/member/join/{nickname}/nickname-check</caption>
 <colgroup>
@@ -1083,10 +1115,10 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_닉네임_중복확인_api정상_http_response">HTTP response</h4>
+<h4 id="_닉네임_중복확인_api정상_http_response"><a class="link" href="#_닉네임_중복확인_api정상_http_response">1.6.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
@@ -1100,13 +1132,13 @@ X-Frame-Options: DENY
 Content-Length: 58
 
 {
-  &quot;message&quot; : &quot;사용 가능한 닉네임입니다.&quot;
+  "message" : "사용 가능한 닉네임입니다."
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_닉네임_중복확인_api정상_response_fields">Response fields</h4>
+<h4 id="_닉네임_중복확인_api정상_response_fields"><a class="link" href="#_닉네임_중복확인_api정상_response_fields">1.6.4. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1131,19 +1163,19 @@ Content-Length: 58
 </div>
 </div>
 <div class="sect2">
-<h3 id="_닉네임_중복확인_api닉네임_중복">닉네임 중복확인 API(닉네임 중복)</h3>
+<h3 id="_닉네임_중복확인_api닉네임_중복"><a class="link" href="#_닉네임_중복확인_api닉네임_중복">1.7. 닉네임 중복확인 API(닉네임 중복)</a></h3>
 <div class="sect3">
-<h4 id="_닉네임_중복확인_api닉네임_중복_http_request">HTTP request</h4>
+<h4 id="_닉네임_중복확인_api닉네임_중복_http_request"><a class="link" href="#_닉네임_중복확인_api닉네임_중복_http_request">1.7.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">GET /api/member/join/%EA%B2%80%EC%A0%95/nickname-check HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/member/join/%EA%B2%80%EC%A0%95/nickname-check HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_닉네임_중복확인_api닉네임_중복_path_parameters">Path parameters</h4>
+<h4 id="_닉네임_중복확인_api닉네임_중복_path_parameters"><a class="link" href="#_닉네임_중복확인_api닉네임_중복_path_parameters">1.7.2. Path parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/member/join/{nickname}/nickname-check</caption>
 <colgroup>
@@ -1165,10 +1197,10 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_닉네임_중복확인_api닉네임_중복_http_response">HTTP response</h4>
+<h4 id="_닉네임_중복확인_api닉네임_중복_http_response"><a class="link" href="#_닉네임_중복확인_api닉네임_중복_http_response">1.7.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 400 Bad Request
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
@@ -1182,13 +1214,13 @@ X-Frame-Options: DENY
 Content-Length: 61
 
 {
-  &quot;message&quot; : &quot;이미 사용중인 닉네임입니다.&quot;
+  "message" : "이미 사용중인 닉네임입니다."
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_닉네임_중복확인_api닉네임_중복_response_fields">Response fields</h4>
+<h4 id="_닉네임_중복확인_api닉네임_중복_response_fields"><a class="link" href="#_닉네임_중복확인_api닉네임_중복_response_fields">1.7.4. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1213,25 +1245,25 @@ Content-Length: 61
 </div>
 </div>
 <div class="sect2">
-<h3 id="로그인-API">로그인 API</h3>
+<h3 id="로그인-API"><a class="link" href="#로그인-API">1.8. 로그인 API</a></h3>
 <div class="sect3">
-<h4 id="로그인-API_http_request">HTTP request</h4>
+<h4 id="로그인-API_http_request"><a class="link" href="#로그인-API_http_request">1.8.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">POST /api/login HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/login HTTP/1.1
 Content-Type: application/json
 Content-Length: 63
 Host: localhost:8080
 
 {
-  &quot;email&quot; : &quot;saycheese@gmail.com&quot;,
-  &quot;password&quot; : &quot;1234&quot;
+  "email" : "saycheese@gmail.com",
+  "password" : "1234"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="로그인-API_request_fields">Request fields</h4>
+<h4 id="로그인-API_request_fields"><a class="link" href="#로그인-API_request_fields">1.8.2. Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -1264,15 +1296,15 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="로그인-API_http_response">HTTP response</h4>
+<h4 id="로그인-API_http_response"><a class="link" href="#로그인-API_http_response">1.8.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMjkyNjUyLCJpYXQiOjE2OTEyOTA4NTIsIm1lbWJlcklkIjoiNSJ9.WtC2BiN7bCuxqXWzbcEWb5UwYFF-gl6oHHw9gKIoxXJ_jcnmwdtoPt7CEJoJfnvbnJUtC0l63cnl_laqHhACCQ
-RefreshToken: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyNTAwNDUyLCJpYXQiOjE2OTEyOTA4NTIsIm1lbWJlcklkIjoiNSJ9.CNHWhH0dcdV9XF9hGqNaZQC9yjLTxZeXuwdX7FFrKBrHz9q9k4pQcldw9_HlfM5cEFNhkI5GuTe7NG3P7sfBFA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzEwNjI1LCJpYXQiOjE2OTEzMDg4MjUsIm1lbWJlcklkIjoiNSJ9.3e95c0BLwTcCsjZHtpRqs_0R3P7Lm0GxUnNufropztpG227Si4bFElmbkzVHkbCvRInlV0-DaVioWfGO1uxKBg
+RefreshToken: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyNTE4NDI1LCJpYXQiOjE2OTEzMDg4MjUsIm1lbWJlcklkIjoiNSJ9._2qrJxsScCpXsrVVkRjaDtqEwQPmaNfotNeeXuYqLOIuG_QImwAbIZHLtBH7RS0TBOBXdtNLLClUx4XkIpi7Fg
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -1283,30 +1315,30 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="로그인-API_response_fields">Response fields</h4>
+<h4 id="로그인-API_response_fields"><a class="link" href="#로그인-API_response_fields">1.8.4. Response fields</a></h4>
 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_로그인_api비밀번호_다를_경우">로그인 API(비밀번호 다를 경우)</h3>
+<h3 id="_로그인_api비밀번호_다를_경우"><a class="link" href="#_로그인_api비밀번호_다를_경우">1.9. 로그인 API(비밀번호 다를 경우)</a></h3>
 <div class="sect3">
-<h4 id="_로그인_api비밀번호_다를_경우_http_request">HTTP request</h4>
+<h4 id="_로그인_api비밀번호_다를_경우_http_request"><a class="link" href="#_로그인_api비밀번호_다를_경우_http_request">1.9.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">POST /api/login HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/login HTTP/1.1
 Content-Type: application/json
 Content-Length: 77
 Host: localhost:8080
 
 {
-  &quot;email&quot; : &quot;saycheese@gmail.com&quot;,
-  &quot;password&quot; : &quot;incorrect_password&quot;
+  "email" : "saycheese@gmail.com",
+  "password" : "incorrect_password"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_로그인_api비밀번호_다를_경우_request_fields">Request fields</h4>
+<h4 id="_로그인_api비밀번호_다를_경우_request_fields"><a class="link" href="#_로그인_api비밀번호_다를_경우_request_fields">1.9.2. Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -1339,10 +1371,10 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_로그인_api비밀번호_다를_경우_http_response">HTTP response</h4>
+<h4 id="_로그인_api비밀번호_다를_경우_http_response"><a class="link" href="#_로그인_api비밀번호_다를_경우_http_response">1.9.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 401 Unauthorized
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 401 Unauthorized
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
@@ -1356,25 +1388,25 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_로그인_api비밀번호_다를_경우_response_fields">Response fields</h4>
+<h4 id="_로그인_api비밀번호_다를_경우_response_fields"><a class="link" href="#_로그인_api비밀번호_다를_경우_response_fields">1.9.4. Response fields</a></h4>
 
 </div>
 </div>
 <div class="sect2">
-<h3 id="회원정보-API">회원정보 조회 API</h3>
+<h3 id="회원정보-API"><a class="link" href="#회원정보-API">1.10. 회원정보 조회 API</a></h3>
 <div class="sect3">
-<h4 id="회원정보-API_http_request">HTTP request</h4>
+<h4 id="회원정보-API_http_request"><a class="link" href="#회원정보-API_http_request">1.10.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">GET /api/member/info HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/member/info HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMjkyNjUzLCJpYXQiOjE2OTEyOTA4NTMsIm1lbWJlcklkIjoiMTYifQ.oki_OnXtyeAnOQbtYhavbRl0XLVypt0Iesz_Jo_IU4dbDnkN0lZoGz1N-Xr4OxyIXlsQCQrARzZox39UaOGQcA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzEwNjI2LCJpYXQiOjE2OTEzMDg4MjYsIm1lbWJlcklkIjoiMTYifQ.aTxhuRMDFUDmkI3VZVTAd0PKUZViFZ7Hb-if2VP69pd5oiSifMvUo0f2eKltG0N9NH6im0SicVx2WlFubjZODA
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="회원정보-API_request_headers">Request headers</h4>
+<h4 id="회원정보-API_request_headers"><a class="link" href="#회원정보-API_request_headers">1.10.2. Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -1395,10 +1427,10 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="회원정보-API_http_response">HTTP response</h4>
+<h4 id="회원정보-API_http_response"><a class="link" href="#회원정보-API_http_response">1.10.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
@@ -1412,21 +1444,21 @@ X-Frame-Options: DENY
 Content-Length: 231
 
 {
-  &quot;email&quot; : &quot;saycheese@gmail.com&quot;,
-  &quot;nickname&quot; : &quot;검정&quot;,
-  &quot;genderFm&quot; : &quot;F&quot;,
-  &quot;age&quot; : 31,
-  &quot;name&quot; : &quot;고무신&quot;,
-  &quot;profile&quot; : &quot;xxxxxxx&quot;,
-  &quot;snsId&quot; : &quot;nosns&quot;,
-  &quot;snsType&quot; : &quot;facebook&quot;,
-  &quot;personalAgreement&quot; : &quot;T&quot;
+  "email" : "saycheese@gmail.com",
+  "nickname" : "검정",
+  "genderFm" : "F",
+  "age" : 31,
+  "name" : "고무신",
+  "profile" : "xxxxxxx",
+  "snsId" : "nosns",
+  "snsType" : "facebook",
+  "personalAgreement" : "T"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="회원정보-API_response_fields">Response fields</h4>
+<h4 id="회원정보-API_response_fields"><a class="link" href="#회원정보-API_response_fields">1.10.4. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1491,33 +1523,33 @@ Content-Length: 231
 </div>
 </div>
 <div class="sect2">
-<h3 id="_회원정보_수정_api">회원정보 수정 API</h3>
+<h3 id="_회원정보_수정_api"><a class="link" href="#_회원정보_수정_api">1.11. 회원정보 수정 API</a></h3>
 <div class="sect3">
-<h4 id="_회원정보_수정_api_http_request">HTTP request</h4>
+<h4 id="_회원정보_수정_api_http_request"><a class="link" href="#_회원정보_수정_api_http_request">1.11.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">PUT /api/member/modify HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /api/member/modify HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMjkyNjUzLCJpYXQiOjE2OTEyOTA4NTMsIm1lbWJlcklkIjoiMjAifQ.rKAgxZMB_vzTQT9ovkFXPpI3l8USHRSQSiNY2c1gOalPREA_o-IGZzDzohNB0bLTEH6y0S5FPO7sF8sGgPFNAA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzEwNjI2LCJpYXQiOjE2OTEzMDg4MjYsIm1lbWJlcklkIjoiMjAifQ.h8mQOeFGtL6KQrjefqrbJcHjU29RD43MXbTxp4YOVtmaB56OcPntnshusziQSbVGfHkU99lfYlqQyIGYP9Whew
 Content-Length: 219
 Host: localhost:8080
 
 {
-  &quot;password&quot; : &quot;1234&quot;,
-  &quot;nickname&quot; : &quot;검정&quot;,
-  &quot;genderFm&quot; : &quot;F&quot;,
-  &quot;age&quot; : 31,
-  &quot;name&quot; : &quot;고무신&quot;,
-  &quot;profile&quot; : &quot;xxxxxxx&quot;,
-  &quot;snsId&quot; : &quot;nosns&quot;,
-  &quot;snsType&quot; : &quot;facebook&quot;,
-  &quot;personalAgreement&quot; : &quot;T&quot;
+  "password" : "1234",
+  "nickname" : "검정",
+  "genderFm" : "F",
+  "age" : 31,
+  "name" : "고무신",
+  "profile" : "xxxxxxx",
+  "snsId" : "nosns",
+  "snsType" : "facebook",
+  "personalAgreement" : "T"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_회원정보_수정_api_request_headers">Request headers</h4>
+<h4 id="_회원정보_수정_api_request_headers"><a class="link" href="#_회원정보_수정_api_request_headers">1.11.2. Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -1538,7 +1570,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_회원정보_수정_api_request_fields">Request fields</h4>
+<h4 id="_회원정보_수정_api_request_fields"><a class="link" href="#_회원정보_수정_api_request_fields">1.11.3. Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -1613,10 +1645,10 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_회원정보_수정_api_http_response">HTTP response</h4>
+<h4 id="_회원정보_수정_api_http_response"><a class="link" href="#_회원정보_수정_api_http_response">1.11.4. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
@@ -1630,26 +1662,26 @@ X-Frame-Options: DENY
 Content-Length: 359
 
 {
-  &quot;message&quot; : {
-    &quot;message&quot; : &quot;회원 정보 수정이 완료되었습니다.&quot;
+  "message" : {
+    "message" : "회원 정보 수정이 완료되었습니다."
   },
-  &quot;Member&quot; : {
-    &quot;email&quot; : &quot;saycheese@gmail.com&quot;,
-    &quot;nickname&quot; : &quot;검정&quot;,
-    &quot;genderFm&quot; : &quot;F&quot;,
-    &quot;age&quot; : 31,
-    &quot;name&quot; : &quot;고무신&quot;,
-    &quot;profile&quot; : &quot;xxxxxxx&quot;,
-    &quot;snsId&quot; : &quot;nosns&quot;,
-    &quot;snsType&quot; : &quot;facebook&quot;,
-    &quot;personalAgreement&quot; : &quot;T&quot;
+  "Member" : {
+    "email" : "saycheese@gmail.com",
+    "nickname" : "검정",
+    "genderFm" : "F",
+    "age" : 31,
+    "name" : "고무신",
+    "profile" : "xxxxxxx",
+    "snsId" : "nosns",
+    "snsType" : "facebook",
+    "personalAgreement" : "T"
   }
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_회원정보_수정_api_response_fields">Response fields</h4>
+<h4 id="_회원정보_수정_api_response_fields"><a class="link" href="#_회원정보_수정_api_response_fields">1.11.5. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1719,20 +1751,20 @@ Content-Length: 359
 </div>
 </div>
 <div class="sect2">
-<h3 id="계정삭제-API">계정삭제 API(정상)</h3>
+<h3 id="계정삭제-API"><a class="link" href="#계정삭제-API">1.12. 계정삭제 API(정상)</a></h3>
 <div class="sect3">
-<h4 id="계정삭제-API_http_request">HTTP request</h4>
+<h4 id="계정삭제-API_http_request"><a class="link" href="#계정삭제-API_http_request">1.12.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">DELETE /api/member/delete HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/member/delete HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMjkyNjUyLCJpYXQiOjE2OTEyOTA4NTIsIm1lbWJlcklkIjoiNiJ9.OeNH0KOr7GfUYWn7c9wWh0zthTH1qh96Ssu_XU2IWhFkjC-VEFsXTP2GxBjDxdDTV2PXMVmS030Bla6q66Wg6A
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzEwNjI1LCJpYXQiOjE2OTEzMDg4MjUsIm1lbWJlcklkIjoiNiJ9.AA0s-epZqlHcVc9ZEIn5gas02BiEX7yLzBueAl2v0HNLVr38Bqe0ITluiZ2U2TqcU7pIlaIOP9MANITmtwYz1A
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="계정삭제-API_request_headers">Request headers</h4>
+<h4 id="계정삭제-API_request_headers"><a class="link" href="#계정삭제-API_request_headers">1.12.2. Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -1753,10 +1785,10 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="계정삭제-API_http_response">HTTP response</h4>
+<h4 id="계정삭제-API_http_response"><a class="link" href="#계정삭제-API_http_response">1.12.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
@@ -1770,13 +1802,13 @@ X-Frame-Options: DENY
 Content-Length: 61
 
 {
-  &quot;message&quot; : &quot;회원 탈퇴가 완료되었습니다.&quot;
+  "message" : "회원 탈퇴가 완료되었습니다."
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="계정삭제-API_response_fields">Response fields</h4>
+<h4 id="계정삭제-API_response_fields"><a class="link" href="#계정삭제-API_response_fields">1.12.4. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1801,22 +1833,22 @@ Content-Length: 61
 </div>
 </div>
 <div class="sect2">
-<h3 id="_계정삭제_api잘못된_사용자_접근_시">계정삭제 API(잘못된 사용자 접근 시)</h3>
+<h3 id="_계정삭제_api잘못된_사용자_접근_시"><a class="link" href="#_계정삭제_api잘못된_사용자_접근_시">1.13. 계정삭제 API(잘못된 사용자 접근 시)</a></h3>
 <div class="sect3">
-<h4 id="_계정삭제_api잘못된_사용자_접근_시_http_request">HTTP request</h4>
+<h4 id="_계정삭제_api잘못된_사용자_접근_시_http_request"><a class="link" href="#_계정삭제_api잘못된_사용자_접근_시_http_request">1.13.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">DELETE /api/member/delete HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/member/delete HTTP/1.1
 Content-Type: application/json
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_계정삭제_api잘못된_사용자_접근_시_http_response">HTTP response</h4>
+<h4 id="_계정삭제_api잘못된_사용자_접근_시_http_response"><a class="link" href="#_계정삭제_api잘못된_사용자_접근_시_http_response">1.13.2. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 401 Unauthorized
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 401 Unauthorized
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
@@ -1831,24 +1863,24 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_계정삭제_api잘못된_사용자_접근_시_response_fields">Response fields</h4>
+<h4 id="_계정삭제_api잘못된_사용자_접근_시_response_fields"><a class="link" href="#_계정삭제_api잘못된_사용자_접근_시_response_fields">1.13.3. Response fields</a></h4>
 
 </div>
 </div>
 <div class="sect2">
-<h3 id="회원명단불러오기-API">회원명단불러오기 API</h3>
+<h3 id="회원명단불러오기-API"><a class="link" href="#회원명단불러오기-API">1.14. 회원명단불러오기 API</a></h3>
 <div class="sect3">
-<h4 id="회원명단불러오기-API_http_request">HTTP request</h4>
+<h4 id="회원명단불러오기-API_http_request"><a class="link" href="#회원명단불러오기-API_http_request">1.14.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">GET /api/member/search-member/memories HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/member/search-member/memories HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="회원명단불러오기-API_path_parameters">Path parameters</h4>
+<h4 id="회원명단불러오기-API_path_parameters"><a class="link" href="#회원명단불러오기-API_path_parameters">1.14.2. Path parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/member/search-member/{email-nickname}</caption>
 <colgroup>
@@ -1870,10 +1902,10 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="회원명단불러오기-API_http_response">HTTP response</h4>
+<h4 id="회원명단불러오기-API_http_response"><a class="link" href="#회원명단불러오기-API_http_response">1.14.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
@@ -1887,17 +1919,17 @@ X-Frame-Options: DENY
 Content-Length: 136
 
 [ {
-  &quot;email&quot; : &quot;memories1@gmail.com&quot;,
-  &quot;nickname&quot; : &quot;검정&quot;
+  "email" : "memories1@gmail.com",
+  "nickname" : "검정"
 }, {
-  &quot;email&quot; : &quot;memories2@gmail.com&quot;,
-  &quot;nickname&quot; : &quot;빨강&quot;
+  "email" : "memories2@gmail.com",
+  "nickname" : "빨강"
 } ]</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="회원명단불러오기-API_response_fields">Response fields</h4>
+<h4 id="회원명단불러오기-API_response_fields"><a class="link" href="#회원명단불러오기-API_response_fields">1.14.4. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1927,33 +1959,20 @@ Content-Length: 136
 </div>
 </div>
 <div class="sect2">
-<h3 id="로그아웃-API">로그아웃 API</h3>
+<h3 id="로그아웃-API"><a class="link" href="#로그아웃-API">1.15. 로그아웃 API</a></h3>
 <div class="sect3">
-<h4 id="로그아웃-API_http_request">HTTP request</h4>
+<h4 id="로그아웃-API_http_request"><a class="link" href="#로그아웃-API_http_request">1.15.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">PUT /api/member/modify HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/logout HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMjkyNjUzLCJpYXQiOjE2OTEyOTA4NTMsIm1lbWJlcklkIjoiMTUifQ.N74k81Yu3ebUy3-DSLSCiZUm6zpRv8vk2iVhHoYDLYIhkVKPSG13zWpaMuxiXMIviGr47CyIrkSWI_ZuJ4EHcw
-Content-Length: 219
-Host: localhost:8080
-
-{
-  &quot;password&quot; : &quot;1234&quot;,
-  &quot;nickname&quot; : &quot;검정&quot;,
-  &quot;genderFm&quot; : &quot;F&quot;,
-  &quot;age&quot; : 31,
-  &quot;name&quot; : &quot;고무신&quot;,
-  &quot;profile&quot; : &quot;xxxxxxx&quot;,
-  &quot;snsId&quot; : &quot;nosns&quot;,
-  &quot;snsType&quot; : &quot;facebook&quot;,
-  &quot;personalAgreement&quot; : &quot;T&quot;
-}</code></pre>
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzEwNjI2LCJpYXQiOjE2OTEzMDg4MjYsIm1lbWJlcklkIjoiMTUifQ.GS-OFBniQ57lL7nWe6pMZMNDQ_BUCeMh8hoqMwuK635e5UZ0gHir2mWrwtuBC7S89mYuaVeaIVjxgPZClI33iw
+Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="로그아웃-API_request_headers">Request headers</h4>
+<h4 id="로그아웃-API_request_headers"><a class="link" href="#로그아웃-API_request_headers">1.15.2. Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -1968,16 +1987,16 @@ Host: localhost:8080
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">이미 로그아웃 한 Access 토큰</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">발급된 Access 토큰</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="sect3">
-<h4 id="로그아웃-API_http_response">HTTP response</h4>
+<h4 id="로그아웃-API_http_response"><a class="link" href="#로그아웃-API_http_response">1.15.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 401 Unauthorized
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
@@ -1992,20 +2011,20 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="JwtToken검증-API">AccessToken 만료 여부 판별(만료 시)</h3>
+<h3 id="JwtToken검증-API"><a class="link" href="#JwtToken검증-API">1.16. AccessToken 만료 여부 판별(만료 시)</a></h3>
 <div class="sect3">
-<h4 id="JwtToken검증-API_http_request">HTTP request</h4>
+<h4 id="JwtToken검증-API_http_request"><a class="link" href="#JwtToken검증-API_http_request">1.16.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">GET /api/member/info HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/member/info HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMjkwODU0LCJpYXQiOjE2OTEyOTA4NTQsIm1lbWJlcklkIjoyMX0.CM4RrOHRot_3O6bs3No6ynqlN5LF9SY-b2BEBdgxSeoIbfEmNTMOVlTvw01T11yJoSjj8_VMroihgZOb8keROA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzA4ODI2LCJpYXQiOjE2OTEzMDg4MjYsIm1lbWJlcklkIjoyMX0.G7vvKeWO588s_vdbNhhJXl8_4fV8oYHuyq5C1_099hr_PsMbyfRcZsKcLm-EipzSRyH3bj-uos_bCrvSH9bu_Q
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="JwtToken검증-API_request_headers">Request headers</h4>
+<h4 id="JwtToken검증-API_request_headers"><a class="link" href="#JwtToken검증-API_request_headers">1.16.2. Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -2026,10 +2045,10 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="JwtToken검증-API_http_response">HTTP response</h4>
+<h4 id="JwtToken검증-API_http_response"><a class="link" href="#JwtToken검증-API_http_response">1.16.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 401 Unauthorized
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 401 Unauthorized
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
@@ -2044,26 +2063,26 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_accesstoken_만료_시_refreshtoken_검증_통해_accesstoken_재발급">(AccessToken 만료 시) RefreshToken 검증 통해 AccessToken 재발급</h3>
+<h3 id="_accesstoken_만료_시_refreshtoken_검증_통해_accesstoken_재발급"><a class="link" href="#_accesstoken_만료_시_refreshtoken_검증_통해_accesstoken_재발급">1.17. (AccessToken 만료 시) RefreshToken 검증 통해 AccessToken 재발급</a></h3>
 <div class="sect3">
-<h4 id="_accesstoken_만료_시_refreshtoken_검증_통해_accesstoken_재발급_http_request">HTTP request</h4>
+<h4 id="_accesstoken_만료_시_refreshtoken_검증_통해_accesstoken_재발급_http_request"><a class="link" href="#_accesstoken_만료_시_refreshtoken_검증_통해_accesstoken_재발급_http_request">1.17.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">POST /refresh HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/refresh HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyNTAwNDUyLCJpYXQiOjE2OTEyOTA4NTIsIm1lbWJlcklkIjoiMTEifQ.KK8xBYk6zqFyF-RiBSvccRexXXRw639i30TJs7dqCfc5LgMvyF3vN6qsvimpyMxsii3aQICHu9ePXpoV_7Q7Xg
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyNTE4NDI1LCJpYXQiOjE2OTEzMDg4MjUsIm1lbWJlcklkIjoiMTEifQ.JM6pzIh0ozij33PCJ6cFNjLpargqo3OY4tdlBOnevpUpec5B5G19GG3g0-6xZ7H2GG3OBNzdn4fDiLQl9eiihg
 Content-Length: 63
 Host: localhost:8080
 
 {
-  &quot;email&quot; : &quot;saycheese@gmail.com&quot;,
-  &quot;password&quot; : &quot;1234&quot;
+  "email" : "saycheese@gmail.com",
+  "password" : "1234"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_accesstoken_만료_시_refreshtoken_검증_통해_accesstoken_재발급_request_headers">Request headers</h4>
+<h4 id="_accesstoken_만료_시_refreshtoken_검증_통해_accesstoken_재발급_request_headers"><a class="link" href="#_accesstoken_만료_시_refreshtoken_검증_통해_accesstoken_재발급_request_headers">1.17.2. Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -2084,15 +2103,15 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_accesstoken_만료_시_refreshtoken_검증_통해_accesstoken_재발급_http_response">HTTP response</h4>
+<h4 id="_accesstoken_만료_시_refreshtoken_검증_통해_accesstoken_재발급_http_response"><a class="link" href="#_accesstoken_만료_시_refreshtoken_검증_통해_accesstoken_재발급_http_response">1.17.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMjkyNjUyLCJpYXQiOjE2OTEyOTA4NTIsIm1lbWJlcklkIjoiMTEifQ.1bjZvE0L7rd72LADACCXtKJ3ayDdC4LwSLv9RFT5aanZeBREsFxki18tcQPoGwGZEX5mucHJ1bXAxAEt4-bDBw
-RefreshToken: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyNTAwNDUyLCJpYXQiOjE2OTEyOTA4NTIsIm1lbWJlcklkIjoiMTEifQ.KK8xBYk6zqFyF-RiBSvccRexXXRw639i30TJs7dqCfc5LgMvyF3vN6qsvimpyMxsii3aQICHu9ePXpoV_7Q7Xg
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzEwNjI1LCJpYXQiOjE2OTEzMDg4MjUsIm1lbWJlcklkIjoiMTEifQ.0LPeQv7XaDFPHytL9i9eiDyj_vPgroSZppUbAvN39OufylLui-s0VZjOYzRwUks1hDdtPWcbU0i9qlBsb0GKrg
+RefreshToken: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyNTE4NDI1LCJpYXQiOjE2OTEzMDg4MjUsIm1lbWJlcklkIjoiMTEifQ.JM6pzIh0ozij33PCJ6cFNjLpargqo3OY4tdlBOnevpUpec5B5G19GG3g0-6xZ7H2GG3OBNzdn4fDiLQl9eiihg
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -2103,13 +2122,13 @@ X-Frame-Options: DENY
 Content-Length: 49
 
 {
-  &quot;message&quot; : &quot;AccessToken reissue success&quot;
+  "message" : "AccessToken reissue success"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_accesstoken_만료_시_refreshtoken_검증_통해_accesstoken_재발급_response_fields">Response fields</h4>
+<h4 id="_accesstoken_만료_시_refreshtoken_검증_통해_accesstoken_재발급_response_fields"><a class="link" href="#_accesstoken_만료_시_refreshtoken_검증_통해_accesstoken_재발급_response_fields">1.17.4. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2134,26 +2153,26 @@ Content-Length: 49
 </div>
 </div>
 <div class="sect2">
-<h3 id="_accesstoken와_refreshtoken_모두_만료_시">AccessToken와 RefreshToken 모두 만료 시</h3>
+<h3 id="_accesstoken와_refreshtoken_모두_만료_시"><a class="link" href="#_accesstoken와_refreshtoken_모두_만료_시">1.18. AccessToken와 RefreshToken 모두 만료 시</a></h3>
 <div class="sect3">
-<h4 id="_accesstoken와_refreshtoken_모두_만료_시_http_request">HTTP request</h4>
+<h4 id="_accesstoken와_refreshtoken_모두_만료_시_http_request"><a class="link" href="#_accesstoken와_refreshtoken_모두_만료_시_http_request">1.18.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">POST /refresh HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/refresh HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMjkwODUyLCJpYXQiOjE2OTEyOTA4NTIsIm1lbWJlcklkIjozfQ.8pAFRaadVqd_EMQ7B0uJPclGC8-HqVXZsfGUImLAEFqh3REQDtSoUPQ21N6xX-YWFHrhhOxXpEmbLNJE0nRSZQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzA4ODI0LCJpYXQiOjE2OTEzMDg4MjQsIm1lbWJlcklkIjozfQ.K-Hv7K4p7S426z7UiJJ_rKamapVk_RGbUtFPN9Av_82Nkwhb6qf3C4Qf1Zk7qRp9bvK9hWZtp-oKGqY-r-mBNQ
 Content-Length: 63
 Host: localhost:8080
 
 {
-  &quot;email&quot; : &quot;saycheese@gmail.com&quot;,
-  &quot;password&quot; : &quot;1234&quot;
+  "email" : "saycheese@gmail.com",
+  "password" : "1234"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_accesstoken와_refreshtoken_모두_만료_시_request_headers">Request headers</h4>
+<h4 id="_accesstoken와_refreshtoken_모두_만료_시_request_headers"><a class="link" href="#_accesstoken와_refreshtoken_모두_만료_시_request_headers">1.18.2. Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -2174,10 +2193,10 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_accesstoken와_refreshtoken_모두_만료_시_http_response">HTTP response</h4>
+<h4 id="_accesstoken와_refreshtoken_모두_만료_시_http_response"><a class="link" href="#_accesstoken와_refreshtoken_모두_만료_시_http_response">1.18.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 401 Unauthorized
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 401 Unauthorized
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
@@ -2192,20 +2211,20 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_로그아웃_시_accesstoken_블랙리스트_설정_후_해당_accesstoken_접근_제한">로그아웃 시 AccessToken 블랙리스트 설정 후 해당 AccessToken 접근 제한</h3>
+<h3 id="_로그아웃_시_accesstoken_블랙리스트_설정_후_해당_accesstoken_접근_제한"><a class="link" href="#_로그아웃_시_accesstoken_블랙리스트_설정_후_해당_accesstoken_접근_제한">1.19. 로그아웃 시 AccessToken 블랙리스트 설정 후 해당 AccessToken 접근 제한</a></h3>
 <div class="sect3">
-<h4 id="_로그아웃_시_accesstoken_블랙리스트_설정_후_해당_accesstoken_접근_제한_http_request">HTTP request</h4>
+<h4 id="_로그아웃_시_accesstoken_블랙리스트_설정_후_해당_accesstoken_접근_제한_http_request"><a class="link" href="#_로그아웃_시_accesstoken_블랙리스트_설정_후_해당_accesstoken_접근_제한_http_request">1.19.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">GET /api/member/info HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/member/info HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMjkyNjUyLCJpYXQiOjE2OTEyOTA4NTIsIm1lbWJlcklkIjoiNCJ9.K10JAtxB5p0Xsum0qLelkSdy50hLlGe-W4sV0gFiq9N0VO0fjOe3-djDzIBdhxguoy-lU0iy2TdrSMiwBacRIQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzEwNjI0LCJpYXQiOjE2OTEzMDg4MjQsIm1lbWJlcklkIjoiNCJ9.0xkygka26h3PeVJbWsxiRdM-L6LcEhk48Az4bqiQS0qikWck5x68UvynrLkfULJ7_iAyjv9kSqmz6je0Wvsx3A
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_로그아웃_시_accesstoken_블랙리스트_설정_후_해당_accesstoken_접근_제한_request_headers">Request headers</h4>
+<h4 id="_로그아웃_시_accesstoken_블랙리스트_설정_후_해당_accesstoken_접근_제한_request_headers"><a class="link" href="#_로그아웃_시_accesstoken_블랙리스트_설정_후_해당_accesstoken_접근_제한_request_headers">1.19.2. Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -2226,10 +2245,10 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_로그아웃_시_accesstoken_블랙리스트_설정_후_해당_accesstoken_접근_제한_http_response">HTTP response</h4>
+<h4 id="_로그아웃_시_accesstoken_블랙리스트_설정_후_해당_accesstoken_접근_제한_http_response"><a class="link" href="#_로그아웃_시_accesstoken_블랙리스트_설정_후_해당_accesstoken_접근_제한_http_response">1.19.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 401 Unauthorized
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 401 Unauthorized
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
@@ -2244,26 +2263,26 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_로그아웃_시_redis_내_refreshtoken_삭제_후_refreshtoken_접근_제한">로그아웃 시 Redis 내 RefreshToken 삭제 후 RefreshToken 접근 제한</h3>
+<h3 id="_로그아웃_시_redis_내_refreshtoken_삭제_후_refreshtoken_접근_제한"><a class="link" href="#_로그아웃_시_redis_내_refreshtoken_삭제_후_refreshtoken_접근_제한">1.20. 로그아웃 시 Redis 내 RefreshToken 삭제 후 RefreshToken 접근 제한</a></h3>
 <div class="sect3">
-<h4 id="_로그아웃_시_redis_내_refreshtoken_삭제_후_refreshtoken_접근_제한_http_request">HTTP request</h4>
+<h4 id="_로그아웃_시_redis_내_refreshtoken_삭제_후_refreshtoken_접근_제한_http_request"><a class="link" href="#_로그아웃_시_redis_내_refreshtoken_삭제_후_refreshtoken_접근_제한_http_request">1.20.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">POST /refresh HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/refresh HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyNTAwNDU0LCJpYXQiOjE2OTEyOTA4NTQsIm1lbWJlcklkIjoiMjQifQ.lPQJ5rzzntsAaMnUYgCuC_lH6_L4CwYjZvG1LL0MwwbJbcRnn4eSEIwknISQiRZ6RXAxI133UTJSgB0ZJLr3cg
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyNTE4NDI2LCJpYXQiOjE2OTEzMDg4MjYsIm1lbWJlcklkIjoiMjQifQ.VijC1T1h6uoF-orxMFCvPe9CI4ISPqYP7m4GNfsHSzZYkrQNWNUc-JmU-1nDmp910TYIuIhc3xoZb_usTJy-AQ
 Content-Length: 63
 Host: localhost:8080
 
 {
-  &quot;email&quot; : &quot;saycheese@gmail.com&quot;,
-  &quot;password&quot; : &quot;1234&quot;
+  "email" : "saycheese@gmail.com",
+  "password" : "1234"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_로그아웃_시_redis_내_refreshtoken_삭제_후_refreshtoken_접근_제한_request_headers">Request headers</h4>
+<h4 id="_로그아웃_시_redis_내_refreshtoken_삭제_후_refreshtoken_접근_제한_request_headers"><a class="link" href="#_로그아웃_시_redis_내_refreshtoken_삭제_후_refreshtoken_접근_제한_request_headers">1.20.2. Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -2284,10 +2303,10 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_로그아웃_시_redis_내_refreshtoken_삭제_후_refreshtoken_접근_제한_http_response">HTTP response</h4>
+<h4 id="_로그아웃_시_redis_내_refreshtoken_삭제_후_refreshtoken_접근_제한_http_response"><a class="link" href="#_로그아웃_시_redis_내_refreshtoken_삭제_후_refreshtoken_접근_제한_http_response">1.20.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 401 Unauthorized
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 401 Unauthorized
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
@@ -2301,13 +2320,13 @@ X-Frame-Options: DENY
 Content-Length: 52
 
 {
-  &quot;message&quot; : &quot;다시 로그인 해주세요.&quot;
+  "message" : "다시 로그인 해주세요."
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_로그아웃_시_redis_내_refreshtoken_삭제_후_refreshtoken_접근_제한_response_fields">Response fields</h4>
+<h4 id="_로그아웃_시_redis_내_refreshtoken_삭제_후_refreshtoken_접근_제한_response_fields"><a class="link" href="#_로그아웃_시_redis_내_refreshtoken_삭제_후_refreshtoken_접근_제한_response_fields">1.20.4. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2336,8 +2355,15 @@ Content-Length: 52
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-08-06 12:30:17 +0900
+Last updated 2023-08-02 16:02:26 +0900
 </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
 </body>
 </html>

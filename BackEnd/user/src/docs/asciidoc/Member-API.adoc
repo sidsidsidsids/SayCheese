@@ -57,13 +57,22 @@ operation::MemberIntegrationTest/testGetMembersList[snippets='http-request,path-
 
 [[로그아웃-API]]
 
-=== 로그아웃 API(로그아웃 성공 후 회원 정보 수정 실패)
-operation::MemberIntegrationTest/testLogoutSuccess[snippets='http-request,request-fields,http-response,response-fields']
+=== 로그아웃 API
+operation::MemberIntegrationTest/testLogoutSuccess[snippets='http-request,request-headers,http-response']
 
 [[JwtToken검증-API]]
 
-=== AccessToken 만료 여부 판별
-operation::MemberIntegrationTest/testAccessTokenExpiredConfirmed[snippets='http-request,http-response']
+=== AccessToken 만료 여부 판별(만료 시)
+operation::MemberIntegrationTest/testAccessTokenExpiredConfirmed[snippets='http-request,request-headers,http-response']
 
 === (AccessToken 만료 시) RefreshToken 검증 통해 AccessToken 재발급
-operation::MemberIntegrationTest/testRefreshSuccess[snippets='http-request,http-response']
+operation::MemberIntegrationTest/testRefreshSuccess[snippets='http-request,request-headers,http-response,response-fields']
+
+=== AccessToken와 RefreshToken 모두 만료 시
+operation::MemberIntegrationTest/testRefreshFail[snippets='http-request,request-headers,http-response']
+
+=== 로그아웃 시 AccessToken 블랙리스트 설정 후 해당 AccessToken 접근 제한
+operation::MemberIntegrationTest/testAccessTokenBlacklist[snippets='http-request,request-headers,http-response']
+
+=== 로그아웃 시 Redis 내 RefreshToken 삭제 후 RefreshToken 접근 제한
+operation::MemberIntegrationTest/testRefreshTokenDeletion[snippets='http-request,request-headers,http-response,response-fields']

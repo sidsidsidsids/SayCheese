@@ -1,6 +1,7 @@
 package com.reminiscence.config;
 
 import com.reminiscence.config.redis.RefreshTokenService;
+import com.reminiscence.config.redis.TokenRevocationService;
 import com.reminiscence.filter.JwtAuthenticationFilter;
 import com.reminiscence.filter.JwtAuthorizationFilter;
 import com.reminiscence.filter.JwtTokenProvider;
@@ -20,7 +21,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -48,6 +48,9 @@ public class SecurityConfiguration {
     @Autowired
     private CorsConfig corsConfig;
 
+    @Autowired
+    private TokenRevocationService tokenRevocationService;
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
@@ -63,7 +66,7 @@ public class SecurityConfiguration {
                 .and()
                 .formLogin().disable()
                 .httpBasic().disable()
-                .addFilter(new JwtAuthenticationFilter(authenticationManager, env, refreshTokenService, jwtTokenProvider,"/api/login"))
+                .addFilter(new JwtAuthenticationFilter(authenticationManager, refreshTokenService, jwtTokenProvider, jwtUtil, "/api/login"))
                 .addFilterBefore(new JwtAuthorizationFilter(env, memberRepository, refreshTokenService, jwtTokenProvider, jwtUtil), BasicAuthenticationFilter.class)
                 .authorizeRequests()
 //                .antMatchers("/public").permitAll()
@@ -73,8 +76,8 @@ public class SecurityConfiguration {
                 .anyRequest().permitAll()
                 .and()
                 .logout()
-                    .logoutUrl("/logout")
-                    .logoutSuccessHandler(new CustomLogoutSuccessHandler())
+                    .logoutUrl("/api/logout")
+                    .logoutSuccessHandler(new CustomLogoutSuccessHandler(refreshTokenService, jwtUtil, tokenRevocationService))
                     .logoutSuccessUrl("/public");
 //                .and().apply(new Custom())
 //                .antMatchers("/api/article/image/**")
