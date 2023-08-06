@@ -1,21 +1,21 @@
-package com.reminiscence.article.frame.dto;
+package com.reminiscence.article.amazon.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum FrameType {
+public enum FileType {
     IMAGE("image"),
     FRAME("frame"),
     PROFILE("profile");
 
     private final String value;
 
-    private FrameType(String value) {
+    private FileType(String value) {
         this.value = value;
     }
     @JsonCreator
-    public static FrameType from(String value) {
-        for (FrameType type : FrameType.values()) {
+    public static FileType from(String value) {
+        for (FileType type : FileType.values()) {
             if (type.getValue().equals(value)) {
                 return type;
             }

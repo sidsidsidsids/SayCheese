@@ -1,6 +1,5 @@
 package com.reminiscence.article.framearticle.service;
 
-import com.reminiscence.article.config.auth.UserDetail;
 import com.reminiscence.article.domain.Frame;
 import com.reminiscence.article.domain.FrameArticle;
 import com.reminiscence.article.exception.customexception.FrameArticleException;
@@ -8,7 +7,6 @@ import com.reminiscence.article.exception.message.FrameArticleExceptionMessage;
 import com.reminiscence.article.frame.repository.FrameRepository;
 import com.reminiscence.article.framearticle.dto.FrameArticleAndMemberRequestDto;
 import com.reminiscence.article.framearticle.dto.FrameArticleDeleteRequestDto;
-import com.reminiscence.article.framearticle.dto.FrameArticleRequestDto;
 import com.reminiscence.article.framearticle.repository.FrameArticleRepository;
 import com.reminiscence.article.lover.repository.LoverRepository;
 import lombok.RequiredArgsConstructor;
