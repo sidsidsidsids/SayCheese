@@ -17,3 +17,16 @@ spring:
 jwt:
   secret: secret-key
   expiration: 86400000
+cloud:
+  aws:
+    credentials:
+      instance-profile: false
+      access-key:
+      secret-key:
+    s3:
+      bucket: test
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
