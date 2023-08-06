@@ -19,14 +19,14 @@ public class ParticipantRepositoryImpl implements ParticipantCustomRepository{
     public Optional<Participant> findByMemberNickname(String nickname) {
         return Optional.ofNullable(
                 queryFactory.select(QParticipant.participant)
-                        .where(eqNickname(nickname), eqConnection())
+                        .where(eqNickname(nickname))
                         .fetchOne());
     }
 
     @Override
     public Long countByRoomId(Long roomId) {
         return queryFactory.select(QParticipant.participant)
-                .where(eqRoomId(roomId))
+                .where(eqRoomId(roomId),eqConnection())
                 .fetchCount();
     }
 
