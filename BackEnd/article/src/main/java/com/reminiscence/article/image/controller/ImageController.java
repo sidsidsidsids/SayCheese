@@ -20,33 +20,19 @@ import java.util.List;
 public class ImageController {
     private final ImageService imageService;
 
-    /**
-     * AmazonS3 Presigned URL 생성
-     * @param
-     * imageNameDto : JWT 토큰으로 인증된 사용자 정보
-     *     imageName : 이미지 파일 이름
-     *     imageType : 이미지 타입(Frame, Image)
-     * @return
-     * PreSignedResponseDto
-     *     preSignUrl : PreSignedUrl
-     *     fileName : (UUID + 파일 이름)으로 설정된 저장될 파일 이름
-     */
-    @PostMapping("/presigned")
-    public ResponseEntity<PreSignedResponseDto> getPreSignedUrl(
-            @RequestBody @Valid PreSignedRequestDto imageNameDto) {
-        String prefix = imageNameDto.getImageType().getValue();
-        String fileName = imageNameDto.getImageName();
-
-        PreSignedResponseDto preSignedResponseDto = imageService.getPreSignedUrl(prefix, fileName);
-        return new ResponseEntity<>(preSignedResponseDto, HttpStatus.OK);
-    }
-
 
     @GetMapping
     public ResponseEntity<List<OwnerImageResponseDto>> readOwnerImages(@AuthenticationPrincipal UserDetail userDetail){
         List<OwnerImageResponseDto> recentOwnImages = imageService.getReadRecentOwnImages(userDetail.getMember().getId());
         return new ResponseEntity<>(recentOwnImages, HttpStatus.OK);
     }
+
+    @GetMapping("/random/tag")
+    public ResponseEntity<List<RandomTagResponseDto>> readRandomTag(){
+        List<RandomTagResponseDto> randomTags = imageService.getRandomTags();
+        return new ResponseEntity(randomTags, HttpStatus.OK);
+    }
+
 
     /**
      * 이미지 정보 저장
