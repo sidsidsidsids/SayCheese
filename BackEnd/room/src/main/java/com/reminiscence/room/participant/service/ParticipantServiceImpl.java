@@ -37,7 +37,6 @@ public class ParticipantServiceImpl implements ParticipantService{
                 .member(member)
                 .room(room.get())
                 .connectionYn('Y')
-                .streamId(requestDto.getStreamId())
                 .build();
         participantRepository.save(participant);
     }
