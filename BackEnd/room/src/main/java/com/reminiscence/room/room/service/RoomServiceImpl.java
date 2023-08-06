@@ -33,14 +33,6 @@ public class RoomServiceImpl implements RoomService{
     }
 
     @Override
-    public void deleteRoom(String roomCode) {
-        Optional<Room> room = roomRepository.findByRoomCode(roomCode);
-        room.orElseThrow(() -> new RoomException(RoomExceptionMessage.NOT_FOUND_ROOM));
-        participantRepository.deleteByRoomId(room.get().getId());
-        roomRepository.deleteByRoomCode(roomCode);
-    }
-
-    @Override
     public void checkRoomPassword(String roomCode, String password) {
         WebClient build = WebClientBuild();
         checkSession(roomCode, build);
@@ -51,6 +43,22 @@ public class RoomServiceImpl implements RoomService{
         if(!room.get().getPassword().equals(password)){
             throw new RoomException(RoomExceptionMessage.NOT_MATCH_PASSWORD);
         }
+
+        Long participantCount =
+                participantRepository.countByRoomId(room.get().getId());
+
+        if(participantCount > room.get().getMaxCount()){
+            throw new RoomException(RoomExceptionMessage.ROOM_IS_FULL);
+        }
+
+
+    }
+    @Override
+    public void deleteRoom(String roomCode) {
+        Optional<Room> room = roomRepository.findByRoomCode(roomCode);
+        room.orElseThrow(() -> new RoomException(RoomExceptionMessage.NOT_FOUND_ROOM));
+        participantRepository.deleteByRoomId(room.get().getId());
+        roomRepository.deleteByRoomCode(roomCode);
     }
 
     private void checkSession(String roomCode, WebClient build) {
