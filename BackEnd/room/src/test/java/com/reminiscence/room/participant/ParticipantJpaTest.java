@@ -38,7 +38,7 @@ public class ParticipantJpaTest {
 
         // when
         Participant participant = Participant.builder()
-                .ownerYn("N")
+                .ownerYn('N')
                 .member(member)
                 .room(room)
                 .build();
@@ -73,6 +73,21 @@ public class ParticipantJpaTest {
         Participant findParticipant = participantRepository.findByMemberIdAndRoomId(memberId, room.getId()).orElse(null);
         // then
         assertNull(findParticipant);
+    }
+
+    @Test
+    @DisplayName("참가자 전체 삭제 테스트")
+    public void deleteAllParticipantTest(){
+        // given
+        String roomCode = "sessionA";
+
+        // when
+        Room room = roomRepository.findByRoomCode(roomCode).orElse(null);
+        assertNotNull(room);
+
+        participantRepository.deleteAllByRoomId(room.getId());
+        // then
+        assertEquals(0, participantRepository.count());
     }
 
 }
