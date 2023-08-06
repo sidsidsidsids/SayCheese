@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ParticipantRepository extends JpaRepository<Participant, Long>, ParticipantCustomRepository {
+public interface ParticipantRepository extends JpaRepository<Participant, Long>, ParticipantRepositoryCustom {
     Optional<Participant> findByMemberIdAndRoomId(Long memberId, Long roomId);
     Optional<Participant> findByOwnerYnAndRoomId(Character ownerYn, Long roomId);
     void deleteByRoomId(Long roomId);

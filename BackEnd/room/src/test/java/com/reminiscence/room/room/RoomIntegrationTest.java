@@ -93,7 +93,7 @@ public class RoomIntegrationTest {
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDto)))
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                         requestHeaders(
                                 headerWithName("Authorization").description("로그인 성공한 토큰 ")

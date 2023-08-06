@@ -4,7 +4,7 @@ import com.reminiscence.room.domain.Participant;
 
 import java.util.Optional;
 
-public interface ParticipantCustomRepository {
-        Optional<Participant> findByMemberNickname(String nickname);
+public interface ParticipantRepositoryCustom {
+        Optional<Participant> findByNicknameAndRoomId(String nickname, Long roomId);
         Long countByRoomId(Long roomId);
 }

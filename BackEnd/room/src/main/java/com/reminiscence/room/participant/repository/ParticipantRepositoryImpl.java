@@ -8,19 +8,20 @@ import com.reminiscence.room.domain.QParticipant;
 import javax.persistence.EntityManager;
 import java.util.Optional;
 
-public class ParticipantRepositoryImpl implements ParticipantCustomRepository{
+public class ParticipantRepositoryImpl implements ParticipantRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
     public ParticipantRepositoryImpl(EntityManager entityManager){
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
 
+
     @Override
-    public Optional<Participant> findByMemberNickname(String nickname) {
+    public Optional<Participant> findByNicknameAndRoomId(String nickname,Long roomId) {
         return Optional.ofNullable(
                 queryFactory.select(QParticipant.participant)
-                        .where(eqNickname(nickname))
-                        .fetchOne());
+                        .where(eqNickname(nickname),eqRoomId(roomId))
+                        .fetchFirst());
     }
 
     @Override

@@ -85,7 +85,7 @@ public class ParticipantServiceImpl implements ParticipantService{
         room.orElseThrow(()->
                 new RoomException(RoomExceptionMessage.NOT_FOUND_ROOM));
 
-        Optional<Participant> participant = participantRepository.findByMemberNickname(nickname);
+        Optional<Participant> participant = participantRepository.findByNicknameAndRoomId(nickname, room.get().getId());
         participant.orElseThrow(()->
                 new ParticipantException(ParticipantExceptionMessage.NOT_FOUND_PARTICIPANT));
 
