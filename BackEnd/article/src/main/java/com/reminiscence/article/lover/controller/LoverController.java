@@ -1,9 +1,10 @@
 package com.reminiscence.article.lover.controller;
 
 import com.reminiscence.article.config.auth.UserDetail;
-import com.reminiscence.article.lover.dto.LoverRequestDto;
 import com.reminiscence.article.lover.service.LoverService;
 
+import com.reminiscence.article.message.Response;
+import com.reminiscence.article.message.custom_message.LoverResponseMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,21 +17,44 @@ import org.springframework.web.bind.annotation.*;
 public class LoverController {
 
     private final LoverService loverService;
-    @PostMapping("/image")
-    public ResponseEntity<Void> writeLoverImageArticle(@AuthenticationPrincipal UserDetail userDetail, @RequestBody LoverRequestDto requestDto){
-        if(loverService.writeLoverImageArticle(userDetail.getMember().getId(),requestDto.getId())){
-            return new ResponseEntity<>(HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+
+    /**
+     *
+     * @param
+     * userDetail : 로그인한 사용자의 정보를 담고 있는 객체
+     * @param
+     * articleId
+     *      id : 좋아요를 누른 게시글의 id
+     * @return
+     * ResponseEntity<Response> : 좋아요 추가 완료 메세지
+     * @Exception
+     *  NOT_FOUND_IMAGE_ARTICLE : 존재하지 않는 게시글을 좋아요를 누른 경우
+     *
+     */
+    @PostMapping("/image/{articleId}")
+    public ResponseEntity<Response> writeLoverImageArticle(@AuthenticationPrincipal UserDetail userDetail, @PathVariable("articleId") Long articleId){
+        loverService.writeLoverImageArticle(userDetail.getMember().getId(),articleId);
+        return new ResponseEntity<>(Response.of(LoverResponseMessage.LOVER_CLICK_SUCCESS),HttpStatus.OK);
     }
 
-    @DeleteMapping("/image")
-    public ResponseEntity<Void> deleteLoverImageArticle(@AuthenticationPrincipal UserDetail userDetail ,@RequestBody LoverRequestDto requestDto){
-        if(loverService.deleteLoverImageArticle(userDetail.getMember().getId(),requestDto.getId())) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+
+    /**
+     *
+     * @param
+     * userDetail : 로그인한 사용자의 정보를 담고 있는 객체
+     * @param
+     * articleId
+     *      id : 좋아요를 눌렀던 게시글의 id
+     * @return
+     * ResponseEntity<Response> : 좋아요 취소 완료 메세지
+     * @Exception
+     *  NOT_FOUND_LOVER : 존재하지 않는 좋아요를 취소하려는 경우
+     *
+     */
+    @DeleteMapping("/image/{articleId}")
+    public ResponseEntity<Response> deleteLoverImageArticle(@AuthenticationPrincipal UserDetail userDetail , @PathVariable("articleId") Long articleId){
+        loverService.deleteLoverImageArticle(userDetail.getMember().getId(),articleId);
+        return new ResponseEntity<>(Response.of(LoverResponseMessage.LOVER_CANCEL_MESSAGE), HttpStatus.OK);
+
     }
 }

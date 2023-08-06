@@ -15,16 +15,16 @@ operation::NoticeIntegrationTest/writeNoticeArticleLowerSubjectFailTest[snippets
 [[Notice-수정-API]]
 
 === Notice 수정 API
-operation::NoticeIntegrationTest/modifyNoticeArticleSuccessTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+operation::NoticeIntegrationTest/modifyNoticeArticleSuccessTest[snippets='http-request,request-headers,request-fields,path-parameters,http-response,response-fields']
 
 === Notice 수정 API(일반 사용자 시도 시)
-operation::NoticeIntegrationTest/modifyNoticeArticleAuthFailTest[snippets='http-request,request-headers,request-fields,http-response']
+operation::NoticeIntegrationTest/modifyNoticeArticleAuthFailTest[snippets='http-request,request-headers,request-fields,path-parameters,http-response']
 
 === Notice 수정 API(글이 짧을 경우)
-operation::NoticeIntegrationTest/modifyNoticeArticleLowerSubjectFailTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+operation::NoticeIntegrationTest/modifyNoticeArticleLowerSubjectFailTest[snippets='http-request,request-headers,request-fields,path-parameters,http-response,response-fields']
 
 === Notice 수정 API(없는 번호인 경우)
-operation::NoticeIntegrationTest/modifyNoticeArticleNotExistsIdFailTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+operation::NoticeIntegrationTest/modifyNoticeArticleNotExistsIdFailTest[snippets='http-request,request-headers,request-fields,path-parameters,http-response,response-fields']
 
 [[Notice-조회-API]]
 

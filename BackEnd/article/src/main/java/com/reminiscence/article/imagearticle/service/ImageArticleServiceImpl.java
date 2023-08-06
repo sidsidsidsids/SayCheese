@@ -1,5 +1,6 @@
 package com.reminiscence.article.imagearticle.service;
 
+import com.reminiscence.article.config.auth.UserDetail;
 import com.reminiscence.article.domain.Image;
 import com.reminiscence.article.domain.ImageArticle;
 import com.reminiscence.article.domain.Member;
@@ -44,42 +45,72 @@ public class ImageArticleServiceImpl implements ImageArticleService {
 
 
     @Override
-    public List<ImageArticleListResponseDto> getHotImageArticleList() {
+    public List<ImageArticleListResponseDto> getHotImageArticleList(UserDetail userDetail) {
         PageRequest page = PageRequest.of(0, 10, Sort.Direction.DESC, "lover");
-        return getImageArticleList(page);
+        if(userDetail != null){
+            return getMemberImageArticleList(page, userDetail.getMember().getId());
+        }else{
+            return getNonMemberImageArticleList(page);
+        }
     }
 
     @Override
-    public List<ImageArticleListResponseDto> getTagImageArticleList(Long tagId) {
+    public List<ImageArticleListResponseDto> getTagImageArticleList(Long tagId, UserDetail userDetail) {
         PageRequest page = PageRequest.of(0, 10, Sort.Direction.DESC, "lover");
-        return getTagImageArticleList(page, tagId);
+        if(userDetail != null) {
+            return getMemberTagImageArticleList(page, tagId, userDetail.getMember().getId());
+        }else{
+            return getNonTagImageArticleList(page, tagId);
+        }
     }
 
     @Override
-    public List<ImageArticleListResponseDto> getRandomTagImageArticleList() {
+    public List<ImageArticleListResponseDto> getRandomTagImageArticleList(UserDetail userDetail) {
         Optional<Tag> randomTag = tagRepository.findRandomTag();
         randomTag.orElseThrow(()->
                 new ImageArticleException(ImageArticleExceptionMessage.NOT_FOUND_IMAGE_TAG));
 
+        Long tagId = randomTag.get().getId();
         PageRequest page = PageRequest.of(0, 10, Sort.Direction.DESC, "random");
-        return getTagImageArticleList(page, randomTag.get().getId());
+        if(userDetail != null) {
+            return getMemberTagImageArticleList(page, tagId, userDetail.getMember().getId());
+        }else{
+            return getNonTagImageArticleList(page, tagId);
+        }
     }
 
     @Override
-    public List<ImageArticleListResponseDto> getRecentImageArticleList() {
+    public List<ImageArticleListResponseDto> getRecentImageArticleList(UserDetail userDetail) {
         PageRequest page = PageRequest.of(0, 10, Sort.Direction.DESC, "createdDate");
-        return getImageArticleList(page);
+        List<ImageArticleListResponseDto> imageArticleList;
+        if(userDetail != null){
+            imageArticleList = getMemberImageArticleList(page, userDetail.getMember().getId());
+        }else{
+            imageArticleList = getNonMemberImageArticleList(page);
+        }
+        return imageArticleList;
     }
 
     @Override
-    public List<ImageArticleListResponseDto> getRandomImageArticleList() {
+    public List<ImageArticleListResponseDto> getRandomImageArticleList(UserDetail userDetail) {
         PageRequest page = PageRequest.of(0, 10, Sort.Direction.DESC, "random");
-        return getImageArticleList(page);
+        List<ImageArticleListResponseDto> imageArticleList;
+        if(userDetail != null){
+            imageArticleList = getMemberImageArticleList(page, userDetail.getMember().getId());
+        }else{
+            imageArticleList = getNonMemberImageArticleList(page);
+        }
+        return imageArticleList;
     }
 
     @Override
-    public ImageArticleDetailResponseDto getImageArticleDetail(Long articleId){
-        Optional<ImageArticleDetailResponseDto> findImageArticle = imageArticleRepository.findImageArticleDetailById(articleId);
+    public ImageArticleDetailResponseDto getImageArticleDetail(Long articleId,UserDetail userDetail){
+        Optional<ImageArticleDetailResponseDto> findImageArticle;
+        if(userDetail != null){
+            findImageArticle = imageArticleRepository.findMemberImageArticleDetailById(articleId, userDetail.getMember().getId());
+        }else{
+            findImageArticle = imageArticleRepository.findNonMemberImageArticleDetailById(articleId);
+        }
         findImageArticle.orElseThrow(()->
                 new ImageArticleException(ImageArticleExceptionMessage.NOT_FOUND_IMAGE_ARTICLE));
 
@@ -114,9 +145,9 @@ public class ImageArticleServiceImpl implements ImageArticleService {
     @Override
     public void deleteImageArticle(Long memberId,Long articleId) {
         Optional<ImageArticle> imageArticle = imageArticleRepository.findImageArticleOfMemberById(articleId);
-        userConfirm(memberId, imageArticle);
         imageArticle.orElseThrow(()->
                 new ImageArticleException(ImageArticleExceptionMessage.NOT_FOUND_IMAGE_ARTICLE));
+        userConfirm(memberId, imageArticle);
         loverRepository.deleteByArticleId(articleId);
         imageArticleRepository.delete(imageArticle.get());
     }
@@ -124,9 +155,9 @@ public class ImageArticleServiceImpl implements ImageArticleService {
     @Override
     public void deleteImageAndArticle(Long memberId, Long articleId) {
         Optional<ImageArticle> imageArticle = imageArticleRepository.findImageArticleOfAllById(articleId);
-        userConfirm(memberId, imageArticle);
         imageArticle.orElseThrow(()->
                 new ImageArticleException(ImageArticleExceptionMessage.NOT_FOUND_IMAGE_ARTICLE));
+        userConfirm(memberId, imageArticle);
         loverRepository.deleteByArticleId(articleId);
         imageArticleRepository.delete(imageArticle.get());
         imageOwnerRepository.deleteByImageIdAndMemberId(imageArticle.get().getImage().getId(), imageArticle.get().getMember().getId());
@@ -139,15 +170,27 @@ public class ImageArticleServiceImpl implements ImageArticleService {
         }
     }
 
-    private List<ImageArticleListResponseDto> getImageArticleList(Pageable page){
-        Optional<List<ImageArticleListResponseDto>> imageArticles = imageArticleRepository.findCommonImageArticles(page);
+    private List<ImageArticleListResponseDto> getMemberImageArticleList(Pageable page, Long memberId){
+        Optional<List<ImageArticleListResponseDto>> imageArticles = imageArticleRepository.findMemberCommonImageArticles(page, memberId);
+        imageArticles.orElseThrow(()->
+                new ImageArticleException(ImageArticleExceptionMessage.NOT_FOUND_IMAGE_ARTICLE_LIST));
+        return imageArticles.get();
+    }
+    private List<ImageArticleListResponseDto> getNonMemberImageArticleList(Pageable page){
+        Optional<List<ImageArticleListResponseDto>> imageArticles = imageArticleRepository.findNonMemberCommonImageArticles(page);
         imageArticles.orElseThrow(()->
                 new ImageArticleException(ImageArticleExceptionMessage.NOT_FOUND_IMAGE_ARTICLE_LIST));
         return imageArticles.get();
     }
 
-    private List<ImageArticleListResponseDto> getTagImageArticleList(Pageable page , Long tagId){
-        Optional<List<ImageArticleListResponseDto>> imageArticles = imageArticleRepository.findTagImageArticles(tagId,page);
+    private List<ImageArticleListResponseDto> getMemberTagImageArticleList(Pageable page , Long tagId, Long memberId){
+        Optional<List<ImageArticleListResponseDto>> imageArticles = imageArticleRepository.findMemberTagImageArticles(tagId,page, memberId);
+        imageArticles.orElseThrow(()->
+                new ImageArticleException(ImageArticleExceptionMessage.NOT_FOUND_IMAGE_ARTICLE_LIST));
+        return imageArticles.get();
+    }
+    private List<ImageArticleListResponseDto> getNonTagImageArticleList(Pageable page , Long tagId){
+        Optional<List<ImageArticleListResponseDto>> imageArticles = imageArticleRepository.findNonMemberTagImageArticles(tagId,page);
         imageArticles.orElseThrow(()->
                 new ImageArticleException(ImageArticleExceptionMessage.NOT_FOUND_IMAGE_ARTICLE_LIST));
         return imageArticles.get();

@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -26,6 +26,8 @@ public class ImageArticleController {
 
     /**
      * 게시글 목록 무작위 조회 API
+     * @param
+     *  userDetail : 로그인한 사용자 정보
      * @Return
      * ImageArticleListResponseDto : 이미지 게시글 상세 정보
      *  imageLink : 이미지 링크
@@ -34,12 +36,14 @@ public class ImageArticleController {
      *  author : 게시글 작성자
      */
     @GetMapping("/list/random")
-    public ResponseEntity<List<ImageArticleListResponseDto>> readRandomImageArticleList(){
-        List<ImageArticleListResponseDto> randomImageArticleList = imageService.getRandomImageArticleList();
+    public ResponseEntity<List<ImageArticleListResponseDto>> readRandomImageArticleList(@AuthenticationPrincipal UserDetail userDetail){
+        List<ImageArticleListResponseDto> randomImageArticleList = imageService.getRandomImageArticleList(userDetail);
         return new ResponseEntity<>(randomImageArticleList, HttpStatus.OK);
     }
     /**
      * 게시글 목록 좋아요 내림차순 조회 API
+     * @param
+     *  userDetail : 로그인한 사용자 정보
      * @Return
      * ImageArticleListResponseDto : 이미지 게시글 상세 정보
      *  imageLink : 이미지 링크
@@ -48,12 +52,14 @@ public class ImageArticleController {
      *  author : 게시글 작성자
      */
     @GetMapping("/list/hot")
-    public ResponseEntity<List<ImageArticleListResponseDto>> readHotImageArticleList() {
-        List<ImageArticleListResponseDto> hotImageArticleList = imageService.getHotImageArticleList();
+    public ResponseEntity<List<ImageArticleListResponseDto>> readHotImageArticleList(@AuthenticationPrincipal UserDetail userDetail) {
+        List<ImageArticleListResponseDto> hotImageArticleList = imageService.getHotImageArticleList(userDetail);
         return new ResponseEntity<>(hotImageArticleList, HttpStatus.OK);
     }
     /**
      * 게시글 목록 좋아요 최신순 조회 API
+     * @param
+     *  userDetail : 로그인한 사용자 정보
      * @Return
      * ImageArticleListResponseDto : 이미지 게시글 상세 정보
      *  imageLink : 이미지 링크
@@ -62,13 +68,15 @@ public class ImageArticleController {
      *  author : 게시글 작성자
      */
     @GetMapping("/list/recent")
-    public ResponseEntity<List<ImageArticleListResponseDto>> readRecentImageArticleList(){
-        List<ImageArticleListResponseDto> recentImageArticleList = imageService.getRecentImageArticleList();
+    public ResponseEntity<List<ImageArticleListResponseDto>> readRecentImageArticleList(@AuthenticationPrincipal UserDetail userDetail) {
+        List<ImageArticleListResponseDto> recentImageArticleList = imageService.getRecentImageArticleList(userDetail);
         return new ResponseEntity<>(recentImageArticleList, HttpStatus.OK);
     }
 
     /**
      * 게시글 목록 무작위 태그 조회 API
+     * @param
+     *  userDetail : 로그인한 사용자 정보
      * @Return
      * ImageArticleListResponseDto : 이미지 게시글 상세 정보
      *  imageLink : 이미지 링크
@@ -77,14 +85,16 @@ public class ImageArticleController {
      *  author : 게시글 작성자
      */
     @GetMapping("/list/tag")
-    public ResponseEntity<List<ImageArticleListResponseDto>> readRandomTagImageArticleList(){
-        List<ImageArticleListResponseDto> randomTagImageArticleList = imageService.getRandomTagImageArticleList();
+    public ResponseEntity<List<ImageArticleListResponseDto>> readRandomTagImageArticleList(@AuthenticationPrincipal UserDetail userDetail) {
+        List<ImageArticleListResponseDto> randomTagImageArticleList = imageService.getRandomTagImageArticleList(userDetail);
         return new ResponseEntity<>(randomTagImageArticleList, HttpStatus.OK);
     }
     /**
      * 게시글 목록 태그기준 조회 API
      * @param
      * tagId : 태그 ID
+     * @param
+     *  userDetail : 로그인한 사용자 정보
      * @Return
      * ImageArticleListResponseDto : 이미지 게시글 상세 정보
      *  imageLink : 이미지 링크
@@ -94,8 +104,8 @@ public class ImageArticleController {
      */
     @GetMapping("/list/tag/{tagId}")
     public ResponseEntity<List<ImageArticleListResponseDto>> readTagImageArticleList(
-            @PathVariable("tagId") Long tagId) {
-        List<ImageArticleListResponseDto> tagImageArticleList = imageService.getTagImageArticleList(tagId);
+            @PathVariable("tagId") Long tagId, @AuthenticationPrincipal UserDetail userDetail) {
+        List<ImageArticleListResponseDto> tagImageArticleList = imageService.getTagImageArticleList(tagId,userDetail);
         return new ResponseEntity<>(tagImageArticleList, HttpStatus.OK);
     }
 
@@ -115,8 +125,8 @@ public class ImageArticleController {
      */
     @GetMapping("/{articleId}")
     public ResponseEntity<ImageArticleDetailResponseDto> readImageArticleDetail(
-            @PathVariable("articleId") Long articleId) {
-        ImageArticleDetailResponseDto  imageArticleDetail = imageService.getImageArticleDetail(articleId);
+            @PathVariable("articleId") Long articleId, @AuthenticationPrincipal UserDetail userDetail){
+        ImageArticleDetailResponseDto  imageArticleDetail = imageService.getImageArticleDetail(articleId, userDetail);
         return new ResponseEntity<>(imageArticleDetail, HttpStatus.OK);
     }
 
@@ -133,7 +143,7 @@ public class ImageArticleController {
     @PostMapping
     public ResponseEntity<Response> writeImageArticle(
             @AuthenticationPrincipal UserDetail userDetail,
-            @RequestBody WriteImageArticleRequestDto requestDto) {
+            @RequestBody @Valid WriteImageArticleRequestDto requestDto) {
         imageService.writeImageArticle(userDetail.getMember().getId(), requestDto.getImageId());
         return new ResponseEntity<>(Response.of(ImageArticleResponseMessage.IMAGE_ARTICLE_WRITE_SUCCESS), HttpStatus.OK);
     }
@@ -151,7 +161,7 @@ public class ImageArticleController {
     @DeleteMapping
     public ResponseEntity<Response> deleteOnlyImageArticle(
             @AuthenticationPrincipal UserDetail userDetail,
-            @RequestBody DeleteImageArticleRequestDto requestDto){
+            @RequestBody @Valid DeleteImageArticleRequestDto requestDto){
         imageService.deleteImageArticle(userDetail.getMember().getId(),requestDto.getArticleId());
         return new ResponseEntity<>(Response.of(ImageArticleResponseMessage.IMAGE_ARTICLE_DELETE_SUCCESS),HttpStatus.OK);
     }
@@ -169,7 +179,7 @@ public class ImageArticleController {
     @DeleteMapping("/all")
     public ResponseEntity<Response> deleteImageAndArticle(
             @AuthenticationPrincipal UserDetail userDetail,
-            @RequestBody DeleteImageArticleRequestDto requestDto){
+            @RequestBody @Valid DeleteImageArticleRequestDto requestDto){
         imageService.deleteImageAndArticle(userDetail.getMember().getId(),requestDto.getArticleId());
         return new ResponseEntity<>(Response.of(ImageArticleResponseMessage.IMAGE_ARTICLE_IMAGE_DELETE_SUCCESS),HttpStatus.OK);
     }

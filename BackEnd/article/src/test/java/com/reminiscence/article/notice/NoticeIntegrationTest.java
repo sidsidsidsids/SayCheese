@@ -3,44 +3,26 @@ package com.reminiscence.article.notice;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.reminiscence.article.config.SecurityConfig;
 import com.reminiscence.article.domain.Member;
-import com.reminiscence.article.filter.JWTAuthorizationFilter;
 import com.reminiscence.article.member.repository.MemberRepository;
+import com.reminiscence.article.notice.dummy.DummyNoticeArticleRequestDto;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcBuilderCustomizer;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.restdocs.headers.HeaderDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.restdocs.payload.PayloadDocumentation;
-import org.springframework.restdocs.snippet.Snippet;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.sql.DataSource;
-
-import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
@@ -48,7 +30,6 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -56,7 +37,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -194,7 +175,7 @@ public class NoticeIntegrationTest {
         DummyNoticeArticleRequestDto dummyNoticeArticleRequestDto=builder.build();
         HttpHeaders headers=new HttpHeaders();
         headers.add("Authorization","Bearer "+adminToken);
-        mvc.perform(put("/api/article/notice/2")
+        mvc.perform(RestDocumentationRequestBuilders.put("/api/article/notice/{noticeArticleId}",2)
                         .headers(headers)
                         .content(objectMapper.writeValueAsString(dummyNoticeArticleRequestDto))
                         .contentType("application/json"))
@@ -203,6 +184,9 @@ public class NoticeIntegrationTest {
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                         requestHeaders(
                                 headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                        ),
+                        pathParameters(
+                                parameterWithName("noticeArticleId").description("공지 글 번호")
                         ),
                         requestFields(
                                 fieldWithPath("subject").type(JsonFieldType.STRING).description("제목").attributes(key("constraints").value("제목은 최소 3글자, 20글자 이하")),
@@ -224,7 +208,7 @@ public class NoticeIntegrationTest {
         DummyNoticeArticleRequestDto dummyNoticeArticleRequestDto=builder.build();
         HttpHeaders headers=new HttpHeaders();
         headers.add("Authorization","Bearer "+memberToken);
-        mvc.perform(put("/api/article/notice/2")
+        mvc.perform(RestDocumentationRequestBuilders.put("/api/article/notice/{noticeArticleId}",2)
                         .headers(headers)
                         .content(objectMapper.writeValueAsString(dummyNoticeArticleRequestDto))
                         .contentType("application/json"))
@@ -232,6 +216,9 @@ public class NoticeIntegrationTest {
                         .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                                 requestHeaders(
                                         headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                                ),
+                                pathParameters(
+                                        parameterWithName("noticeArticleId").description("공지 글 번호")
                                 ),
                                 requestFields(
                                         fieldWithPath("subject").type(JsonFieldType.STRING).description("제목").attributes(key("constraints").value("제목은 최소 3글자, 20글자 이하")),
@@ -251,7 +238,7 @@ public class NoticeIntegrationTest {
         DummyNoticeArticleRequestDto dummyNoticeArticleRequestDto=builder.build();
         HttpHeaders headers=new HttpHeaders();
         headers.add("Authorization","Bearer "+adminToken);
-        mvc.perform(put("/api/article/notice/2")
+        mvc.perform(RestDocumentationRequestBuilders.put("/api/article/notice/{noticeArticleId}",2)
                         .headers(headers)
                         .content(objectMapper.writeValueAsString(dummyNoticeArticleRequestDto))
                         .contentType("application/json"))
@@ -260,6 +247,9 @@ public class NoticeIntegrationTest {
                         .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                                 requestHeaders(
                                         headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                                ),
+                                pathParameters(
+                                        parameterWithName("noticeArticleId").description("공지 글 번호")
                                 ),
                                 requestFields(
                                         fieldWithPath("subject").type(JsonFieldType.STRING).description("제목").attributes(key("constraints").value("제목은 최소 3글자, 20글자 이하")),
@@ -282,7 +272,7 @@ public class NoticeIntegrationTest {
         DummyNoticeArticleRequestDto dummyNoticeArticleRequestDto=builder.build();
         HttpHeaders headers=new HttpHeaders();
         headers.add("Authorization","Bearer "+adminToken);
-        mvc.perform(put("/api/article/notice/10000")
+        mvc.perform(RestDocumentationRequestBuilders.put("/api/article/notice/{noticeArticleId}",10000)
                         .headers(headers)
                         .content(objectMapper.writeValueAsString(dummyNoticeArticleRequestDto))
                         .contentType("application/json"))
@@ -291,6 +281,9 @@ public class NoticeIntegrationTest {
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                         requestHeaders(
                                 headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                        ),
+                        pathParameters(
+                                parameterWithName("noticeArticleId").description("공지 글 번호")
                         ),
                         requestFields(
                                 fieldWithPath("subject").type(JsonFieldType.STRING).description("제목").attributes(key("constraints").value("제목은 최소 3글자, 20글자 이하")),

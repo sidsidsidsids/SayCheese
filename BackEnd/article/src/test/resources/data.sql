@@ -272,26 +272,26 @@ insert into tag(name, created_date) values
 ('성숙하게', now());
 
 -- Test Image Data
-insert into Image(link, type, created_date) values
-('www.naver.com', 'png', now()),
-('www.daum.com', 'jpg', now()),
-('www.google.com', 'jpg', now()),
-('link1', 'jpg', now()),
-('link2', 'jpg', now()),
-('link3', 'jpg', now()),
-('link4', 'jpg', now()),
-('link5', 'jpg', now()),
-('link6', 'jpg', now()),
-('link7', 'jpg', now()),
-('link8', 'jpg', now()),
-('link9', 'jpg', now()),
-('link10', 'jpg', now()),
-('link11', 'jpg', now()),
-('link12', 'jpg', now()),
-('link13', 'jpg', now()),
-('link14', 'jpg', now()),
-('link15', 'jpg', now()),
-('link16', 'jpg', now());
+insert into Image(link, type, name, created_date) values
+('www.naver.com', 'png', 'www.naver.com', now()),
+('www.daum.com', 'jpg', 'www.daum.com', now()),
+('www.google.com', 'jpg', 'www.google.com', now()),
+('link1', 'jpg', 'link1', now()),
+('link2', 'jpg', 'link2', now()),
+('link3', 'jpg', 'link3', now()),
+('link4', 'jpg', 'link4', now()),
+('link5', 'jpg', 'link5', now()),
+('link6', 'jpg', 'link6', now()),
+('link7', 'jpg', 'link7', now()),
+('link8', 'jpg', 'link8', now()),
+('link9', 'jpg', 'link9', now()),
+('link10', 'jpg', 'link10', now()),
+('link11', 'jpg', 'link11', now()),
+('link12', 'jpg', 'link12', now()),
+('link13', 'jpg', 'link13', now()),
+('link14', 'jpg', 'link14', now()),
+('link15', 'jpg', 'link15', now()),
+('link16', 'png', 'link16', now());
 
 -- Test ImageTag Data
 insert into Image_Tag(image_id, tag_id) values
@@ -384,4 +384,28 @@ insert into lover(member_id, article_id) values
 (1, 57),
 (2, 57);
 
+-- Test Frame Data
+insert into article(member_id, type, created_date) values
+(2, 'F', now()),
+(2, 'F', now()),
+(2, 'F', now()),
+(2, 'F', now()),
+(2, 'F', now()),
+(2, 'F', now());
+
+insert into frame(created_date,frame_specification,link,name,open_yn,type) values
+(now(),'A','www.naver.com','프레임 이름이에요1','Y','jpg'),
+(now(),'A','www.naver.com','프레임 이름이에요2','Y','jpg'),
+(now(),'A','www.naver.com','프레임 이름이에요3','Y','jpg'),
+(now(),'A','www.naver.com','프레임 이름이에요4','Y','jpg'),
+(now(),'A','www.naver.com','프레임 이름이에요5','Y','jpg'),
+(now(),'A','www.naver.com','프레임 이름이에요6','Y','jpg');
+
+insert into frame_article(subject,id, frame_id) values
+('제가 만든 거에요1', 68, 1),
+('제가 만든 거에요2', 69, 2),
+('제가 만든 거에요3', 70, 3),
+('제가 만든 거에요4', 71, 4),
+('제가 만든 거에요5', 72, 5),
+('제가 만든 거에요1', 73, 6);
 

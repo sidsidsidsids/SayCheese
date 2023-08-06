@@ -21,12 +21,22 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 public class SecurityConfig {
     private final Environment env;
     private final MemberRepository memberRepository;
+    private final CorsConfig corsConfig;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.addFilter(corsConfig.corsFilter());
         http.addFilterBefore(new JWTAuthorizationFilter(env,memberRepository), BasicAuthenticationFilter.class);
         http.authorizeRequests().antMatchers(HttpMethod.GET,"/api/article/notice").permitAll()
                 .and()
+                .authorizeRequests().antMatchers("/actuator/**").access("hasRole('ADMIN')")
+                .and()
                 .authorizeRequests().antMatchers("/api/article/notice").access("hasRole('ADMIN')")
+                .and()
+                .authorizeRequests().antMatchers(HttpMethod.POST,"/api/frame/**").authenticated()
+                .and()
+                .authorizeRequests().antMatchers(HttpMethod.POST,"/api/article/frame/**").authenticated()
+                .and()
+                .authorizeRequests().antMatchers(HttpMethod.DELETE,"/api/article/frame/**").authenticated()
                 .and()
                 .authorizeRequests().antMatchers(HttpMethod.GET,"/api/article/notice/**").permitAll()
                 .and()
@@ -34,9 +44,15 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests().antMatchers(HttpMethod.GET,"/api/faq/**").permitAll()
                 .and()
-                .authorizeRequests().antMatchers("/api/image/**").permitAll()
+                .authorizeRequests().antMatchers(HttpMethod.GET,"/api/article/image/**").permitAll()
                 .and()
-                .authorizeRequests().antMatchers("/api/article/image").permitAll()
+                .authorizeRequests().antMatchers(HttpMethod.POST,"/api/article/image/**").authenticated()
+                .and()
+                .authorizeRequests().antMatchers(HttpMethod.DELETE,"/api/article/image/**").authenticated()
+                .and()
+                .authorizeRequests().antMatchers("/api/image/**").authenticated()
+                .and()
+                .authorizeRequests().antMatchers("/api/article/lover/**").authenticated()
                 .and()
                 .authorizeRequests().antMatchers("/api/article/**").authenticated()
                 .and()

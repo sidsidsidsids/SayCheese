@@ -4,6 +4,7 @@ import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.JPAExpressions;
@@ -29,11 +30,36 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
     public ImageArticleRepositoryImpl(EntityManager entityManager){
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
-
     @Override
-    public Optional<List<ImageArticleListResponseDto>> findCommonImageArticles(Pageable page) {
+    public Optional<List<ImageArticleListResponseDto>> findMemberCommonImageArticles(Pageable page, Long memberId) {
         return Optional.ofNullable(queryFactory
                 .select(Projections.constructor(ImageArticleListResponseDto.class,
+                        QImageArticle.imageArticle.id.as("articleId"),
+                        QImage.image.link.as("imageLink"),
+                        ExpressionUtils.as(JPAExpressions.select(count(QLover.lover.id))
+                                .from(QLover.lover)
+                                .where(QLover.lover.article.id.eq(QImageArticle.imageArticle.id)), "loverCnt"),
+                        QImageArticle.imageArticle.createdDate.as("createdDate"),
+                        QImageArticle.imageArticle.member.nickname.as("nickname"),
+                        ExpressionUtils.as(JPAExpressions.select(QLover.lover.id)
+                                .from(QLover.lover)
+                                .where(QLover.lover.article.id.eq(QImageArticle.imageArticle.id)
+                                        ,(loverMemberIdEq(memberId)))
+                                .limit(1), "loverYn")
+                ))
+                .from(QImageArticle.imageArticle)
+                .join(QImageArticle.imageArticle.member, QMember.member)
+                .join(QImageArticle.imageArticle.image, QImage.image)
+                .orderBy(getOrderSpecifiers(page))
+                .limit(page.getPageSize())
+                .fetch());
+    }
+
+    @Override
+    public Optional<List<ImageArticleListResponseDto>> findNonMemberCommonImageArticles(Pageable page) {
+        return Optional.ofNullable(queryFactory
+                .select(Projections.constructor(ImageArticleListResponseDto.class,
+                        QImageArticle.imageArticle.id.as("articleId"),
                         QImage.image.link.as("imageLink"),
                         ExpressionUtils.as(JPAExpressions.select(count(QLover.lover.id))
                                 .from(QLover.lover)
@@ -50,9 +76,38 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
     }
 
     @Override
-    public Optional<List<ImageArticleListResponseDto>> findTagImageArticles(Long tagId, Pageable page) {
+    public Optional<List<ImageArticleListResponseDto>> findMemberTagImageArticles(Long tagId, Pageable page, Long memberId) {
         return Optional.ofNullable(queryFactory
                 .select(Projections.constructor(ImageArticleListResponseDto.class,
+                        QImageArticle.imageArticle.id.as("articleId"),
+                        QImage.image.link.as("imageLink"),
+                        ExpressionUtils.as(JPAExpressions.select(count(QLover.lover.id))
+                                .from(QLover.lover)
+                                .where(QLover.lover.article.id.eq(QImageArticle.imageArticle.id)), "loverCnt"),
+                        QImageArticle.imageArticle.createdDate.as("createdDate"),
+                        QImageArticle.imageArticle.member.nickname.as("nickname"),
+                        ExpressionUtils.as(JPAExpressions.select(QLover.lover.id)
+                                .from(QLover.lover)
+                                .where(QLover.lover.article.id.eq(QImageArticle.imageArticle.id)
+                                        ,(loverMemberIdEq(memberId)))
+                                .limit(1), "loverYn")
+                ))
+                .from(QImageArticle.imageArticle)
+                .join(QImageArticle.imageArticle.member, QMember.member)
+                .join(QImageArticle.imageArticle.image, QImage.image)
+                .join(QImage.image.imageTags, QImageTag.imageTag)
+                .join(QImageTag.imageTag.tag, QTag.tag)
+                .where(tagIdEq(tagId))
+                .orderBy(getOrderSpecifiers(page))
+                .limit(page.getPageSize())
+                .fetch());
+    }
+
+    @Override
+    public Optional<List<ImageArticleListResponseDto>> findNonMemberTagImageArticles(Long tagId, Pageable page) {
+        return Optional.ofNullable(queryFactory
+                .select(Projections.constructor(ImageArticleListResponseDto.class,
+                        QImageArticle.imageArticle.id.as("articleId"),
                         QImage.image.link.as("imageLink"),
                         ExpressionUtils.as(JPAExpressions.select(count(QLover.lover.id))
                                 .from(QLover.lover)
@@ -65,14 +120,37 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
                 .join(QImageArticle.imageArticle.image, QImage.image)
                 .join(QImage.image.imageTags, QImageTag.imageTag)
                 .join(QImageTag.imageTag.tag, QTag.tag)
-                .where(QTag.tag.id.eq(tagId))
+                .where(tagIdEq(tagId))
                 .orderBy(getOrderSpecifiers(page))
                 .limit(page.getPageSize())
                 .fetch());
     }
 
     @Override
-    public Optional<ImageArticleDetailResponseDto> findImageArticleDetailById(Long id) {
+    public Optional<ImageArticleDetailResponseDto> findMemberImageArticleDetailById(Long articleId, Long memberId) {
+        return Optional.ofNullable(queryFactory
+                .select(Projections.constructor(ImageArticleDetailResponseDto.class,
+                        QMember.member.id.as("memberId"),
+                        QImage.image.id.as("imageId"),
+                        QMember.member.nickname.as("author"),
+                        QImageArticle.imageArticle.createdDate.as("createdDate"),
+                        QImage.image.link.as("imgLink"),
+                        ExpressionUtils.as(JPAExpressions.select(count(QLover.lover.id))
+                                .from(QLover.lover)
+                                .where(QLover.lover.article.id.eq(articleId)),"loverCnt"),
+                        ExpressionUtils.as(JPAExpressions.select(QLover.lover.id)
+                                .from(QLover.lover)
+                                .where(QLover.lover.article.id.eq(articleId),loverMemberIdEq(memberId))
+                                .limit(1),"loverYn")))
+                .from(QImageArticle.imageArticle)
+                .join(QImageArticle.imageArticle.member, QMember.member)
+                .join(QImageArticle.imageArticle.image, QImage.image)
+                .where(QImageArticle.imageArticle.id.eq(articleId))
+                .fetchOne());
+    }
+
+    @Override
+    public Optional<ImageArticleDetailResponseDto> findNonMemberImageArticleDetailById(Long articleId) {
         return Optional.ofNullable(queryFactory
                 .select(Projections.constructor(ImageArticleDetailResponseDto.class,
                         QMember.member.id.as("memberId"),
@@ -82,14 +160,11 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
                         QImage.image.link.as("imgLink"),
                         ExpressionUtils.as(JPAExpressions.select(count(QLover.lover.id))
                                 .from(QLover.lover)
-                                .where(QLover.lover.article.id.eq(id)),"loverCnt"),
-                        ExpressionUtils.as(JPAExpressions.select(count(QLover.lover.id))
-                                .from(QLover.lover)
-                                .where(QLover.lover.article.id.eq(id),QLover.lover.memberId.eq(QMember.member.id)),"loverYn")))
+                                .where(loverArticleIdEq(articleId)),"loverCnt")))
                 .from(QImageArticle.imageArticle)
                 .join(QImageArticle.imageArticle.member, QMember.member)
                 .join(QImageArticle.imageArticle.image, QImage.image)
-                .where(QImageArticle.imageArticle.id.eq(id))
+                .where(imageArticleIdEq(articleId))
                 .fetchOne());
     }
 
@@ -100,7 +175,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
                 .join(QImageArticle.imageArticle.image, QImage.image).fetchJoin()
                 .join(QImage.image.imageTags, QImageTag.imageTag).fetchJoin()
                 .join(QImageTag.imageTag.tag, QTag.tag).fetchJoin()
-                .where(QImageArticle.imageArticle.id.eq(id))
+                .where(imageArticleIdEq(id))
                 .fetchOne());
     }
 
@@ -108,7 +183,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
     public Optional<ImageArticle> findImageArticleOfMemberById(Long id) {
         return Optional.ofNullable(queryFactory.selectFrom(QImageArticle.imageArticle)
                 .innerJoin(QImageArticle.imageArticle.member).fetchJoin()
-                .where(QImageArticle.imageArticle.id.eq(id))
+                .where(imageArticleIdEq(id))
                 .fetchOne());
     }
 
@@ -141,5 +216,19 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
             return ORDERS.toArray(new OrderSpecifier[ORDERS.size()]);
         }
         return null;
+    }
+
+    private BooleanExpression loverMemberIdEq(Long memberId){
+        return QLover.lover.memberId.eq(memberId);
+    }
+    private BooleanExpression loverArticleIdEq(Long articleId){
+        return QLover.lover.article.id.eq(articleId);
+    }
+    private BooleanExpression tagIdEq(Long tagId) {
+        return QTag.tag.id.eq(tagId);
+    }
+
+    private BooleanExpression imageArticleIdEq(Long imageArticleId) {
+        return QImageArticle.imageArticle.id.eq(imageArticleId);
     }
 }
