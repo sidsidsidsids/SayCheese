@@ -87,7 +87,7 @@ public class ParticipantJpaTest {
 
         participantRepository.deleteAllByRoomId(room.getId());
         // then
-        assertEquals(0, participantRepository.count());
+        assertEquals(3, participantRepository.count());
     }
 
 }

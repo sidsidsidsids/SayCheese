@@ -81,7 +81,7 @@ public class ParticipantIntegrationTest {
     public void writeParticipantSuccessTest() throws Exception{
         DummyWriteParticipantRequestDto.Builder builder = new DummyWriteParticipantRequestDto.Builder();
         DummyWriteParticipantRequestDto requestDto = builder.roomCode("sessionA")
-                .ownerYn("N")
+                .ownerYn('N')
                 .build();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+ guestToken);
@@ -106,7 +106,7 @@ public class ParticipantIntegrationTest {
         DummyWriteParticipantRequestDto.Builder builder = new DummyWriteParticipantRequestDto.Builder();
         DummyWriteParticipantRequestDto requestDto =
                 builder.roomCode("testRoom")
-                .ownerYn("N")
+                .ownerYn('N')
                 .build();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+ guestToken);

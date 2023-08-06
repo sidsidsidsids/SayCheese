@@ -2,15 +2,15 @@ package com.reminiscence.room.participant.dto;
 
 public class DummyWriteParticipantRequestDto {
 
-    private String ownerYn;
+    private Character ownerYn;
     private String roomCode;
 
     public static class Builder{
-        private String ownerYn;
+        private Character ownerYn;
         private String roomCode;
 
 
-        public Builder ownerYn(String ownerYn){
+        public Builder ownerYn(Character ownerYn){
             this.ownerYn = ownerYn;
             return this;
         }
@@ -30,7 +30,7 @@ public class DummyWriteParticipantRequestDto {
         this.roomCode = builder.roomCode;
     }
 
-    public String getOwnerYn() {
+    public Character getOwnerYn() {
         return ownerYn;
     }
 
