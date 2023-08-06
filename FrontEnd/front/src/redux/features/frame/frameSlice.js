@@ -8,6 +8,7 @@ const initialState = {
   bgColor: "#000000",
   bgImg: false,
   objects: false,
+  text: false,
 };
 
 // 액션 생성 함수
@@ -49,10 +50,14 @@ const frameSlice = createSlice({
     Undecorate: (state) => {
       console.log("언데코");
     },
+    addText: (state, action) => {
+      state.text = action.payload;
+      console.log(`텍스트 추가`, state.text);
+    },
   },
 });
 
-export const { Resize, Repaint, RemoveBgImg, Decorate, Undecorate } =
+export const { Resize, Repaint, RemoveBgImg, Decorate, Undecorate, addText } =
   frameSlice.actions;
 
 export default frameSlice.reducer;
