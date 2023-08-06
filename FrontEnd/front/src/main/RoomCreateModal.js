@@ -110,7 +110,7 @@ function RoomCreateModal({ open, close }) {
             <p>
               <label>
                 <input
-                  type="checkbox"
+                  type="radio"
                   checked={isModeActive}
                   onChange={() => setIsModeActive(!isModeActive)}
                 />
@@ -118,7 +118,7 @@ function RoomCreateModal({ open, close }) {
               </label>
               <label>
                 <input
-                  type="checkbox"
+                  type="radio"
                   checked={!isModeActive}
                   onChange={() => setIsModeActive(!isModeActive)}
                 />
@@ -173,7 +173,7 @@ function RoomCreateModal({ open, close }) {
           {/* 비밀번호 설정 */}
           <div className="password-settings">
             <input
-              type="text"
+              type="password"
               placeholder="비밀번호를 입력해주세요(선택)"
               value={roomPassword}
               onChange={(event) => {
