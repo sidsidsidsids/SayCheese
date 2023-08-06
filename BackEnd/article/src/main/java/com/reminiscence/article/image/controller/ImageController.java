@@ -42,6 +42,8 @@ public class ImageController {
      * requestDto : JWT 토큰으로 인증된 사용자 정보
      *     imageLink : 이미지 링크
      *     imageName : 이미지 파일 이름
+     *     roomCode : 방 코드
+     *     tags : 태그 리스트
      * @return
      * Response : HttpStatus.OK
      */
@@ -49,7 +51,7 @@ public class ImageController {
     @PostMapping
     public ResponseEntity<Response> writeImageInfo(@AuthenticationPrincipal UserDetail userDetail,
                                               @RequestBody @Valid ImageWriteRequestDto requestDto) {
-        imageService.saveImage(userDetail, requestDto.getImageName(), requestDto.getImageLink());
+        imageService.saveImage(userDetail, requestDto);
         return new ResponseEntity<>(Response.of(ImageResponseMessage.INSERT_IMAGE_SUCCESS),HttpStatus.OK);
     }
 
