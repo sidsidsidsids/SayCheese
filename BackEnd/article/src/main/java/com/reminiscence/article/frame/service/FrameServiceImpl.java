@@ -7,5 +7,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class FrameServiceImpl implements FrameService {
+
     private final FrameRepository frameRepository;
+
+
 }

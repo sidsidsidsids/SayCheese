@@ -3,6 +3,7 @@ package com.reminiscence.article.framearticle.controller;
 import com.reminiscence.article.config.auth.UserDetail;
 import com.reminiscence.article.framearticle.dto.FrameArticleAndMemberRequestDto;
 import com.reminiscence.article.framearticle.dto.FrameArticleDeleteRequestDto;
+import com.reminiscence.article.framearticle.dto.FrameArticleListResponseDto;
 import com.reminiscence.article.framearticle.dto.FrameArticleRequestDto;
 import com.reminiscence.article.framearticle.service.FrameArticleService;
 import com.reminiscence.article.message.Response;
@@ -14,12 +15,62 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/article/frame")
 public class FrameArticleController {
     private final FrameArticleService frameArticleService;
+
+    /**
+     * 게시글 목록 무작위 조회 API
+     * @param
+     *  userDetail : 로그인한 사용자 정보
+     * @Return
+     * ImageArticleListResponseDto : 이미지 게시글 상세 정보
+     *  frameLink : 이미지 링크
+     *  loverCnt : 좋아요 수
+     *  createdDate : 게시글 작성일
+     *  author : 게시글 작성자
+     */
+    @GetMapping("/list/random")
+    public ResponseEntity<List<FrameArticleListResponseDto>> readRandomImageArticleList(@AuthenticationPrincipal UserDetail userDetail){
+        List<FrameArticleListResponseDto> randomImageArticleList = frameArticleService.getRandomFrameArticleList(userDetail);
+        return new ResponseEntity<>(randomImageArticleList, HttpStatus.OK);
+    }
+    /**
+     * 게시글 목록 좋아요 내림차순 조회 API
+     * @param
+     *  userDetail : 로그인한 사용자 정보
+     * @Return
+     * ImageArticleListResponseDto : 이미지 게시글 상세 정보
+     *  imageLink : 이미지 링크
+     *  loverCnt : 좋아요 수
+     *  createdDate : 게시글 작성일
+     *  author : 게시글 작성자
+     */
+    @GetMapping("/list/hot")
+    public ResponseEntity<List<FrameArticleListResponseDto>> readHotImageArticleList(@AuthenticationPrincipal UserDetail userDetail) {
+        List<FrameArticleListResponseDto> hotImageArticleList = frameArticleService.getHotFrameArticleList(userDetail);
+        return new ResponseEntity<>(hotImageArticleList, HttpStatus.OK);
+    }
+    /**
+     * 게시글 목록 좋아요 최신순 조회 API
+     * @param
+     *  userDetail : 로그인한 사용자 정보
+     * @Return
+     * ImageArticleListResponseDto : 이미지 게시글 상세 정보
+     *  imageLink : 이미지 링크
+     *  loverCnt : 좋아요 수
+     *  createdDate : 게시글 작성일
+     *  author : 게시글 작성자
+     */
+    @GetMapping("/list/recent")
+    public ResponseEntity<List<FrameArticleListResponseDto>> readRecentImageArticleList(@AuthenticationPrincipal UserDetail userDetail) {
+        List<FrameArticleListResponseDto> recentImageArticleList = frameArticleService.getRecentFrameArticleList(userDetail);
+        return new ResponseEntity<>(recentImageArticleList, HttpStatus.OK);
+    }
 
     /**
      * 프레임 저장
