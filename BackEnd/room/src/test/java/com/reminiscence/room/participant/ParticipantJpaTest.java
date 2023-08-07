@@ -53,6 +53,114 @@ public class ParticipantJpaTest {
         assertEquals(roomCode, findParticipant.getRoom().getRoomCode());
         assertEquals(participant.getOwnerYn(), findParticipant.getOwnerYn());
     }
+    @Test
+    @DisplayName("방장 변경 테스트")
+    public void updateRoomOwnerTest(){
+        //given
+        Long memberId = 3L;
+        String roomCode = "sessionA";
+
+        //when
+        Room room = roomRepository.findByRoomCode(roomCode).orElse(null);
+        assertNotNull(room);
+
+        Participant ownerParticipant =
+                participantRepository.findByOwnerYnAndRoomId('Y', room.getId()).orElse(null);
+        assertNotNull(ownerParticipant);
+
+        Participant curParticipant =
+                participantRepository.findByMemberIdAndRoomId(memberId, room.getId()).orElse(null);
+        assertNotNull(curParticipant);
+
+        ownerParticipant.updateOwnerYn('N');
+        curParticipant.updateOwnerYn('Y');
+        //then
+        Participant updatedOwnerParticipant =
+                participantRepository.findById(ownerParticipant.getId()).orElse(null);
+        assertNotNull(updatedOwnerParticipant);
+
+        Participant updatedParticipant = participantRepository.findById(curParticipant.getId()).orElse(null);
+        assertNotNull(updatedParticipant);
+
+        assertEquals('N', updatedOwnerParticipant.getOwnerYn());
+        assertEquals('Y', updatedParticipant.getOwnerYn());
+
+    }
+
+    @Test
+    @DisplayName("참가자 스트림 ID 변경 테스트")
+     public void updateParticipantStreamId(){
+        //given
+        Long memberId = 3L;
+        String roomCode = "sessionA";
+        String streamId = "TestStreamId";
+
+        //when
+        Room room = roomRepository.findByRoomCode(roomCode).orElse(null);
+        assertNotNull(room);
+        assertEquals(roomCode, room.getRoomCode());
+
+        Participant participant = participantRepository.findByMemberIdAndRoomId(memberId, room.getId()).orElse(null);
+        assertNotNull(participant);
+
+        participant.updateStreamId(streamId);
+        //then
+        Participant updatedParticipant = participantRepository.findByMemberIdAndRoomId(memberId, room.getId()).orElse(null);
+        assertEquals(streamId, updatedParticipant.getStreamId());
+        assertEquals(participant.getId(), updatedParticipant.getId());
+        assertEquals(memberId, updatedParticipant.getMember().getId());
+    }
+
+    @Test
+    @DisplayName("참가자 연결 취소 변경 테스트")
+    public void updateParticipantConnectionNTest(){
+        //given
+        Long memberId = 3L;
+        String roomCode = "sessionA";
+        Character connectionYn = 'N';
+
+        //when
+        Room room = roomRepository.findByRoomCode(roomCode).orElse(null);
+        assertNotNull(room);
+        assertEquals(roomCode, room.getRoomCode());
+
+        Participant participant = participantRepository.findByMemberIdAndRoomId(memberId, room.getId()).orElse(null);
+        assertNotNull(participant);
+
+        participant.updateConnectionYn(connectionYn);
+        //then
+        Participant updateParticipant = participantRepository.findByMemberIdAndRoomId(memberId, room.getId()).orElse(null);
+        assertNotNull(updateParticipant);
+        assertEquals(connectionYn, updateParticipant.getConnectionYn());
+        assertEquals(memberId, updateParticipant.getMember().getId());
+        assertEquals(room.getId(), updateParticipant.getRoom().getId());
+    }
+
+    @Test
+    @DisplayName("참가자 연결 성공 변경 테스트")
+    public void updateParticipantConnectionYTest(){
+        //given
+        Long memberId = 5L;
+        String roomCode = "sessionA";
+        Character connectionYn = 'Y';
+
+        //when
+        Room room = roomRepository.findByRoomCode(roomCode).orElse(null);
+        assertNotNull(room);
+        assertEquals(roomCode, room.getRoomCode());
+
+        Participant participant = participantRepository.findByMemberIdAndRoomId(memberId, room.getId()).orElse(null);
+        assertNotNull(participant);
+
+        participant.updateConnectionYn(connectionYn);
+        //then
+        Participant updateParticipant = participantRepository.findByMemberIdAndRoomId(memberId, room.getId()).orElse(null);
+        assertNotNull(updateParticipant);
+        assertEquals(connectionYn, updateParticipant.getConnectionYn());
+        assertEquals(memberId, updateParticipant.getMember().getId());
+        assertEquals(room.getId(), updateParticipant.getRoom().getId());
+    }
+
 
     @Test
     @DisplayName("참가자 삭제 테스트")
@@ -60,7 +168,6 @@ public class ParticipantJpaTest {
         // given
         Long memberId = 1L;
         String roomCode = "sessionA";
-
 
         // when
         Room room = roomRepository.findByRoomCode(roomCode).orElse(null);
@@ -87,7 +194,7 @@ public class ParticipantJpaTest {
 
         participantRepository.deleteAllByRoomId(room.getId());
         // then
-        assertEquals(3, participantRepository.count());
+        assertEquals(4, participantRepository.count());
     }
 
 }
