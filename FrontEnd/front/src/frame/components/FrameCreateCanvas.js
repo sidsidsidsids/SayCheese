@@ -1,4 +1,4 @@
-// 프레임의 기초가 되는 골격을 잡는 툴바의 디테일 컴포넌트입니다.
+// 프레임을 만드는 캔버스 영역 컴포넌트입니다.
 import React, { useState, useEffect, useRef } from "react";
 import "../css/FrameCreateCanvas.css";
 // third party
@@ -139,13 +139,25 @@ const UndecorateObjects = (canvas) => {
   }
 };
 
+// 프레임 텍스트 꾸미기 함수입니다
+//{customText: '', customTextColor: '#fff', customTextSize: '20', customTextFont: 'Roboto'}
+const DecorateText = (text, canvas) => {
+  canvas.add(
+    new fabric.Text(text.customText, {
+      fontFamily: text.customTextFont,
+      fontSize: text.customTextSize,
+      fill: text.customTextColor,
+    })
+  );
+};
+
 // Canvas
 const CanvasArea = () => {
   const canvasRef = useRef(null);
   const [canvasInstance, setCanvasInstance] = useState(null);
 
   // store에서 canvas에 사용할 재료들을 가져옴
-  const { width, height, bgColor, bgImg, objects } = useSelector(
+  const { width, height, bgColor, bgImg, objects, text } = useSelector(
     (store) => store.frame
   );
 
@@ -193,6 +205,12 @@ const CanvasArea = () => {
       DecorateObjects(objects, canvasInstance);
     }
   }, [objects]); // objects가 바뀔 때만 리렌더합
+
+  useEffect(() => {
+    if (canvasInstance) {
+      DecorateText(text, canvasInstance);
+    }
+  }, [text]); // text가 바뀔 때만 리렌더합
   return (
     <div>
       <canvas

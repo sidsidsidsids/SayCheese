@@ -26,7 +26,10 @@ export default function Objects() {
 
   return (
     <div>
-      <label htmlFor="objects">스티커를 추가하세요</label>
+      <label htmlFor="objects" className="forFile">
+        스티커를 추가하세요
+      </label>
+
       <input
         id="objects"
         type="file"
@@ -34,17 +37,19 @@ export default function Objects() {
         ref={imgRef}
         onChange={addObjects}
       ></input>
-      <br />
+
       <label htmlFor="deleteObjects">
-        이미지를 삭제하려면 <br /> 이미지를 클릭하고 삭제 버튼을 클릭하세요
+        이미지를 삭제하려면 <br /> 이미지를 클릭하고 <br />
+        삭제 버튼을 클릭하세요
       </label>
-      <br />
-      <input
+      <button
         id="deleteObjects"
         type="button"
         value="삭제하기"
         onClick={deleteObjects}
-      ></input>
+      >
+        삭제하기
+      </button>
     </div>
   );
 }

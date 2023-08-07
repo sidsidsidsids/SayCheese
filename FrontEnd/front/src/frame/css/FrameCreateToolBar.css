@@ -29,12 +29,13 @@
 .toolNotice {
   color: #131111;
 }
-
+/* input color css */
 input[type="color"] {
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   overflow: hidden;
+  margin: 0 0 20px 0;
 }
 
 input[type="color"]::-webkit-color-swatch {
@@ -47,4 +48,54 @@ input[type="color"]::-webkit-color-swatch-wrapper {
   border: none;
   border-radius: 50%;
   padding: 0;
+}
+
+/* label  */
+.createWrapper label{
+  margin: auto;
+  text-align: center;
+  display: block;
+  font-size: 20px;
+  color: grey;
+  background-color: red;
+}
+
+.createWrapper label.forFile{
+background-color: #123fd1;
+border: 2px solid gray;
+color: gray;
+background-color: white;
+padding: 8px 10px;
+border-radius: 30px;
+font-size: 20px;
+width: 200px;
+}
+
+/* 디테일 툴바 인풋 css */
+.createWrapper input[type=text],
+.createWrapper input[type=number]
+{
+  width:270px;
+  padding: 0 10px;
+  margin: 10px 0;
+}
+/* 디테일 툴바 select css */
+.createWrapper #textFont{
+  font-size: 18px;
+  height: 30px;
+  width:292px;
+  margin: 10px auto;
+}
+
+div.detailedToolBar{
+  text-align: center;
+  align-content: center;
+}
+
+.createWrapper input[type="file"]{
+  font-size: 100px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
 }

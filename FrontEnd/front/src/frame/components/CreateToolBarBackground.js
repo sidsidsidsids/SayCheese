@@ -4,8 +4,6 @@ import React, { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 // redux
 import { Repaint, RemoveBgImg } from "../../redux/features/frame/frameSlice";
-// css
-import "../css/CreateToolBarBackground.css";
 
 export default function BgColor() {
   const [customColor, setCustomColor] = useState();
@@ -52,7 +50,9 @@ export default function BgColor() {
       <input id="bgColor" type="color" value={bgColor} onChange={colorPick} />
 
       <br></br>
-      <label htmlFor="bgImage">색을 선택할 수 있습니다.</label>
+      <label htmlFor="bgImage" className="forFile">
+        배경 이미지 추가
+      </label>
       <br />
       <input
         id="bgImage"
@@ -62,18 +62,21 @@ export default function BgColor() {
         onChange={saveImgFile}
       />
       <div>이미지 미리보기 </div>
+
       {bgImg ? (
         <img width="100px" src={bgImg} alt="배경 이미지 미리보기" />
       ) : (
         <br />
       )}
-      <div
+      <br />
+      <button
+        type="buttom"
         onClick={() => {
           resetInput();
         }}
       >
-        이미지 제거하기{" "}
-      </div>
+        이미지 제거하기
+      </button>
     </>
   );
 }
