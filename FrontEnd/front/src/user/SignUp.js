@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 function SignUp() {
   const [activeIndex, setActiveIndex] = useState(null);
 
-  const movePage = useNavigate();
+  const movePage = useNavigate(); // 페이지 이동
 
   // 이메일 메시지
   const [email, setEmail] = useState("");
@@ -32,7 +32,6 @@ function SignUp() {
   const [emailCheck, setEmailCheck] = useState(false); // 사용 가능한 이메일인지 체크
 
   const [nicknameCheck, setNicknameCheck] = useState(false); // 사용 가능한 닉네임인지 체크
-
   const [passwordInputCheck, setPasswordInputCheck] = useState(false); // 비밀번호 잘못 입력했는지 체크
   const [agreeCheck, setAgreeCheck] = useState(false); // 개인정보 제공 동의했는지 체크
   const [nullInputCheck, setNullInputCheck] = useState(false);
@@ -87,12 +86,12 @@ function SignUp() {
           },
         }
       );
-      setEmailMessage(response.data);
+      setEmailMessage(response.data.message);
       setEmailCheck(true);
     } catch (error) {
       setEmailCheck(false);
       if (error.response.status === 400) {
-        setEmailMessage(error.response.data);
+        setEmailMessage(error.response.data.message);
       } else {
         setEmailMessage(
           "오류로 인해 이메일 확인이 불가능합니다.\n다시 시도해주시길 바랍니다."
@@ -123,11 +122,11 @@ function SignUp() {
         }
       );
       setNicknameCheck(true);
-      setNicknameMessage(response.data);
+      setNicknameMessage(response.data.message);
     } catch (error) {
       setNicknameCheck(false);
       if (error.response.status === 400) {
-        setNicknameMessage(error.response.data);
+        setNicknameMessage(error.response.data.message);
       } else {
         setNicknameMessage(
           "오류로 인해 닉네임 확인이 불가능합니다.\n다시 시도해주시길 바랍니다."
@@ -198,13 +197,13 @@ function SignUp() {
       nickname === ""
     ) {
       return alert(
-        "이메일, 비밀번호, 닉네임은 필수로 입력해야 합니다.\n빈칸을 확인해주세요."
+        "이메일, 비밀번호, 닉네임은 필수로 입력해야 합니다.\n빈 칸을 확인해주세요."
       );
     } else if (!nullInputCheck) {
       return alert("이메일 또는 닉네임을 다시 확인해주세요.");
     } else if (!passwordInputCheck) {
       return alert(
-        "비밀번호를 다시 확인해주세요. \n비밀번호는 숫자+영문자+특수문자 조합으로 8자리 이상 25자리 이하 입력해야 합니다."
+        "비밀번호를 다시 확인해주세요.\n비밀번호는 숫자+영문자+특수문자 조합으로 8자리 이상 25자리 이하 입력해야 합니다."
       );
     } else if (!agreeCheck) {
       return alert("개인정보 제공 동의를 해주세요.");
@@ -345,7 +344,7 @@ function SignUp() {
               />
             </div>
             <p
-              className={`pwcheckmsg ${
+              className={`PwCheckMsg ${
                 passwordMessage === "✔ 비밀번호가 일치합니다 ✔"
                   ? "SamePassword"
                   : ""
@@ -362,9 +361,9 @@ function SignUp() {
                 type="text"
                 name="name"
                 placeholder="이름"
+                className="SignUpInputSize"
                 value={name}
                 onChange={(event) => setName(event.target.value)}
-                className="SignUpInputSize"
                 onFocus={() => handleInputFocus(6)}
                 onBlur={handleInputBlur}
               />
@@ -409,7 +408,7 @@ function SignUp() {
             </div>
             <div className="InfoInnerBox">
               <div className="InfoText">
-                <h2>개인정보 제공 동의</h2>
+                <h2 className="InfoTitleText">개인정보 제공 동의</h2>
                 <p>네이버 회원가입 페이지에서 긁어옴</p>
                 <p>
                   개인정보보호법에 따라 네이버에 회원가입 신청하시는 분께

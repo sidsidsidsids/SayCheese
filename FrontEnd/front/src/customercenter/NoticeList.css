@@ -15,6 +15,7 @@ td {
   border-bottom: 1px solid #9795f0;
   padding: 10px;
   text-align: center;
+  font-weight: 500 !important;
 }
 
 tbody tr:hover {

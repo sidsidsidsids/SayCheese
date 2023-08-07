@@ -52,9 +52,8 @@
   width: 100%;
 }
 
-.pwcheckmsg {
+.PwCheckMsg {
   text-align: left;
-  font-weight: bold;
   color: #ea5455;
 }
 
@@ -129,6 +128,10 @@
   color: #929294;
 }
 
+.InfoTitleText {
+  font-weight: 500 !important;
+}
+
 .AgreeBox {
   display: flex;
   align-items: center;
@@ -154,6 +157,8 @@ label {
   margin-left: 5px;
   display: flex;
   align-items: center;
+
+  font-weight: 500 !important;
 }
 
 .SignUpBtn {
