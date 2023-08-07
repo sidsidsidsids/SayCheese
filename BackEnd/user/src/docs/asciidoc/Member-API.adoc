@@ -79,8 +79,16 @@ operation::MemberIntegrationTest/testRefreshTokenDeletion[snippets='http-request
 
 [[이메일-전송-API]]
 
-=== 회원 가입 시 이메일 인증 전송 API(정상)
+=== 회원 가입 시 이메일 인증번호 전송 API(정상)
 operation::EmailIntegrationTest/EmailTransportSuccessTest[snippets='http-request,request-fields,http-response,response-fields']
 
-=== 회원 가입 시 이메일 인증 전송 API(잘못된 값이 들어왔을 시)
-operation::EmailIntegrationTest/EmailTransportRegexFailTest[snippets='http-request,request-fields,http-response,response-fields']
+=== 회원 가입 시 이메일 인증번호 전송 API(잘못된 값이 들어왔을 시)
+operation::EmailIntegrationTest/EmailTransportValidFailTest[snippets='http-request,request-fields,http-response,response-fields']
+
+
+=== 회원 가입 시 이메일 인증 API(정상)
+operation::EmailIntegrationTest/checkAuthTokenSuccessTest[snippets='http-request,request-fields,http-response,response-fields']
+=== 회원 가입 시 이메일 인증 API(잘못된 값이 들어왔을 시)
+operation::EmailIntegrationTest/checkAuthTokenValidFailTest[snippets='http-request,request-fields,http-response,response-fields']
+=== 회원 가입 시 이메일 인증 API(없는 값이 들어왔을 시)
+operation::EmailIntegrationTest/checkAuthTokenNotExistsFailTest[snippets='http-request,request-fields,http-response,response-fields']

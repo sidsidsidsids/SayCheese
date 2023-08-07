@@ -1,7 +1,10 @@
 package com.reminiscence.email.service;
 
 import com.reminiscence.config.redis.RedisKey;
+import com.reminiscence.email.dto.EmailCheckRequestDto;
 import com.reminiscence.email.dto.EmailRequestDto;
+import com.reminiscence.exception.customexception.EmailException;
+import com.reminiscence.exception.message.EmailExceptionMessage;
 import com.reminiscence.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +30,7 @@ public class EmailServiceImpl implements EmailService{
     private final RedisTemplate redisTemplate;
     private final Environment env;
     private final String AUTH_TOKEN_SUBJECT="회원가입 이메일 인증 임시 메일입니다.";
+
     @Override
     public void storeAuthToken(EmailRequestDto emailRequestDto) {
         String auth=createAuthToken(emailRequestDto.getEmail());
@@ -44,7 +48,19 @@ public class EmailServiceImpl implements EmailService{
 
         }
     }
+    @Override
+    public void checkAuthToken(EmailCheckRequestDto emailCheckRequestDto) {
+        String token= (String)redisTemplate.opsForValue().get(RedisKey.EMAIL_AUTH_TOKEN_PREFIX+emailCheckRequestDto.getEmail());
+        if(token==null || !token.equals(emailCheckRequestDto.getToken())){
+            throw new EmailException(EmailExceptionMessage.DATA_NOT_FOUND);
+        }
+        createAuthSuccessToken(emailCheckRequestDto.getEmail());
+    }
 
+
+    private void createAuthSuccessToken(String email){
+        redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_SUCCESS_TOKEN_PREFIX+email,"true", Duration.ofMillis(RedisKey.EMAIL_AUTH_SUCCESS_TOKEN_EXPIRATION_TIME));
+    }
     private String createAuthToken(String email){
         String tempTokenValue= generateRandomNumbers(EMAIL_TOKEN_LENGTH);
         redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_TOKEN_PREFIX+email,tempTokenValue, Duration.ofMillis(RedisKey.EMAIL_AUTH_TOKEN_EXPIRATION_TIME));

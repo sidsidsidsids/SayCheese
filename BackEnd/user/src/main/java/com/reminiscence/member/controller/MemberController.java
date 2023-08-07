@@ -45,8 +45,8 @@ public class MemberController {
     @PostMapping("/join")
     public ResponseEntity join(@Valid @RequestBody MemberJoinRequestDto requestDto) throws Exception {
         log.debug("MemberJoinRequestDto info : {}", requestDto);
-        String token=(String)redisTemplate.opsForValue().get(RedisKey.EMAIL_AUTH_TOKEN_PREFIX+requestDto.getEmail());
-        if(token==null || !token.equals(requestDto.getCode())){
+        String token=(String)redisTemplate.opsForValue().get(RedisKey.EMAIL_AUTH_SUCCESS_TOKEN_PREFIX+requestDto.getEmail());
+        if(token==null){
             throw new EmailException(EmailExceptionMessage.DATA_NOT_FOUND);
         }
         memberService.joinMember(requestDto);

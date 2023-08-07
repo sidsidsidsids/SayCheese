@@ -482,7 +482,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/member/join HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 225
+Content-Length: 245
 Host: localhost:8080
 
 {
@@ -494,7 +494,8 @@ Host: localhost:8080
   "name" : "고무신",
   "profile" : "xxxxxxx",
   "snsId" : "nosns",
-  "snsType" : "facebook"
+  "snsType" : "facebook",
+  "code" : "2211"
 }</code></pre>
 </div>
 </div>
@@ -571,6 +572,12 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock">소셜 계정</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">__</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이메일 인증 번호</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">__</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -630,7 +637,7 @@ Content-Length: 61
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/member/join HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 231
+Content-Length: 251
 Host: localhost:8080
 
 {
@@ -642,7 +649,8 @@ Host: localhost:8080
   "name" : "고무신",
   "profile" : "xxxxxxx",
   "snsId" : "nosns",
-  "snsType" : "facebook"
+  "snsType" : "facebook",
+  "code" : "2211"
 }</code></pre>
 </div>
 </div>
@@ -719,6 +727,12 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock">소셜 계정</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">__</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이메일 인증 번호</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">__</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -737,9 +751,10 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 51
+Content-Length: 74
 
 {
+  "httpStatus" : 208,
   "message" : "아이디가 중복됩니다."
 }</code></pre>
 </div>
@@ -762,6 +777,11 @@ Content-Length: 51
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>httpStatus</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 상태 코드</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">API 응답 메시지</p></td>
@@ -778,11 +798,11 @@ Content-Length: 51
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/member/join HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 215
+Content-Length: 250
 Host: localhost:8080
 
 {
-  "email" : "email",
+  "email" : "saycheese2@gmail.com",
   "password" : "password",
   "nickname" : "검정",
   "genderFm" : "F",
@@ -790,7 +810,8 @@ Host: localhost:8080
   "name" : "고무신",
   "profile" : "xxxxxxx",
   "snsId" : "nosns",
-  "snsType" : "facebook"
+  "snsType" : "facebook",
+  "code" : "2211"
 }</code></pre>
 </div>
 </div>
@@ -867,6 +888,12 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock">소셜 계정</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">__</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이메일 인증 번호</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">__</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -885,9 +912,10 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 51
+Content-Length: 74
 
 {
+  "httpStatus" : 409,
   "message" : "닉네임이 중복됩니다."
 }</code></pre>
 </div>
@@ -909,6 +937,11 @@ Content-Length: 51
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>httpStatus</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 코드</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
@@ -1305,8 +1338,8 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzgzMTc4LCJpYXQiOjE2OTEzODEzNzgsIm1lbWJlcklkIjoiMyJ9.6GE3P8k6R1yufyL9SpriJzAZDFmntlVMXvdiuHmcZOTbCkuVxgHl0CmY_rO7Ccjp48qfYSqg2RK57xKFQE7aXw
-RefreshToken: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyNTkwOTc4LCJpYXQiOjE2OTEzODEzNzgsIm1lbWJlcklkIjoiMyJ9.OUKpQKPYSgnb9APObLfY0CxYrZaBNIJKMx1i5QyorZeesVAs02pKuF6CImEj9xIbaIUHGyHs4BA6jMgEiy-8_w
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzg2MTIyLCJpYXQiOjE2OTEzODQzMjIsIm1lbWJlcklkIjoiMyJ9.x3xbsuU5YFVFLPiYibOY0EyeeQyNKKxRgtGO6_MkysmNRYb75iH_Dw72w2QQAEoi38cvbxDboybZ8iTi40STww
+RefreshToken: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyNTkzOTIyLCJpYXQiOjE2OTEzODQzMjIsIm1lbWJlcklkIjoiMyJ9.dDNJZEeHIrp61W9Cyw7kF6xIF02hSW-RR6srnl6gJgcl_uW_YwvKNVe8bs0lONiyg-F0hgzVbiSKcjD8aBio3g
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -1406,7 +1439,7 @@ X-Frame-Options: DENY</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/member/info HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzgzMTgwLCJpYXQiOjE2OTEzODEzODAsIm1lbWJlcklkIjoiMTQifQ.eP19qOe0dis5NgL0HswB72ZV7IZRYxyalzqh1fbpA0vnxVQQSESe0LauQpEt-kG1aDz7RkliGgbsjdxPbsR_qg
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzg2MTI0LCJpYXQiOjE2OTEzODQzMjQsIm1lbWJlcklkIjoiMTQifQ.vN9CSK1rGlqLJz6Q374pFySVrKztT428VLMDCuz4X-a25sP9qY3Y8u8L-x2zuIJG-zs6U-RpzWC_6aaQB_T73Q
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1536,7 +1569,7 @@ Content-Length: 231
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /api/member/modify HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzgzMTgwLCJpYXQiOjE2OTEzODEzODAsIm1lbWJlcklkIjoiMTgifQ.r3LRYTOwrwOCJvNHrgu8Xl7WqzntCGwjyhMtYtVpq7_cL_KRO_zs_8zLVf6R-Uc0nhISauHEhxuz7Q6EYq-_BQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzg2MTI0LCJpYXQiOjE2OTEzODQzMjQsIm1lbWJlcklkIjoiMTgifQ._LiSdH9fKseRkOsoRhthqq4WuQgAmGyajyqaV9ncDbp96EaUtH_iAZhwwP1-laljlvSWg7z99P3CQXMn1xwqlw
 Content-Length: 219
 Host: localhost:8080
 
@@ -1764,7 +1797,7 @@ Content-Length: 359
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/member/delete HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzgzMTc5LCJpYXQiOjE2OTEzODEzNzksIm1lbWJlcklkIjoiNCJ9.8WHhFPiNiWXahEpiTKMh9AP03VTn10TmhsIDYHqMGlkkS3xveTsy9NFv1b5LDNc0OZX2LpI9UV67geLHbICLQQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzg2MTIyLCJpYXQiOjE2OTEzODQzMjIsIm1lbWJlcklkIjoiNCJ9.GACQb-FEjmLULrPyaizIzLYn88ufpt7VSm_Fs37JsdXELTBn1OtBbT3Su_i2vQhbot9kWp1BcpfXsqBgPLnv7w
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1974,7 +2007,7 @@ Content-Length: 136
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/logout HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzgzMTgwLCJpYXQiOjE2OTEzODEzODAsIm1lbWJlcklkIjoiMTMifQ.SjMhe8xlbXngKkuF6zjzBqxJuOm1Isb4QbiZnlwxUQovruAx4W6_YnCDeX9bpnLHgCKN-txGxVWsiPE4gbHjSQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzg2MTI0LCJpYXQiOjE2OTEzODQzMjQsIm1lbWJlcklkIjoiMTMifQ.hcSORn5kfxoZ6S-O2QYt9Ex0P8KaKFSrZGIkjqlMl9h0seCE0OcQDsNm3dPTLdssaK9qlLq23V0zp3Iiw_OfSw
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2026,7 +2059,7 @@ X-Frame-Options: DENY</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/member/info HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzgxMzgwLCJpYXQiOjE2OTEzODEzODAsIm1lbWJlcklkIjoxOX0.RszFTkz0miWMbGM_cjd-J2Un7ZZnz920oeO0twu2RElPE_Z3Ntkd0DyLUv8gN2bQH_tAN27DSNfenbrTw8QytQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzg0MzI0LCJpYXQiOjE2OTEzODQzMjQsIm1lbWJlcklkIjoxOX0.82taSJL8sSMQQcF-PGEdkRiO1s_4Nd6YAnF-0YT1729m9BA6SHo1zQprX_2CWn-CmzBcFMEzfIMNe6yUU4H6Nw
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2078,7 +2111,7 @@ X-Frame-Options: DENY</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/refresh HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyNTkwOTc5LCJpYXQiOjE2OTEzODEzNzksIm1lbWJlcklkIjoiOSJ9.emXyeNl3Q2ceuAIihjJzYy_wMDEw-aw4C-YtwygJfO6_VEbtiucSUwgNij9ehzNQzYG9JWw7408TWAoixnmJHQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyNTkzOTIzLCJpYXQiOjE2OTEzODQzMjMsIm1lbWJlcklkIjoiOSJ9.y1s6z2cUM8ahOkdW4f1F8amG4uFiFhMb98xf6zqcI9htyMPUq6pcD06UirU9WjerrisPAbJUCCiO9D0x-4tr6A
 Content-Length: 63
 Host: localhost:8080
 
@@ -2118,8 +2151,8 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzgzMTc5LCJpYXQiOjE2OTEzODEzNzksIm1lbWJlcklkIjoiOSJ9.86vOoMWm-Sjrqag3KCAfqH_2-oAtdtHCQMy5bRfoV9ur1Ensy7k2eTfcBI9G2iHpzt7ShITbkOB6ugEmRhkVwQ
-RefreshToken: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyNTkwOTc5LCJpYXQiOjE2OTEzODEzNzksIm1lbWJlcklkIjoiOSJ9.emXyeNl3Q2ceuAIihjJzYy_wMDEw-aw4C-YtwygJfO6_VEbtiucSUwgNij9ehzNQzYG9JWw7408TWAoixnmJHQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzg2MTIzLCJpYXQiOjE2OTEzODQzMjMsIm1lbWJlcklkIjoiOSJ9.vSRrDPvU8upWE5C9hCRZzqsP3S-z4iiBPMURiyP3-HNR0VOdQCx02UySWBLjdedFprvsXKykLJ_2MdkPkNjeqA
+RefreshToken: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyNTkzOTIzLCJpYXQiOjE2OTEzODQzMjMsIm1lbWJlcklkIjoiOSJ9.y1s6z2cUM8ahOkdW4f1F8amG4uFiFhMb98xf6zqcI9htyMPUq6pcD06UirU9WjerrisPAbJUCCiO9D0x-4tr6A
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -2168,7 +2201,7 @@ Content-Length: 49
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/refresh HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzgxMzc4LCJpYXQiOjE2OTEzODEzNzgsIm1lbWJlcklkIjoxfQ.bhfk1lzeGczVK-abBRIcGwkTTWHprCta_LyBRBWU53NbwnkFlRrqXi-Ojmzk4YwU99FTZV7iKWps_N4IzNB98g
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzg0MzIyLCJpYXQiOjE2OTEzODQzMjIsIm1lbWJlcklkIjoxfQ.5_D1FxSTLjkXp2RlFmPkGBaMd3ARyMaBkzdAsY-xwlh4vsGLao56Qi0DH4xmS0VGkBpaJ44HgrGvVXImXNIXYQ
 Content-Length: 63
 Host: localhost:8080
 
@@ -2226,7 +2259,7 @@ X-Frame-Options: DENY</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/member/info HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzgzMTc4LCJpYXQiOjE2OTEzODEzNzgsIm1lbWJlcklkIjoiMiJ9.KhbCaXm8tki2fi-guQtEuXIMocSOONpbQJEzZxm-WlvEsdfdx_-fNdv9CI9fASY_YHJP1wNpS9Rnq8FsgkgxWA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzg2MTIyLCJpYXQiOjE2OTEzODQzMjIsIm1lbWJlcklkIjoiMiJ9.QRNbcw-7ksKvcQuXRsgmHT0IJXM5VGMuX57ccuU_Y9Zh3U7Cspdyv-RmqgDyb4ho9G_kxDHliyPS9zKieaZ2cA
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2278,7 +2311,7 @@ X-Frame-Options: DENY</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/refresh HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyNTkwOTgwLCJpYXQiOjE2OTEzODEzODAsIm1lbWJlcklkIjoiMjIifQ.KHh6R_5L73jKdZu1LAMidMahJN6hzL-5YOU5oyl7MWFK6H9QzKaIFA3rKKZYIjvbuJfmCTtFCZJveTxZOl0VVg
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyNTkzOTI0LCJpYXQiOjE2OTEzODQzMjQsIm1lbWJlcklkIjoiMjIifQ.czr3zNB8kTT_8ECvfjp2rXob2LO9VC1LbU-QE4JrHT3zOt3UfabJXaIGZ1UXVVRhvs7JNVJ3fonq53Tcv-Ou6Q
 Content-Length: 63
 Host: localhost:8080
 

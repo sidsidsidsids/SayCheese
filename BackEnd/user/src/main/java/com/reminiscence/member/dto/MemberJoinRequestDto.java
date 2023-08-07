@@ -28,10 +28,9 @@ public class MemberJoinRequestDto {
     private String profile;
     private String snsId;
     private String snsType;
-    private String code;
 
     @Builder
-    public MemberJoinRequestDto(String email, String password, String nickname, char genderFm, int age, String name, String profile, String snsId, String snsType, String code) {
+    public MemberJoinRequestDto(String email, String password, String nickname, char genderFm, int age, String name, String profile, String snsId, String snsType) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
@@ -41,7 +40,6 @@ public class MemberJoinRequestDto {
         this.profile = profile;
         this.snsId = snsId;
         this.snsType = snsType;
-        this.code=code;
     }
 
     public Member toEntity() {

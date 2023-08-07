@@ -119,8 +119,7 @@ public class MemberIntegrationTest {
     @DisplayName("회원가입 성공 테스트")
     public void testJoinMemberSuccess() throws Exception {
         //givenz
-        redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_TOKEN_PREFIX+"saycheese@gmail.com","2211", Duration.ofMinutes(3));
-        String code="2211";
+        redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_SUCCESS_TOKEN_PREFIX+"saycheese@gmail.com","", Duration.ofMinutes(3));
         String email = "saycheese@gmail.com";
         String password = "1234";
         String nickname = "검정";
@@ -141,7 +140,6 @@ public class MemberIntegrationTest {
                 .profile(profile)
                 .snsId(snsId)
                 .snsType(snsType)
-                .code(code)
                 .build();
 
         mvc.perform(post("/api/member/join")
@@ -159,8 +157,7 @@ public class MemberIntegrationTest {
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("이름").attributes(key("constraints").value("이름 입력 필수")),
                                 fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value("")),
                                 fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디").attributes(key("constraints").value("")),
-                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value("")),
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("이메일 인증 번호").attributes(key("constraints").value(""))
+                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value(""))
                         ),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
@@ -172,8 +169,7 @@ public class MemberIntegrationTest {
     @DisplayName("회원가입 실패 테스트_이메일 중복")
     public void testJoinMemberFailure_DuplicatedEmail() throws Exception {
         //given
-        redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_TOKEN_PREFIX+"saycheese@gmail.com","2211", Duration.ofMinutes(3));
-        String code="2211";
+        redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_SUCCESS_TOKEN_PREFIX+"saycheese@gmail.com","", Duration.ofMinutes(3));
         String email = "saycheese@gmail.com";
         String password = "1234";
         String nickname = "검정";
@@ -206,7 +202,6 @@ public class MemberIntegrationTest {
                 .profile(profile)
                 .snsId(snsId)
                 .snsType(snsType)
-                .code(code)
                 .build();
 
         mvc.perform(post("/api/member/join")
@@ -223,8 +218,7 @@ public class MemberIntegrationTest {
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("이름").attributes(key("constraints").value("이름 입력 필수")),
                                 fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value("")),
                                 fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디").attributes(key("constraints").value("")),
-                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value("")),
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("이메일 인증 번호").attributes(key("constraints").value(""))
+                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value(""))
                         ),
                         responseFields(
                                 fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 상태 코드"),
@@ -237,8 +231,7 @@ public class MemberIntegrationTest {
     @DisplayName("회원가입 실패 테스트_닉네임 중복")
     public void testJoinMemberFailure_DuplicatedNickname() throws Exception {
         //given
-        redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_TOKEN_PREFIX+"saycheese2@gmail.com","2211", Duration.ofMinutes(3));
-        String code="2211";
+        redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_SUCCESS_TOKEN_PREFIX+"saycheese2@gmail.com","", Duration.ofMinutes(3));
         String email = "saycheese@gmail.com";
         String password = "1234";
         String nickname = "검정";
@@ -272,7 +265,6 @@ public class MemberIntegrationTest {
                 .profile(profile)
                 .snsId(snsId)
                 .snsType(snsType)
-                .code(code)
                 .build();
         mvc.perform(post("/api/member/join")
                         .content(objectMapper.writeValueAsString(memberJoinRequestDto))
@@ -288,8 +280,7 @@ public class MemberIntegrationTest {
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("이름").attributes(key("constraints").value("이름 입력 필수")),
                                 fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value("")),
                                 fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디").attributes(key("constraints").value("")),
-                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value("")),
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("이메일 인증 번호").attributes(key("constraints").value(""))
+                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value(""))
                         ),
                         responseFields(
                                 fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 코드"),

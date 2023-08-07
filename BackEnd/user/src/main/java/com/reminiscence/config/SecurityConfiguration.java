@@ -75,6 +75,7 @@ public class SecurityConfiguration {
                     .antMatchers(HttpMethod.PUT,"/api/member/**").authenticated()
                     .antMatchers(HttpMethod.DELETE,"/api/member/**").authenticated()
                     .antMatchers("/api/mail/auth").permitAll()
+                .antMatchers("/api/mail/auth/check").permitAll()
                 .anyRequest().permitAll()
                 .and()
                 .logout()
