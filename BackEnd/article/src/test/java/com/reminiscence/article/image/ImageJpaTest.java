@@ -4,9 +4,11 @@ import com.reminiscence.article.domain.Image;
 import com.reminiscence.article.domain.ImageOwner;
 import com.reminiscence.article.domain.Member;
 import com.reminiscence.article.image.dto.OwnerImageResponseDto;
+import com.reminiscence.article.image.dto.RandomTagResponseDto;
 import com.reminiscence.article.image.repository.ImageOwnerRepository;
 import com.reminiscence.article.image.repository.ImageRepository;
 import com.reminiscence.article.image.repository.ImageTagRepository;
+import com.reminiscence.article.image.repository.TagRepository;
 import com.reminiscence.article.member.repository.MemberRepository;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,8 +20,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @DataJpaTest
@@ -27,14 +29,14 @@ public class ImageJpaTest {
 
     @Autowired
     ImageRepository imageRepository;
-
     @Autowired
     ImageOwnerRepository imageOwnerRepository;
-
     @Autowired
     MemberRepository memberRepository;
     @Autowired
     ImageTagRepository imageTagRepository;
+    @Autowired
+    TagRepository tagRepository;
 
     @Test
     @DisplayName("소유한 이미지 조회 테스트")
@@ -151,6 +153,12 @@ public class ImageJpaTest {
         String imageLink = "https://s3.ap-northeast-2.amazonaws.com/reminiscence-bucket/image/2021/04/16/1618560000_1.jpg";
         String imageType = imageLink.substring(imageLink.lastIndexOf(".")+1);
         String fileName = "1618560000_1";
+        List<Long> tags = new ArrayList<>();
+        tags.add(1L);
+        tags.add(2L);
+        tags.add(3L);
+        tags.add(4L);
+        String roomCode = "1234";
         Image image = Image.builder()
                 .link(imageLink)
                 .type(imageType)
@@ -175,6 +183,18 @@ public class ImageJpaTest {
 
         // when
         List<String> findTags = imageTagRepository.findTagNameByImageId(imageId).orElse(null);
+
+        // then
+        assertNotNull(findTags);
+        assertEquals(4, findTags.size());
+    }
+    @Test
+    @DisplayName("랜덤 태그 조회 테스트")
+    public void RandomTagReadTest(){
+        // given
+
+        // when
+        List<RandomTagResponseDto> findTags = tagRepository.findRandomTags().orElse(null);
 
         // then
         assertNotNull(findTags);
