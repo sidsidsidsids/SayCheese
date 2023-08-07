@@ -16,7 +16,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/email")
+@RequestMapping("/api/email/auth")
 public class EmailController {
     private final EmailService emailService;
 

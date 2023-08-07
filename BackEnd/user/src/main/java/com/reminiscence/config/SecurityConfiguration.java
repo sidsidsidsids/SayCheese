@@ -1,5 +1,6 @@
 package com.reminiscence.config;
 
+import com.nimbusds.oauth2.sdk.http.HTTPEndpoint;
 import com.reminiscence.config.redis.RefreshTokenService;
 import com.reminiscence.config.redis.TokenRevocationService;
 import com.reminiscence.filter.JwtAuthenticationFilter;
@@ -88,6 +89,8 @@ public class SecurityConfiguration {
 
         http.exceptionHandling().accessDeniedHandler(new AccessDenyHandler());
         http.exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint());
+
+        http.authorizeRequests().antMatchers("/api/mail/auth").permitAll();
         return http.build();
     }
 
