@@ -35,11 +35,9 @@ import java.time.LocalDateTime;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.snippet.Attributes.key;
@@ -62,7 +60,9 @@ public class RoomIntegrationTest {
 
     ObjectMapper objectMapper = new ObjectMapper();
     String guestToken;
+    String connectionGuestToken;
     String memberToken;
+    String notConnectionMemberToken;
     @BeforeEach
     public void init(RestDocumentationContextProvider restDocumentation) throws SQLException {
         mvc= MockMvcBuilders.webAppContextSetup(applicationContext)
@@ -74,13 +74,88 @@ public class RoomIntegrationTest {
                 .build();
         Member guest = memberRepository.findById(5L).orElse(null);
         Member member = memberRepository.findById(2L).orElse(null);
+        Member notConnectionMember = memberRepository.findById(6L).orElse(null);
+        Member connectionGuest = memberRepository.findById(7L).orElse(null);
         guestToken= JWT.create()
                 .withClaim("memberId",String.valueOf(guest.getId()))
+                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
+        connectionGuestToken =  JWT.create()
+                .withClaim("memberId",String.valueOf(connectionGuest.getId()))
                 .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
         memberToken= JWT.create()
                 .withClaim("memberId",String.valueOf(member.getId()))
                 .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
+        notConnectionMemberToken= JWT.create()
+                .withClaim("memberId",String.valueOf(notConnectionMember.getId()))
+                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
     }
+
+    @Test
+    @DisplayName("방 연결 확인 테스트(정상, 회원)")
+    public void checkRoomConnectionMemberSuccessTest() throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization","Bearer "+ notConnectionMemberToken);
+        mvc.perform(post("/api/room/check")
+                .headers(headers))
+                .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                        )
+                ));
+    }
+    @Test
+    @DisplayName("방 연결 확인 테스트(비정상, 회원)")
+    public void checkRoomConnectionMemberFailTest() throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization","Bearer "+ memberToken);
+        mvc.perform(post("/api/room/check")
+                        .headers(headers))
+                .andExpect(status().isBadRequest())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("방 연결 확인 테스트(정상, AccessToken 있는 비회원)")
+    public void checkRoomConnectionGuestSuccessTest() throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization","Bearer "+ guestToken);
+        mvc.perform(post("/api/room/check")
+                        .headers(headers))
+                .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                        )
+                ));
+    }
+    @Test
+    @DisplayName("방 연결 확인 테스트(정상, AccessToken 없는 비회원)")
+    public void checkRoomConnectionNonAccessGuestSuccessTest() throws Exception {
+        mvc.perform(post("/api/room/check"))
+                .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"
+                ));
+    }
+    @Test
+    @DisplayName("방 연결 확인 테스트(비정상, AccessToken 있는 비회원)")
+    public void checkRoomConnectionGuestFailTest() throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization","Bearer "+ connectionGuestToken);
+        mvc.perform(post("/api/room/check")
+                        .headers(headers))
+                .andExpect(status().isBadRequest())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                        )
+                ));
+    }
+
     @Test
     @DisplayName("방 비밀번호 확인 테스트(정상)")
     public void checkRoomPasswordSuccessTest() throws Exception{
@@ -93,7 +168,7 @@ public class RoomIntegrationTest {
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDto)))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isOk())
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                         requestHeaders(
                                 headerWithName("Authorization").description("로그인 성공한 토큰 ")
@@ -103,6 +178,9 @@ public class RoomIntegrationTest {
                         ),
                         requestFields(
                                 fieldWithPath("password").description("방 비밀번호").attributes(key("constraints").value("Not Null"))
+                        )
+                        ,responseFields(
+                                fieldWithPath("existParticipantYn").description("방 비밀번호가 일치하지 않습니다.")
                         )
                 ));
 

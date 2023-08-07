@@ -1,6 +1,7 @@
 package com.reminiscence.room.room;
 
 import com.reminiscence.room.domain.Mode;
+import com.reminiscence.room.domain.Participant;
 import com.reminiscence.room.domain.Room;
 import com.reminiscence.room.participant.repository.ParticipantRepository;
 import com.reminiscence.room.room.repository.RoomRepository;
@@ -21,6 +22,33 @@ public class RoomJpaTest {
 
     @Autowired
     private ParticipantRepository participantRepository;
+
+    @Test
+    @DisplayName("다른 방 접속 확인 테스트(다른 방에 이미 접속한 경우)")
+    public void checkRoomConnectionFailTest(){
+        //given
+        Long memberId = 3L;
+        //when
+        Participant participant = participantRepository.findByMemberIdAndConnectionY(memberId).orElse(null);
+
+        //then
+        assertNotNull(participant);
+        assertEquals(1L, participant.getRoom().getId());
+        assertEquals(memberId, participant.getMember().getId());
+        assertEquals('Y', participant.getConnectionYn());
+    }
+
+    @Test
+    @DisplayName("다른 방 접속 확인 테스트(다른 방에 접속하지 않은 경우)")
+    public void checkRoomConnectionSuccessTest(){
+        //given
+        Long memberId = 5L;
+        //when
+        Participant participant = participantRepository.findByMemberIdAndConnectionY(memberId).orElse(null);
+
+        //then
+        assertNull(participant);
+    }
 
     @Test
     @DisplayName("방 비밀번호 확인 테스트")
