@@ -180,9 +180,9 @@ const CanvasArea = () => {
 
     return () => {
       // `newCanvas`가 유효한지 확인하고
-      // if (newCanvas) {
-      //   newCanvas.dispose();
-      // }
+      if (newCanvas) {
+        newCanvas.dispose();
+      }
     };
   }, [width, height, bgColor, bgImg]); // width, height, bg 바뀔 때마다 리렌더
 
@@ -194,10 +194,10 @@ const CanvasArea = () => {
     }
   }, [objects]); // objects가 바뀔 때만 리렌더합
   return (
-    <div className="canvasBackground">
+    <div>
       <canvas
         ref={canvasRef}
-        className="createCanvas"
+        className="canvasBackground createCanvas"
         name="canvas"
         id="canvas"
       />
