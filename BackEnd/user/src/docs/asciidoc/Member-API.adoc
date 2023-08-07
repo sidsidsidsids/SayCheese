@@ -76,3 +76,11 @@ operation::MemberIntegrationTest/testAccessTokenBlacklist[snippets='http-request
 
 === 로그아웃 시 Redis 내 RefreshToken 삭제 후 RefreshToken 접근 제한
 operation::MemberIntegrationTest/testRefreshTokenDeletion[snippets='http-request,request-headers,http-response,response-fields']
+
+[[이메일-전송-API]]
+
+=== 회원 가입 시 이메일 인증 전송 API(정상)
+operation::EmailIntegrationTest/EmailTransportSuccessTest[snippets='http-request,request-fields,http-response,response-fields']
+
+=== 회원 가입 시 이메일 인증 전송 API(잘못된 값이 들어왔을 시)
+operation::EmailIntegrationTest/EmailTransportRegexFailTest[snippets='http-request,request-fields,http-response,response-fields']

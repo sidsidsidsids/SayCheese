@@ -74,6 +74,7 @@ public class SecurityConfiguration {
 //                .antMatchers("/private").hasRole("USER")
                     .antMatchers(HttpMethod.PUT,"/api/member/**").authenticated()
                     .antMatchers(HttpMethod.DELETE,"/api/member/**").authenticated()
+                    .antMatchers("/api/mail/auth").permitAll()
                 .anyRequest().permitAll()
                 .and()
                 .logout()
@@ -90,7 +91,6 @@ public class SecurityConfiguration {
         http.exceptionHandling().accessDeniedHandler(new AccessDenyHandler());
         http.exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint());
 
-        http.authorizeRequests().antMatchers("/api/mail/auth").permitAll();
         return http.build();
     }
 
