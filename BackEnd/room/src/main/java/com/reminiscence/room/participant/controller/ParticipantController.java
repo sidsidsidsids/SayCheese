@@ -29,7 +29,7 @@ public class ParticipantController {
         participantService.writeParticipant(requestDto, userDetail.getMember());
         return new ResponseEntity(Response.of(ParticipantMessage.PARTICIPANT_WRITE_SUCCESS), HttpStatus.OK);
     }
-    @PutMapping("/change/{roomCode}/owner")
+    @PutMapping("/{roomCode}/owner")
     public ResponseEntity<Response> updateParticipantOwner(
             @AuthenticationPrincipal UserDetail userDetail,
             @PathVariable("roomCode") String roomCode){
@@ -37,7 +37,7 @@ public class ParticipantController {
         return new ResponseEntity(Response.of(ParticipantMessage.PARTICIPANT_CHANGE_OWNER_SUCCESS),HttpStatus.OK);
     }
 
-    @PutMapping("/change/{roomCode}/streamId")
+    @PutMapping("/{roomCode}/streamId")
     public ResponseEntity<Response> updateParticipantStreamId(
             @AuthenticationPrincipal UserDetail userDetail,
             @PathVariable("roomCode") String roomCode,

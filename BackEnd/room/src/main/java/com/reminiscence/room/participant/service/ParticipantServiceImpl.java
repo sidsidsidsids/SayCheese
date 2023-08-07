@@ -7,7 +7,6 @@ import com.reminiscence.room.exception.customexception.ParticipantException;
 import com.reminiscence.room.exception.customexception.RoomException;
 import com.reminiscence.room.exception.message.ParticipantExceptionMessage;
 import com.reminiscence.room.exception.message.RoomExceptionMessage;
-import com.reminiscence.room.member.repository.MemberRepository;
 import com.reminiscence.room.participant.dto.ParticipantUpdateStreamIdRequestDto;
 import com.reminiscence.room.participant.dto.ParticipantWriteRequestDto;
 import com.reminiscence.room.participant.repository.ParticipantRepository;
@@ -23,7 +22,6 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class ParticipantServiceImpl implements ParticipantService{
     private final ParticipantRepository participantRepository;
-    private final MemberRepository memberRepository;
     private final RoomRepository roomRepository;
 
     @Override
@@ -61,7 +59,7 @@ public class ParticipantServiceImpl implements ParticipantService{
         ownerParticipant.get().updateOwnerYn('N');
         participant.get().updateOwnerYn('Y');
     }
-
+    @Transactional
     @Override
     public void updateParticipantStreamId(
             Member member,
@@ -78,7 +76,7 @@ public class ParticipantServiceImpl implements ParticipantService{
 
         participant.get().updateStreamId(requestDto.getStreamId());
     }
-
+    @Transactional
     @Override
     public void updateParticipantConnectionFail(String nickname, String roomCode) {
         Optional<Room> room = roomRepository.findByRoomCode(roomCode);
@@ -92,6 +90,7 @@ public class ParticipantServiceImpl implements ParticipantService{
         participant.get().updateConnectionYn('N');
     }
 
+    @Transactional
     @Override
     public void updateParticipantConnectionSuccess(Long memberId, String roomCode) {
         Optional<Room> room = roomRepository.findByRoomCode(roomCode);
