@@ -1,5 +1,9 @@
 package com.reminiscence.exception;
+
 import com.reminiscence.exception.customexception.EmailException;
+
+
+import com.reminiscence.exception.customexception.MemberException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -20,13 +24,17 @@ public class ControllerAdvice {
     }
 
 
+    // Member 관련 예외 처리
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleMemberException(MemberException memberException) {
+        ErrorResponse response=ErrorResponse.of(memberException.getHttpStatus().value(),memberException.getMessage());
+        return new ResponseEntity<ErrorResponse>(response, memberException.getHttpStatus());
+    }
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException methodArgumentNotValidException) {
         ErrorResponse response = ErrorResponse.of(HttpStatus.BAD_REQUEST.value(), methodArgumentNotValidException.getBindingResult().getAllErrors().get(0).getDefaultMessage());
         return new ResponseEntity<ErrorResponse>(response, HttpStatus.BAD_REQUEST);
     }
-
-
 
 
 }

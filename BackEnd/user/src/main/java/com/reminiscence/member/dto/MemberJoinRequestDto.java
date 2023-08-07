@@ -8,11 +8,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Data
 @NoArgsConstructor
 public class MemberJoinRequestDto {
+
+//    @Email(message="이메일 형식이 아닙니다.")
     private String email;
+//    @Pattern(regexp = "/^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/", message="비밀번호를 특수문자 포함 8자 이상으로 입력해주세요.")
     private String password;
     private String nickname;
     private char genderFm;
