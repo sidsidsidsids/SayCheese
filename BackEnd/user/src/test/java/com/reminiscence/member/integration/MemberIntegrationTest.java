@@ -7,6 +7,9 @@ import com.reminiscence.filter.JwtTokenProvider;
 import com.reminiscence.filter.JwtUtil;
 import com.reminiscence.member.dto.MemberInfoUpdateRequestDto;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 //import com.reminiscence.JwtService;
@@ -57,6 +60,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static reactor.core.publisher.Mono.when;
 
 
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
@@ -64,7 +68,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @Slf4j
 public class MemberIntegrationTest {
-
     @Autowired
     MemberService memberService;
     MockMvc mvc; // mockMvc 생성
@@ -111,7 +114,7 @@ public class MemberIntegrationTest {
     @Test
     @DisplayName("회원가입 성공 테스트")
     public void testJoinMemberSuccess() throws Exception {
-        //given
+        //givenz
         String email = "saycheese@gmail.com";
         String password = "1234";
         String nickname = "검정";

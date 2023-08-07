@@ -22,7 +22,7 @@ public class EmailController {
 
     @PostMapping("")
     public ResponseEntity<Response> sendAuthToken(@Valid @RequestBody EmailRequestDto emailRequestDto){
-        emailService.sendAuthToken(emailRequestDto);
+        emailService.storeAuthToken(emailRequestDto);
         return new ResponseEntity<>(Response.of(EmailResponseMessage.EMAIL_SEND_SUCCESS),HttpStatus.OK);
     }
 }
