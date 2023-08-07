@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface FrameArticleService {
 
-    List<FrameArticleListResponseDto> getHotFrameArticleList(UserDetail userDetail);
-    List<FrameArticleListResponseDto> getRecentFrameArticleList(UserDetail userDetail);
-    List<FrameArticleListResponseDto> getRandomFrameArticleList(UserDetail userDetail);
+    List<FrameArticleListResponseDto> getHotFrameArticleList(UserDetail userDetail, String searchWord);
+    List<FrameArticleListResponseDto> getRecentFrameArticleList(UserDetail userDetail, String searchWord);
+    List<FrameArticleListResponseDto> getRandomFrameArticleList(UserDetail userDetail, String searchWord);
 
     void writeFrameArticle(FrameArticleAndMemberRequestDto frameArticleAndMemberRequestDto);
 

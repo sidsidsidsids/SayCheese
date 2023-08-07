@@ -8,10 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FrameArticleRepositoryCustom {
-    Optional<List<FrameArticleListResponseDto>> findMemberFrameArticles(Pageable page, Long memberId);
-    Optional<List<FrameArticleListResponseDto>> findNonMemberFrameArticles(Pageable page);
-    Optional<FrameArticle> findFrameArticleOfAllById(Long id);
-    Optional<FrameArticle> findFrameArticleOfMemberById(Long id);
-
+    Optional<List<FrameArticleListResponseDto>> findMemberFrameArticles(Pageable page, Long memberId, String authorSubject);
+    Optional<List<FrameArticleListResponseDto>> findNonMemberFrameArticles(Pageable page, String authorSubject);
+//    Optional<List<FrameArticle>> findFrameArticleAllBySearchWord(Pageable pageable, String authorSubject);
 
 }

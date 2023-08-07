@@ -12,16 +12,16 @@ public class FrameArticleListResponseDto {
 
     private Long articleId;
     private String subject;
-    private String imageLink;
+    private String frameLink;
     private Long loverCnt;
     private LocalDateTime createdDate;
     private String author;
     private Long loverYn;
 
-    public FrameArticleListResponseDto(Long articleId, String subject, String imageLink, Long loverCnt, LocalDateTime createdDate, String author, Long loverYn) {
+    public FrameArticleListResponseDto(Long articleId, String subject, String frameLink, Long loverCnt, LocalDateTime createdDate, String author, Long loverYn) {
         this.articleId = articleId;
         this.subject = subject;
-        this.imageLink = imageLink;
+        this.frameLink = frameLink;
         this.loverCnt = loverCnt;
         this.createdDate = createdDate;
         this.author = author;
@@ -32,10 +32,10 @@ public class FrameArticleListResponseDto {
         }
     }
 
-    public FrameArticleListResponseDto(Long articleId, String subject, String imageLink, Long loverCnt, LocalDateTime createdDate, String author) {
+    public FrameArticleListResponseDto(Long articleId, String subject, String frameLink, Long loverCnt, LocalDateTime createdDate, String author) {
         this.articleId = articleId;
         this.subject = subject;
-        this.imageLink = imageLink;
+        this.frameLink = frameLink;
         this.loverCnt = loverCnt;
         this.createdDate = createdDate;
         this.author = author;

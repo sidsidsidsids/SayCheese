@@ -23,19 +23,21 @@ import java.util.Optional;
 import static com.querydsl.core.types.ExpressionUtils.count;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
-public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom{
+public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
-    public FrameArticleRepositoryImpl(EntityManager entityManager){
+    public FrameArticleRepositoryImpl(EntityManager entityManager) {
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
 
+    // 로그인한 유저 프레임 게시판 항목들(좋아요 포함) 반환
     @Override
-    public Optional<List<FrameArticleListResponseDto>> findMemberFrameArticles(Pageable page, Long memberId) {
+    public Optional<List<FrameArticleListResponseDto>> findMemberFrameArticles(Pageable page, Long memberId, String authorSubject) {
         return Optional.ofNullable(queryFactory
                 .select(Projections.constructor(FrameArticleListResponseDto.class,
                         QFrameArticle.frameArticle.id.as("articleId"),
+                        QFrameArticle.frameArticle.subject.as("subject"),
                         QFrame.frame.link.as("frameLink"),
                         ExpressionUtils.as(JPAExpressions.select(count(QLover.lover.id))
                                 .from(QLover.lover)
@@ -45,22 +47,26 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom{
                         ExpressionUtils.as(JPAExpressions.select(QLover.lover.id)
                                 .from(QLover.lover)
                                 .where(QLover.lover.article.id.eq(QFrameArticle.frameArticle.id)
-                                        ,(loverMemberIdEq(memberId)))
+                                        , (loverMemberIdEq(memberId)))
                                 .limit(1), "loverYn")
                 ))
                 .from(QFrameArticle.frameArticle)
                 .join(QFrameArticle.frameArticle.member, QMember.member)
                 .join(QFrameArticle.frameArticle.frame, QFrame.frame)
+                .where(frameArticleAuthorLikeIgnoreCase(authorSubject)
+                        .or(frameArticleSubjectLikeIgnoreCase(authorSubject)))
                 .orderBy(getOrderSpecifiers(page))
                 .limit(page.getPageSize())
                 .fetch());
     }
 
+    // 비회원(로그인 하지 않은) 유저의 프레임 게시판 항목들(좋아요 불포함) 반환
     @Override
-    public Optional<List<FrameArticleListResponseDto>> findNonMemberFrameArticles(Pageable page) {
+    public Optional<List<FrameArticleListResponseDto>> findNonMemberFrameArticles(Pageable page, String authorSubject) {
         return Optional.ofNullable(queryFactory
                 .select(Projections.constructor(FrameArticleListResponseDto.class,
                         QFrameArticle.frameArticle.id.as("articleId"),
+                        QFrameArticle.frameArticle.subject.as("subject"),
                         QFrame.frame.link.as("frameLink"),
                         ExpressionUtils.as(JPAExpressions.select(count(QLover.lover.id))
                                 .from(QLover.lover)
@@ -71,28 +77,60 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom{
                 .from(QFrameArticle.frameArticle)
                 .join(QFrameArticle.frameArticle.member, QMember.member)
                 .join(QFrameArticle.frameArticle.frame, QFrame.frame)
+                .where(frameArticleAuthorLikeIgnoreCase(authorSubject)
+                        .or(frameArticleSubjectLikeIgnoreCase(authorSubject)))
                 .orderBy(getOrderSpecifiers(page))
                 .limit(page.getPageSize())
                 .fetch());
     }
 
-    @Override
-    public Optional<FrameArticle> findFrameArticleOfAllById(Long id) {
-        return Optional.ofNullable(queryFactory.selectFrom(QFrameArticle.frameArticle)
-                .join(QFrameArticle.frameArticle.member, QMember.member).fetchJoin()
-                .join(QFrameArticle.frameArticle.frame, QFrame.frame).fetchJoin()
-                .where(frameArticleIdEq(id))
-                .fetchOne());
-    }
-
-
-    @Override
-    public Optional<FrameArticle> findFrameArticleOfMemberById(Long id) {
-        return Optional.ofNullable(queryFactory.selectFrom(QFrameArticle.frameArticle)
-                .innerJoin(QFrameArticle.frameArticle.member).fetchJoin()
-                .where(frameArticleIdEq(id))
-                .fetchOne());
-    }
+//    // 검색어를 통해 저자명 혹은 제목을 조회하여 검색 결과 반환
+//    @Override
+//    public Optional<List<FrameArticleListResponseDto>> findMemberFrameArticleAllBySearchWord(Pageable page, String authorSubject, Long memberId) {
+//        return Optional.ofNullable(queryFactory.select(Projections.constructor(FrameArticleListResponseDto.class,
+//                        QFrameArticle.frameArticle.id.as("articleId"),
+//                        QFrameArticle.frameArticle.subject.as("subject"),
+//                        QFrame.frame.link.as("frameLink"),
+//                        ExpressionUtils.as(JPAExpressions.select(count(QLover.lover.id))
+//                                .from(QLover.lover)
+//                                .where(QLover.lover.article.id.eq(QFrameArticle.frameArticle.id)), "loverCnt"),
+//                        QFrameArticle.frameArticle.createdDate.as("createdDate"),
+//                        QFrameArticle.frameArticle.member.nickname.as("nickname"),
+//                        ExpressionUtils.as(JPAExpressions.select(QLover.lover.id)
+//                                .from(QLover.lover)
+//                                .where(QLover.lover.article.id.eq(QFrameArticle.frameArticle.id)
+//                                        , (loverMemberIdEq(memberId)))
+//                                .limit(1), "loverYn")
+//                ))
+//                .join(QFrameArticle.frameArticle.member, QMember.member).fetchJoin()
+//                .join(QFrameArticle.frameArticle.frame, QFrame.frame).fetchJoin()
+//                .where(frameArticleAuthorLikeIgnoreCase(authorSubject)
+//                        .or(frameArticleSubjectLikeIgnoreCase(authorSubject)))
+//                .orderBy(getOrderSpecifiers(page))
+//                .limit(page.getPageSize())
+//                .fetch());
+//    }
+//
+//    // 검색어를 통해 저자명 혹은 제목을 조회하여 검색 결과 반환 (비회원)
+//    @Override
+//    public Optional<List<FrameArticleListResponseDto>> findNonMemberFrameArticleAllBySearchWord(Pageable page, String authorSubject) {
+//        return Optional.ofNullable(queryFactory.select(Projections.constructor(FrameArticleListResponseDto.class,
+//                        QFrameArticle.frameArticle.id.as("articleId"),
+//                        QFrameArticle.frameArticle.subject.as("subject"),
+//                        QFrame.frame.link.as("frameLink"),
+//                        ExpressionUtils.as(JPAExpressions.select(count(QLover.lover.id))
+//                                .from(QLover.lover)
+//                                .where(QLover.lover.article.id.eq(QFrameArticle.frameArticle.id)), "loverCnt"),
+//                        QFrameArticle.frameArticle.createdDate.as("createdDate"),
+//                        QFrameArticle.frameArticle.member.nickname.as("nickname")))
+//                .join(QFrameArticle.frameArticle.member, QMember.member).fetchJoin()
+//                .join(QFrameArticle.frameArticle.frame, QFrame.frame).fetchJoin()
+//                .where(frameArticleAuthorLikeIgnoreCase(authorSubject)
+//                        .or(frameArticleSubjectLikeIgnoreCase(authorSubject)))
+//                .orderBy(getOrderSpecifiers(page))
+//                .limit(page.getPageSize())
+//                .fetch());
+//    }
 
     private OrderSpecifier[] getOrderSpecifiers(Pageable page) {
 
@@ -111,7 +149,7 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom{
                         ORDERS.add(orderDate);
                         break;
                     case "lover":
-                        NumberPath<Long> aliasCount = Expressions.numberPath( Long.class, "loverCnt");
+                        NumberPath<Long> aliasCount = Expressions.numberPath(Long.class, "loverCnt");
 
                         OrderSpecifier<?> orderLover = new OrderSpecifier(direction, aliasCount);
                         ORDERS.add(orderLover);
@@ -125,16 +163,16 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom{
         return null;
     }
 
-    private BooleanExpression loverMemberIdEq(Long memberId){
+    private BooleanExpression loverMemberIdEq(Long memberId) {
         return QLover.lover.memberId.eq(memberId);
     }
-//    private BooleanExpression loverArticleIdEq(Long articleId){
-//        return QLover.lover.article.id.eq(articleId);
-//    }
 
-    private BooleanExpression frameArticleIdEq(Long frameArticleId) {
-        return QFrameArticle.frameArticle.id.eq(frameArticleId);
+    private BooleanExpression frameArticleAuthorLikeIgnoreCase(String frameArticleAuthor) {
+        return QFrameArticle.frameArticle.member.nickname.likeIgnoreCase("%" + frameArticleAuthor + "%");
     }
 
+    private BooleanExpression frameArticleSubjectLikeIgnoreCase(String frameArticleSubject) {
+        return QFrameArticle.frameArticle.subject.likeIgnoreCase("%" + frameArticleSubject + "%");
+    }
 
 }

@@ -28,35 +28,35 @@ public class FrameArticleServiceImpl implements FrameArticleService {
     private final LoverRepository loverRepository;
 
     @Override
-    public List<FrameArticleListResponseDto> getHotFrameArticleList(UserDetail userDetail) {
+    public List<FrameArticleListResponseDto> getHotFrameArticleList(UserDetail userDetail, String searchWord) {
         PageRequest page = PageRequest.of(0, 10, Sort.Direction.DESC, "lover");
         if(userDetail != null){
-            return getMemberFrameArticleList(page, userDetail.getMember().getId());
+            return getMemberFrameArticleList(page, userDetail.getMember().getId(), searchWord);
         }else{
-            return getNonMemberFrameArticleList(page);
+            return getNonMemberFrameArticleList(page, searchWord);
         }
     }
 
     @Override
-    public List<FrameArticleListResponseDto> getRecentFrameArticleList(UserDetail userDetail) {
+    public List<FrameArticleListResponseDto> getRecentFrameArticleList(UserDetail userDetail, String searchWord) {
         PageRequest page = PageRequest.of(0, 10, Sort.Direction.DESC, "createdDate");
         List<FrameArticleListResponseDto> frameArticleList;
         if(userDetail != null){
-            frameArticleList = getMemberFrameArticleList(page, userDetail.getMember().getId());
+            frameArticleList = getMemberFrameArticleList(page, userDetail.getMember().getId(), searchWord);
         }else{
-            frameArticleList = getNonMemberFrameArticleList(page);
+            frameArticleList = getNonMemberFrameArticleList(page, searchWord);
         }
         return frameArticleList;
     }
 
     @Override
-    public List<FrameArticleListResponseDto> getRandomFrameArticleList(UserDetail userDetail) {
+    public List<FrameArticleListResponseDto> getRandomFrameArticleList(UserDetail userDetail, String searchWord) {
         PageRequest page = PageRequest.of(0, 10, Sort.Direction.DESC, "random");
         List<FrameArticleListResponseDto> frameArticleList;
         if(userDetail != null){
-            frameArticleList = getMemberFrameArticleList(page, userDetail.getMember().getId());
+            frameArticleList = getMemberFrameArticleList(page, userDetail.getMember().getId(), searchWord);
         }else{
-            frameArticleList = getNonMemberFrameArticleList(page);
+            frameArticleList = getNonMemberFrameArticleList(page, searchWord);
         }
         return frameArticleList;
     }
@@ -89,14 +89,15 @@ public class FrameArticleServiceImpl implements FrameArticleService {
         frameArticleRepository.delete(frameArticle);
     }
 
-    private List<FrameArticleListResponseDto> getMemberFrameArticleList(Pageable page, Long memberId){
-        Optional<List<FrameArticleListResponseDto>> frameArticles = frameArticleRepository.findMemberFrameArticles(page, memberId);
+    private List<FrameArticleListResponseDto> getMemberFrameArticleList(Pageable page, Long memberId, String searchWord){
+        Optional<List<FrameArticleListResponseDto>> frameArticles = frameArticleRepository.findMemberFrameArticles(page, memberId, searchWord);
         frameArticles.orElseThrow(()->
                 new FrameArticleException(FrameArticleExceptionMessage.NOT_FOUND_FRAME_ARTICLE_LIST));
         return frameArticles.get();
     }
-    private List<FrameArticleListResponseDto> getNonMemberFrameArticleList(Pageable page){
-        Optional<List<FrameArticleListResponseDto>> frameArticles = frameArticleRepository.findNonMemberFrameArticles(page);
+
+    private List<FrameArticleListResponseDto> getNonMemberFrameArticleList(Pageable page, String searchWord){
+        Optional<List<FrameArticleListResponseDto>> frameArticles = frameArticleRepository.findNonMemberFrameArticles(page, searchWord);
         frameArticles.orElseThrow(()->
                 new FrameArticleException(FrameArticleExceptionMessage.NOT_FOUND_FRAME_ARTICLE_LIST));
         return frameArticles.get();

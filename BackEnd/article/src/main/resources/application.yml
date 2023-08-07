@@ -1,13 +1,9 @@
-server:
-  port: 3304
-
 spring:
   application:
     name: article-service
   profiles:
     active: local
     include: jwt
-
 
 eureka:
   client:

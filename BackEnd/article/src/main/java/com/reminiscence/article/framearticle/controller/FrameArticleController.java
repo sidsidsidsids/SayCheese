@@ -35,8 +35,8 @@ public class FrameArticleController {
      *  author : 게시글 작성자
      */
     @GetMapping("/list/random")
-    public ResponseEntity<List<FrameArticleListResponseDto>> readRandomImageArticleList(@AuthenticationPrincipal UserDetail userDetail){
-        List<FrameArticleListResponseDto> randomImageArticleList = frameArticleService.getRandomFrameArticleList(userDetail);
+    public ResponseEntity<List<FrameArticleListResponseDto>> readRandomFrameArticleList(@AuthenticationPrincipal UserDetail userDetail, String searchWord){
+        List<FrameArticleListResponseDto> randomImageArticleList = frameArticleService.getRandomFrameArticleList(userDetail, searchWord);
         return new ResponseEntity<>(randomImageArticleList, HttpStatus.OK);
     }
     /**
@@ -51,12 +51,12 @@ public class FrameArticleController {
      *  author : 게시글 작성자
      */
     @GetMapping("/list/hot")
-    public ResponseEntity<List<FrameArticleListResponseDto>> readHotImageArticleList(@AuthenticationPrincipal UserDetail userDetail) {
-        List<FrameArticleListResponseDto> hotImageArticleList = frameArticleService.getHotFrameArticleList(userDetail);
+    public ResponseEntity<List<FrameArticleListResponseDto>> readHotFrameArticleList(@AuthenticationPrincipal UserDetail userDetail, String searchWord) {
+        List<FrameArticleListResponseDto> hotImageArticleList = frameArticleService.getHotFrameArticleList(userDetail, searchWord);
         return new ResponseEntity<>(hotImageArticleList, HttpStatus.OK);
     }
     /**
-     * 게시글 목록 좋아요 최신순 조회 API
+     * 게시글 목록 최신순 조회 API
      * @param
      *  userDetail : 로그인한 사용자 정보
      * @Return
@@ -67,8 +67,8 @@ public class FrameArticleController {
      *  author : 게시글 작성자
      */
     @GetMapping("/list/recent")
-    public ResponseEntity<List<FrameArticleListResponseDto>> readRecentImageArticleList(@AuthenticationPrincipal UserDetail userDetail) {
-        List<FrameArticleListResponseDto> recentImageArticleList = frameArticleService.getRecentFrameArticleList(userDetail);
+    public ResponseEntity<List<FrameArticleListResponseDto>> readRecentFrameArticleList(@AuthenticationPrincipal UserDetail userDetail, String searchWord) {
+        List<FrameArticleListResponseDto> recentImageArticleList = frameArticleService.getRecentFrameArticleList(userDetail, searchWord);
         return new ResponseEntity<>(recentImageArticleList, HttpStatus.OK);
     }
 
