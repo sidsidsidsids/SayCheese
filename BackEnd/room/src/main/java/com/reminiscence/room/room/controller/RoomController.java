@@ -2,6 +2,8 @@ package com.reminiscence.room.room.controller;
 
 import com.reminiscence.room.config.auth.UserDetail;
 import com.reminiscence.room.domain.Role;
+import com.reminiscence.room.exception.customexception.RoomException;
+import com.reminiscence.room.exception.message.RoomExceptionMessage;
 import com.reminiscence.room.message.Response;
 import com.reminiscence.room.message.custom_message.RoomMessage;
 import com.reminiscence.room.participant.service.ParticipantService;
@@ -25,6 +27,16 @@ import javax.validation.Valid;
 public class RoomController {
     private final RoomService roomService;
     private final ParticipantService participantService;
+
+    @PostMapping("/check")
+    public ResponseEntity<Response> checkConnection(
+            @AuthenticationPrincipal UserDetail userDetail){
+        if(userDetail == null){
+            return new ResponseEntity(Response.of(RoomMessage.ROOM_CONNECTION_ABLE), HttpStatus.OK);
+        }
+        roomService.checkRoomConnection(userDetail.getMember().getId());
+        return new ResponseEntity(Response.of(RoomMessage.ROOM_CONNECTION_ABLE), HttpStatus.OK);
+    }
 
     @PostMapping("/check/{roomCode}")
     public ResponseEntity<RoomCheckResponseDto> checkRoomPassword(

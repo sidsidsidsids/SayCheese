@@ -5,7 +5,7 @@ import com.reminiscence.room.message.ResponseMessage;
 public enum RoomMessage implements ResponseMessage {
     ROOM_WRITE_SUCCESS("방 생성이 완료되었습니다."),
     ROOM_DELETE_SUCCESS("방 삭제가 완료되었습니다."),
-    ROOM_PASSWORD_CHECK_SUCCESS("비밀번호가 일치합니다.");
+    ROOM_CONNECTION_ABLE("방 입장이 가능하십니다.");
 
     private String message;
 

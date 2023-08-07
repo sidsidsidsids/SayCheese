@@ -1,5 +1,6 @@
 package com.reminiscence.room.room.service;
 
+import com.reminiscence.room.domain.Participant;
 import com.reminiscence.room.domain.Room;
 import com.reminiscence.room.exception.customexception.RoomException;
 import com.reminiscence.room.exception.message.RoomExceptionMessage;
@@ -32,26 +33,32 @@ public class RoomServiceImpl implements RoomService{
         roomRepository.save(requestDto.toEntity());
     }
 
+
+    @Override
+    public void checkRoomConnection(Long memberId) {
+        Participant participant =
+                participantRepository.findByMemberIdAndConnectionY(memberId).orElse(null);
+
+        if(participant != null){
+            throw new RoomException(RoomExceptionMessage.ALREADY_IN_ROOM);
+        }
+    }
+
     @Override
     public void checkRoomPassword(String roomCode, String password) {
         WebClient build = WebClientBuild();
         checkSession(roomCode, build);
-
         Optional<Room> room = roomRepository.findByRoomCode(roomCode);
         room.orElseThrow(() -> new RoomException(RoomExceptionMessage.NOT_FOUND_ROOM));
-
         if(!room.get().getPassword().equals(password)){
             throw new RoomException(RoomExceptionMessage.NOT_MATCH_PASSWORD);
         }
-
         Long participantCount =
                 participantRepository.countByRoomId(room.get().getId());
 
         if(participantCount > room.get().getMaxCount()){
             throw new RoomException(RoomExceptionMessage.ROOM_IS_FULL);
         }
-
-
     }
     @Override
     public void deleteRoom(String roomCode) {

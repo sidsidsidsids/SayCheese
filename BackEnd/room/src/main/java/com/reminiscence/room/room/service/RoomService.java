@@ -6,4 +6,5 @@ public interface RoomService {
     void writeRoom(WriteRoomRequestDto requestDto);
     void deleteRoom(String roomCode);
     void checkRoomPassword(String roomCode, String password);
+    void checkRoomConnection(Long memberId);
 }
