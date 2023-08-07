@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 //import java.util.Map;
 
-
+@Transactional(readOnly = true)
 @Service
 public class MemberServiceImpl implements MemberService {
 
@@ -41,25 +41,7 @@ public class MemberServiceImpl implements MemberService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-//    @Override
-//    public Member login(MemberLoginRequestDto memberLoginRequestDto) throws Exception {
-//
-//        Member member = memberRepository.findByEmail(memberLoginRequestDto.getEmail());
-//        // 해당 아이디의 멤버가 없을 때
-//        if(member == null){
-//            return null;
-//        }
-//        // 비밀번호가 다를 경우
-//        if(!bCryptPasswordEncoder.matches(memberLoginRequestDto.getPassword(), member.getPassword())){
-//            return null;
-//        }
-//        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);;
-//        objectMapper.registerModule(new JavaTimeModule());
-//        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-//        MemberResponseDto memberResponseDto = objectMapper.convertValue(memberRepository.findByEmail(memberLoginRequestDto.getEmail()), MemberResponseDto.class);
-//        return memberResponseDto.toEntity();
-//    }
-
+    @Transactional
     @Override
     public ResponseEntity<Response> joinMember(MemberJoinRequestDto memberJoinRequestDto) throws Exception {
         memberJoinRequestDto.setPassword(bCryptPasswordEncoder.encode(memberJoinRequestDto.getPassword()));
@@ -132,10 +114,7 @@ public class MemberServiceImpl implements MemberService {
                 .snsType(member.getSnsType())
                 .personalAgreement(member.getPersonalAgreement())
                 .build();
-//        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);;
-//        objectMapper.registerModule(new JavaTimeModule());
-//        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-//        MemberInfoResponseDto memberInfoResponseDto = objectMapper.convertValue(member, MemberInfoResponseDto.class);
+
         return memberInfoResponseDto;
     }
 
@@ -143,16 +122,17 @@ public class MemberServiceImpl implements MemberService {
     public List<MemberSearchResponseDto> getMemberList(String key) throws SQLException {
 
         List<MemberSearchResponseDto> memberlist = memberRepository.searchMembers(key);
-//        List<Member> memberlist = memberRepository.getMemberList(key);
         return memberlist;
     }
 
+    @Transactional
     @Override
     public Member updateMemberPassword(MemberUpdatePasswordRequestDto memberUpdatePasswordRequestDto) throws Exception {
         Member member = memberUpdatePasswordRequestDto.toEntity();
         return memberRepository.save(member);
     }
 
+    @Transactional
     @Override
     public void deleteMember(long memberId) throws Exception {
         Member member = memberRepository.findById(memberId).orElse(null);
