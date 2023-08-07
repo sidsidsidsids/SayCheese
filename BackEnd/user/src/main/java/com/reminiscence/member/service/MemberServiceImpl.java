@@ -5,12 +5,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.reminiscence.config.auth.MemberDetail;
+import com.reminiscence.config.redis.RedisKey;
 import com.reminiscence.domain.Member;
+import com.reminiscence.exception.customexception.MemberException;
+import com.reminiscence.exception.message.MemberExceptionMessage;
 import com.reminiscence.member.dto.*;
 import com.reminiscence.member.repository.MemberRepository;
 import com.reminiscence.message.Response;
 import com.reminiscence.message.custom_message.MemberResponseMessage;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -27,33 +32,28 @@ import java.util.Map;
 //import java.util.Map;
 
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 @Service
 public class MemberServiceImpl implements MemberService {
 
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public MemberServiceImpl(MemberRepository memberRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
-        super();
-        this.memberRepository = memberRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
+
 
     @Transactional
     @Override
-    public ResponseEntity<Response> joinMember(MemberJoinRequestDto memberJoinRequestDto) throws Exception {
+    public void joinMember(MemberJoinRequestDto memberJoinRequestDto) throws Exception {
         memberJoinRequestDto.setPassword(bCryptPasswordEncoder.encode(memberJoinRequestDto.getPassword()));
         Member member = memberJoinRequestDto.toEntity();
         // 이메일 중복 시 HttpStatus를 Already_Reported 상태로 응답 전달
         if (memberRepository.findByEmail(member.getEmail()) != null)
-            return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_JOIN_FAILURE_EAMIL_DUPLICATED), HttpStatus.ALREADY_REPORTED);
+            throw new MemberException(MemberExceptionMessage.MEMBER_JOIN_FAILURE_EMAIL_DUPLICATED);
         // 닉네임 중복 시 HttpStatus를 Conflict 상태로 응답 전달
         if (memberRepository.findByNickname(member.getNickname()) != null)
-            return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_JOIN_FAILURE_NICKNAME_DUPLICATED), HttpStatus.CONFLICT);
+            throw new MemberException(MemberExceptionMessage.MEMBER_JOIN_FAILURE_NICKNAME_DUPLICATED);
         memberRepository.save(member);
-        return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_JOIN_SUCCESS), HttpStatus.OK);
     }
 
     @Override

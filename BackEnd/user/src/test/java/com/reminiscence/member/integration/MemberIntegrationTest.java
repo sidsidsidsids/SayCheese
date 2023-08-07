@@ -2,6 +2,7 @@ package com.reminiscence.member.integration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.reminiscence.config.redis.RedisKey;
 import com.reminiscence.filter.JwtProperties;
 import com.reminiscence.filter.JwtTokenProvider;
 import com.reminiscence.filter.JwtUtil;
@@ -43,6 +44,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +74,8 @@ public class MemberIntegrationTest {
     MemberService memberService;
     MockMvc mvc; // mockMvc 생성
 
+    @Autowired
+    RedisTemplate redisTemplate;
     @Autowired
     MemberRepository memberRepository;
 
@@ -115,6 +119,8 @@ public class MemberIntegrationTest {
     @DisplayName("회원가입 성공 테스트")
     public void testJoinMemberSuccess() throws Exception {
         //givenz
+        redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_TOKEN_PREFIX+"saycheese@gmail.com","2211", Duration.ofMinutes(3));
+        String code="2211";
         String email = "saycheese@gmail.com";
         String password = "1234";
         String nickname = "검정";
@@ -135,6 +141,7 @@ public class MemberIntegrationTest {
                 .profile(profile)
                 .snsId(snsId)
                 .snsType(snsType)
+                .code(code)
                 .build();
 
         mvc.perform(post("/api/member/join")
@@ -152,7 +159,8 @@ public class MemberIntegrationTest {
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("이름").attributes(key("constraints").value("이름 입력 필수")),
                                 fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value("")),
                                 fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디").attributes(key("constraints").value("")),
-                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value(""))
+                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value("")),
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("이메일 인증 번호").attributes(key("constraints").value(""))
                         ),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
@@ -164,6 +172,8 @@ public class MemberIntegrationTest {
     @DisplayName("회원가입 실패 테스트_이메일 중복")
     public void testJoinMemberFailure_DuplicatedEmail() throws Exception {
         //given
+        redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_TOKEN_PREFIX+"saycheese@gmail.com","2211", Duration.ofMinutes(3));
+        String code="2211";
         String email = "saycheese@gmail.com";
         String password = "1234";
         String nickname = "검정";
@@ -196,6 +206,7 @@ public class MemberIntegrationTest {
                 .profile(profile)
                 .snsId(snsId)
                 .snsType(snsType)
+                .code(code)
                 .build();
 
         mvc.perform(post("/api/member/join")
@@ -212,9 +223,11 @@ public class MemberIntegrationTest {
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("이름").attributes(key("constraints").value("이름 입력 필수")),
                                 fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value("")),
                                 fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디").attributes(key("constraints").value("")),
-                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value(""))
+                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value("")),
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("이메일 인증 번호").attributes(key("constraints").value(""))
                         ),
                         responseFields(
+                                fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 상태 코드"),
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
                         )
                 ));
@@ -224,6 +237,8 @@ public class MemberIntegrationTest {
     @DisplayName("회원가입 실패 테스트_닉네임 중복")
     public void testJoinMemberFailure_DuplicatedNickname() throws Exception {
         //given
+        redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_TOKEN_PREFIX+"saycheese2@gmail.com","2211", Duration.ofMinutes(3));
+        String code="2211";
         String email = "saycheese@gmail.com";
         String password = "1234";
         String nickname = "검정";
@@ -233,6 +248,7 @@ public class MemberIntegrationTest {
         String profile = "xxxxxxx";
         String snsId = "nosns";
         String snsType = "facebook";
+
 
         memberRepository.save(MemberJoinRequestDto.builder()
                 .email(email)
@@ -247,7 +263,7 @@ public class MemberIntegrationTest {
                 .build().toEntity());
 
         MemberJoinRequestDto memberJoinRequestDto = MemberJoinRequestDto.builder()
-                .email("email")
+                .email("saycheese2@gmail.com")
                 .password("password")
                 .nickname(nickname)
                 .genderFm('F')
@@ -256,8 +272,8 @@ public class MemberIntegrationTest {
                 .profile(profile)
                 .snsId(snsId)
                 .snsType(snsType)
+                .code(code)
                 .build();
-
         mvc.perform(post("/api/member/join")
                         .content(objectMapper.writeValueAsString(memberJoinRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -272,9 +288,11 @@ public class MemberIntegrationTest {
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("이름").attributes(key("constraints").value("이름 입력 필수")),
                                 fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value("")),
                                 fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디").attributes(key("constraints").value("")),
-                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value(""))
+                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value("")),
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("이메일 인증 번호").attributes(key("constraints").value(""))
                         ),
                         responseFields(
+                                fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 코드"),
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
                         )
                 ));

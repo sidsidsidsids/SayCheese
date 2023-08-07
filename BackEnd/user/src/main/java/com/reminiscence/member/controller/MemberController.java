@@ -3,23 +3,23 @@ package com.reminiscence.member.controller;
 //import com.reminiscence.JwtServiceImpl;
 
 import com.reminiscence.config.auth.MemberDetail;
-import com.reminiscence.config.redis.RefreshTokenService;
+import com.reminiscence.config.redis.RedisKey;
 import com.reminiscence.domain.Member;
-import com.reminiscence.filter.JwtTokenProvider;
+import com.reminiscence.exception.customexception.EmailException;
+import com.reminiscence.exception.message.EmailExceptionMessage;
 import com.reminiscence.member.dto.*;
 import com.reminiscence.member.service.MemberService;
 import com.reminiscence.message.Response;
 import com.reminiscence.message.custom_message.MemberResponseMessage;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +28,7 @@ import java.util.Map;
 import static com.reminiscence.filter.JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/member")
 @Slf4j
 public class MemberController {
@@ -35,23 +36,21 @@ public class MemberController {
     private static final String SUCCESS = "success";
     private static final String FAIL = "fail";
 
-    @Autowired
-    private MemberService memberService;
+    private final RedisTemplate redisTemplate;
 
-    public MemberController(MemberService memberService) {
-        super();
-        this.memberService = memberService;
-    }
+    private final MemberService memberService;
+
+
 
     @PostMapping("/join")
-    public ResponseEntity join(@Valid @RequestBody MemberJoinRequestDto requestDto, BindingResult bindingResult) throws Exception {
-
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
-        }
-
+    public ResponseEntity join(@Valid @RequestBody MemberJoinRequestDto requestDto) throws Exception {
         log.debug("MemberJoinRequestDto info : {}", requestDto);
-        return memberService.joinMember(requestDto);
+        String token=(String)redisTemplate.opsForValue().get(RedisKey.EMAIL_AUTH_TOKEN_PREFIX+requestDto.getEmail());
+        if(token==null || !token.equals(requestDto.getCode())){
+            throw new EmailException(EmailExceptionMessage.DATA_NOT_FOUND);
+        }
+        memberService.joinMember(requestDto);
+        return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_JOIN_SUCCESS), HttpStatus.OK);
     }
 
     @GetMapping("/join/{email}/id-check")

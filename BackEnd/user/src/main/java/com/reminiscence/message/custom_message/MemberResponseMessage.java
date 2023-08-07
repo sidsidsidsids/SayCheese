@@ -7,8 +7,6 @@ import lombok.Getter;
 public enum MemberResponseMessage implements ResponseMessage {
 
     MEMBER_JOIN_SUCCESS( "회원 가입이 완료되었습니다."),
-    MEMBER_JOIN_FAILURE_EAMIL_DUPLICATED( "아이디가 중복됩니다."),
-    MEMBER_JOIN_FAILURE_NICKNAME_DUPLICATED( "닉네임이 중복됩니다."),
     MEMBER_UPDATE_SUCCESS( "회원 정보 수정이 완료되었습니다."),
     MEMBER_ID_CHECK_SUCCESS( "사용 가능한 아이디입니다."),
     MEMBER_ID_CHECK_FAILURE( "이미 사용중인 아이디입니다."),

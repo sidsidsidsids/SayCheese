@@ -10,7 +10,7 @@ import java.util.List;
 public interface MemberService {
 
 //    Member login(MemberLoginRequestDto memberLoginRequestDto) throws Exception;
-    ResponseEntity joinMember(MemberJoinRequestDto memberJoinRequestDto) throws Exception;
+    void joinMember(MemberJoinRequestDto memberJoinRequestDto) throws Exception;
     Member emailCheck(String email) throws Exception;
     Member nicknameCheck(String nickname) throws Exception;
 //    /* Admin */
