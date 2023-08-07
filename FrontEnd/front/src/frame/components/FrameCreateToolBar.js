@@ -6,6 +6,7 @@ import Standard from "./CreateToolBarStandard";
 import BgColor from "./CreateToolBarBackground";
 import Objects from "./CreateToolBarObjects";
 import Text from "./CreateToolBarText";
+import Drawing from "./CreateToolBarDrawing";
 
 export default function CreateToolBar() {
   // toolBarItems 배열에 각각의 도구 항목을 정의합니다.
@@ -29,7 +30,7 @@ export default function CreateToolBar() {
       notice: "글을 추가해보세요",
       component: <Objects />,
     },
-    { toolBarItem: "그리기", notice: "그림을 그려보세요" },
+    { toolBarItem: "그리기", notice: "자유롭게 사용하세요" },
     { toolBarItem: "저장", notice: "마음에 들면 저장하세요" },
   ];
   // focusedTool state를 초기화하고, 기본값으로 첫 번째 도구를 선택합니다.
@@ -39,7 +40,7 @@ export default function CreateToolBar() {
     (item) => item.toolBarItem === focusedTool
   );
   const notice = toolBarItems[searchIndex].notice;
-  const focused = toolBarItems.find((item) => item.toolBarItem === focusedTool);
+
   return (
     <>
       <div className="ToolBar">
@@ -62,11 +63,12 @@ export default function CreateToolBar() {
         </ul>
         {/* 선택된 도구에 따른 상세 도구 */}
         <div className="detailedToolBar">
-          <span className="toolNotice">{notice}</span>
+          <div className="toolNotice">{notice}</div>
           {focusedTool === toolBarItems[0].toolBarItem && <Standard />}
           {focusedTool === toolBarItems[1].toolBarItem && <BgColor />}
           {focusedTool === toolBarItems[2].toolBarItem && <Objects />}
           {focusedTool === toolBarItems[3].toolBarItem && <Text />}
+          {focusedTool === toolBarItems[4].toolBarItem && <Drawing />}
         </div>
       </div>
     </>

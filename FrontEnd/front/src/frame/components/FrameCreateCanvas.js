@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "../css/FrameCreateCanvas.css";
 // third party
 import { fabric } from "fabric";
+
 import { useSelector } from "react-redux";
 
 // handleDownload 함수를 통해 캔버스 이미지를 다운로드할 수 있습니다
@@ -131,25 +132,59 @@ const UndecorateObjects = (canvas) => {
   if (canvas) {
     // canvas 유효성 검사
 
-    let activeObject = canvas.getActiveObject();
-    if (true) {
-      canvas.remove(activeObject);
+    let activeObjects = canvas.getActiveObjects(); // getActiveObject()가 아닌 getActiveObjects()로 수정
+    if (activeObjects) {
+      activeObjects.forEach(function (object) {
+        // canvas.activeObjects가 아닌 activeObjects로 수정
+        canvas.remove(object);
+      }); // forEach 함수 닫는 괄호 추가
     }
-    console.log("지우기 실행");
   }
 };
 
 // 프레임 텍스트 꾸미기 함수입니다
 //{customText: '', customTextColor: '#fff', customTextSize: '20', customTextFont: 'Roboto'}
 const DecorateText = (text, canvas) => {
-  canvas.add(
-    new fabric.Text(text.customText, {
-      fontFamily: text.customTextFont,
-      fontSize: text.customTextSize,
-      fill: text.customTextColor,
-    })
-  );
+  if (text) {
+    canvas.add(
+      new fabric.Text(text.customText, {
+        fontFamily: text.customTextFont,
+        fontSize: text.customTextSize,
+        fill: text.customTextColor,
+      })
+    );
+  }
 };
+// 캔버스 드로잉 함수입니다
+const addDrawing = (canvas, brush, drawingMode) => {
+  if (canvas) {
+    if (drawingMode) {
+      // 캔버스의 드로잉 모드를 true로 바꿔줍니다
+      // canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
+      const freebrush = new fabric.PencilBrush(canvas);
+
+      if (canvas.freeDrawingBrush) {
+        console.log(brush.brushColor);
+        freebrush.color = brush.brushColor;
+        freebrush.width = brush.brushValue;
+        freebrush.shadow = new fabric.Shadow({
+          blur: parseInt(brush.brushShadowValue, 10) || 0,
+          offsetX: parseInt(brush.brushShadowOffset, 10) || 0,
+          offsetY: parseInt(brush.brushShadowOffset, 10) || 0,
+          affectStroke: true,
+          color: brush.brushShadowColor, // Corrected property name
+        });
+
+        canvas.freeDrawingBrush = freebrush;
+        canvas.freeDrawingBrush.inverted = true;
+        // canvas.isDrawingMode = true; // Enable drawing mode
+        // canvas.requestRenderAll(); // Refresh the canvas
+      }
+    }
+  }
+};
+
+// 브러시 이미지 생성
 
 // Canvas
 const CanvasArea = () => {
@@ -157,9 +192,8 @@ const CanvasArea = () => {
   const [canvasInstance, setCanvasInstance] = useState(null);
 
   // store에서 canvas에 사용할 재료들을 가져옴
-  const { width, height, bgColor, bgImg, objects, text } = useSelector(
-    (store) => store.frame
-  );
+  const { width, height, bgColor, bgImg, objects, text, drawingMode, brush } =
+    useSelector((store) => store.frame);
 
   useEffect(() => {
     // useEffect를 사용하여 캔버스를 초기화하고 사다리형과 창문형에 맞게 투명한 블록들을 추가합니다. height와 width의 변화에 따라 캔버스의 크기를 조정합니다.
@@ -188,7 +222,7 @@ const CanvasArea = () => {
         });
     }
 
-    setCanvasInstance(newCanvas);
+    setCanvasInstance(newCanvas, brush);
 
     return () => {
       // `newCanvas`가 유효한지 확인하고
@@ -211,11 +245,32 @@ const CanvasArea = () => {
       DecorateText(text, canvasInstance);
     }
   }, [text]); // text가 바뀔 때만 리렌더합
+  // 드로잉 모드가 실행되는지 지켜보고 있다가 캔버스의 속성을 바꿉니다
+  useEffect(() => {
+    if (canvasInstance) {
+      console.log(drawingMode);
+      if (!drawingMode) {
+        canvasInstance.isDrawingMode = drawingMode;
+      } else {
+        canvasInstance.isDrawingMode = drawingMode;
+        addDrawing(canvasInstance, brush, drawingMode);
+      }
+    }
+  }, [drawingMode]);
+  // 드로잉 모드가 실행되었을 brush 데이터가 봐뀌면 brush를 바꿉니다
+  useEffect(() => {
+    if (canvasInstance) {
+      if (drawingMode) {
+        addDrawing(canvasInstance, brush, drawingMode);
+      }
+    }
+  }, [brush]);
+
   return (
-    <div>
+    <div className="canvasBackground">
       <canvas
         ref={canvasRef}
-        className="canvasBackground createCanvas"
+        className="createCanvas"
         name="canvas"
         id="canvas"
       />

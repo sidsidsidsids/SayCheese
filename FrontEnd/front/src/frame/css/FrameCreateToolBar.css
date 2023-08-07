@@ -3,7 +3,7 @@
   display: grid;
   grid-template-columns: 0.5fr 1fr 0fr; /* 의도치 않은 <canvasarear/>가 자동으로 생겨서 정렬을 망치기 때문에 0fr이 필요함  */
 }
-/* 툴탭*/
+/* ---------------- 툴탭 ---------------- */
 .ToolBar:nth-child(n) {
   margin: 20px;
 }
@@ -16,7 +16,6 @@
 .toolBarTap > li.focusedTool {
   background-color: #d9d9d9;
   border-radius: 50px 0 0 50px;
-  /* border-right: #d9d9d9 1px solid; */
 }
 
 .detailedToolBar {
@@ -24,10 +23,60 @@
   width: 300px;
   border-radius: 30px;
   padding: 10px;
+  padding-top: 20px;
+  overflow-y: auto;
+  min-height: 400px;
+  box-sizing: border-box;
 }
 
 .toolNotice {
   color: #131111;
+  text-shadow: 4px 4px 5px #777777, 8px 8px 5px #ffffff;
+  margin: 0 auto;
+  /* padding: 10px 30px; */
+}
+
+.alignCenter {
+  margin: 0 auto;
+  box-sizing: border-box;
+  width: 224px;
+  height: 40px;
+}
+
+/* ---------------- 규격 툴바 css  ---------------- */
+img.standardImg {
+  background-color: transparent;
+  margin: 10px;
+  display: inline-block;
+  margin: 30px auto;
+}
+img.standardImg:hover {
+  box-shadow: 5px 7px 7px 5px gray;
+}
+
+div.standardWrapper {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  align-content: center;
+}
+
+div.preview {
+  background-color: white;
+  width: 220px;
+  min-height: 220px;
+  border-radius: 30px;
+  margin: 0 auto 10px auto;
+  padding: 10px;
+  color: grey;
+  font-size: 20px;
+}
+
+div.preview > img {
+  width: 120px;
+
+  margin: auto;
+  object-fit: contain;
 }
 /* input color css */
 input[type="color"] {
@@ -35,7 +84,7 @@ input[type="color"] {
   height: 80px;
   border-radius: 50%;
   overflow: hidden;
-  margin: 0 0 20px 0;
+  margin: 10px 0;
 }
 
 input[type="color"]::-webkit-color-swatch {
@@ -51,51 +100,169 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 }
 
 /* label  */
-.createWrapper label{
-  margin: auto;
+.createWrapper label {
   text-align: center;
   display: block;
   font-size: 20px;
   color: grey;
-  background-color: red;
 }
-
-.createWrapper label.forFile{
-background-color: #123fd1;
-border: 2px solid gray;
-color: gray;
-background-color: white;
-padding: 8px 10px;
-border-radius: 30px;
-font-size: 20px;
-width: 200px;
+/* label for file */
+.createWrapper label.forFile {
+  background-color: white;
+  color: gray;
+  font-size: 20px;
+  padding: 8px 10px;
+  border: 2px solid rgb(255, 255, 255);
+  border-radius: 30px;
+  cursor: pointer;
+  width: 240px;
+  margin: 20px auto 10px auto;
+  box-sizing: border-box;
 }
 
 /* 디테일 툴바 인풋 css */
-.createWrapper input[type=text],
-.createWrapper input[type=number]
-{
-  width:270px;
-  padding: 0 10px;
-  margin: 10px 0;
-}
-/* 디테일 툴바 select css */
-.createWrapper #textFont{
-  font-size: 18px;
-  height: 30px;
-  width:292px;
-  margin: 10px auto;
+.createWrapper input[type="text"],
+.createWrapper input[type="number"] {
+  background-color: white;
+  color: gray;
+  font-size: 20px;
+  padding: 8px 10px;
+  border: 2px solid rgb(255, 255, 255);
+  border-radius: 30px;
+  cursor: pointer;
+  width: 240px;
+
+  margin: 20px auto 10px auto;
+  box-sizing: border-box;
 }
 
-div.detailedToolBar{
+/* 디테일 툴바 select css */
+.createWrapper #textFont {
+  /* 라벨만 보임 */
+  font-size: 18px;
+  height: 20px;
+  width: 292px;
+  margin: 10px auto;
+  cursor: pointer;
+}
+
+div.detailedToolBar {
   text-align: center;
   align-content: center;
 }
 
-.createWrapper input[type="file"]{
+.createWrapper input[type="file"] {
   font-size: 100px;
   position: absolute;
   left: 0;
   top: 0;
   opacity: 0;
+  cursor: pointer;
+}
+
+/* 드로잉 툴바 */
+input[type="range"] {
+  -webkit-appearance: none;
+  margin: 5px 0;
+  width: 100%;
+  background-color: transparent;
+}
+input[type="range"]:focus {
+  outline: none;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+  animation: 0.2s;
+  background: #686868;
+  border-radius: 25px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 1);
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -8px;
+}
+input[type="range"]:focus::-webkit-slider-runnable-track {
+  background: #ee7dc8;
+}
+.range-wrap {
+  margin: auto;
+  width: 290px;
+  position: relative;
+}
+.range-value {
+  position: absolute;
+  top: -50%;
+}
+.range-value span {
+  width: 30px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: #ee7dc8;
+  color: #fff;
+  font-size: 18px;
+  display: block;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  border-radius: 6px;
+}
+.range-value span:before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-top: 10px solid #ee7dc8;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  margin-top: -1px;
+}
+
+#delete-menual,
+#bg-menual,
+#object-menual {
+  width: 200px;
+  font-family: "iceJaram-Rg";
+  font-size: 20px;
+}
+
+.tooltip-container {
+  position: relative;
+}
+
+.tooltip-container .tooltip-content {
+  display: none;
+  position: absolute;
+  top: -100px; /* Adjust this value to position the tooltip correctly */
+  left: 50%; /* Center the tooltip horizontally */
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+.tooltip-container .tooltip-arrow {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: solid transparent;
+  border-width: 6px;
+  border-top-color: #333;
+}
+
+.tooltip-container:hover .tooltip-content {
+  display: block;
 }

@@ -1,6 +1,7 @@
 // 꾸미기 컴포넌트입니다
 import React, { useState, useRef } from "react";
 // redux
+import { Tooltip } from "react-tooltip";
 import { useDispatch } from "react-redux";
 import { Decorate, Undecorate } from "../../redux/features/frame/frameSlice";
 
@@ -38,11 +39,14 @@ export default function Objects() {
         onChange={addObjects}
       ></input>
 
-      <label htmlFor="deleteObjects">
-        이미지를 삭제하려면 <br /> 이미지를 클릭하고 <br />
-        삭제 버튼을 클릭하세요
-      </label>
+      <Tooltip id="object-menual" place="bottom" />
+
       <button
+        data-tooltip-place="bottom"
+        data-tooltip-id="object-menual"
+        data-tooltip-content="이미지를 삭제하려면
+              이미지를 클릭하고
+              삭제 버튼을 클릭하세요"
         id="deleteObjects"
         type="button"
         value="삭제하기"

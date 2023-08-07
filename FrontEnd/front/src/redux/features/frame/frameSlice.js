@@ -9,6 +9,8 @@ const initialState = {
   bgImg: false,
   objects: false,
   text: false,
+  brush: false,
+  drawingMode: false,
 };
 
 // 액션 생성 함수
@@ -21,6 +23,7 @@ const frameSlice = createSlice({
   reducers: {
     // 프레임 규격
     Resize: (state, action) => {
+      state.drawingMode = false;
       state.width = action.payload.width;
       state.height = action.payload.height;
     },
@@ -44,20 +47,33 @@ const frameSlice = createSlice({
     // 프레임 오브젝트
     Decorate: (state, action) => {
       state.objects = action.payload;
-      console.log("(*ᴗ͈ˬᴗ͈)ꕤ*.ﾟ");
-      console.log("스티커 파일함에 담긴 수", state.objects.length);
     },
     Undecorate: (state) => {
       console.log("언데코");
     },
     addText: (state, action) => {
       state.text = action.payload;
-      console.log(`텍스트 추가`, state.text);
+    },
+    SwitchDrawingMode: (state) => {
+      state.drawingMode = !state.drawingMode;
+    },
+    addDrawing: (state, action) => {
+      state.brush = action.payload;
+      console.log("(*ᴗ͈ˬᴗ͈)ꕤ*.ﾟ");
+      console.log(action.payload);
     },
   },
 });
 
-export const { Resize, Repaint, RemoveBgImg, Decorate, Undecorate, addText } =
-  frameSlice.actions;
+export const {
+  Resize,
+  Repaint,
+  RemoveBgImg,
+  Decorate,
+  Undecorate,
+  addText,
+  addDrawing,
+  SwitchDrawingMode,
+} = frameSlice.actions;
 
 export default frameSlice.reducer;

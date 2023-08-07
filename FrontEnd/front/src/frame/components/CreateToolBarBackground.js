@@ -1,9 +1,11 @@
 // 프레임 배경을 바꾸는 툴의 디테일 컴포넌트입니다
 import React, { useState, useRef } from "react";
 // third party
+import { Tooltip } from "react-tooltip";
 import { useDispatch, useSelector } from "react-redux";
-// redux
+
 import { Repaint, RemoveBgImg } from "../../redux/features/frame/frameSlice";
+import Button from "../../Button";
 
 export default function BgColor() {
   const [customColor, setCustomColor] = useState();
@@ -44,16 +46,21 @@ export default function BgColor() {
 
   return (
     <>
-      <br></br>
-      <label htmlFor="bgColor">색을 선택할 수 있습니다.</label>
-      <br />
+      <Tooltip id="bg-menual" place="bottom" />
+      <label
+        htmlFor="bgColor"
+        data-tooltip-place="bottom"
+        data-tooltip-id="bg-menual"
+        data-tooltip-content="배경을 바꾸면 프레임의 꾸미기는 모두 초기화됩니다"
+      >
+        색을 선택할 수 있습니다.
+      </label>
       <input id="bgColor" type="color" value={bgColor} onChange={colorPick} />
 
       <br></br>
       <label htmlFor="bgImage" className="forFile">
         배경 이미지 추가
       </label>
-      <br />
       <input
         id="bgImage"
         type="file"
@@ -61,22 +68,18 @@ export default function BgColor() {
         ref={imgRef}
         onChange={saveImgFile}
       />
-      <div>이미지 미리보기 </div>
-
-      {bgImg ? (
-        <img width="100px" src={bgImg} alt="배경 이미지 미리보기" />
-      ) : (
-        <br />
-      )}
-      <br />
-      <button
-        type="buttom"
+      <div className="preview">
+        이미지 미리보기
+        {bgImg ? <img src={bgImg} alt="배경 이미지 미리보기" /> : ""}
+      </div>
+      <Button
+        className="alignCenter"
+        text={"배경 이미지 제거하기"}
+        type="button"
         onClick={() => {
           resetInput();
         }}
-      >
-        이미지 제거하기
-      </button>
+      />
     </>
   );
 }
