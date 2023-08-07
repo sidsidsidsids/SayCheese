@@ -1,0 +1,12 @@
+.modal-button {
+  padding: 10px 15px;
+  margin-right: 10px;
+  cursor: pointer;
+  border: 1px solid gray;
+  background: #fbc8d4;
+  border-radius: 3px;
+}
+
+.modal-button:last-child {
+  margin-right: 0;
+}
