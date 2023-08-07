@@ -1,0 +1,40 @@
+[[Notice-API]]
+== Notice API
+
+
+[[Notice-작성-API]]
+=== Notice 작성 API
+operation::NoticeIntegrationTest/writeNoticeArticleSuccessTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+
+=== Notice 작성 API(일반 사용자 시도 시)
+operation::NoticeIntegrationTest/writeNoticeArticleAuthFailTest[snippets='http-request,request-headers,request-fields,http-response']
+
+=== Notice 작성 API(글이 짧을 경우)
+operation::NoticeIntegrationTest/writeNoticeArticleLowerSubjectFailTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+
+[[Notice-수정-API]]
+
+=== Notice 수정 API
+operation::NoticeIntegrationTest/modifyNoticeArticleSuccessTest[snippets='http-request,request-headers,request-fields,path-parameters,http-response,response-fields']
+
+=== Notice 수정 API(일반 사용자 시도 시)
+operation::NoticeIntegrationTest/modifyNoticeArticleAuthFailTest[snippets='http-request,request-headers,request-fields,path-parameters,http-response']
+
+=== Notice 수정 API(글이 짧을 경우)
+operation::NoticeIntegrationTest/modifyNoticeArticleLowerSubjectFailTest[snippets='http-request,request-headers,request-fields,path-parameters,http-response,response-fields']
+
+=== Notice 수정 API(없는 번호인 경우)
+operation::NoticeIntegrationTest/modifyNoticeArticleNotExistsIdFailTest[snippets='http-request,request-headers,request-fields,path-parameters,http-response,response-fields']
+
+[[Notice-조회-API]]
+
+=== Notice 목록 조회 API(정상)
+operation::NoticeIntegrationTest/getNoticeArticleListSuccessTest[snippets='http-request,request-parameters,http-response,response-fields']
+
+[[Notice-상세-조회-API]]
+
+=== Notice 상세 조회 API(정상)
+operation::NoticeIntegrationTest/getNoticeArticleDetailSuccessTest[snippets='http-request,path-parameters,http-response,response-fields']
+
+=== Notice 상세 조회 API(잘못된 번호가 들어올 시)
+operation::NoticeIntegrationTest/getNoticeArticleDetailNotExistsIdFailTest[snippets='http-request,path-parameters,http-response,response-fields']
