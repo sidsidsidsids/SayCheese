@@ -86,7 +86,7 @@ public class LoverIntegrationTest {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+memberToken);
 
-        mvc.perform(post("/api/article/lover/image/{articleId}", articleId)
+        mvc.perform(post("/api/article/lover/{articleId}", articleId)
                     .headers(headers)
                     .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -106,7 +106,7 @@ public class LoverIntegrationTest {
         Long articleId = 100L;
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+memberToken);
-        mvc.perform(post("/api/article/lover/image/{articleId}", articleId)
+        mvc.perform(post("/api/article/lover/{articleId}", articleId)
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -132,7 +132,7 @@ public class LoverIntegrationTest {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+memberToken);
 
-        mvc.perform(delete("/api/article/lover/image/{articleId}", articleId)
+        mvc.perform(delete("/api/article/lover/{articleId}", articleId)
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -151,7 +151,7 @@ public class LoverIntegrationTest {
         Long articleId = 100L;
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+memberToken);
-        mvc.perform(delete("/api/article/lover/image/{articleId}", articleId)
+        mvc.perform(delete("/api/article/lover/{articleId}", articleId)
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
