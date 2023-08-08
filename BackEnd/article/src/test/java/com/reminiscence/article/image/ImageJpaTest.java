@@ -1,9 +1,9 @@
 package com.reminiscence.article.image;
 
+import com.reminiscence.article.common.Pagination;
 import com.reminiscence.article.domain.Image;
 import com.reminiscence.article.domain.ImageOwner;
 import com.reminiscence.article.domain.Member;
-import com.reminiscence.article.image.dto.OwnerImageResponseDto;
 import com.reminiscence.article.image.dto.RandomTagResponseDto;
 import com.reminiscence.article.image.repository.ImageOwnerRepository;
 import com.reminiscence.article.image.repository.ImageRepository;
@@ -17,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
@@ -62,16 +63,15 @@ public class ImageJpaTest {
     public void RecentOwnerImageTest(){
         // given
         Long memberId = 1L;
-        int PAGE_SIZE = 5;
-        PageRequest page = PageRequest.of(0, PAGE_SIZE, Sort.Direction.DESC, "createdDate");
+        int PAGE = 1;
+        PageRequest page = PageRequest.of(PAGE, Pagination.DEFAULT_OWN_IMAGE_PER_PAGE_SIZE, Sort.Direction.DESC, "createdDate");
 
         // when
-        List<OwnerImageResponseDto> recentOwnerImage = imageRepository.findRecentOwnerImage(page, memberId).orElse(null);
+        Page<Image> images = imageRepository.findRecentOwnerImage(memberId, page).orElse(null);
 
         // then
-        assertNotNull(recentOwnerImage);
-        assertEquals(PAGE_SIZE, recentOwnerImage.size());
-        assertEquals(17, recentOwnerImage.get(0).getImageId());
+        assertNotNull(images);
+        assertEquals(6, images.getTotalElements());
     }
 
     @Test
