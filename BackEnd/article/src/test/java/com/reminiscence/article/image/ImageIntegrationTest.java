@@ -29,10 +29,13 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.requestHe
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -73,6 +76,37 @@ public class ImageIntegrationTest {
                 .withClaim("memberId",String.valueOf(member.getId()))
                 .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
     }
+    @Test
+    @DisplayName("소유한 이미지 최근 기준 조회(정상)")
+    public void getNoticeArticleListSuccessTest() throws Exception {
+        int page = 1;
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization","Bearer "+ adminToken);
+        mvc.perform(get("/api/image?page=" + page)
+                        .headers(headers)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("jwt 토큰")),
+                        requestParameters(
+                                parameterWithName("page").description("page")
+                        ),
+                        responseFields(
+                                fieldWithPath("pageNavigator").type(JsonFieldType.OBJECT).description("페이지 정보"),
+                                fieldWithPath("pageNavigator.curPage").type(JsonFieldType.NUMBER).description("현재 페이지"),
+                                fieldWithPath("pageNavigator.totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 수"),
+                                fieldWithPath("pageNavigator.totalDataCount").type(JsonFieldType.NUMBER).description("전체 데이터 개수"),
+                                fieldWithPath("pageNavigator.prevNavigation").type(JsonFieldType.BOOLEAN).description("이전 페이지네이션 존재 유무"),
+                                fieldWithPath("pageNavigator.nextNavigation").type(JsonFieldType.BOOLEAN).description("다음 페이지네이션 존재 유무"),
+                                fieldWithPath("imageVoList").type(JsonFieldType.ARRAY).description("공지 글 목록 리스트"),
+                                fieldWithPath("imageVoList[].imageId").type(JsonFieldType.NUMBER).description("글 번호"),
+                                fieldWithPath("imageVoList[].imageLink").type(JsonFieldType.STRING).description("이미지 링크"),
+                                fieldWithPath("imageVoList[].createdDate").type(JsonFieldType.STRING).description("이미지 저장일")
+                                )
+                ));
+    }
+
     @Test
     @DisplayName("이미지 소유자 삭제 테스트")
     public void deleteImageOwnerSuccessTest() throws Exception {
