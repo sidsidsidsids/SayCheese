@@ -7,6 +7,7 @@ import com.reminiscence.room.exception.customexception.ParticipantException;
 import com.reminiscence.room.exception.customexception.RoomException;
 import com.reminiscence.room.exception.message.ParticipantExceptionMessage;
 import com.reminiscence.room.exception.message.RoomExceptionMessage;
+import com.reminiscence.room.participant.dto.ParticipantRoomUserResponseDto;
 import com.reminiscence.room.participant.dto.ParticipantUpdateStreamIdRequestDto;
 import com.reminiscence.room.participant.dto.ParticipantWriteRequestDto;
 import com.reminiscence.room.participant.repository.ParticipantRepository;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,6 +25,17 @@ import java.util.Optional;
 public class ParticipantServiceImpl implements ParticipantService{
     private final ParticipantRepository participantRepository;
     private final RoomRepository roomRepository;
+
+
+    @Override
+    public List<ParticipantRoomUserResponseDto> getRoomUserParticipant(String roomCode) {
+        Optional<Room> room = roomRepository.findByRoomCode(roomCode);
+        room.orElseThrow(()->
+                new RoomException(RoomExceptionMessage.NOT_FOUND_ROOM));
+
+        participantRepository.findUserByRoomID(room.get().getId());
+        return null;
+    }
 
     @Override
     public void writeParticipant(ParticipantWriteRequestDto requestDto, Member member) {

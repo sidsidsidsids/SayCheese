@@ -3,10 +3,7 @@ package com.reminiscence.room.participant.controller;
 import com.reminiscence.room.config.auth.UserDetail;
 import com.reminiscence.room.message.Response;
 import com.reminiscence.room.message.custom_message.ParticipantMessage;
-import com.reminiscence.room.participant.dto.ParticipantDeleteRequestDto;
-import com.reminiscence.room.participant.dto.ParticipantUpdateConnectionRequestDto;
-import com.reminiscence.room.participant.dto.ParticipantUpdateStreamIdRequestDto;
-import com.reminiscence.room.participant.dto.ParticipantWriteRequestDto;
+import com.reminiscence.room.participant.dto.*;
 import com.reminiscence.room.participant.service.ParticipantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,12 +12,19 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/room/participant")
 public class ParticipantController {
     private final ParticipantService participantService;
+
+    @GetMapping("/{roomCode}")
+    public ResponseEntity<List<ParticipantRoomUserResponseDto>> readRoomUserParticipant(@PathVariable String roomCode){
+        List<ParticipantRoomUserResponseDto> roomUserParticipant = participantService.getRoomUserParticipant(roomCode);
+        return new ResponseEntity(roomUserParticipant, HttpStatus.OK);
+    }
 
     @PostMapping
     public ResponseEntity<Response> writeParticipant(
