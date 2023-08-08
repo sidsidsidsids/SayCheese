@@ -3,12 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Tooltip } from "react-tooltip";
 import { useSelector, useDispatch } from "react-redux";
 
-import {
-  addDrawing,
-  SwitchDrawingMode,
-} from "../../redux/features/frame/frameSlice";
-
-import Button from "../../Button";
+import { Undecorate, AddDrawing } from "../../redux/features/frame/frameSlice";
 
 export default function Drawing() {
   const [brushValue, setBrushValue] = useState(3);
@@ -53,7 +48,7 @@ export default function Drawing() {
     };
 
     if (drawingMode) {
-      dispatch(addDrawing(payload));
+      dispatch(AddDrawing(payload));
     }
   }, [
     brushValue,
@@ -70,7 +65,7 @@ export default function Drawing() {
   }, [updatePayload]);
 
   return (
-    <div>
+    <>
       <label htmlFor="brushColor">펜 색과 두께를 골라보세요</label>
       <input
         type="color"
@@ -149,22 +144,29 @@ export default function Drawing() {
           }}
         />
       </div>
-      <button type="button" onClick={() => dispatch(SwitchDrawingMode())}>
-        {message}
-      </button>
-      <div className="tooltip-container">
-        <Button
-          className={"alignCenter"}
-          text={"꾸미기 이미지 제거하기"}
+      <div className="alignTwoButtons">
+        <button
           type="button"
-          data-tooltip-id="delete-menual"
-        ></Button>
-        <div className="tooltip-content" id="delete-menual">
-          <div className="tooltip-arrow"></div>
-          드로잉을 삭제하기 위해서는 먼저 펜을 비활성화 해주세요. 그리고
-          삭제하고 싶은 글자를 클릭하고 삭제버튼을 누르세요
-        </div>
+          className="btn"
+          onClick={() => dispatch(Undecorate())}
+        >
+          {message}
+        </button>
+        <button
+          id="deleteDrawings"
+          type="button"
+          value="삭제하기"
+          className="btn aligncenter"
+          onClick={() => dispatch(Undecorate())}
+          data-tooltip-place="top"
+          data-tooltip-id="object-menual"
+          data-tooltip-content="드로잉을 삭제하기 위해서는 먼저 펜을 비활성화 해주세요. 그리고
+          삭제하고 싶은 글자를 클릭하고 삭제버튼을 누르세요"
+        >
+          삭제하기
+        </button>
+        <Tooltip id="object-menual" place="top" />
       </div>
-    </div>
+    </>
   );
 }

@@ -27,33 +27,35 @@ export default function Objects() {
 
   return (
     <div>
-      <label htmlFor="objects" className="forFile">
-        스티커를 추가하세요
-      </label>
+      <label htmlFor="objects">이미지를 추가해서 프레임을 꾸며보세요</label>
+      <div className="alignTwoButtons">
+        <label htmlFor="objects" className="forFile">
+          스티커 추가
+        </label>
+        <input
+          id="objects"
+          type="file"
+          accept="image/*"
+          ref={imgRef}
+          onChange={addObjects}
+        ></input>
 
-      <input
-        id="objects"
-        type="file"
-        accept="image/*"
-        ref={imgRef}
-        onChange={addObjects}
-      ></input>
-
-      <Tooltip id="object-menual" place="bottom" />
-
-      <button
-        data-tooltip-place="bottom"
-        data-tooltip-id="object-menual"
-        data-tooltip-content="이미지를 삭제하려면
-              이미지를 클릭하고
-              삭제 버튼을 클릭하세요"
-        id="deleteObjects"
-        type="button"
-        value="삭제하기"
-        onClick={deleteObjects}
-      >
-        삭제하기
-      </button>
+        <button
+          id="deleteObjects"
+          type="button"
+          value="삭제하기"
+          onClick={deleteObjects}
+          className="btn aligncenter"
+          data-tooltip-place="bottom-start"
+          data-tooltip-id="object-menual"
+          data-tooltip-content="이미지를 삭제하려면
+          이미지를 클릭하고
+                삭제 버튼을 클릭하세요"
+        >
+          삭제하기
+        </button>
+        <Tooltip id="object-menual" place="bottom-start" />
+      </div>
     </div>
   );
 }

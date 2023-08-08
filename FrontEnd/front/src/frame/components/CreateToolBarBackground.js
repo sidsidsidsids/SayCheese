@@ -56,11 +56,28 @@ export default function BgColor() {
         색을 선택할 수 있습니다.
       </label>
       <input id="bgColor" type="color" value={bgColor} onChange={colorPick} />
-
-      <br></br>
-      <label htmlFor="bgImage" className="forFile">
-        배경 이미지 추가
+      <label
+        htmlFor="bgColor"
+        data-tooltip-place="top"
+        data-tooltip-id="bg-menual"
+        data-tooltip-content="배경을 바꾸면 프레임의 꾸미기는 모두 초기화됩니다"
+      >
+        배경 이미지를 첨부할 수 있습니다.
       </label>
+      <div className="alignTwoButtons">
+        <label htmlFor="bgImage" className="forFile">
+          이미지 파일
+        </label>
+        <button
+          className="btn "
+          type="button"
+          onClick={() => {
+            resetInput();
+          }}
+        >
+          제거하기
+        </button>
+      </div>
       <input
         id="bgImage"
         type="file"
@@ -69,17 +86,9 @@ export default function BgColor() {
         onChange={saveImgFile}
       />
       <div className="preview">
-        이미지 미리보기
+        <div>이미지 미리보기</div>
         {bgImg ? <img src={bgImg} alt="배경 이미지 미리보기" /> : ""}
       </div>
-      <Button
-        className="alignCenter"
-        text={"배경 이미지 제거하기"}
-        type="button"
-        onClick={() => {
-          resetInput();
-        }}
-      />
     </>
   );
 }

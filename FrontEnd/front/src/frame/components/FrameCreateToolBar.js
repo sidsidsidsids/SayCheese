@@ -7,6 +7,7 @@ import BgColor from "./CreateToolBarBackground";
 import Objects from "./CreateToolBarObjects";
 import Text from "./CreateToolBarText";
 import Drawing from "./CreateToolBarDrawing";
+import Saving from "./CreateToolBarSaving";
 
 export default function CreateToolBar() {
   // toolBarItems 배열에 각각의 도구 항목을 정의합니다.
@@ -69,6 +70,7 @@ export default function CreateToolBar() {
           {focusedTool === toolBarItems[2].toolBarItem && <Objects />}
           {focusedTool === toolBarItems[3].toolBarItem && <Text />}
           {focusedTool === toolBarItems[4].toolBarItem && <Drawing />}
+          {focusedTool === toolBarItems[5].toolBarItem && <Saving />}
         </div>
       </div>
     </>

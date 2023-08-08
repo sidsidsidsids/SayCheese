@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import Select from "react-select";
 // local
-import { addText } from "../../redux/features/frame/frameSlice";
+import { AddText } from "../../redux/features/frame/frameSlice";
 import "../css/CreateToolBarText.css";
 
 export default function Text() {
@@ -71,7 +71,6 @@ export default function Text() {
         id="textFont"
         onChange={(e) => {
           setCustomTextFont(e.value);
-          console.log(e.value);
         }}
         options={[
           { value: "Black Han Sans", label: "Black Han Sans" },
@@ -89,12 +88,17 @@ export default function Text() {
           { value: "GangwonEdu_OTFBoldA", label: "강원교육모두체" },
         ]}
       />
-      <br />
-      <button type="button" onClick={(e) => dispatch(addText(payload))}>
-        추가하기
-      </button>
-      <br />
-      <button style={{ fontFamily: "Jua" }}>삭제하기</button>
+      <div className="alignTwoButtons">
+        <button
+          type="button"
+          onClick={(e) => dispatch(AddText(payload))}
+          className="btn"
+        >
+          추가하기
+        </button>
+        <br />
+        <button className="btn">삭제하기</button>
+      </div>
     </>
   );
 }
