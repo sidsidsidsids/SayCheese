@@ -1,0 +1,39 @@
+a {
+  text-decoration: none;
+}
+
+/* .DropDownMenu > li {
+  width: 100%;
+  float: left;
+  text-align: center;
+} */
+
+.DropDownMenu a {
+  color: black;
+}
+
+.DropDownSubMenu {
+  height: 0;
+  overflow: hidden;
+  transition: height 0.5s;
+}
+
+.DropDownMenu > li:hover {
+  transition-duration: 0.4s;
+}
+
+.MyPageHover:hover .DropDownSubMenu {
+  height: 25px;
+}
+
+.HoverEffect {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  color: black;
+  transition: color 0.3s;
+}
+
+.HoverEffect:hover {
+  color: #ea5455;
+}

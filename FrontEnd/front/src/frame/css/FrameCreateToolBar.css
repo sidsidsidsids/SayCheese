@@ -1,0 +1,31 @@
+/* 툴탭과 툴탭 디테일 정렬 */
+.ToolBar {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr 0fr; /* 의도치 않은 <canvasarear/>가 자동으로 생겨서 정렬을 망치기 때문에 0fr이 필요함  */
+}
+/* 툴탭*/
+.ToolBar:nth-child(n) {
+  margin: 20px;
+}
+
+.toolBarTap > li {
+  padding: 25px 10px 25px 30px;
+  list-style: none;
+}
+
+.toolBarTap > li.focusedTool {
+  background-color: #d9d9d9;
+  border-radius: 50px 0 0 50px;
+  /* border-right: #d9d9d9 1px solid; */
+}
+
+.detailedToolBar {
+  background-color: #d9d9d9;
+  width: 300px;
+  border-radius: 30px;
+  padding: 10px;
+}
+
+.toolNotice {
+  color: #131111;
+}

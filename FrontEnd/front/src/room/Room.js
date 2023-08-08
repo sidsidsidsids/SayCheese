@@ -22,6 +22,8 @@ var sessionConnectId;
 var joinUsers;
 var locationX;
 var locationY;
+// const accessToken = localStorage.getItem("accessToken");
+const accessToken = "sadasdsadsa";
 const Room = () => {
   const params = useParams();
   const navigate = useNavigate();
@@ -44,6 +46,27 @@ const Room = () => {
   useEffect(() => {
     window.addEventListener("beforeunload", onbeforeunload);
     joinSession();
+    setTimeout(async () => {
+      try {
+        const response = await axios.post(
+          APPLICATION_SERVER_URL + "api/room",
+          {
+            password: "1234",
+            maxCount: 4,
+            mode: "game",
+            roomCode: mySessionId,
+            specification: "gradle",
+          },
+          {
+            headers: {
+              // Authorization:
+            },
+          }
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    });
     return () => {
       window.removeEventListener("beforeunload", onbeforeunload);
     };
@@ -52,6 +75,27 @@ const Room = () => {
   useEffect(() => {
     joinUsers = [publisher, ...subscribers];
   }, [publisher, subscribers]);
+
+  useEffect(() => {
+    if (roomStatus === 2) {
+      setTimeout(async () => {
+        try {
+          const response = await axios.delete(
+            APPLICATION_SERVER_URL + "api/room",
+            { roomCode: mySessionId },
+            {
+              headers: {
+                // Authorization:
+              },
+            }
+          );
+          navigate("/");
+        } catch (error) {
+          console.log(error);
+        }
+      }, 3000);
+    }
+  }, [roomStatus]);
 
   const onbeforeunload = (event) => {
     leaveSession();
@@ -139,6 +183,7 @@ const Room = () => {
       session.disconnect();
     }
 
+    setMySessionId(undefined);
     setSession(undefined);
     setSubscribers([]);
     setMainStreamManager(undefined);
@@ -378,6 +423,22 @@ const Room = () => {
     gamePhase(4);
   };
 
+  const handleDownload = () => {
+    let range = document.querySelector(".room-main");
+    console.log(range);
+    const imageURL = range.style.backgroundImage;
+    console.log(imageURL);
+    const imageURLCleaned = imageURL.replace(/url\(['"]?(.*?)['"]?\)/, "$1");
+    // const imageElement = document.createElement("img");
+    // imageElement.src = imageURLCleaned;
+    const downloadLink = document.createElement("a");
+    downloadLink.href = imageURLCleaned;
+    downloadLink.download = `${sessionConnectId}.png`; // 원하는 파일명 설정
+
+    // 다운로드 링크 클릭 이벤트 트리거
+    downloadLink.click();
+  };
+
   const handleGameMode = async (sessionId) => {
     try {
       const request = await axios.post(
@@ -405,6 +466,25 @@ const Room = () => {
     }
   };
 
+  const roomOut = async (sessionId) => {
+    try {
+      const response = await axios.delete(
+        APPLICATION_SERVER_URL + "api/room",
+        { roomCode: sessionId },
+        {
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+            Authorization: `${accessToken}`,
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
+      navigate("/");
+    } catch (error) {
+      console.error("Error check: ", error)
+    }
+  }
+
   return (
     <div className="room">
       {roomStatus === 2 ? (
@@ -412,16 +492,21 @@ const Room = () => {
           <div className="room-top">
             <RoomHeader status={roomStatus} />
             <RoomButtons
-              onConfirm={() => {
+              onButton1={() => {
                 navigate("/");
               }}
-              onClose={() => {
+              onButton2={() => {
+                handleDownload();
+              }}
+              onButton3={() => {
                 setRoomStatus(1);
               }}
               buttonName1="나가기"
-              buttonName2="사진 공유"
+              buttonName2="사진 다운"
+              buttonName3="사진 공유"
               option1={false}
-              option2={!isHost}
+              option2={false}
+              option3={!isHost}
             />
           </div>
           <div className="room-mid">
@@ -447,16 +532,19 @@ const Room = () => {
           <div className="room-top">
             <RoomHeader status={roomStatus} />
             <RoomButtons
-              onConfirm={() => {
+              onButton1={() => {}}
+              onButton2={() => {
                 setRoomStatus(2);
               }}
-              onClose={() => {
+              onButton3={() => {
                 setRoomStatus(0);
               }}
-              buttonName1="촬영하기"
-              buttonName2="다시 찍기"
-              option1={!isHost}
+              buttonName1="나가기"
+              buttonName2="촬영하기"
+              buttonName3="다시 찍기"
+              option1={true}
               option2={!isHost}
+              option3={!isHost}
             />
           </div>
           <div className="room-mid">
@@ -505,22 +593,23 @@ const Room = () => {
           <div className="room-top">
             <RoomHeader status={roomStatus} />
             <RoomButtons
-              onConfirm={() => {
-                console.log(session);
-                handleGameMode(mySessionId);
-
-                console.log("COMPLE");
+              onButton1={() => {
+                navigate("/");
               }}
-              onClose={() => {
+              onButton2={() => {
+                handleGameMode(mySessionId);
+              }}
+              onButton3={() => {
                 console.log("pub: ", publisher);
                 console.log("sub: ", subscribers);
                 console.log("session: ", session);
                 console.log("connecionId: ", sessionConnectId);
               }}
-              buttonName1="시작하기"
-              buttonName2="초대 링크"
-              option1={!isHost}
+              buttonName1="나가기"
+              buttonName2="시작하기"
+              buttonName3="초대 링크"
               option2={!isHost}
+              option3={!isHost}
             />
           </div>
           <div className="room-mid">

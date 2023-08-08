@@ -1,0 +1,29 @@
+.slick-prev::before,
+.slick-next::before {
+  color: #ea5455;
+}
+
+.slick-dots li button::before {
+  display: none;
+}
+
+.slick-dots li button {
+  border: none;
+  background-color: rgba(234, 84, 85, 0.5);
+  font-size: 0;
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+}
+
+.slick-dots li button:hover {
+  background-color: #ea5455;
+}
+
+.slick-dots li.slick-active button {
+  background-color: #ea5455;
+}
+
+.PhotoCard:hover {
+  cursor: pointer;
+}

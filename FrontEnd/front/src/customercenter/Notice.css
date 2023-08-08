@@ -1,0 +1,21 @@
+.NoticeInfo {
+  display: flex;
+  justify-content: space-between;
+}
+/* 관리자, 작성일과 조회수 일렬로 정렬 */
+
+.NoticeLine {
+  background: #9795f0;
+  height: 2px;
+  border: 0;
+}
+
+.NoticeTextSort {
+  text-align: left;
+}
+
+.NoticeMain {
+  box-sizing: border-box;
+  height: 408px;
+}
+/* 공지사항 상세 페이지 본문(내용) 크기 지정 */

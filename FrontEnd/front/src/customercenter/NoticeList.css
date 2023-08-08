@@ -1,0 +1,67 @@
+hr {
+  background: #9795f0;
+  height: 1px;
+  border: 0;
+}
+
+table {
+  width: 100%;
+  border-top: 3px solid #9795f0;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border-bottom: 1px solid #9795f0;
+  padding: 10px;
+  text-align: center;
+  font-weight: 500 !important;
+}
+
+tbody tr:hover {
+  background-color: #9795f0;
+  color: #fff;
+}
+
+tbody tr:hover a {
+  background-color: #9795f0;
+  color: #fff;
+}
+/* 테이블 본문에 커서 올릴 경우 색 바뀜 */
+
+.NoticeTitle {
+  text-decoration: none;
+  color: black;
+}
+
+.NoticeTitle:hover {
+  font-weight: bold;
+}
+/* 테이블 본문 제목에 커서 올릴 경우 글씨 굵어짐 */
+
+.TableCell1 {
+  width: 10%;
+}
+
+.TableCell2 {
+  width: 20%;
+}
+
+.TableCell3 {
+  width: 15%;
+}
+/* 셀 너비 조정 */
+
+.NoticeWriteBtnSort {
+  display: flex;
+  justify-content: right;
+}
+
+.NoticeWriteBtn {
+  text-decoration: none;
+  color: darkgrey;
+}
+
+.NoticeWriteBtn:hover {
+  color: black;
+}

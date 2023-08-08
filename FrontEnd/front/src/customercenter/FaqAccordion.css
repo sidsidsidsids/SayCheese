@@ -1,0 +1,41 @@
+.faq-card-title {
+  display: flex;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  align-items: center;
+  cursor: pointer;
+}
+/* 제목에 커서 올릴 경우 손가락 모양으로 바뀜 */
+
+.faq-card-answer {
+  position: relative;
+  padding-top: 1rem;
+  padding-bottom: 1.5rem;
+  padding-right: 2rem;
+  border: 0px solid rgba(151, 149, 240, 0.5);
+  border-top-width: 1px;
+  transition: padding-top 0.5s, padding-bottom 0.5s, height 0.5s, transform 0.5s;
+
+  text-align: left;
+}
+
+.faq-card-none {
+  padding-top: 0rem;
+  padding-bottom: 0rem;
+  height: 0px;
+
+  visibility: hidden;
+  transition: padding-top 0.5s, padding-bottom 0.5s, height 0.5s, transform 0.5s;
+}
+/* transition으로 아코디언 열고 닫는 애니메이션 속도를 추가해 매끄럽게 보이도록 함 */
+
+.FaqCard {
+  display: flex;
+  margin: 10px auto 0 auto;
+  width: 95%;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  border: 1px solid #9795f0;
+  border-radius: 20px;
+  flex-direction: column;
+}
