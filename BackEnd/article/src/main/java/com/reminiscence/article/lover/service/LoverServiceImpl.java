@@ -25,7 +25,7 @@ public class LoverServiceImpl implements LoverService{
 
     @Transactional
     @Override
-    public void writeLoverImageArticle(Long memberId, Long articleId) {
+    public void writeLoverArticle(Long memberId, Long articleId) {
 
         Optional<ImageArticle> findArticle = imageArticleRepository.findById(articleId);
         findArticle.orElseThrow(()->
@@ -39,7 +39,7 @@ public class LoverServiceImpl implements LoverService{
 
     @Transactional
     @Override
-    public void deleteLoverImageArticle(Long memberId, Long articleId) {
+    public void deleteLoverArticle(Long memberId, Long articleId) {
         Optional<Lover> findLover = loverRepository.findByMemberIdAndArticleId(memberId, articleId);
         findLover.orElseThrow(()->
                 new LoverException(LoverExceptionMessage.NOT_FOUND_LOVER));

@@ -31,9 +31,9 @@ public class LoverController {
      *  NOT_FOUND_IMAGE_ARTICLE : 존재하지 않는 게시글을 좋아요를 누른 경우
      *
      */
-    @PostMapping("/image/{articleId}")
-    public ResponseEntity<Response> writeLoverImageArticle(@AuthenticationPrincipal UserDetail userDetail, @PathVariable("articleId") Long articleId){
-        loverService.writeLoverImageArticle(userDetail.getMember().getId(),articleId);
+    @PostMapping("/{articleId}")
+    public ResponseEntity<Response> writeLoverArticle(@AuthenticationPrincipal UserDetail userDetail, @PathVariable("articleId") Long articleId){
+        loverService.writeLoverArticle(userDetail.getMember().getId(),articleId);
         return new ResponseEntity<>(Response.of(LoverResponseMessage.LOVER_CLICK_SUCCESS),HttpStatus.OK);
     }
 
@@ -51,9 +51,9 @@ public class LoverController {
      *  NOT_FOUND_LOVER : 존재하지 않는 좋아요를 취소하려는 경우
      *
      */
-    @DeleteMapping("/image/{articleId}")
-    public ResponseEntity<Response> deleteLoverImageArticle(@AuthenticationPrincipal UserDetail userDetail , @PathVariable("articleId") Long articleId){
-        loverService.deleteLoverImageArticle(userDetail.getMember().getId(),articleId);
+    @DeleteMapping("/{articleId}")
+    public ResponseEntity<Response> deleteLoverArticle(@AuthenticationPrincipal UserDetail userDetail , @PathVariable("articleId") Long articleId){
+        loverService.deleteLoverArticle(userDetail.getMember().getId(),articleId);
         return new ResponseEntity<>(Response.of(LoverResponseMessage.LOVER_CANCEL_MESSAGE), HttpStatus.OK);
 
     }
