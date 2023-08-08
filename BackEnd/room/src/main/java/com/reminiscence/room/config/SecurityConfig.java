@@ -21,8 +21,11 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 public class SecurityConfig {
     private final Environment env;
     private final MemberRepository memberRepository;
+    private final CorsConfig corsConfig;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.addFilter(corsConfig.corsFilter());
         http.addFilterBefore(new JWTAuthorizationFilter(env,memberRepository), BasicAuthenticationFilter.class);
         http.authorizeRequests().antMatchers("/api/room").permitAll()
                 .and()
