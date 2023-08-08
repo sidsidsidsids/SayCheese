@@ -4,6 +4,8 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reminiscence.article.domain.Member;
+import com.reminiscence.article.framearticle.dto.FrameArticleListRequestDto;
+import com.reminiscence.article.framearticle.dummy.DummyFrameArticleListRequestDto;
 import com.reminiscence.article.framearticle.dummy.DummyFrameArticleRequestDto;
 import com.reminiscence.article.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
@@ -30,8 +33,8 @@ import java.sql.SQLException;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -239,6 +242,106 @@ public class FrameArticleIntegrationTest {
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지")
                         )
                 ));
-
     }
+    
+    @Test
+    @DisplayName("좋아요순 프레임 게시글 리스트 조회(정상)")
+    public void listHotFrameArticleSuccessTest() throws Exception{
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + memberToken);
+        DummyFrameArticleListRequestDto dummyFrameArticleListRequestDto = new DummyFrameArticleListRequestDto.Builder()
+                .searchWord("")
+                .build();
+        mvc.perform(get("/api/article/frame/list/hot")
+                        .headers(headers)
+                        .content(objectMapper.writeValueAsString(dummyFrameArticleListRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("로그인 성공한 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
+                        ),
+                        responseFields(
+                                fieldWithPath("[].articleId").description("게시글 ID"),
+                                fieldWithPath("[].subject").description("제목"),
+                                fieldWithPath("[].isPublic").description("공개 여부"),
+                                fieldWithPath("[].frameLink").description("프레임 링크"),
+                                fieldWithPath("[].loverCnt").description("좋아요 수"),
+                                fieldWithPath("[].createdDate").description("게시글 작성일"),
+                                fieldWithPath("[].author").description("게시글 작성자"),
+                                fieldWithPath("[].frameSpecification").description("프레임 규격"),
+                                fieldWithPath("[].loverYn").description("좋아요 여부")
+                        )
+                ));
+    }
+    @Test
+    @DisplayName("랜덤 프레임 게시글 리스트 조회(정상)")
+    public void listRandomFrameArticleSuccessTest() throws Exception{
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + memberToken);
+        DummyFrameArticleListRequestDto dummyFrameArticleListRequestDto = new DummyFrameArticleListRequestDto.Builder()
+                .searchWord("")
+                .build();
+        mvc.perform(get("/api/article/frame/list/random")
+                        .headers(headers)
+                        .content(objectMapper.writeValueAsString(dummyFrameArticleListRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("로그인 성공한 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
+                        ),
+                        responseFields(
+                                fieldWithPath("[].articleId").description("게시글 ID"),
+                                fieldWithPath("[].subject").description("제목"),
+                                fieldWithPath("[].isPublic").description("공개 여부"),
+                                fieldWithPath("[].frameLink").description("프레임 링크"),
+                                fieldWithPath("[].loverCnt").description("좋아요 수"),
+                                fieldWithPath("[].createdDate").description("게시글 작성일"),
+                                fieldWithPath("[].author").description("게시글 작성자"),
+                                fieldWithPath("[].frameSpecification").description("프레임 규격"),
+                                fieldWithPath("[].loverYn").description("좋아요 여부")
+                        )
+                ));
+    }
+    @Test
+    @DisplayName("최신순 프레임 게시글 리스트 조회(정상)")
+    public void listRecentFrameArticleSuccessTest() throws Exception{
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + memberToken);
+        DummyFrameArticleListRequestDto dummyFrameArticleListRequestDto = new DummyFrameArticleListRequestDto.Builder()
+                .searchWord("")
+                .build();
+        mvc.perform(get("/api/article/frame/list/recent")
+                        .headers(headers)
+                        .content(objectMapper.writeValueAsString(dummyFrameArticleListRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("로그인 성공한 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
+                        ),
+                        responseFields(
+                                fieldWithPath("[].articleId").description("게시글 ID"),
+                                fieldWithPath("[].subject").description("제목"),
+                                fieldWithPath("[].isPublic").description("공개 여부"),
+                                fieldWithPath("[].frameLink").description("프레임 링크"),
+                                fieldWithPath("[].loverCnt").description("좋아요 수"),
+                                fieldWithPath("[].createdDate").description("게시글 작성일"),
+                                fieldWithPath("[].author").description("게시글 작성자"),
+                                fieldWithPath("[].frameSpecification").description("프레임 규격"),
+                                fieldWithPath("[].loverYn").description("좋아요 여부")
+                        )
+                ));
+    }
+    
 }

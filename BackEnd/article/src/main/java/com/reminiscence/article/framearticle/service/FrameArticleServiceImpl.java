@@ -8,6 +8,7 @@ import com.reminiscence.article.exception.message.FrameArticleExceptionMessage;
 import com.reminiscence.article.frame.repository.FrameRepository;
 import com.reminiscence.article.framearticle.dto.FrameArticleAndMemberRequestDto;
 import com.reminiscence.article.framearticle.dto.FrameArticleDeleteRequestDto;
+import com.reminiscence.article.framearticle.dto.FrameArticleListRequestDto;
 import com.reminiscence.article.framearticle.dto.FrameArticleListResponseDto;
 import com.reminiscence.article.framearticle.repository.FrameArticleRepository;
 import com.reminiscence.article.lover.repository.LoverRepository;
@@ -28,7 +29,8 @@ public class FrameArticleServiceImpl implements FrameArticleService {
     private final LoverRepository loverRepository;
 
     @Override
-    public List<FrameArticleListResponseDto> getHotFrameArticleList(UserDetail userDetail, String searchWord) {
+    public List<FrameArticleListResponseDto> getHotFrameArticleList(UserDetail userDetail, FrameArticleListRequestDto frameArticleListRequestDto) {
+        String searchWord = frameArticleListRequestDto.getSearchWord();
         PageRequest page = PageRequest.of(0, 10, Sort.Direction.DESC, "lover");
         if(userDetail != null){
             return getMemberFrameArticleList(page, userDetail.getMember().getId(), searchWord);
@@ -38,7 +40,8 @@ public class FrameArticleServiceImpl implements FrameArticleService {
     }
 
     @Override
-    public List<FrameArticleListResponseDto> getRecentFrameArticleList(UserDetail userDetail, String searchWord) {
+    public List<FrameArticleListResponseDto> getRecentFrameArticleList(UserDetail userDetail, FrameArticleListRequestDto frameArticleListRequestDto) {
+        String searchWord = frameArticleListRequestDto.getSearchWord();
         PageRequest page = PageRequest.of(0, 10, Sort.Direction.DESC, "createdDate");
         List<FrameArticleListResponseDto> frameArticleList;
         if(userDetail != null){
@@ -50,7 +53,8 @@ public class FrameArticleServiceImpl implements FrameArticleService {
     }
 
     @Override
-    public List<FrameArticleListResponseDto> getRandomFrameArticleList(UserDetail userDetail, String searchWord) {
+    public List<FrameArticleListResponseDto> getRandomFrameArticleList(UserDetail userDetail, FrameArticleListRequestDto frameArticleListRequestDto) {
+        String searchWord = frameArticleListRequestDto.getSearchWord();
         PageRequest page = PageRequest.of(0, 10, Sort.Direction.DESC, "random");
         List<FrameArticleListResponseDto> frameArticleList;
         if(userDetail != null){

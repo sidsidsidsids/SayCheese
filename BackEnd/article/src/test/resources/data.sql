@@ -409,3 +409,38 @@ insert into frame_article(subject,id, frame_id) values
 ('제가 만든 거에요5', 72, 5),
 ('제가 만든 거에요1', 73, 6);
 
+
+-- Test FrameArticle Data
+insert into article(member_id, type, created_date) values
+(3, 'F', now()),
+(3, 'F', now()),
+(3, 'F', now()),
+(3, 'F', now()),
+(3, 'F', now()),
+(3, 'F', now());
+
+insert into frame(created_date,frame_specification,link,name,open_yn,type) values
+(now(),'B','link17','프레임 이름이에요7','Y','png'),
+(now(),'B','link18','프레임 이름이에요8','Y','png'),
+(now(),'B','link19','프레임 이름이에요9','Y','png'),
+(now(),'B','link20','프레임 이름이에요10','Y','png'),
+(now(),'B','link21','프레임 이름이에요11','Y','png'),
+(now(),'B','link22','프레임 이름이에요12','Y','png');
+
+insert into frame_article(subject,id, frame_id) values
+('쟤가 만든 거에요1', 74, 7),
+('쟤가 만든 거에요2', 75, 8),
+('쟤가 만든 거에요3', 76, 9),
+('쟤가 만든 거에요4', 77, 10),
+('쟤가 만든 거에요5', 78, 11),
+('쟤가 만든 거에요6', 79, 12);
+
+insert into lover(member_id, article_id) values
+(1, 68),
+(2, 68),
+(1, 69),
+(2, 69),
+(3, 69),
+(2, 70),
+(2, 72),
+(1, 79);

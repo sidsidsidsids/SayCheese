@@ -1,10 +1,7 @@
 package com.reminiscence.article.framearticle.controller;
 
 import com.reminiscence.article.config.auth.UserDetail;
-import com.reminiscence.article.framearticle.dto.FrameArticleAndMemberRequestDto;
-import com.reminiscence.article.framearticle.dto.FrameArticleDeleteRequestDto;
-import com.reminiscence.article.framearticle.dto.FrameArticleListResponseDto;
-import com.reminiscence.article.framearticle.dto.FrameArticleRequestDto;
+import com.reminiscence.article.framearticle.dto.*;
 import com.reminiscence.article.framearticle.service.FrameArticleService;
 import com.reminiscence.article.message.Response;
 import com.reminiscence.article.message.custom_message.FrameResponseMessage;
@@ -35,8 +32,8 @@ public class FrameArticleController {
      *  author : 게시글 작성자
      */
     @GetMapping("/list/random")
-    public ResponseEntity<List<FrameArticleListResponseDto>> readRandomFrameArticleList(@AuthenticationPrincipal UserDetail userDetail, String searchWord){
-        List<FrameArticleListResponseDto> randomImageArticleList = frameArticleService.getRandomFrameArticleList(userDetail, searchWord);
+    public ResponseEntity<List<FrameArticleListResponseDto>> readRandomFrameArticleList(@AuthenticationPrincipal UserDetail userDetail, @RequestBody FrameArticleListRequestDto frameArticleListRequestDto){
+        List<FrameArticleListResponseDto> randomImageArticleList = frameArticleService.getRandomFrameArticleList(userDetail, frameArticleListRequestDto);
         return new ResponseEntity<>(randomImageArticleList, HttpStatus.OK);
     }
     /**
@@ -51,8 +48,8 @@ public class FrameArticleController {
      *  author : 게시글 작성자
      */
     @GetMapping("/list/hot")
-    public ResponseEntity<List<FrameArticleListResponseDto>> readHotFrameArticleList(@AuthenticationPrincipal UserDetail userDetail, String searchWord) {
-        List<FrameArticleListResponseDto> hotImageArticleList = frameArticleService.getHotFrameArticleList(userDetail, searchWord);
+    public ResponseEntity<List<FrameArticleListResponseDto>> readHotFrameArticleList(@AuthenticationPrincipal UserDetail userDetail, @RequestBody FrameArticleListRequestDto frameArticleListRequestDto) {
+        List<FrameArticleListResponseDto> hotImageArticleList = frameArticleService.getHotFrameArticleList(userDetail, frameArticleListRequestDto);
         return new ResponseEntity<>(hotImageArticleList, HttpStatus.OK);
     }
     /**
@@ -67,8 +64,8 @@ public class FrameArticleController {
      *  author : 게시글 작성자
      */
     @GetMapping("/list/recent")
-    public ResponseEntity<List<FrameArticleListResponseDto>> readRecentFrameArticleList(@AuthenticationPrincipal UserDetail userDetail, String searchWord) {
-        List<FrameArticleListResponseDto> recentImageArticleList = frameArticleService.getRecentFrameArticleList(userDetail, searchWord);
+    public ResponseEntity<List<FrameArticleListResponseDto>> readRecentFrameArticleList(@AuthenticationPrincipal UserDetail userDetail, @RequestBody FrameArticleListRequestDto frameArticleListRequestDto) {
+        List<FrameArticleListResponseDto> recentImageArticleList = frameArticleService.getRecentFrameArticleList(userDetail, frameArticleListRequestDto);
         return new ResponseEntity<>(recentImageArticleList, HttpStatus.OK);
     }
 
