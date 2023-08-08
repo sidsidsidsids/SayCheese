@@ -23,7 +23,16 @@ import java.util.List;
 public class ImageController {
     private final ImageService imageService;
 
-
+    /**
+     * 소유한 이미지 조회 최근순
+     * @param
+     * userDetail : JWT 토큰으로 인증된 사용자 정보
+     * @param
+     * pageable : 목록 조회 페이지 처리 데이터
+     *         page : 페이지 번호
+     * @return
+     * Response : HttpStatus.OK
+     */
     @GetMapping
     public ResponseEntity<OwnerImageListResponseDto> readOwnerRecentImages(
             @AuthenticationPrincipal UserDetail userDetail,
@@ -31,6 +40,15 @@ public class ImageController {
         OwnerImageListResponseDto recentOwnImages = imageService.getReadRecentOwnImages(userDetail.getMember().getId(), pageable);
         return new ResponseEntity<>(recentOwnImages, HttpStatus.OK);
     }
+
+    /**
+     * 랜덤 태그 4개 조회
+
+     * @return
+     * Response : List<RandomTagResponseDto>
+     *      id : 태그 ID
+     *      tag : 태그
+     */
 
     @GetMapping("/random/tag")
     public ResponseEntity<List<RandomTagResponseDto>> readRandomTag(){
