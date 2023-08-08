@@ -4,12 +4,15 @@ import com.reminiscence.room.domain.Member;
 import com.reminiscence.room.domain.Participant;
 import com.reminiscence.room.domain.Room;
 import com.reminiscence.room.member.repository.MemberRepository;
+import com.reminiscence.room.participant.dto.ParticipantRoomUserResponseDto;
 import com.reminiscence.room.participant.repository.ParticipantRepository;
 import com.reminiscence.room.room.repository.RoomRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,6 +25,25 @@ public class ParticipantJpaTest {
     private RoomRepository roomRepository;
     @Autowired
     private ParticipantRepository participantRepository;
+
+    @Test
+    @DisplayName("방 유저 참가자 조회 테스트")
+    public void readRoomUserParticipantTest(){
+        // given
+        String roomCode = "sessionA";
+
+        // when
+        Room room = roomRepository.findByRoomCode(roomCode).orElse(null);
+        assertNotNull(room);
+        List<ParticipantRoomUserResponseDto> userByRoomID = participantRepository.findUserByRoomID(room.getId()).orElse(null);
+
+        // then
+        assertNotNull(userByRoomID);
+        assertEquals(3, userByRoomID.size());
+        for(ParticipantRoomUserResponseDto response : userByRoomID){
+            System.out.println(response.getMemberId());
+        }
+    }
 
     @Test
     @DisplayName("참가자 생성 테스트")
@@ -194,7 +216,7 @@ public class ParticipantJpaTest {
 
         participantRepository.deleteAllByRoomId(room.getId());
         // then
-        assertEquals(4, participantRepository.count());
+        assertEquals(3, participantRepository.count());
     }
 
 }

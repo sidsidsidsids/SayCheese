@@ -79,6 +79,7 @@ public class ParticipantIntegrationTest {
                 .withClaim("memberId",String.valueOf(member.getId()))
                 .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
     }
+
     @Test
     @DisplayName("참가자 생성 테스트(정상)")
     public void writeParticipantSuccessTest() throws Exception{
