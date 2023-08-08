@@ -48,25 +48,42 @@ export default function Text() {
         id="textSize"
         type="number"
         ref={textSizeRef}
-        value="20"
+        defaultValue={22}
         max="60"
         min="1"
         onChange={(e) => {
           setCustomTextSize(e.target.value);
         }}
       ></input>
-      <label htmlFor="textFont">폰트를 골라보세요</label>
 
       <Select
-        maxMenuHeight={220}
-        menuPlacement="auto"
+        maxMenuHeight={300}
+        placeholder="폰트를 골라보세요"
+        menuPlacement="top"
         menuShouldScrollIntoView={true}
         styles={{
+          control: (provided, state) => ({
+            ...provided,
+          }),
           option: (provided, state) => ({
             ...provided,
             fontFamily: state.value,
           }),
+          menu: (provided) => ({
+            ...provided,
+            overflow: "hidden", // 옵션 백그라운드 오버플로우 해결
+          }),
         }}
+        theme={(theme) => ({
+          ...theme,
+          borderRadius: 30,
+          colors: {
+            ...theme.colors,
+            primary25: "#F8C6D5",
+            primary50: "#F8C6D5",
+            primary: "black",
+          },
+        })}
         name="textFont"
         id="textFont"
         onChange={(e) => {
@@ -92,7 +109,7 @@ export default function Text() {
         <button
           type="button"
           onClick={(e) => dispatch(AddText(payload))}
-          className="btn"
+          className="whtbtn"
         >
           추가하기
         </button>

@@ -3,7 +3,11 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Tooltip } from "react-tooltip";
 import { useSelector, useDispatch } from "react-redux";
 
-import { Undecorate, AddDrawing } from "../../redux/features/frame/frameSlice";
+import {
+  Undecorate,
+  AddDrawing,
+  SwitchDrawingMode,
+} from "../../redux/features/frame/frameSlice";
 
 export default function Drawing() {
   const [brushValue, setBrushValue] = useState(3);
@@ -17,7 +21,7 @@ export default function Drawing() {
   // range를 위한 min, max 값
   const min = 0;
   const max = 50;
-
+  // range-value 값과 위치 계산
   const newValue = Number(((brushValue - min) * 100) / (max - min));
   const newPosition = 10 - newValue * 0.2;
 
@@ -30,7 +34,8 @@ export default function Drawing() {
   useEffect(
     function Message() {
       if (drawingMode) {
-        setMessage("펜 비활성화");
+        // 드로잉 모드가 true이면
+        setMessage("펜 비활성화"); // 펜 비활성화 버튼을 표시합니다
       } else {
         setMessage("펜 활성화");
       }
@@ -146,9 +151,10 @@ export default function Drawing() {
       </div>
       <div className="alignTwoButtons">
         <button
+          style={{ width: "129px" }}
           type="button"
-          className="btn"
-          onClick={() => dispatch(Undecorate())}
+          className="whtbtn"
+          onClick={() => dispatch(SwitchDrawingMode())}
         >
           {message}
         </button>
