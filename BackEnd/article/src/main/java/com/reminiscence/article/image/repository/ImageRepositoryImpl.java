@@ -1,13 +1,14 @@
 package com.reminiscence.article.image.repository;
 
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.reminiscence.article.domain.QImage;
-import com.reminiscence.article.domain.QImageOwner;
-import com.reminiscence.article.domain.QLover;
-import com.reminiscence.article.image.dto.OwnerImageResponseDto;
+import com.reminiscence.article.domain.*;
+import com.reminiscence.article.image.dto.OwnerImageListResponseDto;
 import com.reminiscence.article.schedule.dto.ImageDeleteResponseDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
@@ -36,19 +37,25 @@ public class ImageRepositoryImpl implements ImageRepositoryCustom{
     }
 
     @Override
-    public Optional<List<OwnerImageResponseDto>> findRecentOwnerImage(Pageable page, Long memberId) {
-        return Optional.ofNullable(queryFactory
-                .select(Projections.constructor(OwnerImageResponseDto.class,
-                        QImage.image.id.as("imageId"),
-                        QImage.image.link.as("imageLink"),
-                        QImage.image.createdDate.as("createdDate")
-                ))
+    public Optional<Page<Image>> findRecentOwnerImage(Long memberId, Pageable pageable ) {
+        List<Image> images = queryFactory
+                .select(QImage.image)
                 .from(QImageOwner.imageOwner)
                 .join(QImageOwner.imageOwner.image, QImage.image)
-                .where(QImageOwner.imageOwner.imageOwnerKey.memberId.eq(memberId))
+                .where(eqMemberId(memberId))
                 .orderBy(QImage.image.createdDate.desc())
-                .offset(page.getOffset())
-                .limit(page.getPageSize())
-                .fetch());
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long count =  queryFactory.select(Wildcard.count)
+                .from(QImageOwner.imageOwner)
+                .where(eqMemberId(memberId))
+                .fetchOne();
+
+        return Optional.ofNullable(new PageImpl(images, pageable, count));
+    }
+    private BooleanExpression eqMemberId(Long memberId){
+        return QImageOwner.imageOwner.imageOwnerKey.memberId.eq(memberId);
     }
 }

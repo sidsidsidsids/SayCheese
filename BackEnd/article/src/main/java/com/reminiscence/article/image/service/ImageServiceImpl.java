@@ -1,20 +1,28 @@
 package com.reminiscence.article.image.service;
 
-import com.amazonaws.services.s3.AmazonS3;
+import com.reminiscence.article.common.Pagination;
 import com.reminiscence.article.config.auth.UserDetail;
 import com.reminiscence.article.domain.Image;
 import com.reminiscence.article.domain.ImageOwner;
 import com.reminiscence.article.domain.ImageTag;
+import com.reminiscence.article.domain.NoticeArticle;
 import com.reminiscence.article.exception.customexception.ImageException;
 import com.reminiscence.article.exception.message.ImageExceptionMessage;
 import com.reminiscence.article.image.dto.ImageWriteRequestDto;
-import com.reminiscence.article.image.dto.OwnerImageResponseDto;
+import com.reminiscence.article.image.dto.OwnerImageListResponseDto;
 import com.reminiscence.article.image.dto.RandomTagResponseDto;
 import com.reminiscence.article.image.repository.ImageOwnerRepository;
 import com.reminiscence.article.image.repository.ImageRepository;
 import com.reminiscence.article.image.repository.ImageTagRepository;
 import com.reminiscence.article.image.repository.TagRepository;
+import com.reminiscence.article.image.vo.ImageVo;
+import com.reminiscence.article.notice.dto.NoticeArticleListResponseDto;
+import com.reminiscence.article.notice.vo.NoticeArticleVo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +38,25 @@ public class ImageServiceImpl implements ImageService{
     private final TagRepository tagRepository;
     private final ImageTagRepository imageTagRepository;
 
+
     @Override
-    public List<OwnerImageResponseDto> getReadRecentOwnImages(Long memberId) {
-        return null;
+    public OwnerImageListResponseDto getReadRecentOwnImages(Long memberId, Pageable requestPageable) {
+        int page = requestPageable.getPageNumber();
+        if(page<=0){
+            page=1;
+        }
+        Pageable pageable= PageRequest.of(page-1, Pagination.DEFAULT_OWN_IMAGE_PER_PAGE_SIZE, Sort.Direction.DESC,"id");
+        Optional<Page<Image>> images = imageRepository.findRecentOwnerImage(memberId, pageable);
+        images.orElseThrow(()->
+                new ImageException(ImageExceptionMessage.NOT_FOUND_IMAGE));
+
+        OwnerImageListResponseDto ownerImageListResponseDto = new OwnerImageListResponseDto(page, images.get().getTotalPages(), images.get().getTotalElements());
+
+
+        for(Image image : images.get().getContent()){
+            ownerImageListResponseDto.add(new ImageVo(image));
+        }
+        return ownerImageListResponseDto;
     }
 
     @Override

@@ -6,6 +6,9 @@ import com.reminiscence.article.image.service.ImageService;
 import com.reminiscence.article.message.Response;
 import com.reminiscence.article.message.custom_message.ImageResponseMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,8 +25,10 @@ public class ImageController {
 
 
     @GetMapping
-    public ResponseEntity<List<OwnerImageResponseDto>> readOwnerImages(@AuthenticationPrincipal UserDetail userDetail){
-        List<OwnerImageResponseDto> recentOwnImages = imageService.getReadRecentOwnImages(userDetail.getMember().getId());
+    public ResponseEntity<OwnerImageListResponseDto> readOwnerRecentImages(
+            @AuthenticationPrincipal UserDetail userDetail,
+            @PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable){
+        OwnerImageListResponseDto recentOwnImages = imageService.getReadRecentOwnImages(userDetail.getMember().getId(), pageable);
         return new ResponseEntity<>(recentOwnImages, HttpStatus.OK);
     }
 
