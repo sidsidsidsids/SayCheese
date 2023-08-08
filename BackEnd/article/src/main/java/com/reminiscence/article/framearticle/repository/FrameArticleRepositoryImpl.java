@@ -7,14 +7,17 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;
+import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.reminiscence.article.domain.*;
-import com.reminiscence.article.domain.FrameArticle;
-import com.reminiscence.article.framearticle.dto.FrameArticleListResponseDto;
+import com.reminiscence.article.framearticle.vo.FrameArticleVo;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -24,6 +27,7 @@ import java.util.Optional;
 import static com.querydsl.core.types.ExpressionUtils.count;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
+@Repository
 public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
@@ -35,9 +39,9 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom 
     // 로그인한 유저 검색어에 해당하는 프레임 게시판 항목들(좋아요 포함) 반환
     // 공개된 프레임 게시글과 회원이 작성한 게시글 모두 반환 (공개 여부 포함)
     @Override
-    public Optional<List<FrameArticleListResponseDto>> findMemberFrameArticles(Pageable page, Long memberId, String authorSubject) {
-        return Optional.ofNullable(queryFactory
-                .select(Projections.constructor(FrameArticleListResponseDto.class,
+    public Page<FrameArticleVo> findMemberFrameArticles(Pageable page, Long memberId, String authorSubject) {
+        List<FrameArticleVo> list = queryFactory
+                .select(Projections.constructor(FrameArticleVo.class,
                         QFrameArticle.frameArticle.id.as("articleId"),
                         QFrameArticle.frameArticle.subject.as("subject"),
                         QFrame.frame.link.as("frameLink"),
@@ -59,18 +63,25 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom 
                 .join(QFrameArticle.frameArticle.frame, QFrame.frame)
                 .where(searchWord(authorSubject),
                         ((frameIsOpened())
-                        .or(isMyFrame(memberId))))
+                                .or(isMyFrame(memberId))))
                 .orderBy(getOrderSpecifiers(page))
+                .offset(page.getOffset())
                 .limit(page.getPageSize())
-                .fetch());
+                .fetch();
+
+        Long count =  queryFactory.select(Wildcard.count)
+                .from(QFrameArticle.frameArticle)
+                .fetchOne();
+
+        return new PageImpl<>(list, page, count);
     }
 
     // 비회원(로그인 하지 않은) 유저의 검색어에 해당하는 프레임 게시판 항목들(좋아요 불포함) 반환
     // 공개된 개시글만 반환 (공개 여부 포함)
     @Override
-    public Optional<List<FrameArticleListResponseDto>> findNonMemberFrameArticles(Pageable page, String authorSubject) {
-        return Optional.ofNullable(queryFactory
-                .select(Projections.constructor(FrameArticleListResponseDto.class,
+    public Page<FrameArticleVo> findNonMemberFrameArticles(Pageable page, String authorSubject) {
+        List<FrameArticleVo> list = queryFactory
+                .select(Projections.constructor(FrameArticleVo.class,
                         QFrameArticle.frameArticle.id.as("articleId"),
                         QFrameArticle.frameArticle.subject.as("subject"),
                         QFrame.frame.link.as("frameLink"),
@@ -81,15 +92,23 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom 
                         QFrameArticle.frameArticle.member.nickname.as("author"),
                         QFrame.frame.open_yn.as("openYn"),
                         QFrame.frame.frameSpecification.as("frameSpecification")
-                        ))
+                ))
                 .from(QFrameArticle.frameArticle)
                 .join(QFrameArticle.frameArticle.member, QMember.member)
                 .join(QFrameArticle.frameArticle.frame, QFrame.frame)
                 .where(searchWord(authorSubject),
                         (frameIsOpened()))
                 .orderBy(getOrderSpecifiers(page))
+                .offset(page.getOffset())
                 .limit(page.getPageSize())
-                .fetch());
+                .fetch();
+
+        Long count =  queryFactory.select(Wildcard.count)
+                .from(QFrameArticle.frameArticle)
+                .fetchOne();
+
+        return new PageImpl<>(list, page, count);
+
     }
 
     private OrderSpecifier[] getOrderSpecifiers(Pageable page) {
@@ -123,12 +142,13 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom 
         return null;
     }
 
-    private BooleanExpression searchWord(String searchWord){
-        if(StringUtils.isBlank(searchWord) || searchWord == null) {
+    private BooleanExpression searchWord(String searchWord) {
+        if (StringUtils.isBlank(searchWord) || searchWord == null) {
             return null;
         }
         return frameArticleAuthorLikeIgnoreCase(searchWord).or(frameArticleAuthorLikeIgnoreCase(searchWord));
     }
+
     private BooleanExpression loverMemberIdEq(Long memberId) {
         return QLover.lover.memberId.eq(memberId);
     }
@@ -144,6 +164,7 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom 
     private BooleanExpression frameIsOpened() {
         return QFrame.frame.open_yn.eq('Y');
     }
+
     private BooleanExpression isMyFrame(Long memberId) {
         return QFrameArticle.frameArticle.member.id.eq(memberId);
     }

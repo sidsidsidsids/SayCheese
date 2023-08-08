@@ -1,57 +1,30 @@
 package com.reminiscence.article.framearticle.dto;
 
-import com.reminiscence.article.domain.FrameSpecification;
+import com.reminiscence.article.framearticle.vo.FrameArticleVo;
+import com.reminiscence.article.notice.vo.NoticeArticleVo;
+import com.reminiscence.article.util.PageNavigator;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
-@ToString
-public class FrameArticleListResponseDto {
+@NoArgsConstructor
+public class FrameArticleListResponseDto implements Serializable {
 
-    private Long articleId;
-    private String subject;
-    private String frameLink;
-    private Long loverCnt;
-    private LocalDateTime createdDate;
-    private String author;
-    private Boolean isPublic; // DB에서의 공개여부(openYn) 값을 boolean 형태로 반환
-    private FrameSpecification frameSpecification;
-    private Long loverYn;
+    private PageNavigator pageNavigator;
+    List<FrameArticleVo> frameArticleVoList;
 
-    public FrameArticleListResponseDto(Long articleId, String subject, String frameLink, Long loverCnt, LocalDateTime createdDate, String author, Character openYn, FrameSpecification frameSpecification, Long loverYn) {
-        Boolean isPublic = (openYn=='Y') ? true:false;
-        this.articleId = articleId;
-        this.subject = subject;
-        this.frameLink = frameLink;
-        this.loverCnt = loverCnt;
-        this.createdDate = createdDate;
-        this.author = author;
-        this.isPublic = isPublic;
-        this.frameSpecification = frameSpecification;
-        if (loverYn == null) {
-            this.loverYn = 0L;
-        } else {
-            this.loverYn = 1L;
-        }
+    public FrameArticleListResponseDto(int curPage, int totalPages, long totalElements) {
+        this.pageNavigator=new PageNavigator(curPage,totalPages,totalElements);
+        this.frameArticleVoList=new ArrayList<>();
     }
 
-    public FrameArticleListResponseDto(Long articleId, String subject, String frameLink, Long loverCnt, LocalDateTime createdDate, String author, Character openYn, FrameSpecification frameSpecification) {
-        Boolean isPublic = (openYn=='Y') ? true:false;
-        this.articleId = articleId;
-        this.subject = subject;
-        this.frameLink = frameLink;
-        this.loverCnt = loverCnt;
-        this.createdDate = createdDate;
-        this.author = author;
-        this.isPublic = isPublic;
-        this.frameSpecification = frameSpecification;
-        this.loverYn = 0L;
+    public void add(FrameArticleVo frameArticleVo){
+        this.frameArticleVoList.add(frameArticleVo);
     }
 
-    public void changeLoverYn(Long loverYn) {
-        this.loverYn = loverYn;
-    }
 }

@@ -3,9 +3,13 @@ package com.reminiscence.article.framearticle.controller;
 import com.reminiscence.article.config.auth.UserDetail;
 import com.reminiscence.article.framearticle.dto.*;
 import com.reminiscence.article.framearticle.service.FrameArticleService;
+import com.reminiscence.article.framearticle.vo.FrameArticleVo;
 import com.reminiscence.article.message.Response;
 import com.reminiscence.article.message.custom_message.FrameResponseMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,6 +28,9 @@ public class FrameArticleController {
      * 게시글 목록 무작위 조회 API
      * @param
      *  userDetail : 로그인한 사용자 정보
+     * @param
+     * frameArticleListRequestDto : 검색어 정보를 담은 Dto
+     *          searchWord : 검색어
      * @Return
      * ImageArticleListResponseDto : 이미지 게시글 상세 정보
      *  frameLink : 이미지 링크
@@ -32,14 +39,17 @@ public class FrameArticleController {
      *  author : 게시글 작성자
      */
     @GetMapping("/list/random")
-    public ResponseEntity<List<FrameArticleListResponseDto>> readRandomFrameArticleList(@AuthenticationPrincipal UserDetail userDetail, @RequestBody FrameArticleListRequestDto frameArticleListRequestDto){
-        List<FrameArticleListResponseDto> randomImageArticleList = frameArticleService.getRandomFrameArticleList(userDetail, frameArticleListRequestDto);
+    public ResponseEntity<FrameArticleListResponseDto> readRandomFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestBody FrameArticleListRequestDto frameArticleListRequestDto){
+        FrameArticleListResponseDto randomImageArticleList = frameArticleService.getRandomFrameArticleList(pageable, userDetail, frameArticleListRequestDto);
         return new ResponseEntity<>(randomImageArticleList, HttpStatus.OK);
     }
     /**
      * 게시글 목록 좋아요 내림차순 조회 API
      * @param
      *  userDetail : 로그인한 사용자 정보
+     * @param
+     * frameArticleListRequestDto : 검색어 정보를 담은 Dto
+     *          searchWord : 검색어
      * @Return
      * ImageArticleListResponseDto : 이미지 게시글 상세 정보
      *  imageLink : 이미지 링크
@@ -48,14 +58,17 @@ public class FrameArticleController {
      *  author : 게시글 작성자
      */
     @GetMapping("/list/hot")
-    public ResponseEntity<List<FrameArticleListResponseDto>> readHotFrameArticleList(@AuthenticationPrincipal UserDetail userDetail, @RequestBody FrameArticleListRequestDto frameArticleListRequestDto) {
-        List<FrameArticleListResponseDto> hotImageArticleList = frameArticleService.getHotFrameArticleList(userDetail, frameArticleListRequestDto);
+    public ResponseEntity<FrameArticleListResponseDto> readHotFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestBody FrameArticleListRequestDto frameArticleListRequestDto) {
+        FrameArticleListResponseDto hotImageArticleList = frameArticleService.getHotFrameArticleList(pageable, userDetail, frameArticleListRequestDto);
         return new ResponseEntity<>(hotImageArticleList, HttpStatus.OK);
     }
     /**
      * 게시글 목록 최신순 조회 API
      * @param
      *  userDetail : 로그인한 사용자 정보
+     * @param
+     * frameArticleListRequestDto : 검색어 정보를 담은 Dto
+     *          searchWord : 검색어
      * @Return
      * ImageArticleListResponseDto : 이미지 게시글 상세 정보
      *  imageLink : 이미지 링크
@@ -64,8 +77,8 @@ public class FrameArticleController {
      *  author : 게시글 작성자
      */
     @GetMapping("/list/recent")
-    public ResponseEntity<List<FrameArticleListResponseDto>> readRecentFrameArticleList(@AuthenticationPrincipal UserDetail userDetail, @RequestBody FrameArticleListRequestDto frameArticleListRequestDto) {
-        List<FrameArticleListResponseDto> recentImageArticleList = frameArticleService.getRecentFrameArticleList(userDetail, frameArticleListRequestDto);
+    public ResponseEntity<FrameArticleListResponseDto> readRecentFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestBody FrameArticleListRequestDto frameArticleListRequestDto) {
+        FrameArticleListResponseDto recentImageArticleList = frameArticleService.getRecentFrameArticleList(pageable, userDetail, frameArticleListRequestDto);
         return new ResponseEntity<>(recentImageArticleList, HttpStatus.OK);
     }
 
