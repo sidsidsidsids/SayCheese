@@ -17,11 +17,8 @@ public class OwnerImageListResponseDto implements Serializable {
     private PageNavigator pageNavigator;
     List<ImageVo> imageVoList;
 
-    public OwnerImageListResponseDto(int curPage, int totalPages, long totalElements) {
+    public OwnerImageListResponseDto(int curPage, int totalPages, long totalElements, List<ImageVo> imageVoList) {
         this.pageNavigator=new PageNavigator(curPage,totalPages,totalElements);
-        this.imageVoList=new ArrayList<>();
-    }
-    public void add(ImageVo imageVo){
-        this.imageVoList.add(imageVo);
+        this.imageVoList=imageVoList;
     }
 }

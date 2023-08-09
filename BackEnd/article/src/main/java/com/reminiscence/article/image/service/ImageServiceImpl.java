@@ -46,16 +46,12 @@ public class ImageServiceImpl implements ImageService{
             page=1;
         }
         Pageable pageable= PageRequest.of(page-1, Pagination.DEFAULT_OWN_IMAGE_PER_PAGE_SIZE, Sort.Direction.DESC,"id");
-        Optional<Page<Image>> images = imageRepository.findRecentOwnerImage(memberId, pageable);
+        Optional<Page<ImageVo>> images = imageRepository.findRecentOwnerImage(memberId, pageable);
         images.orElseThrow(()->
                 new ImageException(ImageExceptionMessage.NOT_FOUND_IMAGE));
 
-        OwnerImageListResponseDto ownerImageListResponseDto = new OwnerImageListResponseDto(page, images.get().getTotalPages(), images.get().getTotalElements());
-
-
-        for(Image image : images.get().getContent()){
-            ownerImageListResponseDto.add(new ImageVo(image));
-        }
+        OwnerImageListResponseDto ownerImageListResponseDto = new OwnerImageListResponseDto(page, images.get().getTotalPages(), images.get().getTotalElements(), images.get().getContent());
+        
         return ownerImageListResponseDto;
     }
 
