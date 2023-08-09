@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -38,8 +39,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -249,17 +249,18 @@ public class FrameArticleIntegrationTest {
     public void MemberListHotFrameArticleSuccessTest() throws Exception{
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + memberToken);
-        DummyFrameArticleListRequestDto dummyFrameArticleListRequestDto = new DummyFrameArticleListRequestDto.Builder()
-                .searchWord("")
-                .build();
+        String searchWord = "se";
         mvc.perform(get("/api/article/frame/list/hot")
                         .headers(headers)
-                        .content(objectMapper.writeValueAsString(dummyFrameArticleListRequestDto))
+                        .param("searchWord", searchWord)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
-                        requestFields(
-                                fieldWithPath("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
+                        requestHeaders(
+                                headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                        ),
+                        requestParameters(
+                                parameterWithName("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
                         ),
                         responseFields(
                                 fieldWithPath("pageNavigator").type(JsonFieldType.OBJECT).description("페이지 정보"),
@@ -285,19 +286,14 @@ public class FrameArticleIntegrationTest {
     @Test
     @DisplayName("좋아요순 프레임 게시글 리스트 조회(비회원)")
     public void NonMemberListHotFrameArticleSuccessTest() throws Exception{
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + memberToken);
-        DummyFrameArticleListRequestDto dummyFrameArticleListRequestDto = new DummyFrameArticleListRequestDto.Builder()
-                .searchWord("")
-                .build();
+        String searchWord = "se";
         mvc.perform(get("/api/article/frame/list/hot")
-                        .headers(headers)
-                        .content(objectMapper.writeValueAsString(dummyFrameArticleListRequestDto))
+                        .param("searchWord", searchWord)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
-                        requestFields(
-                                fieldWithPath("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
+                        requestParameters(
+                                parameterWithName("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
                         ),
                         responseFields(
                                 fieldWithPath("pageNavigator").type(JsonFieldType.OBJECT).description("페이지 정보"),
@@ -324,20 +320,18 @@ public class FrameArticleIntegrationTest {
     public void MemberListRandomFrameArticleSuccessTest() throws Exception{
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + memberToken);
-        DummyFrameArticleListRequestDto dummyFrameArticleListRequestDto = new DummyFrameArticleListRequestDto.Builder()
-                .searchWord("")
-                .build();
+        String searchWord = "se";
         mvc.perform(get("/api/article/frame/list/random")
                         .headers(headers)
-                        .content(objectMapper.writeValueAsString(dummyFrameArticleListRequestDto))
+                        .param("searchWord", searchWord)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                         requestHeaders(
                                 headerWithName("Authorization").description("로그인 성공한 토큰")
                         ),
-                        requestFields(
-                                fieldWithPath("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
+                        requestParameters(
+                                parameterWithName("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
                         ),
                         responseFields(
                                 fieldWithPath("pageNavigator").type(JsonFieldType.OBJECT).description("페이지 정보"),
@@ -364,17 +358,15 @@ public class FrameArticleIntegrationTest {
     public void NonMemberListRandomFrameArticleSuccessTest() throws Exception{
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + memberToken);
-        DummyFrameArticleListRequestDto dummyFrameArticleListRequestDto = new DummyFrameArticleListRequestDto.Builder()
-                .searchWord("")
-                .build();
+        String searchWord = "se";
         mvc.perform(get("/api/article/frame/list/random")
                         .headers(headers)
-                        .content(objectMapper.writeValueAsString(dummyFrameArticleListRequestDto))
+                        .param("searchWord", searchWord)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
-                        requestFields(
-                                fieldWithPath("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
+                        requestParameters(
+                                parameterWithName("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
                         ),
                         responseFields(
                                 fieldWithPath("pageNavigator").type(JsonFieldType.OBJECT).description("페이지 정보"),
@@ -401,20 +393,18 @@ public class FrameArticleIntegrationTest {
     public void MemberListRecentFrameArticleSuccessTest() throws Exception{
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + memberToken);
-        DummyFrameArticleListRequestDto dummyFrameArticleListRequestDto = new DummyFrameArticleListRequestDto.Builder()
-                .searchWord("")
-                .build();
+        String searchWord = "se";
         mvc.perform(get("/api/article/frame/list/recent")
                         .headers(headers)
-                        .content(objectMapper.writeValueAsString(dummyFrameArticleListRequestDto))
+                        .param("searchWord", searchWord)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                         requestHeaders(
                                 headerWithName("Authorization").description("로그인 성공한 토큰")
                         ),
-                        requestFields(
-                                fieldWithPath("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
+                        requestParameters(
+                                parameterWithName("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
                         ),
                         responseFields(
                                 fieldWithPath("pageNavigator").type(JsonFieldType.OBJECT).description("페이지 정보"),
@@ -442,17 +432,15 @@ public class FrameArticleIntegrationTest {
     public void NonMemberListRecentFrameArticleSuccessTest() throws Exception{
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + memberToken);
-        DummyFrameArticleListRequestDto dummyFrameArticleListRequestDto = new DummyFrameArticleListRequestDto.Builder()
-                .searchWord("")
-                .build();
+        String searchWord = "se";
         mvc.perform(get("/api/article/frame/list/recent")
                         .headers(headers)
-                        .content(objectMapper.writeValueAsString(dummyFrameArticleListRequestDto))
+                        .param("searchWord", searchWord)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
-                        requestFields(
-                                fieldWithPath("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
+                        requestParameters(
+                                parameterWithName("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
                         ),
                         responseFields(
                                 fieldWithPath("pageNavigator").type(JsonFieldType.OBJECT).description("페이지 정보"),

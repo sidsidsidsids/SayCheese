@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface FrameArticleService {
 
-    FrameArticleListResponseDto getHotFrameArticleList(Pageable tempPageable, UserDetail userDetail, FrameArticleListRequestDto frameArticleListRequestDto);
-    FrameArticleListResponseDto getRecentFrameArticleList(Pageable tempPageable, UserDetail userDetail, FrameArticleListRequestDto frameArticleListRequestDto);
-    FrameArticleListResponseDto getRandomFrameArticleList(Pageable tempPageable, UserDetail userDetail, FrameArticleListRequestDto frameArticleListRequestDto);
+    FrameArticleListResponseDto getHotFrameArticleList(Pageable tempPageable, UserDetail userDetail, String searchWord);
+    FrameArticleListResponseDto getRecentFrameArticleList(Pageable tempPageable, UserDetail userDetail, String searchWord);
+    FrameArticleListResponseDto getRandomFrameArticleList(Pageable tempPageable, UserDetail userDetail, String searchWord);
 
     void writeFrameArticle(FrameArticleAndMemberRequestDto frameArticleAndMemberRequestDto);
 

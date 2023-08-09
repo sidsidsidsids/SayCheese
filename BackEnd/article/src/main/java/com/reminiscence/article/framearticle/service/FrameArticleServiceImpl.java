@@ -32,8 +32,7 @@ public class FrameArticleServiceImpl implements FrameArticleService {
     private final LoverRepository loverRepository;
 
     @Override
-    public FrameArticleListResponseDto getHotFrameArticleList(Pageable tempPageable, UserDetail userDetail, FrameArticleListRequestDto frameArticleListRequestDto) {
-        String searchWord = frameArticleListRequestDto.getSearchWord();
+    public FrameArticleListResponseDto getHotFrameArticleList(Pageable tempPageable, UserDetail userDetail, String searchWord) {
         int page=tempPageable.getPageNumber();
         if(page<=0){
             page=1;
@@ -48,15 +47,13 @@ public class FrameArticleServiceImpl implements FrameArticleService {
     }
 
     @Override
-    public FrameArticleListResponseDto getRecentFrameArticleList(Pageable tempPageable, UserDetail userDetail, FrameArticleListRequestDto frameArticleListRequestDto) {
-        String searchWord = frameArticleListRequestDto.getSearchWord();
+    public FrameArticleListResponseDto getRecentFrameArticleList(Pageable tempPageable, UserDetail userDetail, String searchWord) {
         int page=tempPageable.getPageNumber();
         if(page<=0){
             page=1;
         }
         Pageable pageable= PageRequest.of(page-1, Pagination.DEFAULT_FRAME_PER_PAGE_SIZE, Sort.Direction.DESC,"createdDate");
 
-        List<FrameArticleVo> frameArticleList;
         if(userDetail != null){
             return getMemberFrameArticleList(pageable, userDetail.getMember().getId(), searchWord);
         }else{
@@ -65,15 +62,13 @@ public class FrameArticleServiceImpl implements FrameArticleService {
     }
 
     @Override
-    public FrameArticleListResponseDto getRandomFrameArticleList(Pageable tempPageable, UserDetail userDetail, FrameArticleListRequestDto frameArticleListRequestDto) {
-        String searchWord = frameArticleListRequestDto.getSearchWord();
+    public FrameArticleListResponseDto getRandomFrameArticleList(Pageable tempPageable, UserDetail userDetail, String searchWord) {
         int page=tempPageable.getPageNumber();
         if(page<=0){
             page=1;
         }
         Pageable pageable= PageRequest.of(page-1, Pagination.DEFAULT_FRAME_PER_PAGE_SIZE, Sort.Direction.DESC,"random");
 
-        List<FrameArticleVo> frameArticleList;
         if(userDetail != null){
             return getMemberFrameArticleList(pageable, userDetail.getMember().getId(), searchWord);
         }else{
@@ -126,7 +121,7 @@ public class FrameArticleServiceImpl implements FrameArticleService {
         }
         FrameArticleListResponseDto frameArticleListResponseDto =new FrameArticleListResponseDto(page, frameArticlePageList.getTotalPages(),frameArticlePageList.getTotalElements());
 
-        if(frameArticlePageList.getContent().size()==0) throw new FrameArticleException(FrameArticleExceptionMessage.NOT_FOUND_FRAME_ARTICLE_LIST);
+//        if(frameArticlePageList.getContent().size()==0) throw new FrameArticleException(FrameArticleExceptionMessage.NOT_FOUND_FRAME_ARTICLE_LIST);
         for(FrameArticleVo frameArticleVo:frameArticlePageList.getContent()){
 
             frameArticleListResponseDto.add(new FrameArticleVo(frameArticleVo));

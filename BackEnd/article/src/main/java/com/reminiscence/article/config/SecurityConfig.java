@@ -32,6 +32,8 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests().antMatchers("/api/article/notice").access("hasRole('ADMIN')")
                 .and()
+                .authorizeRequests().antMatchers(HttpMethod.GET,"/api/article/frame/**").permitAll()
+                .and()
                 .authorizeRequests().antMatchers(HttpMethod.POST,"/api/frame/**").authenticated()
                 .and()
                 .authorizeRequests().antMatchers(HttpMethod.POST,"/api/article/frame/**").authenticated()
