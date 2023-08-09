@@ -9,6 +9,7 @@ import com.reminiscence.article.image.repository.ImageOwnerRepository;
 import com.reminiscence.article.image.repository.ImageRepository;
 import com.reminiscence.article.image.repository.ImageTagRepository;
 import com.reminiscence.article.image.repository.TagRepository;
+import com.reminiscence.article.image.vo.ImageVo;
 import com.reminiscence.article.member.repository.MemberRepository;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -67,7 +68,7 @@ public class ImageJpaTest {
         PageRequest page = PageRequest.of(PAGE, Pagination.DEFAULT_OWN_IMAGE_PER_PAGE_SIZE, Sort.Direction.DESC, "createdDate");
 
         // when
-        Page<Image> images = imageRepository.findRecentOwnerImage(memberId, page).orElse(null);
+        Page<ImageVo> images = imageRepository.findRecentOwnerImage(memberId, page).orElse(null);
 
         // then
         assertNotNull(images);

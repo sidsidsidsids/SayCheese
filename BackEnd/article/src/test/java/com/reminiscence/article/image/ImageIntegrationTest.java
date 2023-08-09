@@ -102,7 +102,8 @@ public class ImageIntegrationTest {
                                 fieldWithPath("imageVoList").type(JsonFieldType.ARRAY).description("공지 글 목록 리스트"),
                                 fieldWithPath("imageVoList[].imageId").type(JsonFieldType.NUMBER).description("글 번호"),
                                 fieldWithPath("imageVoList[].imageLink").type(JsonFieldType.STRING).description("이미지 링크"),
-                                fieldWithPath("imageVoList[].createdDate").type(JsonFieldType.STRING).description("이미지 저장일")
+                                fieldWithPath("imageVoList[].createdDate").type(JsonFieldType.STRING).description("이미지 저장일"),
+                                fieldWithPath("imageVoList[].loverCnt").type(JsonFieldType.NUMBER).description("-1 : 게시글 없음, 0 ~ : 좋아요 개수")
                                 )
                 ));
     }
