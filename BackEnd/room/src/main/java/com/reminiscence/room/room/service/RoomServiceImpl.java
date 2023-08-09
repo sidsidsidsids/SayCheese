@@ -33,7 +33,6 @@ public class RoomServiceImpl implements RoomService{
         roomRepository.save(requestDto.toEntity());
     }
 
-
     @Override
     public void checkRoomConnection(Long memberId) {
         Participant participant =
@@ -60,6 +59,16 @@ public class RoomServiceImpl implements RoomService{
             throw new RoomException(RoomExceptionMessage.ROOM_IS_FULL);
         }
     }
+
+    @Override
+    public void updateRoomStart(String roomCode) {
+        Optional<Room> room = roomRepository.findByRoomCode(roomCode);
+        room.orElseThrow(()->
+                new RoomException(RoomExceptionMessage.NOT_FOUND_ROOM));
+
+        room.get().updateRoomStart();
+    }
+
     @Override
     public void deleteRoom(String roomCode) {
         Optional<Room> room = roomRepository.findByRoomCode(roomCode);
