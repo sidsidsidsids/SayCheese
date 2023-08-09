@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/room/participant")
+@RequestMapping("/api/participant")
 public class ParticipantController {
     private final ParticipantService participantService;
 

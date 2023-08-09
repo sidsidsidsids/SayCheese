@@ -89,7 +89,7 @@ public class ParticipantIntegrationTest {
                 .build();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+ guestToken);
-        mvc.perform(post("/api/room/participant")
+        mvc.perform(post("/api/participant")
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDto)))
@@ -114,7 +114,7 @@ public class ParticipantIntegrationTest {
                 .build();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+ guestToken);
-        mvc.perform(post("/api/room/participant")
+        mvc.perform(post("/api/participant")
                         .headers(headers)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -135,7 +135,7 @@ public class ParticipantIntegrationTest {
         String roomCode = "sessionA";
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+ memberToken);
-        mvc.perform(put("/api/room/participant/{roomCode}/owner", roomCode)
+        mvc.perform(put("/api/participant/{roomCode}/owner", roomCode)
                 .headers(headers))
                 .andExpect(status().isOk())
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"
@@ -155,7 +155,7 @@ public class ParticipantIntegrationTest {
                 .build();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+ memberToken);
-        mvc.perform(put("/api/room/participant/{roomCode}/streamId", roomCode)
+        mvc.perform(put("/api/participant/{roomCode}/streamId", roomCode)
                         .headers(headers)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -180,7 +180,7 @@ public class ParticipantIntegrationTest {
                 .build();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+ memberToken);
-        mvc.perform(put("/api/room/participant/fail/connection/{roomCode}", roomCode)
+        mvc.perform(put("/api/participant/fail/connection/{roomCode}", roomCode)
                         .headers(headers)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -205,7 +205,7 @@ public class ParticipantIntegrationTest {
                 .build();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+ guestToken);
-        mvc.perform(delete("/api/room/participant")
+        mvc.perform(delete("/api/participant")
                         .headers(headers)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -230,7 +230,7 @@ public class ParticipantIntegrationTest {
                         .build();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+ guestToken);
-        mvc.perform(delete("/api/room/participant")
+        mvc.perform(delete("/api/participant")
                         .headers(headers)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -253,7 +253,7 @@ public class ParticipantIntegrationTest {
                         .build();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+ guestToken);
-        mvc.perform(delete("/api/room/participant")
+        mvc.perform(delete("/api/participant")
                         .headers(headers)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
