@@ -48,6 +48,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return;
         }
 
+        if (!jwtTokenProvider.isTokenExpired(token)){
+            String errorMessage = "토큰이 만료되었습니다.";
+            response.sendError(HttpStatus.UNAUTHORIZED.value(), errorMessage);
+//                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+//                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+//                response.getWriter().write("{\"error\":\"" + errorMessage + "\"}");
+            return;
+        }
+
         // JWT 토큰에서 memberId 부분만 추출
         String memberId= jwtUtil.extractClaimValue(token, "memberId");
 //        String memberId= JWT.require(Algorithm.HMAC512(secretKey)).build()
@@ -58,28 +67,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         if(memberId!=null){
             Member member=memberRepository.findById(Long.parseLong(memberId)).orElse(null);
             MemberDetail memberDetail = new MemberDetail(member);
-            // accessToken이 검증될 경우
+            // token이 검증될 경우
 
             UsernamePasswordAuthenticationToken emailPasswordAuthenticationToken=new UsernamePasswordAuthenticationToken(memberDetail,null, memberDetail.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(emailPasswordAuthenticationToken);
-        }
-//        if (refreshToken != null) {
-//            String userId = jwtUtil.extractClaimValue(refreshToken, "memberId", env);
-//            System.out.println(userId);
-////            if(jwtUtil.validateToken(refreshTokenService.getRefreshToken()))
-//            if (refreshToken.equals(refreshTokenService.getRefreshToken(userId))) {
-////                Authentication authentication = new UsernamePasswordAuthenticationToken(username, password);
-////                SecurityContextHolder.getContext().setAuthentication(authentication);
-//            }
-//        }
-
-        if (!jwtTokenProvider.isTokenExpired(token)){
-            String errorMessage = "Access 토큰이 만료되었습니다.";
-            response.sendError(HttpStatus.UNAUTHORIZED.value(), errorMessage);
-//                response.setStatus(HttpStatus.UNAUTHORIZED.value());
-//                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-//                response.getWriter().write("{\"error\":\"" + errorMessage + "\"}");
-            return;
         }
 
         chain.doFilter(request,response);

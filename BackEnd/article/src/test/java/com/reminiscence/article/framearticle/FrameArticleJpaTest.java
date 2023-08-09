@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
@@ -134,18 +135,29 @@ public class FrameArticleJpaTest {
     @DisplayName("좋아요순 프레임 게시글 목록 조회 테스트(회원)")
     public void getMemberHotFrameArticleListTest(){
         //given
-        PageRequest pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "lover");
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "lover");
+
+        int page=pageable.getPageNumber();
+        if(page<=0){
+            page=1;
+        }
 
         Long memberId = 1L;
         String searchWord = "se";
+
         //when
         Page<FrameArticleVo> hotFrameArticles = frameArticleRepository.findMemberFrameArticles(pageable, memberId, searchWord);
-        FrameArticleListResponseDto frameArticleListResponseDto = new FrameArticleListResponseDto(pageable.getPageNumber(), hotFrameArticles.getTotalPages(), hotFrameArticles.getTotalElements());
+        FrameArticleListResponseDto frameArticleListResponseDto = new FrameArticleListResponseDto(page, hotFrameArticles.getTotalPages(), hotFrameArticles.getTotalElements());
+
+        for(FrameArticleVo frameArticleVo:hotFrameArticles.getContent()){
+            frameArticleListResponseDto.add(new FrameArticleVo(frameArticleVo));
+        }
+
         //then
         assertNotNull(hotFrameArticles);
         assertEquals(1, frameArticleListResponseDto.getPageNavigator().getCurPage());
-        assertEquals(1, frameArticleListResponseDto.getPageNavigator().getTotalPages());
-        assertEquals(6, frameArticleListResponseDto.getPageNavigator().getTotalDataCount());
+        assertEquals(2, frameArticleListResponseDto.getPageNavigator().getTotalPages());
+        assertEquals(12, frameArticleListResponseDto.getPageNavigator().getTotalDataCount());
         assertEquals("www.naver.com", frameArticleListResponseDto.getFrameArticleVoList().get(0).getFrameLink());
         assertEquals(3, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverCnt());
         assertEquals("se6815", frameArticleListResponseDto.getFrameArticleVoList().get(0).getAuthor());
@@ -155,16 +167,21 @@ public class FrameArticleJpaTest {
     @DisplayName("좋아요순 프레임 게시글 목록 조회 테스트(비회원)")
     public void getNonMemberHotFrameArticleListTest(){
         //given
-        PageRequest pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "lover");
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "lover");
         String searchWord = "";
         //when
         Page<FrameArticleVo> hotFrameArticles = frameArticleRepository.findNonMemberFrameArticles(pageable, searchWord);
         FrameArticleListResponseDto frameArticleListResponseDto = new FrameArticleListResponseDto(pageable.getPageNumber(), hotFrameArticles.getTotalPages(), hotFrameArticles.getTotalElements());
+
+        for(FrameArticleVo frameArticleVo:hotFrameArticles.getContent()){
+            frameArticleListResponseDto.add(new FrameArticleVo(frameArticleVo));
+        }
+
         //then
         assertNotNull(hotFrameArticles);
         assertEquals(1, frameArticleListResponseDto.getPageNavigator().getCurPage());
-        assertEquals(1, frameArticleListResponseDto.getPageNavigator().getTotalPages());
-        assertEquals(6, frameArticleListResponseDto.getPageNavigator().getTotalDataCount());
+        assertEquals(2, frameArticleListResponseDto.getPageNavigator().getTotalPages());
+        assertEquals(12, frameArticleListResponseDto.getPageNavigator().getTotalDataCount());
         assertEquals("www.naver.com", frameArticleListResponseDto.getFrameArticleVoList().get(0).getFrameLink());
         assertEquals(3, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverCnt());
         assertEquals("se6815", frameArticleListResponseDto.getFrameArticleVoList().get(0).getAuthor());
@@ -175,18 +192,23 @@ public class FrameArticleJpaTest {
     @DisplayName("최근 작성된 프레임 게시글 목록 조회 테스트(회원)")
     public void getMemberRecentFrameArticleTest() {
         //given
-        PageRequest pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "createdDate");
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "createdDate");
         Long memberId = 1L;
         String searchWord = "";
         //when
         Page<FrameArticleVo> recentFrameArticle = frameArticleRepository.findMemberFrameArticles(pageable,memberId,searchWord);
         FrameArticleListResponseDto frameArticleListResponseDto = new FrameArticleListResponseDto(pageable.getPageNumber(), recentFrameArticle.getTotalPages(), recentFrameArticle.getTotalElements());
+
+        for(FrameArticleVo frameArticleVo:recentFrameArticle.getContent()){
+            frameArticleListResponseDto.add(new FrameArticleVo(frameArticleVo));
+        }
+
         //then
         assertEquals(1, frameArticleListResponseDto.getPageNavigator().getCurPage());
-        assertEquals(1, frameArticleListResponseDto.getPageNavigator().getTotalPages());
-        assertEquals(6, frameArticleListResponseDto.getPageNavigator().getTotalDataCount());
+        assertEquals(2, frameArticleListResponseDto.getPageNavigator().getTotalPages());
+        assertEquals(12, frameArticleListResponseDto.getPageNavigator().getTotalDataCount());
         assertEquals("link22", frameArticleListResponseDto.getFrameArticleVoList().get(0).getFrameLink());
-        assertEquals(3, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverCnt());
+        assertEquals(1, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverCnt());
         assertEquals("se6817", frameArticleListResponseDto.getFrameArticleVoList().get(0).getAuthor());
         assertEquals(1L, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverYn());
     }
@@ -196,17 +218,22 @@ public class FrameArticleJpaTest {
     @DisplayName("최근 작성된 프레임 게시글 목록 조회 테스트(비회원)")
     public void getNonMemberRecentFrameArticleTest() {
         //given
-        PageRequest pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "createdDate");
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "createdDate");
         String searchWord = "";
         //when
         Page<FrameArticleVo> recentFrameArticle = frameArticleRepository.findNonMemberFrameArticles(pageable,searchWord);
         FrameArticleListResponseDto frameArticleListResponseDto = new FrameArticleListResponseDto(pageable.getPageNumber(), recentFrameArticle.getTotalPages(), recentFrameArticle.getTotalElements());
+
+        for(FrameArticleVo frameArticleVo:recentFrameArticle.getContent()){
+            frameArticleListResponseDto.add(new FrameArticleVo(frameArticleVo));
+        }
+
         //then
         assertEquals(1, frameArticleListResponseDto.getPageNavigator().getCurPage());
-        assertEquals(1, frameArticleListResponseDto.getPageNavigator().getTotalPages());
-        assertEquals(6, frameArticleListResponseDto.getPageNavigator().getTotalDataCount());
+        assertEquals(2, frameArticleListResponseDto.getPageNavigator().getTotalPages());
+        assertEquals(12, frameArticleListResponseDto.getPageNavigator().getTotalDataCount());
         assertEquals("link22", frameArticleListResponseDto.getFrameArticleVoList().get(0).getFrameLink());
-        assertEquals(3, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverCnt());
+        assertEquals(1, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverCnt());
         assertEquals("se6817", frameArticleListResponseDto.getFrameArticleVoList().get(0).getAuthor());
         assertEquals(0L, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverYn());
     }
@@ -216,12 +243,17 @@ public class FrameArticleJpaTest {
     public void getMemberRandomFrameArticleListTest(){
         //given
         Long memberId = 1L;
-        PageRequest pageable = PageRequest.of(0, 5, Sort.Direction.DESC, "random");
+        Pageable pageable = PageRequest.of(0, 5, Sort.Direction.DESC, "random");
         String searchWord = "";
 
         //when
         Page<FrameArticleVo> randomFrameArticles = frameArticleRepository.findMemberFrameArticles(pageable,memberId,searchWord);
         FrameArticleListResponseDto frameArticleListResponseDto = new FrameArticleListResponseDto(pageable.getPageNumber(), randomFrameArticles.getTotalPages(), randomFrameArticles.getTotalElements());
+
+        for(FrameArticleVo frameArticleVo:randomFrameArticles.getContent()){
+            frameArticleListResponseDto.add(new FrameArticleVo(frameArticleVo));
+        }
+
         //then
         assertEquals(5, frameArticleListResponseDto.getFrameArticleVoList().size());
         for(FrameArticleVo frameArticleVo : frameArticleListResponseDto.getFrameArticleVoList()){
@@ -233,12 +265,17 @@ public class FrameArticleJpaTest {
     @DisplayName("무작위 프레임 게시글 목록 조회 테스트(비회원)")
     public void getNonMemberRandomFrameArticleListTest(){
         //given
-        PageRequest pageable = PageRequest.of(0, 5, Sort.Direction.DESC, "random");
+        Pageable pageable = PageRequest.of(0, 5, Sort.Direction.DESC, "random");
         String searchWord = "";
 
         //when
         Page<FrameArticleVo> randomFrameArticles = frameArticleRepository.findNonMemberFrameArticles(pageable,searchWord);
         FrameArticleListResponseDto frameArticleListResponseDto = new FrameArticleListResponseDto(pageable.getPageNumber(), randomFrameArticles.getTotalPages(), randomFrameArticles.getTotalElements());
+
+        for(FrameArticleVo frameArticleVo:randomFrameArticles.getContent()){
+            frameArticleListResponseDto.add(new FrameArticleVo(frameArticleVo));
+        }
+
         //then
         assertEquals(5, frameArticleListResponseDto.getFrameArticleVoList().size());
         for(FrameArticleVo frameArticle : randomFrameArticles){

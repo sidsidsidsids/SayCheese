@@ -39,6 +39,7 @@ public class FrameArticleServiceImpl implements FrameArticleService {
             page=1;
         }
         Pageable pageable= PageRequest.of(page-1, Pagination.DEFAULT_FRAME_PER_PAGE_SIZE, Sort.Direction.DESC,"lover");
+
         if(userDetail != null){
             return getMemberFrameArticleList(pageable, userDetail.getMember().getId(), searchWord);
         }else{
@@ -108,18 +109,22 @@ public class FrameArticleServiceImpl implements FrameArticleService {
         frameArticleRepository.delete(frameArticle);
     }
 
-    private FrameArticleListResponseDto getMemberFrameArticleList(Pageable page, Long memberId, String searchWord){
-        Page<FrameArticleVo> frameArticlePageList = frameArticleRepository.findMemberFrameArticles(page, memberId, searchWord);
-        return getFrameArticleListResponseDto(page, frameArticlePageList);
+    private FrameArticleListResponseDto getMemberFrameArticleList(Pageable pageable, Long memberId, String searchWord){
+        Page<FrameArticleVo> frameArticlePageList = frameArticleRepository.findMemberFrameArticles(pageable, memberId, searchWord);
+        return getFrameArticleListResponseDto(pageable, frameArticlePageList);
     }
 
-    private FrameArticleListResponseDto getNonMemberFrameArticleList(Pageable page, String searchWord){
-        Page<FrameArticleVo> frameArticlePageList = frameArticleRepository.findNonMemberFrameArticles(page, searchWord);
-        return getFrameArticleListResponseDto(page, frameArticlePageList);
+    private FrameArticleListResponseDto getNonMemberFrameArticleList(Pageable pageable, String searchWord){
+        Page<FrameArticleVo> frameArticlePageList = frameArticleRepository.findNonMemberFrameArticles(pageable, searchWord);
+        return getFrameArticleListResponseDto(pageable, frameArticlePageList);
     }
 
-    private FrameArticleListResponseDto getFrameArticleListResponseDto(Pageable page, Page<FrameArticleVo> frameArticlePageList) {
-        FrameArticleListResponseDto frameArticleListResponseDto =new FrameArticleListResponseDto(page.getPageNumber(), frameArticlePageList.getTotalPages(),frameArticlePageList.getTotalElements());
+    private FrameArticleListResponseDto getFrameArticleListResponseDto(Pageable pageable, Page<FrameArticleVo> frameArticlePageList) {
+        int page = pageable.getPageNumber();
+        if(page<=0){
+            page = 1;
+        }
+        FrameArticleListResponseDto frameArticleListResponseDto =new FrameArticleListResponseDto(page, frameArticlePageList.getTotalPages(),frameArticlePageList.getTotalElements());
 
         if(frameArticlePageList.getContent().size()==0) throw new FrameArticleException(FrameArticleExceptionMessage.NOT_FOUND_FRAME_ARTICLE_LIST);
         for(FrameArticleVo frameArticleVo:frameArticlePageList.getContent()){

@@ -30,11 +30,7 @@ public class FrameArticleVo implements Serializable {
         this.author = frameArticleVo.getAuthor();
         this.isPublic = frameArticleVo.getIsPublic();
         this.frameSpecification = frameArticleVo.getFrameSpecification();
-        if (loverYn == null) {
-            this.loverYn = 0L;
-        } else {
-            this.loverYn = 1L;
-        }
+        this.loverYn = frameArticleVo.getLoverYn();
     }
 
     public FrameArticleVo(Long articleId, String subject, String frameLink, Long loverCnt, LocalDateTime createdDate, String author, Character openYn, FrameSpecification frameSpecification, Long loverYn) {
