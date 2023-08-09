@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
@@ -28,6 +28,8 @@ import Room from "./room/Room";
 // Redux
 import { Provider } from "react-redux"; // React 앱에 Redux 스토어를 연결하기 위한 Provider
 import store from "./redux/store";
+import axios from "axios";
+import MyInfoModify from "./user/MyInfoModify";
 
 const router = createBrowserRouter([
   {
@@ -80,8 +82,12 @@ const router = createBrowserRouter([
             element: <SignUp />,
           },
           {
-            path: "mypage/",
+            path: "mypage/:email",
             element: <MyPage />,
+          },
+          {
+            path: "modify/:email",
+            element: <MyInfoModify />,
           },
         ],
       },
@@ -99,6 +105,11 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
 ]);
+
+const accessToken = localStorage.getItem("accessToken");
+if (accessToken) {
+  axios.defaults.headers.common["Authorization"] = accessToken;
+}
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
