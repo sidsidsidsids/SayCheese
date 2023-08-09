@@ -24,7 +24,7 @@ operation::FrameArticleIntegrationTest/deleteFrameArticleNotExistsIdFailTest[sni
 
 [[FrameArticle-목록-API]]
 === FrameArticle 목록 API(좋아요 순 - 회원)
-operation::FrameArticleIntegrationTest/MemberListHotFrameArticleSuccessTest[snippets='http-request,request-headers,path-parameters,http-response,response-fields']
+operation::FrameArticleIntegrationTest/MemberListHotFrameArticleSuccessTest[snippets='http-request,request-headers,request-parameters,http-response,response-fields']
 
 === FrameArticle 목록 API(좋아요 순 - 비회원)
 operation::FrameArticleIntegrationTest/NonMemberListHotFrameArticleSuccessTest[snippets='http-request,request-parameters,http-response,response-fields']
