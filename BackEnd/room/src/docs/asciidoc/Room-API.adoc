@@ -16,6 +16,9 @@ operation::RoomIntegrationTest/checkRoomNotCodePasswordFailTest[snippets='http-r
 === 방 생성(정상) API
 operation::RoomIntegrationTest/createRoomSuccessTest[snippets='http-request,request-headers,request-fields,http-response']
 
+[[방-정보변경-API]]
+operation::RoomIntegrationTest/updateRoomStartYnSuccessTest[snippets='http-request,request-headers,path-parameters,http-response']
+
 [[방-삭제-API]]
 === 방 삭제(정상) API
 operation::RoomIntegrationTest/deleteRoomSuccessTest[snippets='http-request,request-headers,request-fields,http-response']
