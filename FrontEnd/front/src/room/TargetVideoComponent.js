@@ -2,7 +2,7 @@ import React from "react";
 import OpenViduVideoComponent from "./OvVideo";
 import "./TargetVideoComponent.css";
 
-export default function UserVideoComponent({
+export default function TargetVideoComponent({
   streamManager,
   locationX,
   locationY,

@@ -14,9 +14,27 @@ module.exports = function (app) {
     })
   );
   app.use(
-    createProxyMiddleware("/api", {
-      target: "https://9177-211-192-210-179.ngrok-free.app",
+    createProxyMiddleware("/api/amazon", {
+      target: "https://79ce-211-192-210-169.ngrok-free.app",
       changeOrigin: true,
     })
   );
+  // app.use(
+  //   createProxyMiddleware("/api/article", {
+  //     target: "https://9177-211-192-210-179.ngrok-free.app",
+  //     changeOrigin: true,
+  //   })
+  // );
+  // app.use(
+  //   createProxyMiddleware("/api/image", {
+  //     target: "https://9177-211-192-210-179.ngrok-free.app",
+  //     changeOrigin: true,
+  //   })
+  // );
+  // app.use(
+  //   createProxyMiddleware("/api", {
+  //     target: "https://9177-211-192-210-179.ngrok-free.app",
+  //     changeOrigin: true,
+  //   })
+  // );
 };
