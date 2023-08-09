@@ -130,7 +130,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
     public Optional<ImageArticleDetailResponseDto> findMemberImageArticleDetailById(Long articleId, Long memberId) {
         return Optional.ofNullable(queryFactory
                 .select(Projections.constructor(ImageArticleDetailResponseDto.class,
-                        QMember.member.id.as("memberId"),
+                        QMember.member.email.as("email"),
                         QImage.image.id.as("imageId"),
                         QMember.member.nickname.as("author"),
                         QImageArticle.imageArticle.createdDate.as("createdDate"),
@@ -153,7 +153,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
     public Optional<ImageArticleDetailResponseDto> findNonMemberImageArticleDetailById(Long articleId) {
         return Optional.ofNullable(queryFactory
                 .select(Projections.constructor(ImageArticleDetailResponseDto.class,
-                        QMember.member.id.as("memberId"),
+                        QMember.member.email.as("email"),
                         QImage.image.id.as("imageId"),
                         QMember.member.nickname.as("name"),
                         QImageArticle.imageArticle.createdDate.as("createdDate"),

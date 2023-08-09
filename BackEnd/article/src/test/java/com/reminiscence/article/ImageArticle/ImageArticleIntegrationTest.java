@@ -213,7 +213,7 @@ public class ImageArticleIntegrationTest {
                                 parameterWithName("articleId").description("이미지 게시글 ID")
                         ),
                         responseFields(
-                                fieldWithPath("memberId").description("회원 ID"),
+                                fieldWithPath("email").description("회원 ID"),
                                 fieldWithPath("imageId").description("이미지 ID"),
                                 fieldWithPath("author").description("회원 닉네임"),
                                 fieldWithPath("createdDate").description("게시글 작성일"),

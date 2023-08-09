@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 public class ImageArticleDetailResponseDto {
 
-    private Long memberId;
+    private String email;
     private Long imageId;
     private String author;
     private LocalDateTime createdDate;
@@ -19,9 +19,9 @@ public class ImageArticleDetailResponseDto {
     private Long loverYn;
     private List<String> tags = new ArrayList<>();
 
-    public ImageArticleDetailResponseDto(Long memberId, Long imageId, String author, LocalDateTime createdDate,
+    public ImageArticleDetailResponseDto(String email, Long imageId, String author, LocalDateTime createdDate,
                                          String imgLink, Long loverCnt, Long loverYn) {
-        this.memberId = memberId;
+        this.email = email;
         this.imageId = imageId;
         this.author = author;
         this.createdDate = createdDate;
@@ -29,9 +29,9 @@ public class ImageArticleDetailResponseDto {
         this.loverCnt = loverCnt;
         this.loverYn = loverYn;
     }
-    public ImageArticleDetailResponseDto(Long memberId, Long imageId, String author, LocalDateTime createdDate,
+    public ImageArticleDetailResponseDto(String email, Long imageId, String author, LocalDateTime createdDate,
                                          String imgLink, Long loverCnt) {
-        this.memberId = memberId;
+        this.email = email;
         this.imageId = imageId;
         this.author = author;
         this.createdDate = createdDate;
