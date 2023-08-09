@@ -39,7 +39,7 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom 
     // 로그인한 유저 검색어에 해당하는 프레임 게시판 항목들(좋아요 포함) 반환
     // 공개된 프레임 게시글과 회원이 작성한 게시글 모두 반환 (공개 여부 포함)
     @Override
-    public Page<FrameArticleVo> findMemberFrameArticles(Pageable page, Long memberId, String authorSubject) {
+    public Page<FrameArticleVo> findMemberFrameArticles(Pageable pageable, Long memberId, String authorSubject) {
         List<FrameArticleVo> list = queryFactory
                 .select(Projections.constructor(FrameArticleVo.class,
                         QFrameArticle.frameArticle.id.as("articleId"),
@@ -64,22 +64,25 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom 
                 .where(searchWord(authorSubject),
                         ((frameIsOpened())
                                 .or(isMyFrame(memberId))))
-                .orderBy(getOrderSpecifiers(page))
-                .offset(page.getOffset())
-                .limit(page.getPageSize())
+                .orderBy(getOrderSpecifiers(pageable))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         Long count =  queryFactory.select(Wildcard.count)
                 .from(QFrameArticle.frameArticle)
+                .where(searchWord(authorSubject),
+                        ((frameIsOpened())
+                                .or(isMyFrame(memberId))))
                 .fetchOne();
 
-        return new PageImpl<>(list, page, count);
+        return new PageImpl<>(list, pageable, count);
     }
 
     // 비회원(로그인 하지 않은) 유저의 검색어에 해당하는 프레임 게시판 항목들(좋아요 불포함) 반환
     // 공개된 개시글만 반환 (공개 여부 포함)
     @Override
-    public Page<FrameArticleVo> findNonMemberFrameArticles(Pageable page, String authorSubject) {
+    public Page<FrameArticleVo> findNonMemberFrameArticles(Pageable pageable, String authorSubject) {
         List<FrameArticleVo> list = queryFactory
                 .select(Projections.constructor(FrameArticleVo.class,
                         QFrameArticle.frameArticle.id.as("articleId"),
@@ -98,16 +101,18 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom 
                 .join(QFrameArticle.frameArticle.frame, QFrame.frame)
                 .where(searchWord(authorSubject),
                         (frameIsOpened()))
-                .orderBy(getOrderSpecifiers(page))
-                .offset(page.getOffset())
-                .limit(page.getPageSize())
+                .orderBy(getOrderSpecifiers(pageable))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         Long count =  queryFactory.select(Wildcard.count)
                 .from(QFrameArticle.frameArticle)
+                .where(searchWord(authorSubject),
+                        (frameIsOpened()))
                 .fetchOne();
 
-        return new PageImpl<>(list, page, count);
+        return new PageImpl<>(list, pageable, count);
 
     }
 

@@ -115,10 +115,7 @@ public class FrameArticleServiceImpl implements FrameArticleService {
     }
 
     private FrameArticleListResponseDto getFrameArticleListResponseDto(Pageable pageable, Page<FrameArticleVo> frameArticlePageList) {
-        int page = pageable.getPageNumber();
-        if(page<=0){
-            page = 1;
-        }
+        int page = pageable.getPageNumber()+1;
         FrameArticleListResponseDto frameArticleListResponseDto =new FrameArticleListResponseDto(page, frameArticlePageList.getTotalPages(),frameArticlePageList.getTotalElements());
 
 //        if(frameArticlePageList.getContent().size()==0) throw new FrameArticleException(FrameArticleExceptionMessage.NOT_FOUND_FRAME_ARTICLE_LIST);

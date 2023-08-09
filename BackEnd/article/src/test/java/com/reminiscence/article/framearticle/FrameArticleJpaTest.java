@@ -186,6 +186,30 @@ public class FrameArticleJpaTest {
         assertEquals(3, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverCnt());
         assertEquals("se6815", frameArticleListResponseDto.getFrameArticleVoList().get(0).getAuthor());
         assertEquals(0L, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverYn());
+
+        pageable = PageRequest.of(0, 5, Sort.Direction.DESC, "lover");
+        searchWord = "se6815";
+        //when
+        hotFrameArticles = frameArticleRepository.findNonMemberFrameArticles(pageable, searchWord);
+
+        frameArticleListResponseDto = new FrameArticleListResponseDto(pageable.getPageNumber(), hotFrameArticles.getTotalPages(), hotFrameArticles.getContent().size());
+
+        for(FrameArticleVo frameArticleVo:hotFrameArticles.getContent()){
+            frameArticleListResponseDto.add(new FrameArticleVo(frameArticleVo));
+        }
+
+        //then
+        assertNotNull(hotFrameArticles);
+        assertEquals(1, frameArticleListResponseDto.getPageNavigator().getCurPage());
+        assertEquals(3, frameArticleListResponseDto.getPageNavigator().getTotalPages());
+        assertEquals(5, frameArticleListResponseDto.getPageNavigator().getTotalDataCount());
+        assertEquals("www.naver.com", frameArticleListResponseDto.getFrameArticleVoList().get(0).getFrameLink());
+        assertEquals(3, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverCnt());
+        assertEquals("se6815", frameArticleListResponseDto.getFrameArticleVoList().get(0).getAuthor());
+        assertEquals(0L, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverYn());
+
+
+
     }
 
     @Test
