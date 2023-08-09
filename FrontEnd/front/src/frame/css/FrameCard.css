@@ -8,8 +8,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 30px;
-  margin-left: 30px;
+  margin: 60px 60px 0 60px;
+
   position: relative;
 }
 /* 카드 이미지 호버 확대 */

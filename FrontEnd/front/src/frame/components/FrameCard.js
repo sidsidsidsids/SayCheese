@@ -15,6 +15,7 @@ export default function FrameCard({
   createDate,
   loverYn,
   payload,
+  isPublic,
 }) {
   const dispatch = useDispatch();
   // 좋아요 체크 되어있으면 like:1 안 했으면 :0

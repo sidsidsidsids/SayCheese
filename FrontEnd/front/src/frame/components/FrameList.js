@@ -20,48 +20,12 @@ export default function FrameList() {
   const [frameList, setFrameList] = useState([
     {
       id: 0,
-      name: "snoopy",
-      imageLink: { sampleImg },
-      author: "sk",
-      loverCnt: 10,
-      createDate: "2023-07-25T16:00:48",
-      loverYn: 1,
-    },
-    {
-      id: 1,
-      name: "snoopy2",
-      imageLink: { sampleImg },
-      author: "sk",
-      loverCnt: 12,
-      createDate: "2023-07-25T16:00:48",
-      loverYn: 1,
-    },
-    {
-      id: 2,
-      name: "snoopy3",
-      imageLink: { sampleImg },
-      author: "sk",
-      loverCnt: 20,
-      createDate: "2023-07-25T16:00:48",
+      name: " ",
+      imageLink: {},
+      author: " ",
+      loverCnt: 0,
+      createDate: " ",
       loverYn: 0,
-    },
-    {
-      id: 3,
-      name: "snoopy4",
-      imageLink: { sampleImg },
-      author: "sk",
-      loverCnt: 100,
-      createDate: "2023-07-25T16:00:48",
-      loverYn: 0,
-    },
-    {
-      id: 4,
-      name: "snoopy5",
-      imageLink: { sampleImg },
-      author: "sk",
-      loverCnt: 99,
-      createDate: "2023-07-25T16:00:48",
-      loverYn: 1,
     },
   ]);
 
@@ -70,29 +34,44 @@ export default function FrameList() {
 
   // 페이지네이션의 기능을 담당합니다.
   const [activePage, setActivePage] = useState(1);
+  const [page, setPage] = useState(0);
 
   function handlePageChange(pageNumber) {
     console.log(`active page is ${pageNumber}`);
     setActivePage(pageNumber);
+    console.log(`/api/article/frame/list/recent?curPage=${activePage}`);
   }
-  useEffect(
-    axios.get('/api/article/frame')
-    .then(res => {
-        console.log(res);
-    }
-  );
+  useEffect(() => {
+    axios
+      .get(`/api/article/frame/list/recent?curPage=${activePage}`, {
+        headers: {
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "69420",
+        },
+      })
+      .then((res) => {
+        console.log("######", res.data);
+        setFrameList(res.data.frameArticleVoList);
+        setPage(res.data.pageNavigator);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [activePage]);
 
   return (
     <div className="frameGallery">
       <div className="frameList">
         {frameList.map((item) => (
           <FrameCard
-            key={item.id}
-            name={item.name}
-            imageLink={item.imageLink.sampleImg}
+            key={item.articleId}
+            name={item.subject}
+            imageLink={item.frameLink}
             loverCnt={item.loverCnt}
             author={item.author}
             loverYn={item.loverYn}
+            isPublic={item.isPublic}
+            createDate={item.createdDate}
             // 모달 띄울때 사용하려고 전체 데이터 전달
             payload={item}
           />
@@ -103,8 +82,8 @@ export default function FrameList() {
       </div>
       <Pagination
         activePage={activePage}
-        itemsCountPerPage={10}
-        totalItemsCount={450}
+        itemsCountPerPage={6}
+        totalItemsCount={page.totalDataCount}
         pageRangeDisplayed={5}
         onChange={(e) => {
           handlePageChange(e);

@@ -47,7 +47,7 @@ export default function CardModal() {
                 작성자 : {modalContent.author}
               </div>
               {/* .imgSrc에 추후 주의가 필요합니다. 이후 재설정이 필요합니다 */}
-              <img src={modalContent.imageLink.sampleImg} alt="프레임 이미지" />
+              <img src={modalContent.imageLink} alt="프레임 이미지" />
 
               <div className="heart-btn" onClick={clickLike}>
                 <div className="heart-content">
