@@ -3,16 +3,16 @@
 import "../css/FrameList.css";
 import "../css/Pagination.css";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+// third party
+import { useSelector } from "react-redux";
+import Pagination from "react-js-pagination";
+import axios from "axios";
 // components
 import FrameCard from "./FrameCard";
 // import sampleImg from "../assets/snoopy.png";
 import sampleImg from "../assets/luka.jpg";
 import CardModal from "./CardModal";
-// react-redux
-import { useSelector } from "react-redux";
-// pagination
-import Pagination from "react-js-pagination";
 
 // FrameList() 함수 : API를 호출해 프레임 정보를 가져옵니다.
 export default function FrameList() {
@@ -75,6 +75,12 @@ export default function FrameList() {
     console.log(`active page is ${pageNumber}`);
     setActivePage(pageNumber);
   }
+  useEffect(
+    axios.get('/api/article/frame')
+    .then(res => {
+        console.log(res);
+    }
+  );
 
   return (
     <div className="frameGallery">
