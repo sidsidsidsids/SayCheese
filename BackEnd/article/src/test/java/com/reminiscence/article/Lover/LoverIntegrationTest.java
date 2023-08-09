@@ -52,6 +52,9 @@ public class LoverIntegrationTest {
     @Autowired
     private MemberRepository memberRepository;
 
+//    @Autowired
+//    private JwtUtil jwtUtil;
+
     MockMvc mvc;
     @Autowired
     private Environment env;
@@ -70,6 +73,12 @@ public class LoverIntegrationTest {
                 .build();
         Member admin = memberRepository.findById(1L).orElse(null);
         Member member = memberRepository.findById(2L).orElse(null);
+//        Map<String, Object> customClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(admin.getId()));
+//
+//        int ACCESS_TOKEN_EXPIRATION_TIME = 60 * 30 * 1000 ; // 30분
+//
+//        String accessToken = jwtUtil.generateToken(admin.getEmail(), ACCESS_TOKEN_EXPIRATION_TIME, customClaims);
+
         adminToken= JWT.create()
                 .withClaim("memberId",String.valueOf(admin.getId()))
                 .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
