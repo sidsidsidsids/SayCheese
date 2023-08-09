@@ -3,6 +3,7 @@ package com.reminiscence.room.room;
 import com.reminiscence.room.domain.Mode;
 import com.reminiscence.room.domain.Participant;
 import com.reminiscence.room.domain.Room;
+import com.reminiscence.room.domain.Specification;
 import com.reminiscence.room.participant.repository.ParticipantRepository;
 import com.reminiscence.room.room.repository.RoomRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -73,7 +74,7 @@ public class RoomJpaTest {
                 .mode(Mode.GAME)
                 .maxCount(4)
                 .endDate(LocalDateTime.now())
-                .specification("Gradle")
+                .specification(Specification.GRID)
                 .build();
         // when
         roomRepository.save(room);
@@ -88,6 +89,23 @@ public class RoomJpaTest {
         assertEquals(room.getEndDate(), findRoom.getEndDate());
         assertEquals(room.getSpecification(), findRoom.getSpecification());
     }
+    @Test
+    @DisplayName("방 시작여부 변경 테스트")
+    public void updateRoomStartYn(){
+        //given
+        String roomCode = "sessionA";
+
+        //when
+        Room room = roomRepository.findByRoomCode(roomCode).orElse(null);
+        assertNotNull(room);
+        room.updateRoomStart();
+
+        //then
+        roomRepository.findByRoomCode(roomCode).orElse(null);
+        assertNotNull(room);
+        assertEquals('Y', room.getStartYn());
+    }
+
     @Test
     @DisplayName("방 삭제 테스트")
     public void deleteRoomTest(){
