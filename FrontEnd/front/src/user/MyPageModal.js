@@ -86,7 +86,7 @@ function MyPageModal() {
                   dispatch(closeModal());
                 }}
               >
-                X
+                ×
               </button>
             </div>
           )}

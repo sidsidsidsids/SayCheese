@@ -7,9 +7,6 @@ import PhotoCategory from "./PhotoCategory";
 import PhotoSlider from "./PhotoSlider";
 import PhotoModal from "./PhotoModal";
 
-import { AuthContext } from "../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
-
 function Photo() {
   const [photoListLike, setPhotoListLike] = useState([]); // 좋아요 순 이미지
   const [photoListRecent, setPhotoListRecent] = useState([]); // 최신 순 이미지

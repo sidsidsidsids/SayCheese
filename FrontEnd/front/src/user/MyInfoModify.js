@@ -252,10 +252,10 @@ function MyInfoModify() {
   }
 
   return (
-    <div className="SignUpWrapper">
+    <div className="ModifyWrapper">
       <div className="ModifyBox">
         <div>
-          <h2>내 정보 수정</h2>
+          <h2 className="UserBoxText">내 정보 수정</h2>
           <form onSubmit={handleUserModify}>
             <div className="SignBtnInputSort">
               <div
@@ -422,6 +422,7 @@ function MyInfoModify() {
                   name="age"
                   placeholder="나이"
                   className="AgeSize"
+                  value={age}
                   onChange={handleAgeChange}
                   onFocus={() => handleInputFocus(6)}
                   onBlur={handleInputBlur}

@@ -11,3 +11,12 @@
   padding: 0;
   margin: auto;
 }
+
+.MyPhotoDeleteBtn {
+  color: darkgray;
+}
+
+.MyPhotoDeleteBtn:hover {
+  cursor: pointer;
+  color: black;
+}

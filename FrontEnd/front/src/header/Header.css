@@ -1,12 +1,18 @@
-a {
-  text-decoration: none;
+.Header {
+  margin: 20px 40px;
+  font-size: 20px;
+  display: flex;
+  justify-content: space-between;
 }
 
-/* .DropDownMenu > li {
-  width: 100%;
-  float: left;
-  text-align: center;
-} */
+.HeaderSort {
+  display: flex;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
 
 .DropDownMenu a {
   color: black;
@@ -23,7 +29,21 @@ a {
 }
 
 .MyPageHover:hover .DropDownSubMenu {
-  height: 25px;
+  height: 45px;
+}
+
+.DropDownSubMenuTwo {
+  height: 0;
+  overflow: hidden;
+  transition: height 0.5s;
+}
+
+.DropDownSubMenuTwo > li:hover {
+  transition-duration: 0.4s;
+}
+
+.MyPageHover:hover .DropDownSubMenuTwo {
+  height: 20px;
 }
 
 .HoverEffect {

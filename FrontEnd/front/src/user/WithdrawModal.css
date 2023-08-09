@@ -1,7 +1,7 @@
-.MyPageModal {
+.WithdrawModal {
   /* 모달창 크기 */
-  width: 600px;
-  height: 600px;
+  width: 400px;
+  height: 300px;
 
   /* 최상단 위치 */
   z-index: 999;
@@ -39,65 +39,31 @@
   display: none; /* 크롬, 사파리, 오페라, 엣지 */
 }
 
-.MyPageSort {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.MyProfileNull {
-  width: 250px;
-  height: 250px;
-  border-radius: 30px;
-  border: 1px solid #d9d9d9;
-}
-
-.MyInfoTable {
-  width: 330px;
-  border-top: 1px solid white;
-  font-size: 20px;
-}
-
-.MyInfoTable th,
-.MyInfoTable td {
-  border-bottom: 1px solid white;
-  padding: 5px;
+.WithdrawGuide {
+  margin: 10px 25px;
   text-align: left;
 }
 
-.MyInfoTable th {
-  width: 20%;
+.WithdrawYnBtnSort {
+  display: flex;
+  justify-content: center;
 }
 
-.MyInfoTable td {
-  width: 70%;
+.WithdrawYnBtn {
+  box-sizing: border-box;
+  width: 90px;
+  height: 40px;
+  flex-shrink: 0;
+
+  margin: 0 0 5px 10px;
 }
 
-.MyInfoTable tr:hover {
-  background-color: white;
-  color: black;
+.PasswordSize {
+  width: 90%;
 }
 
-.ModifyBtn {
-  color: darkgray;
-}
-
-.ModifyBtn:hover {
-  color: black;
-  cursor: pointer;
-}
-
-.ModalClose {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  font-size: 30px;
-  background-color: transparent;
-  border: none;
-  color: darkgrey;
-}
-
-.ModalClose:hover {
-  color: black;
+.RightSort {
+  display: flex;
+  justify-content: right;
+  margin: 10px 30px 0;
 }
