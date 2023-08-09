@@ -7,6 +7,17 @@ const initialState = {
   userInfo: {},
 };
 
+//임시로 사용할 함수
+export const logintemporary = createAsyncThunk(
+  "login/logintemporary",
+  async (email) => {
+    const userInfo = {
+      email: email,
+    };
+    return userInfo;
+  }
+);
+
 // 비동기 액션 생성자
 export const getUserInfo = createAsyncThunk("login/getUserInfo", async () => {
   try {
@@ -94,6 +105,10 @@ const loginSlice = createSlice({
       })
       .addCase(refreshToken.fulfilled, (state, action) => {
         state.isLogin = true;
+      })
+      // 나중에 삭제
+      .addCase(logintemporary.fulfilled, (state, action) => {
+        state.userInfo = action.payload;
       });
   },
 });

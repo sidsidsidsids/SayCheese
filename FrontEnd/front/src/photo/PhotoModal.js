@@ -12,11 +12,13 @@ function PhotoModal() {
   // state는 전체 리덕스 스토어를 의미하며, modal 리듀서에서 관리되는 상태 객체 modalContent를 추출합니다.
   const { isOpen } = useSelector((store) => store.modal);
   const { modalContent } = useSelector((state) => state.modal);
+  const { userInfo } = useSelector((store) => store.login);
   const [imageData, setImageData] = useState([]);
 
   const dispatch = useDispatch();
   // 좋아요 체크 되어있으면 like:1 안 했으면 :0
   const [like, setLike] = useState(imageData.loverYn);
+  const [authorEmail, setAuthorEmail] = useState("");
 
   function clickLike(event) {
     event.stopPropagation();
@@ -48,9 +50,11 @@ function PhotoModal() {
           },
         }
       );
-      console.log(modalContent.articleId);
       setImageData(response.data);
       setLike(response.data.loverYn);
+      setAuthorEmail(response.data.email);
+      console.log("작성자 이메일", response.data.email);
+      console.log("내 이메일", userInfo.email);
     } catch (error) {
       console.log(error);
     }
@@ -110,6 +114,11 @@ function PhotoModal() {
                     ))}
                   {/* 이미지 데이터에 tags가 존재할 경우 tags 보여주는 코드 */}
                 </div>
+                {userInfo.email === authorEmail ? (
+                  <div>일치</div>
+                ) : (
+                  <div>불일치</div>
+                )}
               </div>
 
               <button
