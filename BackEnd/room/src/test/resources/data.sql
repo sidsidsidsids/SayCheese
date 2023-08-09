@@ -12,11 +12,11 @@ insert into member(email,password,nickname,role) values
 
 
 -- Test Room Data
-insert into room(password, max_count, specification, mode, end_date, room_code) values
-('1234', '4', 'gradle', 'GAME',now(), 'sessionA'),
-('1235', '3', 'row', 'NORMAL',now(), 'sessionB'),
-('1236', '2', 'gradle', 'GAME',now(), 'sessionC'),
-('1237', '1', 'row', 'NORMAL',now(), 'sessionD');
+insert into room(password, max_count, specification, mode, end_date, room_code, start_yn) values
+('1234', '4', 'GRID', 'GAME',now(), 'sessionA', 'N'),
+('1235', '3', 'VERTICAL', 'NORMAL',now(), 'sessionB', 'N'),
+('1236', '2', 'GRID', 'GAME',now(), 'sessionC', 'N'),
+('1237', '1', 'VERTICAL', 'NORMAL',now(), 'sessionD', 'N');
 
 -- Test Participant Data
 insert into participant(room_id, member_id, owner_yn, stream_id, connection_yn) values
