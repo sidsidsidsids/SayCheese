@@ -27,7 +27,10 @@ public class ImageArticleDetailResponseDto {
         this.createdDate = createdDate;
         this.imgLink = imgLink;
         this.loverCnt = loverCnt;
-        this.loverYn = loverYn;
+        if(loverYn == null)
+            this.loverYn = 0L;
+        else
+            this.loverYn = 1L;
     }
     public ImageArticleDetailResponseDto(String email, Long imageId, String author, LocalDateTime createdDate,
                                          String imgLink, Long loverCnt) {
