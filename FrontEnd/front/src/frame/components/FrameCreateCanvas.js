@@ -230,6 +230,7 @@ const addDrawing = (canvas, brush, drawingMode) => {
 // STEP4. handleDownload 함수를 통해 캔버스 이미지를 다운로드할 수 있습니다
 function handleDownload(canvas) {
   const dataURL = canvas.toDataURL("image/png");
+  console.log(dataURL);
   const link = document.createElement("a");
   link.download = "frame.png";
   link.href = dataURL;

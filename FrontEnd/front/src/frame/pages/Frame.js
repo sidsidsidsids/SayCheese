@@ -1,17 +1,25 @@
 // 프레임 메인 페이지입니다.
 import React, { useState, useEffect } from "react";
-import "../css/Frame.css";
-// react router
+// third party
 import { Link, useLocation } from "react-router-dom";
-
-// for 프레임 검색
-import FrameSearch from "../components/FrameSearch";
-// for 프레임 구경하기
-import FrameList from "../components/FrameList";
-// for 프레임 만들기
-import FrameCreate from "./FrameCreate";
+import axios from "axios";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+// components
+import FrameSearch from "../components/FrameSearch"; // for 프레임 검색
+import FrameList from "../components/FrameList"; // for 프레임 구경하기
+import FrameCreate from "./FrameCreate"; // for 프레임 만들기
+// css
+import "../css/Frame.css";
 
 export default function Frame() {
+  const [searchWord, setSearchWord] = useState(); // 검색어를 저장할 빈값을 정의합니다
+
   // tabItems 배열에 각각의 탭 항목을 정의합니다.
   const tabItems = [
     { tabItem: "프레임 구경하기", component: <FrameList />, router: "/frame/" },
@@ -21,10 +29,10 @@ export default function Frame() {
       router: "/frame/create",
     },
   ];
+
   // 활성화된 탭을 위한 data 입니다
   const location = useLocation().pathname;
   const focusedItem = tabItems.find((item) => item.router === location);
-
   if (focusedItem === false) {
     return focusedItem === tabItems[0];
   }
@@ -57,12 +65,16 @@ export default function Frame() {
             focusedItem === tabItems[1] ? "displayHide" : ""
           }`}
         >
-          <FrameSearch />
+          <FrameSearch searchWord={searchWord} setSearchWord={setSearchWord} />
         </div>
       </div>
       {/* 활성화된 탭에 따라서 컨텐츠가 변경됩니다 */}
       <div className="frameSpace">
-        {focusedItem ? focusedItem.component : null}
+        {focusedItem === tabItems[0] ? (
+          <FrameList searchWord={searchWord} />
+        ) : focusedItem === tabItems[1] ? (
+          focusedItem.component
+        ) : null}
       </div>
     </div>
   );
