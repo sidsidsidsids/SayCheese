@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reminiscence.room.domain.Member;
 import com.reminiscence.room.domain.Mode;
 import com.reminiscence.room.member.repository.MemberRepository;
+import com.reminiscence.room.participant.dto.DummyUpdateConnectionYnParticipantRequestDto;
 import com.reminiscence.room.room.dto.DummyRoomCheckRequestDto;
 import com.reminiscence.room.room.dto.DummyRoomCreateRequestDto;
 import com.reminiscence.room.room.dto.DummyRoomDeleteRequestDto;
@@ -246,7 +247,7 @@ public class RoomIntegrationTest {
                 .roomCode("tussle")
                 .mode(Mode.GAME)
                 .maxCount(4)
-                .specification("Gradle")
+                .specification("grid")
                 .build();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+guestToken);
@@ -268,6 +269,23 @@ public class RoomIntegrationTest {
                         )
                 )
         );
+    }
+    @Test
+    @DisplayName("방 시작여부 변경 테스트(정상)")
+    public void updateRoomStartYnSuccessTest() throws Exception {
+        String roomCode = "sessionA";
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization","Bearer "+ memberToken);
+        mvc.perform(put("/api/room/{roomCode}/start", roomCode)
+                        .headers(headers))
+                .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"
+                        ,requestHeaders(
+                                headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                        )
+                        ,pathParameters(
+                                parameterWithName("roomCode").description("방 코드")
+                        )));
     }
     @Test
     @DisplayName("방 삭제 테스트(정상)")

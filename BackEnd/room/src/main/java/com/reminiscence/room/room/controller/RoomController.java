@@ -61,6 +61,13 @@ public class RoomController {
         return new ResponseEntity(Response.of(RoomMessage.ROOM_WRITE_SUCCESS), HttpStatus.OK);
     }
 
+    @PutMapping("{roomCode}/start")
+    public ResponseEntity<Response> updateRoomStart(
+            @PathVariable("roomCode") String roomCode){
+        roomService.updateRoomStart(roomCode);
+        return new ResponseEntity(Response.of(RoomMessage.ROOM_START_SUCCESS), HttpStatus.OK);
+    }
+
     @DeleteMapping
     public ResponseEntity<Response> deleteRoom(
             @RequestBody @Valid DeleteRoomRequestDto requestDto) {
