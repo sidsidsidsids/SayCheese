@@ -2,6 +2,7 @@ package com.reminiscence.room.config;
 
 
 import com.reminiscence.room.filter.JWTAuthorizationFilter;
+import com.reminiscence.room.filter.JwtUtil;
 import com.reminiscence.room.handler.AccessDenyHandler;
 import com.reminiscence.room.handler.AuthenticaitionEntryPoint;
 import com.reminiscence.room.member.repository.MemberRepository;
@@ -22,11 +23,12 @@ public class SecurityConfig {
     private final Environment env;
     private final MemberRepository memberRepository;
     private final CorsConfig corsConfig;
+    private final JwtUtil jwtUtil;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.addFilter(corsConfig.corsFilter());
-        http.addFilterBefore(new JWTAuthorizationFilter(env,memberRepository), BasicAuthenticationFilter.class);
+        http.addFilterBefore(new JWTAuthorizationFilter(env,memberRepository, jwtUtil), BasicAuthenticationFilter.class);
         http.authorizeRequests().antMatchers("/api/room").permitAll()
                 .and()
                 .authorizeRequests().antMatchers("/api/room/**").permitAll()
