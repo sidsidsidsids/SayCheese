@@ -1,5 +1,5 @@
 // 프레임 메인 페이지입니다.
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../css/Frame.css";
 // react router
 import { Link, useLocation } from "react-router-dom";
@@ -28,7 +28,6 @@ export default function Frame() {
   if (focusedItem === false) {
     return focusedItem === tabItems[0];
   }
-
   return (
     <div className="frame">
       <div className="responsiveFrameTab">
