@@ -33,9 +33,6 @@ function Header() {
       "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A"
     );
     dispatch(logintemporary("se6816@naver.com"));
-    setTimeout(() => {
-      console.log(userInfo.email);
-    }, 1000);
   }
 
   function handleLogout() {

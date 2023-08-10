@@ -36,7 +36,7 @@ function MyPhotoCard({
 
   return (
     <div className="MyPhotoCard">
-      <div className="MyPhotoCardPartOne">
+      <div>
         <div style={{ alignItems: "center" }}>
           <img
             width="160px"
@@ -45,11 +45,14 @@ function MyPhotoCard({
             onMouseEnter={handleMouseHover}
           />
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            {loverCnt !== -1 ? (
-              <div style={{ margin: "20px" }}>likes : {loverCnt}</div>
-            ) : (
-              <div style={{ margin: "20px" }}></div>
-            )}
+            <div className="HeartBtn">
+              <div className="Heartcontent">
+                <span
+                  className={loverCnt === -1 ? "MyHeart" : "MyHeart Full"}
+                ></span>
+              </div>
+            </div>
+
             <p
               className="MyPhotoDeleteBtn"
               style={{ margin: "20px" }}
@@ -78,7 +81,6 @@ function MyPhotoCard({
               {/* <img src={imageLink} width="500px" alt="네컷 이미지" /> */}
             </div>
           )}
-          {}
         </div>
       </div>
     </div>
