@@ -116,6 +116,38 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom 
 
     }
 
+    @Override
+    public Page<FrameArticleVo> findMyFrameArticles(Pageable pageable, Long memberId, String authorSubject) {
+        List<FrameArticleVo> list = queryFactory
+                .select(Projections.constructor(FrameArticleVo.class,
+                        QFrameArticle.frameArticle.id.as("articleId"),
+                        QFrameArticle.frameArticle.subject.as("subject"),
+                        QFrame.frame.link.as("frameLink"),
+                        ExpressionUtils.as(JPAExpressions.select(count(QLover.lover.id))
+                                .from(QLover.lover)
+                                .where(QLover.lover.article.id.eq(QFrameArticle.frameArticle.id)), "loverCnt"),
+                        QFrameArticle.frameArticle.createdDate.as("createdDate"),
+                        QFrameArticle.frameArticle.member.nickname.as("author"),
+                        QFrame.frame.open_yn.as("openYn"),
+                        QFrame.frame.frameSpecification.as("frameSpecification")
+                ))
+                .from(QFrameArticle.frameArticle)
+                .join(QFrameArticle.frameArticle.member, QMember.member)
+                .join(QFrameArticle.frameArticle.frame, QFrame.frame)
+                .where(isMyFrame(memberId), searchWord(authorSubject))
+                .orderBy(getOrderSpecifiers(pageable))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long count =  queryFactory.select(Wildcard.count)
+                .from(QFrameArticle.frameArticle)
+                .where(isMyFrame(memberId), searchWord(authorSubject))
+                .fetchOne();
+
+        return new PageImpl<>(list, pageable, count);
+    }
+
     private OrderSpecifier[] getOrderSpecifiers(Pageable page) {
 
         List<OrderSpecifier> ORDERS = new ArrayList<>();
@@ -151,7 +183,7 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom 
         if (StringUtils.isBlank(searchWord) || searchWord == null) {
             return null;
         }
-        return frameArticleAuthorLikeIgnoreCase(searchWord).or(frameArticleAuthorLikeIgnoreCase(searchWord));
+        return frameArticleAuthorLikeIgnoreCase(searchWord).or(frameArticleSubjectLikeIgnoreCase(searchWord));
     }
 
     private BooleanExpression loverMemberIdEq(Long memberId) {

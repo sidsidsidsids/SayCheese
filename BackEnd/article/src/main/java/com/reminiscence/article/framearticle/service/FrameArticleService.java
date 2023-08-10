@@ -13,6 +13,8 @@ public interface FrameArticleService {
     FrameArticleListResponseDto getRecentFrameArticleList(Pageable tempPageable, UserDetail userDetail, String searchWord);
     FrameArticleListResponseDto getRandomFrameArticleList(Pageable tempPageable, UserDetail userDetail, String searchWord);
 
+    FrameArticleListResponseDto getMyFrameArticleList(Pageable tempPageable, UserDetail userDetail, String searchWord);
+
     void writeFrameArticle(FrameArticleAndMemberRequestDto frameArticleAndMemberRequestDto);
 
     void deleteFrameArticle(FrameArticleDeleteRequestDto frameArticleDeleteRequestDto);

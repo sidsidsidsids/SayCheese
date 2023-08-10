@@ -9,7 +9,6 @@ import com.reminiscence.article.exception.message.FrameArticleExceptionMessage;
 import com.reminiscence.article.frame.repository.FrameRepository;
 import com.reminiscence.article.framearticle.dto.FrameArticleAndMemberRequestDto;
 import com.reminiscence.article.framearticle.dto.FrameArticleDeleteRequestDto;
-import com.reminiscence.article.framearticle.dto.FrameArticleListRequestDto;
 import com.reminiscence.article.framearticle.dto.FrameArticleListResponseDto;
 import com.reminiscence.article.framearticle.vo.FrameArticleVo;
 import com.reminiscence.article.framearticle.repository.FrameArticleRepository;
@@ -21,9 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class FrameArticleServiceImpl implements FrameArticleService {
@@ -33,55 +29,67 @@ public class FrameArticleServiceImpl implements FrameArticleService {
 
     @Override
     public FrameArticleListResponseDto getHotFrameArticleList(Pageable tempPageable, UserDetail userDetail, String searchWord) {
-        int page=tempPageable.getPageNumber();
-        if(page<=0){
-            page=1;
+        int page = tempPageable.getPageNumber();
+        if (page <= 0) {
+            page = 1;
         }
-        Pageable pageable= PageRequest.of(page-1, Pagination.DEFAULT_FRAME_PER_PAGE_SIZE, Sort.Direction.DESC,"lover");
+        Pageable pageable = PageRequest.of(page - 1, Pagination.DEFAULT_FRAME_PER_PAGE_SIZE, Sort.Direction.DESC, "lover");
 
-        if(userDetail != null){
+        if (userDetail != null) {
             return getMemberFrameArticleList(pageable, userDetail.getMember().getId(), searchWord);
-        }else{
+        } else {
             return getNonMemberFrameArticleList(pageable, searchWord);
         }
     }
 
     @Override
     public FrameArticleListResponseDto getRecentFrameArticleList(Pageable tempPageable, UserDetail userDetail, String searchWord) {
-        int page=tempPageable.getPageNumber();
-        if(page<=0){
-            page=1;
+        int page = tempPageable.getPageNumber();
+        if (page <= 0) {
+            page = 1;
         }
-        Pageable pageable= PageRequest.of(page-1, Pagination.DEFAULT_FRAME_PER_PAGE_SIZE, Sort.Direction.DESC,"createdDate");
+        Pageable pageable = PageRequest.of(page - 1, Pagination.DEFAULT_FRAME_PER_PAGE_SIZE, Sort.Direction.DESC, "createdDate");
 
-        if(userDetail != null){
+        if (userDetail != null) {
             return getMemberFrameArticleList(pageable, userDetail.getMember().getId(), searchWord);
-        }else{
+        } else {
             return getNonMemberFrameArticleList(pageable, searchWord);
         }
     }
 
     @Override
     public FrameArticleListResponseDto getRandomFrameArticleList(Pageable tempPageable, UserDetail userDetail, String searchWord) {
-        int page=tempPageable.getPageNumber();
-        if(page<=0){
-            page=1;
+        int page = tempPageable.getPageNumber();
+        if (page <= 0) {
+            page = 1;
         }
-        Pageable pageable= PageRequest.of(page-1, Pagination.DEFAULT_FRAME_PER_PAGE_SIZE, Sort.Direction.DESC,"random");
+        Pageable pageable = PageRequest.of(page - 1, Pagination.DEFAULT_FRAME_PER_PAGE_SIZE, Sort.Direction.DESC, "random");
 
-        if(userDetail != null){
+        if (userDetail != null) {
             return getMemberFrameArticleList(pageable, userDetail.getMember().getId(), searchWord);
-        }else{
+        } else {
             return getNonMemberFrameArticleList(pageable, searchWord);
         }
     }
 
+    @Override
+    public FrameArticleListResponseDto getMyFrameArticleList(Pageable tempPageable, UserDetail userDetail, String searchWord) {
+        int page = tempPageable.getPageNumber();
+        if (page <= 0) {
+            page = 1;
+        }
+        Pageable pageable = PageRequest.of(page - 1, Pagination.DEFAULT_FRAME_PER_PAGE_SIZE, Sort.Direction.DESC, "createdDate");
+
+        Page<FrameArticleVo> frameArticlePageList = frameArticleRepository.findMyFrameArticles(pageable, userDetail.getMember().getId(), searchWord);
+
+        return getFrameArticleListResponseDto(pageable, frameArticlePageList);
+    }
 
     @Override
     public void writeFrameArticle(FrameArticleAndMemberRequestDto frameArticleAndMemberRequestDto) {
-        Frame frame=FrameArticleAndMemberRequestDto.toEntity(frameArticleAndMemberRequestDto.getFrameArticleRequestDto());
+        Frame frame = FrameArticleAndMemberRequestDto.toEntity(frameArticleAndMemberRequestDto.getFrameArticleRequestDto());
         frameRepository.save(frame);
-        FrameArticle frameArticle=FrameArticle.builder()
+        FrameArticle frameArticle = FrameArticle.builder()
                 .frame(frame)
                 .member(frameArticleAndMemberRequestDto.getMember())
                 .subject(frameArticleAndMemberRequestDto.getFrameArticleRequestDto().getSubject())
@@ -93,10 +101,10 @@ public class FrameArticleServiceImpl implements FrameArticleService {
 
     @Override
     public void deleteFrameArticle(FrameArticleDeleteRequestDto frameArticleDeleteRequestDto) {
-        FrameArticle frameArticle=frameArticleRepository.findById(frameArticleDeleteRequestDto.getFrameArticleId())
-                .orElseThrow(()->new FrameArticleException(FrameArticleExceptionMessage.NOT_FOUND_DATA));
+        FrameArticle frameArticle = frameArticleRepository.findById(frameArticleDeleteRequestDto.getFrameArticleId())
+                .orElseThrow(() -> new FrameArticleException(FrameArticleExceptionMessage.NOT_FOUND_DATA));
 
-        if(!frameArticle.getMember().getId().equals(frameArticleDeleteRequestDto.getMember().getId())){
+        if (!frameArticle.getMember().getId().equals(frameArticleDeleteRequestDto.getMember().getId())) {
             throw new FrameArticleException(FrameArticleExceptionMessage.INVALID_DELETE_AUTH);
         }
         loverRepository.deleteByArticleId(frameArticle.getId());
@@ -104,22 +112,22 @@ public class FrameArticleServiceImpl implements FrameArticleService {
         frameArticleRepository.delete(frameArticle);
     }
 
-    private FrameArticleListResponseDto getMemberFrameArticleList(Pageable pageable, Long memberId, String searchWord){
+    private FrameArticleListResponseDto getMemberFrameArticleList(Pageable pageable, Long memberId, String searchWord) {
         Page<FrameArticleVo> frameArticlePageList = frameArticleRepository.findMemberFrameArticles(pageable, memberId, searchWord);
         return getFrameArticleListResponseDto(pageable, frameArticlePageList);
     }
 
-    private FrameArticleListResponseDto getNonMemberFrameArticleList(Pageable pageable, String searchWord){
+    private FrameArticleListResponseDto getNonMemberFrameArticleList(Pageable pageable, String searchWord) {
         Page<FrameArticleVo> frameArticlePageList = frameArticleRepository.findNonMemberFrameArticles(pageable, searchWord);
         return getFrameArticleListResponseDto(pageable, frameArticlePageList);
     }
 
     private FrameArticleListResponseDto getFrameArticleListResponseDto(Pageable pageable, Page<FrameArticleVo> frameArticlePageList) {
-        int page = pageable.getPageNumber()+1;
-        FrameArticleListResponseDto frameArticleListResponseDto =new FrameArticleListResponseDto(page, frameArticlePageList.getTotalPages(),frameArticlePageList.getTotalElements());
+        int page = pageable.getPageNumber() + 1;
+        FrameArticleListResponseDto frameArticleListResponseDto = new FrameArticleListResponseDto(page, frameArticlePageList.getTotalPages(), frameArticlePageList.getTotalElements());
 
 //        if(frameArticlePageList.getContent().size()==0) throw new FrameArticleException(FrameArticleExceptionMessage.NOT_FOUND_FRAME_ARTICLE_LIST);
-        for(FrameArticleVo frameArticleVo:frameArticlePageList.getContent()){
+        for (FrameArticleVo frameArticleVo : frameArticlePageList.getContent()) {
 
             frameArticleListResponseDto.add(new FrameArticleVo(frameArticleVo));
         }

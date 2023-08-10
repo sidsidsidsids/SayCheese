@@ -41,3 +41,6 @@ operation::FrameArticleIntegrationTest/MemberListRecentFrameArticleSuccessTest[s
 === FrameArticle 목록 API(최신 - 비회원)
 operation::FrameArticleIntegrationTest/NonMemberListRecentFrameArticleSuccessTest[snippets='http-request,request-parameters,http-response,response-fields']
 
+=== 나의 FrameArticle 목록 API
+operation::FrameArticleIntegrationTest/getMyFrameArticleListSuccessTest[snippets='http-request,request-parameters,http-response,response-fields']
+

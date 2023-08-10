@@ -11,6 +11,8 @@ import java.util.Optional;
 public interface FrameArticleRepositoryCustom {
     Page<FrameArticleVo> findMemberFrameArticles(Pageable page, Long memberId, String authorSubject);
     Page<FrameArticleVo> findNonMemberFrameArticles(Pageable page, String authorSubject);
+
+    Page<FrameArticleVo> findMyFrameArticles(Pageable pageable, Long memberId, String searchWord);
 //    Optional<List<FrameArticle>> findFrameArticleAllBySearchWord(Pageable pageable, String authorSubject);
 
 }

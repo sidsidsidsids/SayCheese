@@ -462,4 +462,40 @@ public class FrameArticleIntegrationTest {
                         )
                 ));
     }
+
+    @Test
+    @DisplayName("나의 프레임 게시글 리스트 조회")
+    public void getMyFrameArticleListSuccessTest() throws Exception{
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + memberToken);
+        String searchWord = "se";
+        mvc.perform(get("/api/article/frame/my/list")
+                        .headers(headers)
+                        .param("searchWord", searchWord)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestParameters(
+                                parameterWithName("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
+                        ),
+                        responseFields(
+                                fieldWithPath("pageNavigator").type(JsonFieldType.OBJECT).description("페이지 정보"),
+                                fieldWithPath("pageNavigator.curPage").type(JsonFieldType.NUMBER).description("현재 페이지"),
+                                fieldWithPath("pageNavigator.totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 수"),
+                                fieldWithPath("pageNavigator.totalDataCount").type(JsonFieldType.NUMBER).description("전체 데이터 개수"),
+                                fieldWithPath("pageNavigator.prevNavigation").type(JsonFieldType.BOOLEAN).description("이전 페이지네이션 존재 유무"),
+                                fieldWithPath("pageNavigator.nextNavigation").type(JsonFieldType.BOOLEAN).description("다음 페이지네이션 존재 유무"),
+                                fieldWithPath("frameArticleVoList").type(JsonFieldType.ARRAY).description("프레임 게시판 글 목록 리스트"),
+                                fieldWithPath("frameArticleVoList[].articleId").type(JsonFieldType.NUMBER).description("게시글 ID"),
+                                fieldWithPath("frameArticleVoList[].subject").type(JsonFieldType.STRING).description("제목"),
+                                fieldWithPath("frameArticleVoList[].isPublic").type(JsonFieldType.BOOLEAN).description("공개 여부"),
+                                fieldWithPath("frameArticleVoList[].frameLink").type(JsonFieldType.STRING).description("프레임 링크"),
+                                fieldWithPath("frameArticleVoList[].loverCnt").type(JsonFieldType.NUMBER).description("좋아요 수"),
+                                fieldWithPath("frameArticleVoList[].createdDate").type(JsonFieldType.STRING).description("게시글 작성일"),
+                                fieldWithPath("frameArticleVoList[].author").type(JsonFieldType.STRING).description("게시글 작성자"),
+                                fieldWithPath("frameArticleVoList[].frameSpecification").type(JsonFieldType.STRING).description("프레임 규격"),
+                                fieldWithPath("frameArticleVoList[].loverYn").type(JsonFieldType.NUMBER).description("좋아요 여부")
+                        )
+                ));
+    }
 }
