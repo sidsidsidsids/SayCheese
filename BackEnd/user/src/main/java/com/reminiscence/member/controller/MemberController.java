@@ -116,5 +116,10 @@ public class MemberController {
         return new ResponseEntity<>(memberInfoResponseDto, HttpStatus.OK);
     }
 
+    @GetMapping("/nickname")
+    public ResponseEntity getNickname(@AuthenticationPrincipal MemberDetail memberDetail) throws Exception {
+        MemberNicknameResponseDto memberNicknameResponseDto = memberService.getMemberNickName(memberDetail);
+        return new ResponseEntity<>(memberNicknameResponseDto, HttpStatus.OK);
+    }
 }
 

@@ -22,4 +22,5 @@ public interface MemberService {
 
     Member joinGuestMember(String nickname) throws Exception;
 
+    MemberNicknameResponseDto getMemberNickName(MemberDetail memberDetail);
 }

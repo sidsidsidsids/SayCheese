@@ -64,7 +64,7 @@ public class AuthController {
     }
 
     @GetMapping("/guest")
-    public ResponseEntity generateGuestToken(@RequestParam String nickname, HttpServletResponse response) throws Exception {
+    public ResponseEntity generateGuestToken(@RequestParam(required = false, defaultValue = "") String nickname, HttpServletResponse response) throws Exception {
         Member guest = memberService.joinGuestMember(nickname);
         String username = guest.getEmail();
         Map<String, Object> customClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(guest.getId()));

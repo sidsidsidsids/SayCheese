@@ -33,6 +33,8 @@ public class MemberServiceImpl implements MemberService {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    private final String GUEST_PREFIX = "GUEST ";
+    private final String GUEST_PASSWORD = "GUEST PASSWORD";
 
 
     @Transactional
@@ -40,6 +42,8 @@ public class MemberServiceImpl implements MemberService {
     public void joinMember(MemberJoinRequestDto memberJoinRequestDto) throws Exception {
         memberJoinRequestDto.setPassword(bCryptPasswordEncoder.encode(memberJoinRequestDto.getPassword()));
         Member member = memberJoinRequestDto.toEntity();
+        if(memberJoinRequestDto.getNickname().startsWith(GUEST_PREFIX))
+            throw new MemberException(MemberExceptionMessage.MEMBER_JOIN_FAILURE_NICKNAME_PROTECTED);
         // 이메일 중복 시 HttpStatus를 Already_Reported 상태로 응답 전달
         if (memberRepository.findByEmail(member.getEmail()) != null)
             throw new MemberException(MemberExceptionMessage.MEMBER_JOIN_FAILURE_EMAIL_DUPLICATED);
@@ -143,18 +147,33 @@ public class MemberServiceImpl implements MemberService {
         while(memberRepository.findByEmail(email) != null){
             email = UUID.randomUUID().toString();
         }
-        String savedNickname = UUID.randomUUID() + nickname;
-        while(memberRepository.findByEmail(savedNickname) != null){
-            savedNickname = UUID.randomUUID() + nickname;
+        String savedNickname = GUEST_PREFIX + nickname;
+        while(memberRepository.findByNickname(savedNickname) != null){
+            savedNickname = GUEST_PREFIX + nickname;
         }
 
         Member member = Member.builder()
                 .email(email)
-                .password("guest")
+                .password(bCryptPasswordEncoder.encode(GUEST_PASSWORD))
                 .nickname(savedNickname)
                 .role(Role.GUEST)
                 .build();
         return memberRepository.save(member);
+    }
+
+    @Override
+    public MemberNicknameResponseDto getMemberNickName(MemberDetail memberDetail){
+        Member member = memberRepository.findById(memberDetail.getMember().getId()).orElse(null);
+        String nickname;
+        if(member == null){
+            return null;
+        } else if (memberDetail.getMember().getRole() == Role.GUEST) {
+            nickname = member.getNickname().substring(GUEST_PREFIX.length()).trim();
+            return new MemberNicknameResponseDto(nickname);
+        } else {
+            nickname = member.getNickname();
+            return new MemberNicknameResponseDto(nickname);
+        }
     }
 
 }

@@ -124,7 +124,7 @@ public class MemberIntegrationTest {
     @DisplayName("회원가입 성공 테스트")
     public void testJoinMemberSuccess() throws Exception {
         //givenz
-        redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_SUCCESS_TOKEN_PREFIX+"saycheese@gmail.com","", Duration.ofMinutes(3));
+        redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_SUCCESS_TOKEN_PREFIX + "saycheese@gmail.com", "", Duration.ofMinutes(3));
         String email = "saycheese@gmail.com";
         String password = "1234";
         String nickname = "검정";
@@ -174,7 +174,7 @@ public class MemberIntegrationTest {
     @DisplayName("회원가입 실패 테스트_이메일 중복")
     public void testJoinMemberFailure_DuplicatedEmail() throws Exception {
         //given
-        redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_SUCCESS_TOKEN_PREFIX+"saycheese@gmail.com","", Duration.ofMinutes(3));
+        redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_SUCCESS_TOKEN_PREFIX + "saycheese@gmail.com", "", Duration.ofMinutes(3));
         String email = "saycheese@gmail.com";
         String password = "1234";
         String nickname = "검정";
@@ -236,7 +236,7 @@ public class MemberIntegrationTest {
     @DisplayName("회원가입 실패 테스트_닉네임 중복")
     public void testJoinMemberFailure_DuplicatedNickname() throws Exception {
         //given
-        redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_SUCCESS_TOKEN_PREFIX+"saycheese2@gmail.com","", Duration.ofMinutes(3));
+        redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_SUCCESS_TOKEN_PREFIX + "saycheese2@gmail.com", "", Duration.ofMinutes(3));
         String email = "saycheese@gmail.com";
         String password = "1234";
         String nickname = "검정";
@@ -1039,7 +1039,7 @@ public class MemberIntegrationTest {
         String username = jwtTokenProvider.getUsernameFromToken(accessToken);
         claim.put("memberId", memberRepository.findByEmail(username).getId());
         String expiredAccessToken = jwtTokenProvider.generateToken(username, 0, claim);
-        headers.add(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+expiredAccessToken);
+        headers.add(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + expiredAccessToken);
 
         mvc.perform(get("/api/member/info")
                         .headers(headers)
@@ -1114,7 +1114,7 @@ public class MemberIntegrationTest {
         String username = jwtTokenProvider.getUsernameFromToken(accessToken);
         claim.put("memberId", memberRepository.findByEmail(username).getId());
         String expiredAccessToken = jwtTokenProvider.generateToken(username, 0, claim);
-        headers.add(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+expiredAccessToken);
+        headers.add(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + expiredAccessToken);
 
         mvc.perform(get("/api/member/info")
                         .headers(headers)
@@ -1281,11 +1281,16 @@ public class MemberIntegrationTest {
     @Test
     @DisplayName("게스트 토큰 발급")
     public void testGuestTokenIssue() throws Exception {
+        String nickname = "thisIsNickname";
 
         mvc.perform(get("/api/guest")
+                        .param("nickname", nickname)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) // 응답 status를 ok로 테스트
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestParameters(
+                                parameterWithName("nickname").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("닉네임")
+                        ),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
                         )
@@ -1296,11 +1301,16 @@ public class MemberIntegrationTest {
     @Test
     @DisplayName("게스트 토큰으로 회원 정보 조회 접근 시 실패")
     public void testGuestTokenForbiddenAccessFailure() throws Exception {
+        String nickname = "thisIsNickname";
 
         MvcResult result = mvc.perform(get("/api/guest")
+                        .param("nickname", nickname)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) // 응답 status를 ok로 테스트
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestParameters(
+                                parameterWithName("nickname").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("닉네임")
+                        ),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
                         )
@@ -1320,4 +1330,91 @@ public class MemberIntegrationTest {
                         )
                 ));
     }
+
+    @Test
+    @DisplayName("게스트 닉네임 조회")
+    public void testGetGuestNickName() throws Exception {
+        String nickname = "thisIsNickname";
+
+        MvcResult result = mvc.perform(get("/api/guest")
+                        .param("nickname", nickname)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestParameters(
+                                parameterWithName("nickname").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("닉네임")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
+                        )
+                ))
+                .andReturn();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(JwtProperties.HEADER_STRING, result.getResponse().getHeader(JwtProperties.HEADER_STRING));
+
+        mvc.perform(get("/api/member/nickname")
+                        .headers(headers)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("게스트 AccessToken")
+                        ),
+                        responseFields(
+                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("회원 닉네임")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("회원 닉네임 조회")
+    public void testGetMemberNickName() throws Exception {
+        String email = "kkk@naver.com";
+        String password = "salmusa444";
+        String nickname = "thisIsNickname";
+
+        memberRepository.save(Member.builder()
+                .email(email)
+                .password(bCryptPasswordEncoder.encode(password))
+                .nickname(nickname)
+                .role(Role.MEMBER)
+                .genderFm('F')
+                .age(30)
+                .name("name")
+                .profile("profile")
+                .snsId("snsId")
+                .snsType("snsType")
+                .build());
+
+        MemberLoginRequestDto memberLoginRequestDto = MemberLoginRequestDto.builder()
+                .email(email)
+                .password(password)
+                .build();
+
+        MvcResult result = mvc.perform(post("/api/login")
+                        .content(objectMapper.writeValueAsString(memberLoginRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"))
+                .andReturn();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(JwtProperties.HEADER_STRING, result.getResponse().getHeader(JwtProperties.HEADER_STRING));
+
+        mvc.perform(get("/api/member/nickname")
+                        .headers(headers)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("회원 AccessToken")
+                        ),
+                        responseFields(
+                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("게스트 닉네임")
+//                                fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
+                        )
+                ));
+    }
+
 }
