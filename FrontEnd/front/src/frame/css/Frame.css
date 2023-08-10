@@ -27,9 +27,9 @@
 .focused {
   border: white 1px solid;
   background-color: white;
-  transition: background-color 0.3s, transform 0.3s;
+  transition:background-color 0.1s, transform 0.3s;
   transform: translateX(14.5px) scale(1.1, 1.1);
-  transition: all ease 2s 0s;
+
   z-index: 10;
 }
 
@@ -43,9 +43,8 @@
   .focused {
     border: white 1px solid;
     background-color: white;
-    transition: background-color 0.3s, transform 0.3s;
+    transition: background-color 0.1s, transform 0.3s;
     transform: translateX(15px) scale(1.1, 1.1);
-    transition: all ease 2s 0s;
     z-index: 10;
   }
   }
@@ -55,7 +54,7 @@
   .focused {
     border: white 1px solid;
     background-color: white;
-    transition: background-color 0.3s, transform 0.3s;
+    transition: background-color 0.1s, transform 0.3s;
     transform: translateX(0);
     z-index: 10;
   }

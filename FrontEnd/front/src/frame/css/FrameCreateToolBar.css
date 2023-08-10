@@ -222,8 +222,8 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 /* ---------------- Text Tool CSS  ---------------- */
 /* 디테일 툴바 인풋 css */
 
-.createWrapper input[type="text"]#text,
-.createWrapper input[type="number"]#textSize{
+.createWrapper input[type="text"],
+.createWrapper input[type="number"]{
   background-color: white;
   color: gray;
   height: 42px;
@@ -571,4 +571,15 @@ input[type="range"]::-webkit-slider-runnable-track {
   .canvasBackground{
     transform:scale(0.5)
   }
+}
+
+input[id="private"]{
+  display: inline-block;
+  background-color: #9795f0;
+}
+label[for="private"] {
+  display: inline-block;
+  position: relative;
+  padding-left: 10px;
+  top: -6px;
 }

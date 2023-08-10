@@ -31,9 +31,9 @@ export default function BgColor() {
     };
   };
   // 배경색 input 의 onChange
-  const colorPick = (e) => {
-    setCustomColor(e.target.value);
-    const payload = { color: e.target.value, image: imgFile };
+  const colorPick = (event) => {
+    setCustomColor(event.target.value);
+    const payload = { color: event.target.value, image: imgFile };
     dispatch(Repaint(payload));
   };
 
@@ -83,7 +83,9 @@ export default function BgColor() {
         type="file"
         accept="image/*"
         ref={imgRef}
-        onChange={saveImgFile}
+        onChange={() => {
+          saveImgFile();
+        }}
       />
       <div className="preview">
         <div>이미지 미리보기</div>

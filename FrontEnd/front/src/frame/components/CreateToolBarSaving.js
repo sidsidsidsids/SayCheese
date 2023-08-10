@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useInsertionEffect } from "react";
 
 import { useDispatch } from "react-redux";
-import { DoDownload } from "../../redux/features/frame/frameSlice";
+import { DoDownload, PostSignal } from "../../redux/features/frame/frameSlice";
 // 저장하기 -> 여기서 버튼 클릭하면 이벤트로 캔버스 JS에서 저장하기 만들어야함
 
 // (0)업로드를 누르지 않은 상태, 업로드를 누르면 (1)
@@ -13,6 +13,8 @@ import { DoDownload } from "../../redux/features/frame/frameSlice";
 // 포스트 AXIOS 요청하기
 export default function Saving() {
   const [isUser, setIsUser] = useState(false);
+  const [frameName, setFrameName] = useState("");
+  const [privateCheck, setPrivateCheck] = useState("");
   const [uploadStage, setUploadStage] = useState(0);
   const dispatch = useDispatch();
 
@@ -28,13 +30,45 @@ export default function Saving() {
       </div>
     );
   }
-
+  function postFrame() {
+    if (frameName !== "") {
+      const payload = {
+        frameName,
+        privateCheck,
+      };
+      dispatch(PostSignal(payload));
+    } else {
+      alert("제목을 입력하세요");
+    }
+  }
   function stage2() {
     return (
       <div>
         <form>
-          <input placeholder="프레임 제목"></input>
-          <button type="submit" className="whtbtn alignCenter">
+          <input
+            type="text"
+            placeholder="프레임 제목"
+            onChange={(event) => {
+              setFrameName(event.target.value);
+            }}
+          ></input>
+          <br></br>
+
+          <input
+            type="checkbox"
+            id="private"
+            onChange={(event) => {
+              setPrivateCheck(event.target.checked); //true || false
+            }}
+          ></input>
+          <label htmlFor="private">혼자만 사용하기</label>
+          <button
+            type="button"
+            onClick={() => {
+              postFrame();
+            }}
+            className="whtbtn alignCenter"
+          >
             {/* TODO: Create API + setUploadStage(3) 업로드하기 */}
             업로드하기
           </button>
@@ -75,6 +109,7 @@ export default function Saving() {
         : uploadStage === 1
         ? stage1() // 로그인
         : null}
+      {true ? stage2() : 0}
     </>
   );
 }

@@ -32,7 +32,6 @@ function App() {
           </QueryClientProvider>
         </div>
       </AuthProvider>
-
       <p>app.js</p>
     </div>
   );

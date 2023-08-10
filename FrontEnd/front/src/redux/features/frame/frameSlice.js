@@ -13,6 +13,8 @@ const initialState = {
   drawingMode: false,
   deleteSignal: 0,
   downloadSignal: 0,
+  frameInfo: false,
+  postSignal: 0,
 };
 
 // 액션 생성 함수
@@ -76,6 +78,14 @@ const frameSlice = createSlice({
       의도하지 않은 동작이 실행 되는 사이드 이펙트를
       방지하기 위해서입니다 */
     },
+    PostSignal: (state, action) => {
+      state.frameInfo = action.payload;
+      console.log(action.payload);
+      state.postSignal = 1;
+    },
+    ResetPostSignal: (state) => {
+      state.postSignal = 0;
+    },
   },
 });
 
@@ -90,6 +100,8 @@ export const {
   SwitchDrawingMode,
   DoDownload,
   ResetSignal,
+  PostSignal,
+  ResetPostSignal,
 } = frameSlice.actions;
 
 export default frameSlice.reducer;

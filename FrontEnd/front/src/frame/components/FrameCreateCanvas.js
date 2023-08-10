@@ -227,7 +227,8 @@ const addDrawing = (canvas, brush, drawingMode) => {
   }
 };
 
-// STEP4. handleDownload 함수를 통해 캔버스 이미지를 다운로드할 수 있습니다
+// STEP4.
+// STEP4-1. handleDownload 함수를 통해 캔버스 이미지를 다운로드할 수 있습니다
 function handleDownload(canvas) {
   const dataURL = canvas.toDataURL("image/png");
   console.log(dataURL);
@@ -238,6 +239,8 @@ function handleDownload(canvas) {
   link.click();
   document.body.removeChild(link);
 }
+
+// STEP4-2. 사용자는 서버에 프레임을 업로드 할 수 있습니다.
 
 // Canvas
 const CanvasArea = () => {
@@ -256,6 +259,8 @@ const CanvasArea = () => {
     brush,
     deleteSignal,
     downloadSignal,
+    frameName,
+    postSignal,
   } = useSelector((store) => store.frame);
 
   useEffect(() => {
