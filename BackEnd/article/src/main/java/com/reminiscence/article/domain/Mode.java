@@ -1,21 +1,22 @@
-package com.reminiscence.article.frame.dto;
+package com.reminiscence.article.domain;
+
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum FrameType {
-    IMAGE("image"),
-    FRAME("frame"),
-    PROFILE("profile");
+public enum Mode {
+    GAME("game"),
+    NORMAL("normal");
 
     private final String value;
 
-    private FrameType(String value) {
+    Mode(String value) {
         this.value = value;
     }
+
     @JsonCreator
-    public static FrameType from(String value) {
-        for (FrameType type : FrameType.values()) {
+    public static Mode from(String value) {
+        for (Mode type : Mode.values()) {
             if (type.getValue().equals(value)) {
                 return type;
             }
@@ -27,7 +28,4 @@ public enum FrameType {
     public String getValue() {
         return value;
     }
-
-
-
 }
