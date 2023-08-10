@@ -59,7 +59,7 @@ const Room = () => {
   useEffect(() => {
     if (roomStatus === 2) {
       if (isHost) {
-        // sendImageData(resultSrc, mySessionId);
+        sendImageData(resultSrc, mySessionId);
       }
       setTimeout(async () => {
         try {
@@ -475,11 +475,12 @@ const Room = () => {
       if (count === 0) {
         const range = document.querySelector(".room-main");
         const imageURL = range.style.backgroundImage;
-        // resultSrc = imageURL;
+        console.log("imageURL: ", imageURL);
         const imageURLCleaned = imageURL.replace(
           /url\(['"]?(.*?)['"]?\)/,
           "$1"
         );
+
         resultSrc = imageURLCleaned;
         console.log("finish");
         setRoomStatus(2);
@@ -603,42 +604,40 @@ const Room = () => {
           }
         )
         .then(async (response) => {
+          // let range = document.querySelector(".room-main");
+          // await html2canvas(range, { scale: 4, backgroundColor: null }).then(
+          //   (canvas) => {
+          //     resultURL = canvas.toDataURL("image/jpg");
+          //     console.log("HTML@");
+          //   }
+          // );
           console.log("IMAGE");
-          console.log(response.data.fileName);
-          console.log(response.data.preSignUrl);
-          const imageBlob = await fetch(resultURL).then((response) =>
-            response.blob()
-          );
-          console.log(imageBlob);
-          const imageFile = new File([imageBlob], response.data.fileName, {
+          const binaryImageData = atob(resultURL.split(",")[1]);
+          const arrayBufferData = new Uint8Array(binaryImageData.length);
+          for (let i = 0; i < binaryImageData.length; i++) {
+            arrayBufferData[i] = binaryImageData.charCodeAt(i);
+          }
+          const blob = new Blob([arrayBufferData], { type: "image/jpg" });
+          // Blob 객체에서 File 객체 생성
+          const imageFile = new File([blob], `${sessionId}.jpg`, {
             type: "image/jpg",
           });
           console.log(imageFile);
-          const formData = new FormData();
-          formData.append(response.data.fileName, imageFile);
-          // console.log(formData)
-
-          for (let value of formData.values()) {
-            console.log(value);
-          }
-          await axios
-            .put(
-              response.data.preSignUrl,
-              {
-                formData,
-              },
-              {
-                headers: {
-                  Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
-                  "Content-Type": "image/jpg",
-                },
-              }
-            )
-            .then((response) => {
-              console.log("DATA");
-              console.log(response);
-              resultData = response.data;
-            });
+          // const image = new Image();
+          // image.src = URL.createObjectURL(imageFile);
+          // document.body.appendChild(image);
+          await fetch(response.data.preSignUrl, {
+            method: "PUT",
+            body: imageFile,
+            headers: {
+              // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+              "Content-Type": "image/jpg",
+            },
+          }).then(async (response) => {
+            console.log("DATA");
+            console.log(response);
+            // fileName, type(image), tags, roomCode to Back(Article)
+          });
         });
     } catch (error) {
       alert(error);
@@ -823,11 +822,16 @@ const Room = () => {
             />
           </div>
           <div className="room-mid">
-            <div className="room-main">
-              <UserVideoComponent
-                streamManager={publisher}
-                myName={myUserName}
-              />
+            <div
+              className="room-main"
+              style={{
+                backgroundImage: `url('${sampleImage}')`,
+                backgroundSize: "contain",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+              }}
+            >
+              <UserVideoComponent streamManager={publisher} />
               {subscribers.map((sub, i) => (
                 <div key={i} className="stream-container col-md-6 col-xs-6">
                   <UserVideoComponent streamManager={sub} />

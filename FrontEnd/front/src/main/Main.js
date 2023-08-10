@@ -99,20 +99,16 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-let SDATA;
 const S3Uploader = () => {
   const [selectedImage, setSelectedImage] = useState(null);
 
   const handleFileChange = (event) => {
-    console.log(event);
     setSelectedImage(event.target.files[0]);
   };
-
-  const sendImageData = async () => {
-    SDATA = selectedImage;
+  const makeLog = () => {
     console.log(selectedImage);
-    console.log(selectedImage.url);
-    console.log(selectedImage.type);
+  };
+  const sendImageData = async () => {
     try {
       if (!selectedImage) {
         console.error("No image selected");
@@ -123,7 +119,7 @@ const S3Uploader = () => {
       const response = await axios.post(
         "/api/amazon/presigned",
         {
-          fileName: "dsfds.png",
+          fileName: "sc7.png",
           fileType: "image",
         },
         {
@@ -132,20 +128,25 @@ const S3Uploader = () => {
           },
         }
       );
-      console.log(response);
+
       const presignedUrl = response.data.preSignUrl;
       const newName = response.data.fileName;
-
+      console.log(selectedImage.type);
+      console.log(selectedImage);
       // 이미지 업로드
-      const formData = new FormData();
-      formData.append(newName, SDATA);
-      for (let key of formData.keys()) {
-        console.log(key);
-      }
-      for (let value of formData.values()) {
-        console.log(value);
-      }
-      const request = await axios.put(presignedUrl, formData, {
+      // const formData = new FormData();
+      // const selectedImageBlob = new Blob([selectedImage], {
+      //   type: selectedImage.type,
+      // });
+      // formData.append(newName, selectedImageBlob);
+      // for (let key of formData.keys()) {
+      //   console.log(key);
+      // }
+      // for (let value of formData.values()) {
+      //   console.log(value);
+      // }
+      // axios로 이미지 업로드 요청
+      const request = await axios.put(presignedUrl, selectedImage, {
         headers: {
           "Content-Type": "image/png",
         },
@@ -163,13 +164,18 @@ const S3Uploader = () => {
         className="filee"
         type="file"
         accept="image/*"
-        onChange={handleFileChange} // 파일 선택 시 호출되는 함수
+        onChange={handleFileChange}
       />
       <button type="submit" onClick={sendImageData}>
         Upload
       </button>
-      <button>sdflds</button>
-      <div></div>
+      {selectedImage && (
+        <img
+          src={URL.createObjectURL(selectedImage)}
+          alt="Selected"
+          style={{ maxWidth: "100%", marginTop: "20px" }}
+        />
+      )}
     </div>
   );
 };
