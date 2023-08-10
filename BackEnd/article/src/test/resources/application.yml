@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: "optional:configserver:"
   sql:
     init:
       mode: always
