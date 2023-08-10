@@ -3,6 +3,7 @@ package com.reminiscence.filter;
 import com.reminiscence.config.auth.MemberDetail;
 import com.reminiscence.config.redis.RefreshTokenService;
 import com.reminiscence.domain.Member;
+import com.reminiscence.exception.ErrorResponse;
 import com.reminiscence.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +52,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         // 토큰의 유효기간 만료 시
         if (jwtTokenProvider.isTokenExpired(token)){
             String errorMessage = "토큰이 만료되었습니다.";
+//            ErrorResponse.of(HttpStatus.UNAUTHORIZED.value(),errorMessage);
             response.sendError(HttpStatus.UNAUTHORIZED.value(), errorMessage);
             return;
         }

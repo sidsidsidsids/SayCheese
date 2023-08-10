@@ -2,41 +2,42 @@ package com.reminiscence.member.controller;
 
 import com.reminiscence.config.auth.MemberDetail;
 import com.reminiscence.config.redis.RefreshTokenService;
+import com.reminiscence.domain.Member;
 import com.reminiscence.filter.JwtTokenProvider;
 import com.reminiscence.filter.JwtUtil;
+import com.reminiscence.member.service.MemberService;
 import com.reminiscence.message.Response;
 import com.reminiscence.message.custom_message.AuthResponseMessage;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.reminiscence.filter.JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME;
-import static com.reminiscence.filter.JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME;
+import static com.reminiscence.filter.JwtProperties.*;
 
 @RestController
 @Slf4j
+@RequestMapping("/api")
+@RequiredArgsConstructor
 public class AuthController {
 
-    @Autowired
-    private RefreshTokenService refreshTokenService;
+    private final MemberService memberService;
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenService refreshTokenService;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final JwtTokenProvider jwtTokenProvider;
 
+    private final JwtUtil jwtUtil;
 
-    @PostMapping("/api/refresh")
+    @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(@AuthenticationPrincipal MemberDetail memberDetail, HttpServletRequest request, HttpServletResponse response)
             throws Exception {
         HttpStatus status = HttpStatus.ACCEPTED;
@@ -60,6 +61,18 @@ public class AuthController {
             message = Response.of(AuthResponseMessage.ACCESS_TOKEN_REISSUE_FAIL);
         }
         return new ResponseEntity<>(message, status);
+    }
+
+    @GetMapping("/guest")
+    public ResponseEntity generateGuestToken(HttpServletResponse response) throws Exception {
+        Member guest = memberService.joinGuestMember();
+        String username = guest.getEmail();
+        Map<String, Object> customClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(guest.getId()));
+
+        String guestToken = jwtTokenProvider.generateToken(username, GUEST_TOKEN_EXPIRATION_TIME, customClaims);
+        jwtTokenProvider.addHeaderAccessToken(response, guestToken);
+
+        return new ResponseEntity<>(Response.of(AuthResponseMessage.GUEST_TOKEN_ISSUE_SUCCESS), HttpStatus.OK);
     }
 
 }

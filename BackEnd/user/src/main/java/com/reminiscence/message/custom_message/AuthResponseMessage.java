@@ -7,7 +7,8 @@ import lombok.Getter;
 public enum AuthResponseMessage implements ResponseMessage {
 
     ACCESS_TOKEN_REISSUE_SUCCESS ("AccessToken reissue success"),
-    ACCESS_TOKEN_REISSUE_FAIL ("다시 로그인 해주세요.");
+    ACCESS_TOKEN_REISSUE_FAIL ("다시 로그인 해주세요."),
+    GUEST_TOKEN_ISSUE_SUCCESS("게스트 토큰 발급 성공");
 
     private final String message;
 

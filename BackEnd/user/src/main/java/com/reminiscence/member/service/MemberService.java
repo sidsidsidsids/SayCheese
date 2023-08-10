@@ -9,7 +9,6 @@ import java.util.List;
 
 public interface MemberService {
 
-//    Member login(MemberLoginRequestDto memberLoginRequestDto) throws Exception;
     void joinMember(MemberJoinRequestDto memberJoinRequestDto) throws Exception;
     Member emailCheck(String email) throws Exception;
     Member nicknameCheck(String nickname) throws Exception;
@@ -20,7 +19,7 @@ public interface MemberService {
     ResponseEntity updateMemberInfo(MemberDetail memberDetail, MemberInfoUpdateRequestDto memberInfoUpdateRequestDto) throws  Exception;
 
     void deleteMember(long memberId) throws Exception;
-//    void saveRefreshToken(String memberid, String refreshToken) throws Exception;
-//    Object getRefreshToken(String memberid) throws Exception;
-//    void deleteRefreshToken(String memberid) throws Exception;
+
+    Member joinGuestMember() throws Exception;
+
 }

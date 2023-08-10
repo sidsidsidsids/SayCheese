@@ -3,6 +3,7 @@ package com.reminiscence.config;
 import com.nimbusds.oauth2.sdk.http.HTTPEndpoint;
 import com.reminiscence.config.redis.RefreshTokenService;
 import com.reminiscence.config.redis.TokenRevocationService;
+import com.reminiscence.domain.Role;
 import com.reminiscence.filter.JwtAuthenticationFilter;
 import com.reminiscence.filter.JwtAuthorizationFilter;
 import com.reminiscence.filter.JwtTokenProvider;
@@ -72,41 +73,23 @@ public class SecurityConfiguration {
                 .authorizeRequests()
 //                .antMatchers("/public").permitAll()
 //                .antMatchers("/private").hasRole("USER")
-                    .antMatchers(HttpMethod.PUT,"/api/member/**").authenticated()
-                    .antMatchers(HttpMethod.DELETE,"/api/member/**").authenticated()
+                    .antMatchers(HttpMethod.GET,"/api/auth/guest").permitAll()
+                    .antMatchers(HttpMethod.GET,"/api/member/info").hasAnyRole(Role.ADMIN.name(), Role.MEMBER.name())
+                    .antMatchers(HttpMethod.PUT,"/api/member/**").hasAnyRole(Role.ADMIN.name(), Role.MEMBER.name())
+                    .antMatchers(HttpMethod.DELETE,"/api/member/**").hasAnyRole(Role.ADMIN.name(), Role.MEMBER.name())
                     .antMatchers("/api/mail/auth").permitAll()
                 .antMatchers("/api/mail/auth/check").permitAll()
                 .anyRequest().permitAll()
                 .and()
                 .logout()
                     .logoutUrl("/api/logout")
-                    .logoutSuccessHandler(new CustomLogoutSuccessHandler(refreshTokenService, jwtUtil, tokenRevocationService))
-                    .logoutSuccessUrl("/public");
-//                .and().apply(new Custom())
-//                .antMatchers("/api/article/image/**")
-//                .access("hasRole('ROLE_Member') or hasRole('ROLE_ADMIN')")
-//                .antMatchers("/api/admin/**")
-//                .access("hasRole('ROLE_ADMIN')")
-//                .anyRequest().permitAll();
+                    .logoutSuccessHandler(new CustomLogoutSuccessHandler(refreshTokenService, jwtUtil, tokenRevocationService));
 
         http.exceptionHandling().accessDeniedHandler(new AccessDenyHandler());
         http.exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint());
 
         return http.build();
     }
-
-
-//    public class Custom extends AbstractHttpConfigurer<Custom, HttpSecurity> {
-//        @Override
-//        public void configure(HttpSecurity http) throws Exception {
-//            AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-//            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, env, refreshTokenService, jwtTokenProvider);
-//            jwtAuthenticationFilter.setFilterProcessesUrl("/api/login");
-//            http
-//                    .addFilter(jwtAuthenticationFilter);
-//
-//        }
-//    }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -119,32 +102,4 @@ public class SecurityConfiguration {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().antMatchers("/**.html", "/**.css", "/img/**");
     }
-
-//    @Bean
-//    public FilterRegistrationBean<JwtAuthenticationFilter> jwtAuthenticationFilter() {
-//        FilterRegistrationBean<JwtAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
-//        registrationBean.setFilter(new JwtAuthenticationFilter(authenticationManager));
-//        registrationBean.addUrlPatterns("api/member/login"); // Filter가 적용될 URL 패턴 설정
-//        return registrationBean;
-//    }
-    // using the WebSecurityConfigurerAdapter with an embedded DataSource that is initialized with the default schema and has a single user
-//    @Bean
-//    public DataSource dataSource() {
-//        return new EmbeddedDatabaseBuilder()
-//                .setType(EmbeddedDatabaseType.H2)
-//                .addScript(JdbcDaoImpl.DEFAULT_USER_SCHEMA_DDL_LOCATION)
-//                .build();
-//    }
-//
-//    @Bean
-//    public UserDetailsManager users(DataSource dataSource) {
-//        UserDetails user = User.withDefaultPasswordEncoder()
-//                .username("user")
-//                .password("password")
-//                .roles("USER")
-//                .build();
-//        JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
-//        users.createUser(user);
-//        return users;
-//    }
 }

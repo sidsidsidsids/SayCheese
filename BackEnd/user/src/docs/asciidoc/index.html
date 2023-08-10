@@ -463,8 +463,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_accesstoken와_refreshtoken_모두_만료_시">1.18. AccessToken와 RefreshToken 모두 만료 시</a></li>
 <li><a href="#_로그아웃_시_accesstoken_블랙리스트_설정_후_해당_accesstoken_접근_제한">1.19. 로그아웃 시 AccessToken 블랙리스트 설정 후 해당 AccessToken 접근 제한</a></li>
 <li><a href="#_로그아웃_시_redis_내_refreshtoken_삭제_후_refreshtoken_접근_제한">1.20. 로그아웃 시 Redis 내 RefreshToken 삭제 후 RefreshToken 접근 제한</a></li>
-<li><a href="#이메일-전송-API">1.21. 회원 가입 시 이메일 인증 전송 API(정상)</a></li>
-<li><a href="#_회원_가입_시_이메일_인증_전송_api잘못된_값이_들어왔을_시">1.22. 회원 가입 시 이메일 인증 전송 API(잘못된 값이 들어왔을 시)</a></li>
+<li><a href="#이메일-전송-API">1.21. 회원 가입 시 이메일 인증번호 전송 API(정상)</a></li>
+<li><a href="#_회원_가입_시_이메일_인증번호_전송_api잘못된_값이_들어왔을_시">1.22. 회원 가입 시 이메일 인증번호 전송 API(잘못된 값이 들어왔을 시)</a></li>
+<li><a href="#_회원_가입_시_이메일_인증_api정상">1.23. 회원 가입 시 이메일 인증 API(정상)</a></li>
+<li><a href="#_회원_가입_시_이메일_인증_api잘못된_값이_들어왔을_시">1.24. 회원 가입 시 이메일 인증 API(잘못된 값이 들어왔을 시)</a></li>
+<li><a href="#_회원_가입_시_이메일_인증_api없는_값이_들어왔을_시">1.25. 회원 가입 시 이메일 인증 API(없는 값이 들어왔을 시)</a></li>
+<li><a href="#게스트-토큰-API">1.26. 게스트 토큰 발급</a></li>
+<li><a href="#_게스트_토큰으로_회원_정보_조회_접근_시_실패">1.27. 게스트 토큰으로 회원 정보 조회 접근 시 실패</a></li>
 </ul>
 </li>
 </ul>
@@ -482,7 +487,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/member/join HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 245
+Content-Length: 225
 Host: localhost:8080
 
 {
@@ -494,8 +499,7 @@ Host: localhost:8080
   "name" : "고무신",
   "profile" : "xxxxxxx",
   "snsId" : "nosns",
-  "snsType" : "facebook",
-  "code" : "2211"
+  "snsType" : "facebook"
 }</code></pre>
 </div>
 </div>
@@ -572,12 +576,6 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock">소셜 계정</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">__</p></td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">이메일 인증 번호</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">__</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -637,7 +635,7 @@ Content-Length: 61
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/member/join HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 251
+Content-Length: 231
 Host: localhost:8080
 
 {
@@ -649,8 +647,7 @@ Host: localhost:8080
   "name" : "고무신",
   "profile" : "xxxxxxx",
   "snsId" : "nosns",
-  "snsType" : "facebook",
-  "code" : "2211"
+  "snsType" : "facebook"
 }</code></pre>
 </div>
 </div>
@@ -727,12 +724,6 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock">소셜 계정</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">__</p></td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">이메일 인증 번호</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">__</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -798,7 +789,7 @@ Content-Length: 74
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/member/join HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 250
+Content-Length: 230
 Host: localhost:8080
 
 {
@@ -810,8 +801,7 @@ Host: localhost:8080
   "name" : "고무신",
   "profile" : "xxxxxxx",
   "snsId" : "nosns",
-  "snsType" : "facebook",
-  "code" : "2211"
+  "snsType" : "facebook"
 }</code></pre>
 </div>
 </div>
@@ -886,12 +876,6 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>snsType</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">소셜 계정</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">__</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">이메일 인증 번호</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">__</p></td>
 </tr>
 </tbody>
@@ -1338,8 +1322,8 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzg2MTIyLCJpYXQiOjE2OTEzODQzMjIsIm1lbWJlcklkIjoiMyJ9.x3xbsuU5YFVFLPiYibOY0EyeeQyNKKxRgtGO6_MkysmNRYb75iH_Dw72w2QQAEoi38cvbxDboybZ8iTi40STww
-RefreshToken: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyNTkzOTIyLCJpYXQiOjE2OTEzODQzMjIsIm1lbWJlcklkIjoiMyJ9.dDNJZEeHIrp61W9Cyw7kF6xIF02hSW-RR6srnl6gJgcl_uW_YwvKNVe8bs0lONiyg-F0hgzVbiSKcjD8aBio3g
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxNjM4NjIyLCJpYXQiOjE2OTE2MzY4MjIsIm1lbWJlcklkIjoiNSJ9.n-mNBdGEHAmTYJPf92Y7NZ3e9aKEv3EHSm8ckSnPXtk4ObC5Ob0trd5Srmtl6OSxqja2ULoxJ25MMWPcefDRjA
+RefreshToken: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyODQ2NDIyLCJpYXQiOjE2OTE2MzY4MjIsIm1lbWJlcklkIjoiNSJ9.ut3kZP4j9E9yCwL629l0Z7u6zLZCLdRbxXSfBzqNDMuJeoZUh3bpCD9xlvyNXcexnWEpaiqMdTSOo3sVlm7Bvw
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -1351,9 +1335,7 @@ X-Frame-Options: DENY</code></pre>
 </div>
 <div class="sect3">
 <h4 id="로그인-API_response_fields"><a class="link" href="#로그인-API_response_fields">1.8.4. Response fields</a></h4>
-<div class="paragraph">
-<p>Snippet response-fields not found for operation::MemberIntegrationTest/testLoginSuccess</p>
-</div>
+
 </div>
 </div>
 <div class="sect2">
@@ -1426,9 +1408,7 @@ X-Frame-Options: DENY</code></pre>
 </div>
 <div class="sect3">
 <h4 id="_로그인_api비밀번호_다를_경우_response_fields"><a class="link" href="#_로그인_api비밀번호_다를_경우_response_fields">1.9.4. Response fields</a></h4>
-<div class="paragraph">
-<p>Snippet response-fields not found for operation::MemberIntegrationTest/testLoginFail</p>
-</div>
+
 </div>
 </div>
 <div class="sect2">
@@ -1439,7 +1419,7 @@ X-Frame-Options: DENY</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/member/info HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzg2MTI0LCJpYXQiOjE2OTEzODQzMjQsIm1lbWJlcklkIjoiMTQifQ.vN9CSK1rGlqLJz6Q374pFySVrKztT428VLMDCuz4X-a25sP9qY3Y8u8L-x2zuIJG-zs6U-RpzWC_6aaQB_T73Q
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxNjM4NjIzLCJpYXQiOjE2OTE2MzY4MjMsIm1lbWJlcklkIjoiMTgifQ.ZprHdLztm578hn1w8oERHiUEhKTl_UHSLWfK6ZONJqZN8V4eOpMFIe7NmB7_l-gzwV7D7dAMqMeIYflpW-_gww
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1569,7 +1549,7 @@ Content-Length: 231
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /api/member/modify HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzg2MTI0LCJpYXQiOjE2OTEzODQzMjQsIm1lbWJlcklkIjoiMTgifQ._LiSdH9fKseRkOsoRhthqq4WuQgAmGyajyqaV9ncDbp96EaUtH_iAZhwwP1-laljlvSWg7z99P3CQXMn1xwqlw
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxNjM4NjIzLCJpYXQiOjE2OTE2MzY4MjMsIm1lbWJlcklkIjoiMjIifQ.aqlpCi3X0zWFYj4WrvD3O9dbFvFX0TlWeP3ZybqjQqO9YzsbHIjXCili9nOno3iFPJtE02FL_N7Uz2t2Hvvpbw
 Content-Length: 219
 Host: localhost:8080
 
@@ -1797,7 +1777,7 @@ Content-Length: 359
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/member/delete HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzg2MTIyLCJpYXQiOjE2OTEzODQzMjIsIm1lbWJlcklkIjoiNCJ9.GACQb-FEjmLULrPyaizIzLYn88ufpt7VSm_Fs37JsdXELTBn1OtBbT3Su_i2vQhbot9kWp1BcpfXsqBgPLnv7w
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxNjM4NjIyLCJpYXQiOjE2OTE2MzY4MjIsIm1lbWJlcklkIjoiNiJ9._IoaCPA7aLUs5uwtmu3RrjKitAQZVSA5yin0sMcoKDlYxwXnuhgsMsz_f373EeSvIbUNdbj9l4yC_q2uWFMkEQ
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1903,9 +1883,7 @@ X-Frame-Options: DENY</code></pre>
 </div>
 <div class="sect3">
 <h4 id="_계정삭제_api잘못된_사용자_접근_시_response_fields"><a class="link" href="#_계정삭제_api잘못된_사용자_접근_시_response_fields">1.13.3. Response fields</a></h4>
-<div class="paragraph">
-<p>Snippet response-fields not found for operation::MemberIntegrationTest/testDeleteMemberFailure</p>
-</div>
+
 </div>
 </div>
 <div class="sect2">
@@ -2007,7 +1985,7 @@ Content-Length: 136
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/logout HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzg2MTI0LCJpYXQiOjE2OTEzODQzMjQsIm1lbWJlcklkIjoiMTMifQ.hcSORn5kfxoZ6S-O2QYt9Ex0P8KaKFSrZGIkjqlMl9h0seCE0OcQDsNm3dPTLdssaK9qlLq23V0zp3Iiw_OfSw
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxNjM4NjIzLCJpYXQiOjE2OTE2MzY4MjMsIm1lbWJlcklkIjoiMTcifQ.nBG9zmJtbRk0rpqNrdTb1lwdi_I1cxuSYq9HdahxY_ilQHK4RFIMzpTvOV60H95CSpxZrRfCFUM0ybr29JfSeg
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2059,7 +2037,7 @@ X-Frame-Options: DENY</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/member/info HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzg0MzI0LCJpYXQiOjE2OTEzODQzMjQsIm1lbWJlcklkIjoxOX0.82taSJL8sSMQQcF-PGEdkRiO1s_4Nd6YAnF-0YT1729m9BA6SHo1zQprX_2CWn-CmzBcFMEzfIMNe6yUU4H6Nw
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxNjM2ODIzLCJpYXQiOjE2OTE2MzY4MjMsIm1lbWJlcklkIjoyM30.gCh04iXg93Bn-S1ssb9n7LSW8lr3UQflg7GbxLWuqlJ1aT2o-9wF7gOsauS-403rQ6EpukxeK_i_wLQqTc5HoQ
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2111,7 +2089,7 @@ X-Frame-Options: DENY</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/refresh HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyNTkzOTIzLCJpYXQiOjE2OTEzODQzMjMsIm1lbWJlcklkIjoiOSJ9.y1s6z2cUM8ahOkdW4f1F8amG4uFiFhMb98xf6zqcI9htyMPUq6pcD06UirU9WjerrisPAbJUCCiO9D0x-4tr6A
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyODQ2NDIyLCJpYXQiOjE2OTE2MzY4MjIsIm1lbWJlcklkIjoiMTIifQ.dwQqihTdBzgckl4jgI38MPJu7a-OjN5M7AFUR8HZaLMHAv8mBjQZnqMtAFTlj_BR4YpXXLWMSWE4wOJQvR8XGw
 Content-Length: 63
 Host: localhost:8080
 
@@ -2151,8 +2129,8 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzg2MTIzLCJpYXQiOjE2OTEzODQzMjMsIm1lbWJlcklkIjoiOSJ9.vSRrDPvU8upWE5C9hCRZzqsP3S-z4iiBPMURiyP3-HNR0VOdQCx02UySWBLjdedFprvsXKykLJ_2MdkPkNjeqA
-RefreshToken: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyNTkzOTIzLCJpYXQiOjE2OTEzODQzMjMsIm1lbWJlcklkIjoiOSJ9.y1s6z2cUM8ahOkdW4f1F8amG4uFiFhMb98xf6zqcI9htyMPUq6pcD06UirU9WjerrisPAbJUCCiO9D0x-4tr6A
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxNjM4NjIyLCJpYXQiOjE2OTE2MzY4MjIsIm1lbWJlcklkIjoiMTIifQ.4EGFl4i_3nUxtBQBkPgEw9ZTmEYnBRbzf0VTTNGtWSiu9vYJOBVFQuVIzXPc7gnIG5ox4ytkwRtzJdnXNJHmfA
+RefreshToken: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyODQ2NDIyLCJpYXQiOjE2OTE2MzY4MjIsIm1lbWJlcklkIjoiMTIifQ.dwQqihTdBzgckl4jgI38MPJu7a-OjN5M7AFUR8HZaLMHAv8mBjQZnqMtAFTlj_BR4YpXXLWMSWE4wOJQvR8XGw
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -2201,7 +2179,7 @@ Content-Length: 49
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/refresh HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzg0MzIyLCJpYXQiOjE2OTEzODQzMjIsIm1lbWJlcklkIjoxfQ.5_D1FxSTLjkXp2RlFmPkGBaMd3ARyMaBkzdAsY-xwlh4vsGLao56Qi0DH4xmS0VGkBpaJ44HgrGvVXImXNIXYQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxNjM2ODIxLCJpYXQiOjE2OTE2MzY4MjEsIm1lbWJlcklkIjozfQ.CUyNMQ-SBSeWkAKAJyI0pF1-bKBxNiblsQIoCfjMur45UOnZ9nqm10WphHcr1ZTYNBT938qzJfJWyUpNjNbwIA
 Content-Length: 63
 Host: localhost:8080
 
@@ -2259,7 +2237,7 @@ X-Frame-Options: DENY</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/member/info HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxMzg2MTIyLCJpYXQiOjE2OTEzODQzMjIsIm1lbWJlcklkIjoiMiJ9.QRNbcw-7ksKvcQuXRsgmHT0IJXM5VGMuX57ccuU_Y9Zh3U7Cspdyv-RmqgDyb4ho9G_kxDHliyPS9zKieaZ2cA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkxNjM4NjIxLCJpYXQiOjE2OTE2MzY4MjEsIm1lbWJlcklkIjoiNCJ9.qQTMWrXuELcO340izD_kRSAKl9HAgBq-_Na2rzEDfqLzBJX3DTCN4kujRTlJuDvSVXRLoVa22TwpY0CSdjm_0w
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2311,7 +2289,7 @@ X-Frame-Options: DENY</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/refresh HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyNTkzOTI0LCJpYXQiOjE2OTEzODQzMjQsIm1lbWJlcklkIjoiMjIifQ.czr3zNB8kTT_8ECvfjp2rXob2LO9VC1LbU-QE4JrHT3zOt3UfabJXaIGZ1UXVVRhvs7JNVJ3fonq53Tcv-Ou6Q
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXljaGVlc2VAZ21haWwuY29tIiwiZXhwIjoxNjkyODQ2NDI0LCJpYXQiOjE2OTE2MzY4MjQsIm1lbWJlcklkIjoiMjYifQ.xlBvxAr1CJYpEhyTTttp40R5CQDC08B7k94PX_vrP98akRzGpa_tE6ylkj9DPSficXWtkDRzVm8tS8DSMnf3rw
 Content-Length: 63
 Host: localhost:8080
 
@@ -2392,7 +2370,7 @@ Content-Length: 52
 </div>
 </div>
 <div class="sect2">
-<h3 id="이메일-전송-API"><a class="link" href="#이메일-전송-API">1.21. 회원 가입 시 이메일 인증 전송 API(정상)</a></h3>
+<h3 id="이메일-전송-API"><a class="link" href="#이메일-전송-API">1.21. 회원 가입 시 이메일 인증번호 전송 API(정상)</a></h3>
 <div class="sect3">
 <h4 id="이메일-전송-API_http_request"><a class="link" href="#이메일-전송-API_http_request">1.21.1. HTTP request</a></h4>
 <div class="listingblock">
@@ -2484,9 +2462,9 @@ Content-Length: 64
 </div>
 </div>
 <div class="sect2">
-<h3 id="_회원_가입_시_이메일_인증_전송_api잘못된_값이_들어왔을_시"><a class="link" href="#_회원_가입_시_이메일_인증_전송_api잘못된_값이_들어왔을_시">1.22. 회원 가입 시 이메일 인증 전송 API(잘못된 값이 들어왔을 시)</a></h3>
+<h3 id="_회원_가입_시_이메일_인증번호_전송_api잘못된_값이_들어왔을_시"><a class="link" href="#_회원_가입_시_이메일_인증번호_전송_api잘못된_값이_들어왔을_시">1.22. 회원 가입 시 이메일 인증번호 전송 API(잘못된 값이 들어왔을 시)</a></h3>
 <div class="sect3">
-<h4 id="_회원_가입_시_이메일_인증_전송_api잘못된_값이_들어왔을_시_http_request"><a class="link" href="#_회원_가입_시_이메일_인증_전송_api잘못된_값이_들어왔을_시_http_request">1.22.1. HTTP request</a></h4>
+<h4 id="_회원_가입_시_이메일_인증번호_전송_api잘못된_값이_들어왔을_시_http_request"><a class="link" href="#_회원_가입_시_이메일_인증번호_전송_api잘못된_값이_들어왔을_시_http_request">1.22.1. HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/email/auth HTTP/1.1
@@ -2501,7 +2479,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_회원_가입_시_이메일_인증_전송_api잘못된_값이_들어왔을_시_request_fields"><a class="link" href="#_회원_가입_시_이메일_인증_전송_api잘못된_값이_들어왔을_시_request_fields">1.22.2. Request fields</a></h4>
+<h4 id="_회원_가입_시_이메일_인증번호_전송_api잘못된_값이_들어왔을_시_request_fields"><a class="link" href="#_회원_가입_시_이메일_인증번호_전송_api잘못된_값이_들어왔을_시_request_fields">1.22.2. Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -2528,7 +2506,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_회원_가입_시_이메일_인증_전송_api잘못된_값이_들어왔을_시_http_response"><a class="link" href="#_회원_가입_시_이메일_인증_전송_api잘못된_값이_들어왔을_시_http_response">1.22.3. HTTP response</a></h4>
+<h4 id="_회원_가입_시_이메일_인증번호_전송_api잘못된_값이_들어왔을_시_http_response"><a class="link" href="#_회원_가입_시_이메일_인증번호_전송_api잘못된_값이_들어왔을_시_http_response">1.22.3. HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
@@ -2552,7 +2530,7 @@ Content-Length: 84
 </div>
 </div>
 <div class="sect3">
-<h4 id="_회원_가입_시_이메일_인증_전송_api잘못된_값이_들어왔을_시_response_fields"><a class="link" href="#_회원_가입_시_이메일_인증_전송_api잘못된_값이_들어왔을_시_response_fields">1.22.4. Response fields</a></h4>
+<h4 id="_회원_가입_시_이메일_인증번호_전송_api잘못된_값이_들어왔을_시_response_fields"><a class="link" href="#_회원_가입_시_이메일_인증번호_전송_api잘못된_값이_들어왔을_시_response_fields">1.22.4. Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2581,12 +2559,435 @@ Content-Length: 84
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_회원_가입_시_이메일_인증_api정상"><a class="link" href="#_회원_가입_시_이메일_인증_api정상">1.23. 회원 가입 시 이메일 인증 API(정상)</a></h3>
+<div class="sect3">
+<h4 id="_회원_가입_시_이메일_인증_api정상_http_request"><a class="link" href="#_회원_가입_시_이메일_인증_api정상_http_request">1.23.1. HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/email/auth/check HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 54
+Host: localhost:8080
+
+{
+  "email" : "wow@naver.com",
+  "token" : "1222"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_회원_가입_시_이메일_인증_api정상_request_fields"><a class="link" href="#_회원_가입_시_이메일_인증_api정상_request_fields">1.23.2. Request fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Constraints</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이메일</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>이메일 제약조건</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>token</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">인증 번호</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>빈 문자열이 아닌가?</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_회원_가입_시_이메일_인증_api정상_http_response"><a class="link" href="#_회원_가입_시_이메일_인증_api정상_http_response">1.23.3. HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 80
+
+{
+  "message" : "이메일 인증이 성공적으로 이루어졌습니다."
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_회원_가입_시_이메일_인증_api정상_response_fields"><a class="link" href="#_회원_가입_시_이메일_인증_api정상_response_fields">1.23.4. Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 메시지</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_회원_가입_시_이메일_인증_api잘못된_값이_들어왔을_시"><a class="link" href="#_회원_가입_시_이메일_인증_api잘못된_값이_들어왔을_시">1.24. 회원 가입 시 이메일 인증 API(잘못된 값이 들어왔을 시)</a></h3>
+<div class="sect3">
+<h4 id="_회원_가입_시_이메일_인증_api잘못된_값이_들어왔을_시_http_request"><a class="link" href="#_회원_가입_시_이메일_인증_api잘못된_값이_들어왔을_시_http_request">1.24.1. HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/email/auth/check HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 45
+Host: localhost:8080
+
+{
+  "email" : "fwe@",
+  "token" : "1222"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_회원_가입_시_이메일_인증_api잘못된_값이_들어왔을_시_request_fields"><a class="link" href="#_회원_가입_시_이메일_인증_api잘못된_값이_들어왔을_시_request_fields">1.24.2. Request fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Constraints</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이메일</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>이메일 제약조건</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>token</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">인증 번호</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>빈 문자열이 아닌가?</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_회원_가입_시_이메일_인증_api잘못된_값이_들어왔을_시_http_response"><a class="link" href="#_회원_가입_시_이메일_인증_api잘못된_값이_들어왔을_시_http_response">1.24.3. HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 84
+
+{
+  "httpStatus" : 400,
+  "message" : "이메일 양식이 맞지 않습니다"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_회원_가입_시_이메일_인증_api잘못된_값이_들어왔을_시_response_fields"><a class="link" href="#_회원_가입_시_이메일_인증_api잘못된_값이_들어왔을_시_response_fields">1.24.4. Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>httpStatus</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 메시지</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_회원_가입_시_이메일_인증_api없는_값이_들어왔을_시"><a class="link" href="#_회원_가입_시_이메일_인증_api없는_값이_들어왔을_시">1.25. 회원 가입 시 이메일 인증 API(없는 값이 들어왔을 시)</a></h3>
+<div class="sect3">
+<h4 id="_회원_가입_시_이메일_인증_api없는_값이_들어왔을_시_http_request"><a class="link" href="#_회원_가입_시_이메일_인증_api없는_값이_들어왔을_시_http_request">1.25.1. HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/email/auth/check HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 54
+Host: localhost:8080
+
+{
+  "email" : "fwe@naver.com",
+  "token" : "1222"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_회원_가입_시_이메일_인증_api없는_값이_들어왔을_시_request_fields"><a class="link" href="#_회원_가입_시_이메일_인증_api없는_값이_들어왔을_시_request_fields">1.25.2. Request fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Constraints</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이메일</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>이메일 제약조건</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>token</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">인증 번호</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>빈 문자열이 아닌가?</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_회원_가입_시_이메일_인증_api없는_값이_들어왔을_시_http_response"><a class="link" href="#_회원_가입_시_이메일_인증_api없는_값이_들어왔을_시_http_response">1.25.3. HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 404 Not Found
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 89
+
+{
+  "httpStatus" : 404,
+  "message" : "관련 데이터를 찾을 수 없습니다."
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_회원_가입_시_이메일_인증_api없는_값이_들어왔을_시_response_fields"><a class="link" href="#_회원_가입_시_이메일_인증_api없는_값이_들어왔을_시_response_fields">1.25.4. Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>httpStatus</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 메시지</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="게스트-토큰-API"><a class="link" href="#게스트-토큰-API">1.26. 게스트 토큰 발급</a></h3>
+<div class="sect3">
+<h4 id="게스트-토큰-API_http_request"><a class="link" href="#게스트-토큰-API_http_request">1.26.1. HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/guest HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="게스트-토큰-API_http_response"><a class="link" href="#게스트-토큰-API_http_response">1.26.2. HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmRlZTgxOC1mYWZkLTRjOGEtOTc0OC1mMmZmY2MzYWJjMmQiLCJleHAiOjE2OTE3MjMyMjIsImlhdCI6MTY5MTYzNjgyMiwibWVtYmVySWQiOiI4In0.mQDOE0hfX7ppLa7vALrUOd98OKRI2wrvPu6u5TqdegxT1N4SR_1saH10w7DBYjtvHCVolfjnWdhydN25bHtBuA
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 52
+
+{
+  "message" : "게스트 토큰 발급 성공"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="게스트-토큰-API_response_fields"><a class="link" href="#게스트-토큰-API_response_fields">1.26.3. Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">API 응답 메시지</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_게스트_토큰으로_회원_정보_조회_접근_시_실패"><a class="link" href="#_게스트_토큰으로_회원_정보_조회_접근_시_실패">1.27. 게스트 토큰으로 회원 정보 조회 접근 시 실패</a></h3>
+<div class="sect3">
+<h4 id="_게스트_토큰으로_회원_정보_조회_접근_시_실패_http_request"><a class="link" href="#_게스트_토큰으로_회원_정보_조회_접근_시_실패_http_request">1.27.1. HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/member/info HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI5ZDljMzQwMi03ZjcyLTRjYjctYTYwMC1jZDVlMzg1ZTUzNjkiLCJleHAiOjE2OTE3MjMyMjMsImlhdCI6MTY5MTYzNjgyMywibWVtYmVySWQiOiIxNSJ9.vN0wbooJMRb7r00A-bIfSQ6xl9-rURC6bhhsmfURY4icoGachtJpLNJPe2NH7I4h-bVxEamBY5owHKClUFj1oQ
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_게스트_토큰으로_회원_정보_조회_접근_시_실패_request_headers"><a class="link" href="#_게스트_토큰으로_회원_정보_조회_접근_시_실패_request_headers">1.27.2. Request headers</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">게스트 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_게스트_토큰으로_회원_정보_조회_접근_시_실패_http_response"><a class="link" href="#_게스트_토큰으로_회원_정보_조회_접근_시_실패_http_response">1.27.3. HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 403 Forbidden
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-08-04 14:26:54 +0900
+Last updated 2023-08-07 11:06:17 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

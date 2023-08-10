@@ -1277,4 +1277,47 @@ public class MemberIntegrationTest {
                 ))
                 .andReturn();
     }
+
+    @Test
+    @DisplayName("게스트 토큰 발급")
+    public void testGuestTokenIssue() throws Exception {
+
+        mvc.perform(get("/api/guest")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
+                        )
+                ))
+                .andReturn();
+    }
+
+    @Test
+    @DisplayName("게스트 토큰으로 회원 정보 조회 접근 시 실패")
+    public void testGuestTokenForbiddenAccessFailure() throws Exception {
+
+        MvcResult result = mvc.perform(get("/api/guest")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
+                        )
+                ))
+                .andReturn();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(JwtProperties.HEADER_STRING, result.getResponse().getHeader(JwtProperties.HEADER_STRING));
+
+        mvc.perform(get("/api/member/info")
+                        .headers(headers)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden()) // 응답 status를 forbidden으로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("게스트 토큰 ")
+                        )
+                ));
+    }
 }
