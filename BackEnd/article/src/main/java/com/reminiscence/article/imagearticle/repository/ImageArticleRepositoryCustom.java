@@ -15,6 +15,6 @@ public interface ImageArticleRepositoryCustom {
     Optional<List<ImageArticleListResponseDto>> findNonMemberTagImageArticles(Long tagId, Pageable page);
     Optional<ImageArticleDetailResponseDto> findMemberImageArticleDetailById(Long articleId, Long memberId);
     Optional<ImageArticleDetailResponseDto> findNonMemberImageArticleDetailById(Long articleId);
-    Optional<ImageArticle> findImageArticleOfAllById(Long id);
+    Optional<ImageArticle> findImageArticleOfAllById(Long articleId);
     Optional<ImageArticle> findImageArticleOfMemberById(Long id);
 }

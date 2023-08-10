@@ -1,5 +1,6 @@
 package com.reminiscence.article.image.dto;
 
+import com.reminiscence.article.amazon.dto.FileType;
 import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
@@ -10,9 +11,8 @@ import java.util.List;
 
 @Getter
 public class ImageWriteRequestDto {
-    @Size(max = 1000, message = "이미지 링크는 1000자를 넘을 수 없습니다.")
-    @NotBlank(message = "이미지 링크를 입력해주세요.")
-    private String imageLink;
+    @NotBlank(message = "이미지 파일 타입(Image, Frame, Profile)을 입력해주세요.")
+    private FileType fileType;
 
     @NotBlank(message = "이미지 파일 이름을 입력해주세요.")
     private String imageName;

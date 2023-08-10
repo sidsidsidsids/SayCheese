@@ -169,13 +169,13 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
     }
 
     @Override
-    public Optional<ImageArticle> findImageArticleOfAllById(Long id) {
-        return Optional.ofNullable(queryFactory.selectFrom(QImageArticle.imageArticle)
+    public Optional<ImageArticle> findImageArticleOfAllById(Long articleId) {
+        return Optional.ofNullable(queryFactory
+                .select(QImageArticle.imageArticle)
+                .from(QImageArticle.imageArticle)
                 .join(QImageArticle.imageArticle.member, QMember.member).fetchJoin()
                 .join(QImageArticle.imageArticle.image, QImage.image).fetchJoin()
-                .join(QImage.image.imageTags, QImageTag.imageTag).fetchJoin()
-                .join(QImageTag.imageTag.tag, QTag.tag).fetchJoin()
-                .where(imageArticleIdEq(id))
+                .where(QImageArticle.imageArticle.id.eq(articleId))
                 .fetchOne());
     }
 

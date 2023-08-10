@@ -159,9 +159,8 @@ public class ImageArticleServiceImpl implements ImageArticleService {
                 new ImageArticleException(ImageArticleExceptionMessage.NOT_FOUND_IMAGE_ARTICLE));
         userConfirm(memberId, imageArticle);
         loverRepository.deleteByArticleId(articleId);
-        imageArticleRepository.delete(imageArticle.get());
         imageOwnerRepository.deleteByImageIdAndMemberId(imageArticle.get().getImage().getId(), imageArticle.get().getMember().getId());
-
+        imageArticleRepository.delete(imageArticle.get());
     }
 
     private void userConfirm(Long memberId, Optional<ImageArticle> imageArticle) {
