@@ -5,6 +5,7 @@ import com.reminiscence.room.domain.Room;
 import com.reminiscence.room.exception.customexception.RoomException;
 import com.reminiscence.room.exception.message.RoomExceptionMessage;
 import com.reminiscence.room.participant.repository.ParticipantRepository;
+import com.reminiscence.room.room.dto.RoomInfoResponseDto;
 import com.reminiscence.room.room.dto.WriteRoomRequestDto;
 import com.reminiscence.room.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,15 @@ public class RoomServiceImpl implements RoomService{
     @Override
     public void writeRoom(WriteRoomRequestDto requestDto) {
         roomRepository.save(requestDto.toEntity());
+    }
+
+
+    @Override
+    public RoomInfoResponseDto readRoomInfo(String roomCode) {
+        Optional<RoomInfoResponseDto> roomInfo = roomRepository.findRoomInfoByRoomCode(roomCode);
+        roomInfo.orElseThrow(()->
+                new RoomException(RoomExceptionMessage.NOT_FOUND_ROOM));
+        return roomInfo.get();
     }
 
     @Override

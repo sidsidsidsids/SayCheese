@@ -7,10 +7,7 @@ import com.reminiscence.room.exception.message.RoomExceptionMessage;
 import com.reminiscence.room.message.Response;
 import com.reminiscence.room.message.custom_message.RoomMessage;
 import com.reminiscence.room.participant.service.ParticipantService;
-import com.reminiscence.room.room.dto.DeleteRoomRequestDto;
-import com.reminiscence.room.room.dto.RoomCheckRequestDto;
-import com.reminiscence.room.room.dto.RoomCheckResponseDto;
-import com.reminiscence.room.room.dto.WriteRoomRequestDto;
+import com.reminiscence.room.room.dto.*;
 import com.reminiscence.room.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +25,13 @@ public class RoomController {
     private final RoomService roomService;
     private final ParticipantService participantService;
 
+
+    @GetMapping
+    public ResponseEntity<RoomInfoResponseDto> readRoomInfo(
+            @Valid @RequestParam("roomCode") String roomCode) {
+        RoomInfoResponseDto roomInfoResponseDto = roomService.readRoomInfo(roomCode);
+        return new ResponseEntity(roomInfoResponseDto, HttpStatus.OK);
+    }
     @PostMapping("/check")
     public ResponseEntity<Response> checkConnection(
             @AuthenticationPrincipal UserDetail userDetail){
