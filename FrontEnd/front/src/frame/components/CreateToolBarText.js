@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import Select from "react-select";
 // local
+import { Undecorate } from "../../redux/features/frame/frameSlice";
 import { AddText } from "../../redux/features/frame/frameSlice";
 import "../css/CreateToolBarText.css";
 
@@ -22,6 +23,10 @@ export default function Text() {
     customTextSize,
     customTextFont,
   };
+
+  function deleteText() {
+    dispatch(Undecorate());
+  }
 
   return (
     <>
@@ -114,7 +119,9 @@ export default function Text() {
           추가하기
         </button>
         <br />
-        <button className="btn">삭제하기</button>
+        <button className="btn" onClick={deleteText}>
+          삭제하기
+        </button>
       </div>
     </>
   );

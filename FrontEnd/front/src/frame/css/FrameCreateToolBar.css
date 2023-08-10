@@ -5,15 +5,24 @@
   -moz-user-select:none;
   -ms-user-select:none;
   user-select:none
+
 }
+body{
+  min-width: 375px;
+}
+
 .ToolBar {
   display: grid;
-  grid-template-columns: 0.5fr 1fr 0fr; /* 의도치 않은 <canvasarear/>가 자동으로 생겨서 정렬을 망치기 때문에 0fr이 필요함  */
+  grid-template-columns: 0.5fr 1fr; /* 의도치 않은 <canvasarear/>가 자동으로 생겨서 정렬을 망치기 때문에 0fr이 필요함  */
+	position: relative;
 }
+
+
+  
 /* ---------------- 툴탭 ---------------- */
-.ToolBar:nth-child(n) {
+/* .ToolBar:nth-child(n) {
   margin: 20px;
-}
+} */
 
 .toolBarTap > li {
   padding: 25px 10px 25px 30px;
@@ -24,6 +33,8 @@
   background-color: #d9d9d9;
   border-radius: 50px 0 0 50px;
 }
+
+
 
 .toolBarTap > li {
   position: relative;
@@ -492,3 +503,72 @@ input[type="range"]::-webkit-slider-runnable-track {
   margin: 0 20px 30px;
 }
 
+
+@media (min-width: 892px ) and (max-width: 1382px){
+  /* 브라우저 사이즈 이하일때*/
+  .ToolBar{
+    grid-template-columns: 1fr; 
+    grid-template-rows: 0.3fr 0.3fr;
+    display: flex;
+    flex-direction: column;
+  }
+  .toolBarTap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0;
+
+  }
+  .toolBarTap > li.focusedTool{
+    border-radius: 50px 50px 0 0;
+    padding: 25px 30px;
+  } 
+  .detailedToolBar {
+    width: 700px;
+  }
+  .alignTwoButtons{
+    justify-content: center;
+  }
+  .alignTwoButtons > button {
+    margin: 0 10px;
+  }
+  }
+
+@media (max-width: 495px) {
+  .ToolBar{
+    grid-template-columns: 100%; 
+    grid-template-rows: auto auto;
+    width: inherit;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0
+  }
+  .toolBarTap{
+    display: flex;
+    justify-content: center;
+    font-size: 16px;
+    justify-content: center;
+    margin:0;
+    padding:0;
+  }
+
+  .toolBarTap > li {
+    border-radius: 0;
+    text-align: center;
+    margin : 0;
+    padding: 10px;
+  }
+  .toolBarTap > li.focusedTool {
+    border-radius: 50px 50px 0 0;
+    transform: rotateX(0);
+  }
+
+  .detailedToolBar {
+    width: 100%;
+    border-radius: 0 0 30px 30px;
+  }
+
+  .canvasBackground{
+    transform:scale(0.5)
+  }
+}

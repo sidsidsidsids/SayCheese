@@ -39,7 +39,7 @@ export default function Frame() {
   return (
     <div className="frame">
       <div className="responsiveFrameTab">
-        <FrameSearch />
+        <FrameSearch searchWord={searchWord} setSearchWord={setSearchWord} />
       </div>
       <div className="frameTap">
         {tabItems.map((item, index) => (

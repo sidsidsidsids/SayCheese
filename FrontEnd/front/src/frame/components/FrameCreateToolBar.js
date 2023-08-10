@@ -43,36 +43,34 @@ export default function CreateToolBar() {
   const notice = toolBarItems[searchIndex].notice;
 
   return (
-    <>
-      <div className="ToolBar">
-        <ul className="toolBarTap">
-          {toolBarItems.map((item, index) => (
-            <li
-              // 클릭 시 해당 도구를 선택된 도구로 설정합니다.
-              key={index}
-              onClick={(e) => {
-                setFocusedTool(item.toolBarItem);
-              }}
-              // 현재 선택된 도구인 경우에는 focusedTool 클래스를 추가하여 배경색을 회색으로 변경합니다.
-              className={`${
-                focusedTool === item.toolBarItem ? "focusedTool" : ""
-              }`}
-            >
-              {item.toolBarItem}
-            </li>
-          ))}
-        </ul>
-        {/* 선택된 도구에 따른 상세 도구 */}
-        <div className="detailedToolBar">
-          <div className="toolNotice">{notice}</div>
-          {focusedTool === toolBarItems[0].toolBarItem && <Standard />}
-          {focusedTool === toolBarItems[1].toolBarItem && <BgColor />}
-          {focusedTool === toolBarItems[2].toolBarItem && <Objects />}
-          {focusedTool === toolBarItems[3].toolBarItem && <Text />}
-          {focusedTool === toolBarItems[4].toolBarItem && <Drawing />}
-          {focusedTool === toolBarItems[5].toolBarItem && <Saving />}
-        </div>
+    <div className="ToolBar">
+      <ul className="toolBarTap">
+        {toolBarItems.map((item, index) => (
+          <li
+            // 클릭 시 해당 도구를 선택된 도구로 설정합니다.
+            key={index}
+            onClick={(e) => {
+              setFocusedTool(item.toolBarItem);
+            }}
+            // 현재 선택된 도구인 경우에는 focusedTool 클래스를 추가하여 배경색을 회색으로 변경합니다.
+            className={`${
+              focusedTool === item.toolBarItem ? "focusedTool" : ""
+            }`}
+          >
+            {item.toolBarItem}
+          </li>
+        ))}
+      </ul>
+      {/* 선택된 도구에 따른 상세 도구 */}
+      <div className="detailedToolBar">
+        <div className="toolNotice">{notice}</div>
+        {focusedTool === toolBarItems[0].toolBarItem && <Standard />}
+        {focusedTool === toolBarItems[1].toolBarItem && <BgColor />}
+        {focusedTool === toolBarItems[2].toolBarItem && <Objects />}
+        {focusedTool === toolBarItems[3].toolBarItem && <Text />}
+        {focusedTool === toolBarItems[4].toolBarItem && <Drawing />}
+        {focusedTool === toolBarItems[5].toolBarItem && <Saving />}
       </div>
-    </>
+    </div>
   );
 }
