@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reminiscence.article.domain.Member;
+import com.reminiscence.article.filter.JwtUtil;
 import com.reminiscence.article.lover.repository.LoverRepository;
 import com.reminiscence.article.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +26,8 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -52,8 +55,8 @@ public class LoverIntegrationTest {
     @Autowired
     private MemberRepository memberRepository;
 
-//    @Autowired
-//    private JwtUtil jwtUtil;
+    @Autowired
+    private JwtUtil jwtUtil;
 
     MockMvc mvc;
     @Autowired
@@ -73,18 +76,14 @@ public class LoverIntegrationTest {
                 .build();
         Member admin = memberRepository.findById(1L).orElse(null);
         Member member = memberRepository.findById(2L).orElse(null);
-//        Map<String, Object> customClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(admin.getId()));
-//
-//        int ACCESS_TOKEN_EXPIRATION_TIME = 60 * 30 * 1000 ; // 30분
-//
-//        String accessToken = jwtUtil.generateToken(admin.getEmail(), ACCESS_TOKEN_EXPIRATION_TIME, customClaims);
+        Map<String, Object> adminClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(admin.getId()));
+        Map<String, Object> memberClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(member.getId()));
 
-        adminToken= JWT.create()
-                .withClaim("memberId",String.valueOf(admin.getId()))
-                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
-        memberToken= JWT.create()
-                .withClaim("memberId",String.valueOf(member.getId()))
-                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
+        final int ACCESS_TOKEN_EXPIRATION_TIME = 60 * 30 * 1000 ; // 30분
+
+        adminToken = jwtUtil.generateToken(admin.getEmail(), ACCESS_TOKEN_EXPIRATION_TIME, adminClaims);
+        memberToken = jwtUtil.generateToken(member.getEmail(), ACCESS_TOKEN_EXPIRATION_TIME, memberClaims);
+
     }
 
     @Test

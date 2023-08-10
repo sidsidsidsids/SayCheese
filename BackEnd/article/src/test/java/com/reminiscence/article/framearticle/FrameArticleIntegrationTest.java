@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reminiscence.article.domain.Member;
+import com.reminiscence.article.filter.JwtUtil;
 import com.reminiscence.article.framearticle.dto.FrameArticleListRequestDto;
 import com.reminiscence.article.framearticle.dummy.DummyFrameArticleListRequestDto;
 import com.reminiscence.article.framearticle.dummy.DummyFrameArticleRequestDto;
@@ -30,6 +31,8 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -53,6 +56,10 @@ public class FrameArticleIntegrationTest {
 
     @Autowired
     MemberRepository memberRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
     MockMvc mvc;
     @Autowired
     private Environment env;
@@ -75,15 +82,18 @@ public class FrameArticleIntegrationTest {
         Member admin=memberRepository.findById(1L).orElse(null);
         Member member=memberRepository.findById(2L).orElse(null);
         Member anotherMember=memberRepository.findById(3L).orElse(null);
-        adminToken= JWT.create()
-                .withClaim("memberId",String.valueOf(admin.getId()))
-                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
-        memberToken= JWT.create()
-                .withClaim("memberId",String.valueOf(member.getId()))
-                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
-        anotherMemberToken= JWT.create()
-                .withClaim("memberId",String.valueOf(anotherMember.getId()))
-                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
+
+        Map<String, Object> adminClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(admin.getId()));
+        Map<String, Object> memberClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(member.getId()));
+        Map<String, Object> anotherMemberClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(anotherMember.getId()));
+
+        final int ACCESS_TOKEN_EXPIRATION_TIME = 60 * 30 * 1000 ; // 30분
+
+        adminToken = jwtUtil.generateToken(admin.getEmail(), ACCESS_TOKEN_EXPIRATION_TIME, adminClaims);
+        memberToken = jwtUtil.generateToken(member.getEmail(), ACCESS_TOKEN_EXPIRATION_TIME, memberClaims);
+        anotherMemberToken = jwtUtil.generateToken(anotherMember.getEmail(), ACCESS_TOKEN_EXPIRATION_TIME, anotherMemberClaims);
+
+
     }
 
 

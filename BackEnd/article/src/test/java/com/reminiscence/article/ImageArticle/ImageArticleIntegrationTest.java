@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reminiscence.article.ImageArticle.dummy.DummyImageArticleDeleteRequestDto;
 import com.reminiscence.article.domain.Member;
 import com.reminiscence.article.ImageArticle.dummy.DummyImageArticleWriteRequestDto;
+import com.reminiscence.article.filter.JwtUtil;
 import com.reminiscence.article.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -50,6 +54,9 @@ public class ImageArticleIntegrationTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     MockMvc mvc;
     @Autowired
     private Environment env;
@@ -68,12 +75,15 @@ public class ImageArticleIntegrationTest {
                 .build();
         Member admin = memberRepository.findById(1L).orElse(null);
         Member member = memberRepository.findById(2L).orElse(null);
-        adminToken= JWT.create()
-                .withClaim("memberId",String.valueOf(admin.getId()))
-                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
-        memberToken= JWT.create()
-                .withClaim("memberId",String.valueOf(member.getId()))
-                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
+
+        Map<String, Object> adminClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(admin.getId()));
+        Map<String, Object> memberClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(member.getId()));
+
+        final int ACCESS_TOKEN_EXPIRATION_TIME = 60 * 30 * 1000 ; // 30분
+
+        adminToken = jwtUtil.generateToken(admin.getEmail(), ACCESS_TOKEN_EXPIRATION_TIME, adminClaims);
+        memberToken = jwtUtil.generateToken(member.getEmail(), ACCESS_TOKEN_EXPIRATION_TIME, memberClaims);
+
     }
     @Test
     @DisplayName("좋아요순 이미지 게시글 리스트 조회(정상)")
