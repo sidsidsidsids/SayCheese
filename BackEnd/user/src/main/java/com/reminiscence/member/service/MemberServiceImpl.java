@@ -138,20 +138,20 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public Member joinGuestMember() throws SQLException {
+    public Member joinGuestMember(String nickname) throws SQLException {
         String email = UUID.randomUUID().toString();
         while(memberRepository.findByEmail(email) != null){
             email = UUID.randomUUID().toString();
         }
-        String nickname = UUID.randomUUID().toString();
-        while(memberRepository.findByEmail(nickname) != null){
-            nickname = UUID.randomUUID().toString();
+        String savedNickname = UUID.randomUUID() + nickname;
+        while(memberRepository.findByEmail(savedNickname) != null){
+            savedNickname = UUID.randomUUID() + nickname;
         }
 
         Member member = Member.builder()
                 .email(email)
                 .password("guest")
-                .nickname(nickname)
+                .nickname(savedNickname)
                 .role(Role.GUEST)
                 .build();
         return memberRepository.save(member);

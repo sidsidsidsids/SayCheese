@@ -20,6 +20,6 @@ public interface MemberService {
 
     void deleteMember(long memberId) throws Exception;
 
-    Member joinGuestMember() throws Exception;
+    Member joinGuestMember(String nickname) throws Exception;
 
 }
