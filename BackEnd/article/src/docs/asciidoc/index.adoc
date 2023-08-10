@@ -7,11 +7,9 @@
 :sectlinks:
 :sectnums:
 
-include::Notice-API.adoc[]
 include::Faq-API.adoc[]
 include::FrameArticle-API.adoc[]
 include::Image-API.adoc[]
+include::ImageArticle-API.adoc[]
 include::Lover-API.adoc[]
-include::Faq-API.adoc[]
-
-
+include::Notice-API.adoc[]

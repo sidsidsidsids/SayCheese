@@ -1,25 +1,83 @@
 package com.reminiscence.article.framearticle.controller;
 
 import com.reminiscence.article.config.auth.UserDetail;
-import com.reminiscence.article.framearticle.dto.FrameArticleAndMemberRequestDto;
-import com.reminiscence.article.framearticle.dto.FrameArticleDeleteRequestDto;
-import com.reminiscence.article.framearticle.dto.FrameArticleRequestDto;
+import com.reminiscence.article.framearticle.dto.*;
 import com.reminiscence.article.framearticle.service.FrameArticleService;
+import com.reminiscence.article.framearticle.vo.FrameArticleVo;
 import com.reminiscence.article.message.Response;
 import com.reminiscence.article.message.custom_message.FrameResponseMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/article/frame")
 public class FrameArticleController {
     private final FrameArticleService frameArticleService;
+
+    /**
+     * 게시글 목록 무작위 조회 API
+     * @param
+     *  userDetail : 로그인한 사용자 정보
+     * @param
+     * searchWord : 검색어 정보를 담은 Dto
+     * @Return
+     * ImageArticleListResponseDto : 이미지 게시글 상세 정보
+     *  frameLink : 이미지 링크
+     *  loverCnt : 좋아요 수
+     *  createdDate : 게시글 작성일
+     *  author : 게시글 작성자
+     */
+    @GetMapping("/list/random")
+    public ResponseEntity<FrameArticleListResponseDto> readRandomFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestParam(required = false, defaultValue = "") String searchWord){
+        FrameArticleListResponseDto randomFrameArticleList = frameArticleService.getRandomFrameArticleList(pageable, userDetail, searchWord);
+        return new ResponseEntity<>(randomFrameArticleList, HttpStatus.OK);
+    }
+    /**
+     * 게시글 목록 좋아요 내림차순 조회 API
+     * @param
+     *  userDetail : 로그인한 사용자 정보
+     * @param
+     * searchWord : 검색어 정보를 담은 Dto
+     * @Return
+     * ImageArticleListResponseDto : 이미지 게시글 상세 정보
+     *  imageLink : 이미지 링크
+     *  loverCnt : 좋아요 수
+     *  createdDate : 게시글 작성일
+     *  author : 게시글 작성자
+     */
+    @GetMapping("/list/hot")
+    public ResponseEntity<FrameArticleListResponseDto> readHotFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestParam(required = false, defaultValue = "")  String searchWord) {
+        FrameArticleListResponseDto hotFrameArticleList = frameArticleService.getHotFrameArticleList(pageable, userDetail, searchWord);
+        return new ResponseEntity<>(hotFrameArticleList, HttpStatus.OK);
+    }
+    /**
+     * 게시글 목록 최신순 조회 API
+     * @param
+     *  userDetail : 로그인한 사용자 정보
+     * @param
+     * searchWord
+     * @Return
+     * ImageArticleListResponseDto : 이미지 게시글 상세 정보
+     *  imageLink : 이미지 링크
+     *  loverCnt : 좋아요 수
+     *  createdDate : 게시글 작성일
+     *  author : 게시글 작성자
+     */
+    @GetMapping("/list/recent")
+    public ResponseEntity<FrameArticleListResponseDto> readRecentFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestParam(required = false, defaultValue = "") String searchWord) {
+        FrameArticleListResponseDto recentFrameArticleList = frameArticleService.getRecentFrameArticleList(pageable, userDetail, searchWord);
+        return new ResponseEntity<>(recentFrameArticleList, HttpStatus.OK);
+    }
 
     /**
      * 프레임 저장
@@ -52,5 +110,24 @@ public class FrameArticleController {
                 .build();
         frameArticleService.deleteFrameArticle(frameArticleDeleteRequestDto);
         return new ResponseEntity<>(Response.of(FrameResponseMessage.FRAME_DELETE_SUCCESS),HttpStatus.OK);
+    }
+
+    /**
+     * 게시글 목록 최신순 조회 API
+     * @param
+     *  userDetail : 로그인한 사용자 정보
+     * @param
+     * searchWord
+     * @Return
+     * ImageArticleListResponseDto : 이미지 게시글 상세 정보
+     *  imageLink : 이미지 링크
+     *  loverCnt : 좋아요 수
+     *  createdDate : 게시글 작성일
+     *  author : 게시글 작성자
+     */
+    @GetMapping("/my/list")
+    public ResponseEntity<FrameArticleListResponseDto> readMyFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestParam(required = false, defaultValue = "") String searchWord) {
+        FrameArticleListResponseDto recentFrameArticleList = frameArticleService.getMyFrameArticleList(pageable, userDetail, searchWord);
+        return new ResponseEntity<>(recentFrameArticleList, HttpStatus.OK);
     }
 }

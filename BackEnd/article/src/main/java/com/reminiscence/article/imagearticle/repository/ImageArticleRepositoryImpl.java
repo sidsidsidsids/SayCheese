@@ -26,7 +26,6 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
-
     public ImageArticleRepositoryImpl(EntityManager entityManager){
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
