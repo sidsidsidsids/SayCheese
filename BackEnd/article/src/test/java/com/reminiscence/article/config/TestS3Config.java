@@ -22,7 +22,7 @@ public class TestS3Config {
     @Primary
     @Bean(destroyMethod = "shutdown")
     public AmazonS3 amazonS3(){
-        AwsClientBuilder.EndpointConfiguration endpoint = new AwsClientBuilder.EndpointConfiguration("http://127.0.0.1:8001", Regions.AP_NORTHEAST_2.name());
+        AwsClientBuilder.EndpointConfiguration endpoint = new AwsClientBuilder.EndpointConfiguration("http://127.7.7.15:8001", Regions.AP_NORTHEAST_2.name());
         AmazonS3 client = AmazonS3ClientBuilder
                 .standard()
                 .withPathStyleAccessEnabled(true)

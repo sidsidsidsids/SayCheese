@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 public enum FrameArticleExceptionMessage {
 
     NOT_FOUND_DATA("프레임 글이 존재하지 않습니다.", HttpStatus.NOT_FOUND),
+    NOT_FOUND_FRAME_ARTICLE_LIST("해당 프레임 게시글 목록을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     INVALID_DELETE_AUTH("글을 삭제할 권한이 없습니다.",HttpStatus.FORBIDDEN);
 
     private final String message;
