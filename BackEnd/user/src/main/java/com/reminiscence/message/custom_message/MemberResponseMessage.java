@@ -17,7 +17,7 @@ public enum MemberResponseMessage implements ResponseMessage {
 
     private final String message;
 
-    private MemberResponseMessage(String message) {
+    MemberResponseMessage(String message) {
         this.message = message;
     }
 

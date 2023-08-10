@@ -22,15 +22,15 @@ public class MemberJoinRequestDto {
 //    @Pattern(regexp = "/^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/", message="비밀번호를 특수문자 포함 8자 이상으로 입력해주세요.")
     private String password;
     private String nickname;
-    private char genderFm;
-    private int age;
+    private Character genderFm;
+    private Integer age;
     private String name;
     private String profile;
     private String snsId;
     private String snsType;
 
     @Builder
-    public MemberJoinRequestDto(String email, String password, String nickname, char genderFm, int age, String name, String profile, String snsId, String snsType) {
+    public MemberJoinRequestDto(String email, String password, String nickname, Character genderFm, Integer age, String name, String profile, String snsId, String snsType) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;

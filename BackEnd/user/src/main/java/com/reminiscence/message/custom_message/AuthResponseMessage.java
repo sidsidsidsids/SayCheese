@@ -11,7 +11,7 @@ public enum AuthResponseMessage implements ResponseMessage {
 
     private final String message;
 
-    private AuthResponseMessage(String message) {
+    AuthResponseMessage(String message) {
         this.message = message;
     }
 
