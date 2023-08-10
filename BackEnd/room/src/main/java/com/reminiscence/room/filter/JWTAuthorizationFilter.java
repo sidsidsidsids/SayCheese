@@ -30,20 +30,20 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         // 토큰 유무 확인
 
-        String header = jwtUtil.resolveAccessToken(request);
+        String token = jwtUtil.resolveAccessToken(request);
 //        String header=request.getHeader(JWTKey.REQUIRED_HEADER);
 //        if(header==null || !header.startsWith(JWTKey.TOKEN_PREFIX)){
 //            chain.doFilter(request,response);
 //            return;
 //        }
 
-        if(header==null){
+        if(token==null){
             chain.doFilter(request,response);
             return;
         }
 
 
-        String token=header.substring(JWTKey.TOKEN_PREFIX.length());
+//        String token=header.substring(JWTKey.TOKEN_PREFIX.length());
         String secretKey=env.getProperty("jwt.secret");
         logger.debug("secretKey: "+ secretKey);
         if(secretKey==null) {
@@ -83,6 +83,5 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     private interface JWTKey{
         public static final String REQUIRED_HEADER="Authorization";
         public static final String TOKEN_PREFIX="Bearer ";
-
     }
 }
