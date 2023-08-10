@@ -132,8 +132,6 @@ public class MemberIntegrationTest {
         int age = 31;
         String name = "고무신";
         String profile = "xxxxxxx";
-        String snsId = "nosns";
-        String snsType = "facebook";
 
         MemberJoinRequestDto memberJoinRequestDto = MemberJoinRequestDto.builder()
                 .email(email)
@@ -143,8 +141,6 @@ public class MemberIntegrationTest {
                 .age(age)
                 .name(name)
                 .profile(profile)
-                .snsId(snsId)
-                .snsType(snsType)
                 .build();
 
         mvc.perform(post("/api/member/join")
@@ -160,9 +156,7 @@ public class MemberIntegrationTest {
                                 fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별").attributes(key("constraints").value("")),
                                 fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이").attributes(key("constraints").value("")),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("이름").attributes(key("constraints").value("이름 입력 필수")),
-                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value("")),
-                                fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디").attributes(key("constraints").value("")),
-                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value(""))
+                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value(""))
                         ),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
@@ -182,8 +176,6 @@ public class MemberIntegrationTest {
         int age = 31;
         String name = "고무신";
         String profile = "xxxxxxx";
-        String snsId = "nosns";
-        String snsType = "facebook";
 
         memberRepository.save(MemberJoinRequestDto.builder()
                 .email(email)
@@ -193,8 +185,6 @@ public class MemberIntegrationTest {
                 .age(age)
                 .name(name)
                 .profile(profile)
-                .snsId(snsId)
-                .snsType(snsType)
                 .build().toEntity());
 
         MemberJoinRequestDto memberJoinRequestDto = MemberJoinRequestDto.builder()
@@ -205,8 +195,6 @@ public class MemberIntegrationTest {
                 .age(age)
                 .name(name)
                 .profile(profile)
-                .snsId(snsId)
-                .snsType(snsType)
                 .build();
 
         mvc.perform(post("/api/member/join")
@@ -221,9 +209,7 @@ public class MemberIntegrationTest {
                                 fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별").attributes(key("constraints").value("")),
                                 fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이").attributes(key("constraints").value("")),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("이름").attributes(key("constraints").value("이름 입력 필수")),
-                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value("")),
-                                fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디").attributes(key("constraints").value("")),
-                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value(""))
+                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value(""))
                         ),
                         responseFields(
                                 fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 상태 코드"),
@@ -244,9 +230,6 @@ public class MemberIntegrationTest {
         int age = 31;
         String name = "고무신";
         String profile = "xxxxxxx";
-        String snsId = "nosns";
-        String snsType = "facebook";
-
 
         memberRepository.save(MemberJoinRequestDto.builder()
                 .email(email)
@@ -256,8 +239,6 @@ public class MemberIntegrationTest {
                 .age(age)
                 .name(name)
                 .profile(profile)
-                .snsId(snsId)
-                .snsType(snsType)
                 .build().toEntity());
 
         MemberJoinRequestDto memberJoinRequestDto = MemberJoinRequestDto.builder()
@@ -268,8 +249,6 @@ public class MemberIntegrationTest {
                 .age(age)
                 .name(name)
                 .profile(profile)
-                .snsId(snsId)
-                .snsType(snsType)
                 .build();
         mvc.perform(post("/api/member/join")
                         .content(objectMapper.writeValueAsString(memberJoinRequestDto))
@@ -283,9 +262,7 @@ public class MemberIntegrationTest {
                                 fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별").attributes(key("constraints").value("")),
                                 fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이").attributes(key("constraints").value("")),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("이름").attributes(key("constraints").value("이름 입력 필수")),
-                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value("")),
-                                fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디").attributes(key("constraints").value("")),
-                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value(""))
+                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value(""))
                         ),
                         responseFields(
                                 fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 코드"),
