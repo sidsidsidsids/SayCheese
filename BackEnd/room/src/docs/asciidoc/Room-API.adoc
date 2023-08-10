@@ -1,7 +1,13 @@
 [[방-API]]
 == 방 API
 
+[[방-정보-조회-API]]
+=== 방 정보 조회 테스트(정상) API
+operation::RoomIntegrationTest/readRoomInfoSuccessTest[snippets='http-request,request-headers,request-parameters,http-response,response-fields']
+
+
 [[방-확인-API]]
+
 === 방 비밀번호 확인 테스트(정상) API
 operation::RoomIntegrationTest/checkRoomPasswordSuccessTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']
 
