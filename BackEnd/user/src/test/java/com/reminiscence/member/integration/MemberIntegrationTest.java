@@ -8,6 +8,7 @@ import com.reminiscence.filter.JwtTokenProvider;
 import com.reminiscence.filter.JwtUtil;
 import com.reminiscence.member.dto.MemberInfoUpdateRequestDto;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -29,6 +30,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
@@ -73,6 +75,9 @@ public class MemberIntegrationTest {
     @Autowired
     MemberService memberService;
     MockMvc mvc; // mockMvc 생성
+
+    @MockBean
+    JavaMailSender javaMailSender;
 
     @Autowired
     RedisTemplate redisTemplate;

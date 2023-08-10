@@ -39,7 +39,6 @@ public class AuthController {
     @PostMapping("/api/refresh")
     public ResponseEntity<?> refreshToken(@AuthenticationPrincipal MemberDetail memberDetail, HttpServletRequest request, HttpServletResponse response)
             throws Exception {
-//        Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.ACCEPTED;
         String refreshToken = jwtUtil.resolveToken(request);
         Object message = null;
@@ -53,7 +52,6 @@ public class AuthController {
             jwtTokenProvider.addHeaderRefreshToken(response, newRefreshToken);
             log.debug("token : {}", newAccessToken);
             log.debug("정상적으로 액세스토큰 재발급!!!");
-//                resultMap.put("access-token", accessToken);
             status = HttpStatus.OK;
             message = Response.of(AuthResponseMessage.ACCESS_TOKEN_REISSUE_SUCCESS);
         } else {

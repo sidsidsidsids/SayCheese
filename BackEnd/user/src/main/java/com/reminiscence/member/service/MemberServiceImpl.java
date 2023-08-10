@@ -140,25 +140,4 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
     }
 
-//    @Override
-//    public void saveRefreshToken(String memberId, String refreshToken) throws Exception {
-////        Map<String, String> map = new HashMap<String, String>();
-////        map.put("memberId", memberId);
-////        map.put("token", refreshToken);
-//        memberRepository.saveRefreshToken(memberId, refreshToken);
-//    }
-//
-//    @Override
-//    public Object getRefreshToken(String memberId) throws Exception {
-//        return memberRepository.getRefreshToken(memberId);
-//    }
-//
-//    @Override
-//    public void deleteRefreshToken(String memberId) throws Exception {
-////        Map<String, String> map = new HashMap<String, String>();
-////        map.put("memberId", memberId);
-////        map.put("token", null);
-//        memberRepository.deleteRefreshToken(memberId, null);
-//    }
-
 }

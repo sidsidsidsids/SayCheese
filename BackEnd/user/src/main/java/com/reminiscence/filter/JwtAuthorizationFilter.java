@@ -48,24 +48,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return;
         }
 
-        // JWT 토큰에서 memberId 부분만 추출
-        String memberId= jwtUtil.extractClaimValue(token, "memberId");
-
-//        String memberId= JWT.require(Algorithm.HMAC512(secretKey)).build()
-//                .verify(token)
-//                .getClaim("memberId")
-//                .asString();
-
-        // token 값을 권한 처리를 위해 Authentication에 주입
-        if(memberId!=null){
-            Member member=memberRepository.findById(Long.parseLong(memberId)).orElse(null);
-            MemberDetail memberDetail = new MemberDetail(member);
-            // accessToken이 검증될 경우
-
-            UsernamePasswordAuthenticationToken emailPasswordAuthenticationToken=new UsernamePasswordAuthenticationToken(memberDetail,null, memberDetail.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(emailPasswordAuthenticationToken);
-        }
-
         // 토큰의 유효기간 만료 시
         if (jwtTokenProvider.isTokenExpired(token)){
             String errorMessage = "토큰이 만료되었습니다.";
@@ -78,6 +60,23 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             String errorMessage = "유효하지 않은 토큰입니다.";
             response.sendError(HttpStatus.UNAUTHORIZED.value(), errorMessage);
             return;
+        }
+
+        // JWT 토큰에서 memberId 부분만 추출
+        String memberId= jwtUtil.extractClaimValue(token, "memberId");
+
+//        String memberId= JWT.require(Algorithm.HMAC512(secretKey)).build()
+//                .verify(token)
+//                .getClaim("memberId")
+//                .asString();
+
+        // token 값을 권한 처리를 위해 Authentication에 주입
+        if(memberId!=null){
+            Member member=memberRepository.findById(Long.parseLong(memberId)).orElse(null);
+            MemberDetail memberDetail = new MemberDetail(member);
+
+            UsernamePasswordAuthenticationToken emailPasswordAuthenticationToken=new UsernamePasswordAuthenticationToken(memberDetail,null, memberDetail.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(emailPasswordAuthenticationToken);
         }
 
         chain.doFilter(request,response);
