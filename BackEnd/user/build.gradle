@@ -66,7 +66,7 @@ ext {
 
 tasks.named('test') {
 	outputs.dir snippetsDir
-//	useJUnitPlatform()
+	useJUnitPlatform()
 }
 
 tasks.named('asciidoctor') {
