@@ -5,6 +5,7 @@ import com.reminiscence.room.domain.Participant;
 import com.reminiscence.room.domain.Room;
 import com.reminiscence.room.domain.Specification;
 import com.reminiscence.room.participant.repository.ParticipantRepository;
+import com.reminiscence.room.room.dto.RoomInfoResponseDto;
 import com.reminiscence.room.room.repository.RoomRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,20 @@ public class RoomJpaTest {
 
     @Autowired
     private ParticipantRepository participantRepository;
+
+    @Test
+    @DisplayName("방 정보 조회 테스트")
+    public void readRoomInfoTest(){
+        //given
+        String roomCode = "sessionA";
+        //when
+        RoomInfoResponseDto roomInfo = roomRepository.findRoomInfoByRoomCode(roomCode).orElse(null);
+
+        //then
+        assertNotNull(roomInfo);
+        assertEquals(Specification.GRID, roomInfo.getSpecification());
+        assertEquals(Mode.GAME, roomInfo.getMode());
+    }
 
     @Test
     @DisplayName("다른 방 접속 확인 테스트(다른 방에 이미 접속한 경우)")

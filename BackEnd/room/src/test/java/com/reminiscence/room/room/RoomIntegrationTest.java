@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reminiscence.room.domain.Member;
 import com.reminiscence.room.domain.Mode;
+import com.reminiscence.room.filter.JwtUtil;
 import com.reminiscence.room.member.repository.MemberRepository;
 import com.reminiscence.room.participant.dto.DummyUpdateConnectionYnParticipantRequestDto;
 import com.reminiscence.room.room.dto.DummyRoomCheckRequestDto;
@@ -32,6 +33,8 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -39,8 +42,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -54,6 +56,9 @@ public class RoomIntegrationTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     MockMvc mvc;
     @Autowired
@@ -74,21 +79,45 @@ public class RoomIntegrationTest {
                         .withResponseDefaults(prettyPrint()))
                 .build();
         Member guest = memberRepository.findById(5L).orElse(null);
+        Member connectionGuest = memberRepository.findById(7L).orElse(null);
         Member member = memberRepository.findById(2L).orElse(null);
         Member notConnectionMember = memberRepository.findById(6L).orElse(null);
-        Member connectionGuest = memberRepository.findById(7L).orElse(null);
-        guestToken= JWT.create()
-                .withClaim("memberId",String.valueOf(guest.getId()))
-                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
-        connectionGuestToken =  JWT.create()
-                .withClaim("memberId",String.valueOf(connectionGuest.getId()))
-                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
-        memberToken= JWT.create()
-                .withClaim("memberId",String.valueOf(member.getId()))
-                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
-        notConnectionMemberToken= JWT.create()
-                .withClaim("memberId",String.valueOf(notConnectionMember.getId()))
-                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
+
+        Map<String, Object> guestClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(guest.getId()));
+        Map<String, Object> connectionGuestClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(connectionGuest.getId()));
+        Map<String, Object> memberClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(member.getId()));
+        Map<String, Object> notConnectionMemberClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(notConnectionMember.getId()));
+
+        final int ACCESS_TOKEN_EXPIRATION_TIME = 60 * 30 * 1000 ; // 30분
+
+        guestToken = jwtUtil.generateToken(guest.getEmail(), ACCESS_TOKEN_EXPIRATION_TIME, guestClaims);
+        connectionGuestToken = jwtUtil.generateToken(guest.getEmail(), ACCESS_TOKEN_EXPIRATION_TIME, connectionGuestClaims);
+        memberToken = jwtUtil.generateToken(member.getEmail(), ACCESS_TOKEN_EXPIRATION_TIME, memberClaims);
+        notConnectionMemberToken = jwtUtil.generateToken(member.getEmail(), ACCESS_TOKEN_EXPIRATION_TIME, notConnectionMemberClaims);
+    }
+
+    @Test
+    @DisplayName("방 정보 조회 테스트(정상)")
+    public void readRoomInfoSuccessTest() throws Exception {
+        String roomCode = "sessionA";
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization","Bearer "+ guestToken);
+        mvc.perform(get("/api/room")
+                .headers(headers)
+                .param("roomCode",roomCode))
+                .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("로그인 성공한 토큰 ")
+                        ),
+                        requestParameters(
+                                parameterWithName("roomCode").description("방 코드")
+                        ),
+                        responseFields(
+                                fieldWithPath("specification").description("프레임 규격"),
+                                fieldWithPath("mode").description("방 모드")
+                        )
+                ));
     }
 
     @Test
