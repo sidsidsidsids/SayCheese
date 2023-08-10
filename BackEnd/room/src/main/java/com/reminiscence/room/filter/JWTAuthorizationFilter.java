@@ -83,5 +83,6 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     private interface JWTKey{
         public static final String REQUIRED_HEADER="Authorization";
         public static final String TOKEN_PREFIX="Bearer ";
+
     }
 }
