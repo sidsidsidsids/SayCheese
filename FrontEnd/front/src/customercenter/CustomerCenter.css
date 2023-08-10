@@ -1,0 +1,19 @@
+.Container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+/* Menu와 Main을 일렬로 나열하기 위해 flex 추가 */
+
+.stop-dragging {
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+h1,
+h3 {
+  font-weight: 500 !important;
+}

@@ -1,13 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { OpenVidu } from "openvidu-browser";
 import html2canvas from "html2canvas";
 import axios from "axios";
 import "./Room.css";
 import RoomButtons from "./RoomButtons";
-import RoomFooter from "./RoomFooter";
 import RoomHeader from "./RoomHeader";
-import RoomPhoto from "./RoomPhoto";
 import UserVideoComponent from "./UserVideoComponent";
 import TargetVideoComponent from "./TargetVideoComponent";
 import ChatComponent from "./ChatComponent";
@@ -15,35 +14,39 @@ import Timer from "./Timer";
 
 import sampleImage from "./assets/sample.jpg";
 
-const APPLICATION_SERVER_URL = "https://i9a401.p.ssafy.io/";
 const APPLICATION_SERVER_SECRET = "my_secret";
-var chatData;
-var sessionConnectId;
-var joinUsers;
-var locationX;
-var locationY;
+let chatData;
+let sessionConnectId;
+let joinUsers;
+let locationX;
+let locationY;
+let resultSrc;
+let resultData;
+// const accessToken = localStorage.getItem("accessToken");
 const Room = () => {
   const params = useParams();
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  // openvidu 관련
   const [mySessionId, setMySessionId] = useState(params.id);
   const [myUserName, setMyUserName] = useState(
     "test" + Math.floor(Math.random() * 100)
   );
-  const [isHost, setHost] = useState(false);
   const [session, setSession] = useState(undefined);
   const [mainStreamManager, setMainStreamManager] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined);
   const [subscribers, setSubscribers] = useState([]);
-
+  // room 관련
+  const [isHost, setHost] = useState(false);
   const [roomStatus, setRoomStatus] = useState(0);
   const [Minutes, setMinutes] = useState(0);
   const [Seconds, setSeconds] = useState(0);
-  const [isTimeReset, setIsTimeReset] = useState(false);
 
+  useEffect(() => {});
   useEffect(() => {
     window.addEventListener("beforeunload", onbeforeunload);
     joinSession();
+    userJoin(mySessionId);
     return () => {
       window.removeEventListener("beforeunload", onbeforeunload);
     };
@@ -52,6 +55,31 @@ const Room = () => {
   useEffect(() => {
     joinUsers = [publisher, ...subscribers];
   }, [publisher, subscribers]);
+
+  useEffect(() => {
+    if (roomStatus === 2) {
+      if (isHost) {
+        sendImageData(resultSrc, mySessionId);
+      }
+      setTimeout(async () => {
+        try {
+          userDelete();
+          if (isHost) {
+            roomDelete(mySessionId);
+          }
+          navigate("/");
+        } catch (error) {
+          console.log(error);
+        }
+      }, 300000);
+    }
+  }, [roomStatus]);
+
+  useEffect(() => {
+    if (isHost) {
+      hostPost(mySessionId);
+    }
+  }, [isHost]);
 
   const onbeforeunload = (event) => {
     leaveSession();
@@ -88,8 +116,13 @@ const Room = () => {
 
     mySession.on("startGameMode", (event) => {
       console.log(event);
-      setRoomStatus(1);
       gameMode();
+    });
+
+    mySession.on("startNormalMode", (event) => {
+      console.log(event);
+      setRoomStatus(1);
+      // normalMode();
     });
 
     getToken().then((token) => {
@@ -98,7 +131,6 @@ const Room = () => {
         .then(async () => {
           // 채팅창에 보낼 데이터셋
           chatData = mySession;
-
           console.log(mySession, mySessionId);
           const publisher = await OV.initPublisherAsync(undefined, {
             audioSource: undefined,
@@ -113,7 +145,7 @@ const Room = () => {
           console.log(publisher);
           mySession.publish(publisher);
           // 방에 유저 정보 보낼 곳
-
+          userStream(mySessionId, publisher.stream.streamId);
           // 카메라 선택 옵션 넣을 때 사용됨
           const devices = await OV.getDevices();
           // const videoDevices = devices.filter((device) => device.kind === "videoinput");
@@ -135,10 +167,12 @@ const Room = () => {
   };
 
   const leaveSession = () => {
+    userDisconnection(mySessionId, myUserName);
     if (session) {
       session.disconnect();
     }
 
+    setMySessionId(undefined);
     setSession(undefined);
     setSubscribers([]);
     setMainStreamManager(undefined);
@@ -161,19 +195,16 @@ const Room = () => {
   };
   const sessionCheck = async (sessionId) => {
     try {
-      const response = await axios.get(
-        APPLICATION_SERVER_URL + "openvidu/api/sessions/" + sessionId,
-        {
-          headers: {
-            Authorization: `Basic ${btoa(
-              `OPENVIDUAPP:${APPLICATION_SERVER_SECRET}`
-            )}`,
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET,POST",
-          },
-        }
-      );
+      const response = await axios.get("/openvidu/api/sessions/" + sessionId, {
+        headers: {
+          Authorization: `Basic ${btoa(
+            `OPENVIDUAPP:${APPLICATION_SERVER_SECRET}`
+          )}`,
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET,POST",
+        },
+      });
 
       // Check the response status and return true or false accordingly
       if (response.status === 200) {
@@ -189,9 +220,10 @@ const Room = () => {
       return false;
     }
   };
+
   const createSession = async (sessionId) => {
     const response = await axios.post(
-      APPLICATION_SERVER_URL + "openvidu/api/sessions",
+      "/openvidu/api/sessions",
       { customSessionId: sessionId },
       {
         headers: {
@@ -209,10 +241,7 @@ const Room = () => {
 
   const createToken = async (sessionId) => {
     const response = await axios.post(
-      APPLICATION_SERVER_URL +
-        "openvidu/api/sessions/" +
-        sessionId +
-        "/connection",
+      "/openvidu/api/sessions/" + sessionId + "/connection",
       {},
       {
         headers: {
@@ -228,13 +257,114 @@ const Room = () => {
     return response.data.token;
   };
 
+  // 유저 정보 방 입장 시 전달
+  const userJoin = async (sessionId) => {
+    console.log("USERJOIN");
+    try {
+      const request = await axios.post(
+        "/api/room/participant",
+        {
+          ownerYn: "N",
+          roomCode: sessionId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+        }
+      );
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // 유저 삭제 (재접속할 일 없음)
+  const userDelete = async () => {
+    try {
+      const request = await axios.delete(
+        "/api/room/participant",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+        }
+      );
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // 유저와 연결 끊김 (재접속할 수 있음)
+  const userDisconnection = async (sessionId, myName) => {
+    console.log("USERSTREAM");
+    try {
+      const request = await axios.put(
+        "/api/room/participant/fail/connection/" + sessionId,
+        {
+          nickname: myName,
+        },
+        {
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+        }
+      );
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // 유저의 화상 ID(streamId) 전달
+  const userStream = async (sessionId, streamId) => {
+    console.log("USERSTREAM");
+    try {
+      const request = await axios.put(
+        "/api/room/participant/" + sessionId + "/streamId",
+        {
+          streamId: streamId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+        }
+      );
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // 방 종료
+  const roomDelete = async (sessionId) => {
+    try {
+      const request = await axios.delete(
+        "/api/room",
+        {
+          roomCode: sessionId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+        }
+      );
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // 새 방장 갱신
   const updateHost = async (sessionId) => {
+    console.log("UPDATEHOST");
     try {
       const response = await axios.get(
-        APPLICATION_SERVER_URL +
-          "openvidu/api/sessions/" +
-          sessionId +
-          "/connection",
+        "/openvidu/api/sessions/" + sessionId + "/connection",
         {
           headers: {
             Authorization: `Basic ${btoa(
@@ -246,7 +376,6 @@ const Room = () => {
           },
         }
       );
-
       let content = response.data.content;
       let sortByTime = await content.sort((a, b) => a.createdAt - b.createdAt);
       let hostConnectionId = sortByTime[0].connectionId;
@@ -259,7 +388,28 @@ const Room = () => {
       console.error(error);
     }
   };
-  // 화면 캡쳐 func
+  // 방장 정보 갱신
+  const hostPost = async (sessionId) => {
+    console.log("HOSTPOST");
+    try {
+      const request = await axios.post(
+        "/api/room/participant/" + sessionId + "/owner",
+        {
+          roomCode: sessionId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+        }
+      );
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // 사진 캡처(사진 찍기)
   const handleCapture = (locationX, locationY) => {
     // 비디오 요소 가져오기
     let video = document.querySelector("video");
@@ -269,10 +419,9 @@ const Room = () => {
       video.pause();
       video.style.display = "none";
     }
-
     let range = document.querySelector(".room-main");
     // html2canvas를 사용하여 .room-main 요소를 캡처
-    html2canvas(range, { scale: 6, backgroundColor: null }).then((canvas) => {
+    html2canvas(range, { scale: 4, backgroundColor: null }).then((canvas) => {
       let ctx = canvas.getContext("2d");
       // 캔버스에 비디오를 그립니다.
       ctx.drawImage(
@@ -286,17 +435,14 @@ const Room = () => {
         240, // 캔버스에 그릴 비디오의 width
         180 // 캔버스에 그릴 비디오의 height
       );
-
       // 캔버스의 데이터 URL을 얻어 이미지로 사용할 수 있습니다.
       const dataURL = canvas.toDataURL("image/png");
-      console.log(dataURL);
+      // console.log(dataURL);
       range.style.backgroundImage = `url(${dataURL})`;
-
       // 이미지를 다른 요소에 적용하려면 아래와 같이 설정합니다.
       // const image = new Image();
       // image.src = dataURL;
       // document.body.appendChild(image);
-
       // 비디오를 다시 재생합니다.
       if (video) {
         video.style.display = "flex";
@@ -304,7 +450,7 @@ const Room = () => {
       }
     });
   };
-
+  // 게임모드
   const gameMode = () => {
     console.log("GAMEMODE");
     // 방 상태 설정
@@ -323,11 +469,19 @@ const Room = () => {
     // 유저 정보
     // const Users = [publisher, ...subscribers];
     const Users = joinUsers;
-
     // gameMode 로직
     const gamePhase = (count) => {
       // 4번 다 돌았을 때
       if (count === 0) {
+        const range = document.querySelector(".room-main");
+        const imageURL = range.style.backgroundImage;
+        console.log("imageURL: ", imageURL);
+        const imageURLCleaned = imageURL.replace(
+          /url\(['"]?(.*?)['"]?\)/,
+          "$1"
+        );
+
+        resultSrc = imageURLCleaned;
         console.log("finish");
         setRoomStatus(2);
         return;
@@ -359,9 +513,9 @@ const Room = () => {
         }
         // 초기 시간 설정 (setTimeout 맨 마지막 값과 동일시)
         setMinutes(0);
-        setSeconds(2);
+        setSeconds(1);
         setTimeout(() => {
-          // x000ms 후에 일어날 일 (사진 찍기/주제 변경/유저 변경)
+          // 500ms 후에 일어날 일 (사진 찍기/주제 변경/유저 변경)
           handleCapture(locationX, locationY);
           setMainStreamManager(undefined);
           setMinutes(0);
@@ -369,19 +523,19 @@ const Room = () => {
           setTimeout(() => {
             // 1000ms 후에 일어날 일(중간 텀), 이 이후 다시 else문
             setMinutes(0);
-            setSeconds(2);
+            setSeconds(1);
             gamePhase(count - 1);
-          }, 3000);
-        }, 2000);
+          }, 500);
+        }, 1000);
       }
     };
     gamePhase(4);
   };
-
-  const handleGameMode = async (sessionId) => {
+  // 방 유저 전체 게임모드 돌입
+  const handleStartGameMode = async (sessionId) => {
     try {
       const request = await axios.post(
-        APPLICATION_SERVER_URL + "openvidu/api/signal",
+        "/openvidu/api/signal",
         {
           session: sessionId,
           to: [],
@@ -404,6 +558,129 @@ const Room = () => {
       console.error("Error checking session:", error);
     }
   };
+  // 방 유저 전체 일반모드 돌입
+  const handleStartNormalMode = async (sessionId) => {
+    try {
+      const request = await axios.post(
+        "/openvidu/api/signal",
+        {
+          session: sessionId,
+          to: [],
+          type: "startNormalMode",
+          data: "start normal",
+        },
+        {
+          headers: {
+            Authorization: `Basic ${btoa(
+              `OPENVIDUAPP:${APPLICATION_SERVER_SECRET}`
+            )}`,
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,POST",
+          },
+        }
+      );
+      console.log(request);
+    } catch (error) {
+      console.error("Error checking session:", error);
+    }
+  };
+  // 결과창에서 DB에 이미지 저장
+  const sendImageData = async (resultURL, sessionId) => {
+    console.log("SEND");
+    try {
+      await axios
+        .post(
+          "/api/amazon/presigned",
+          {
+            fileName: `${sessionId}.jpg`,
+            fileType: "image",
+          },
+          {
+            headers: {
+              Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+              "Content-Type": "application/json;charset=UTF-8",
+            },
+          }
+        )
+        .then(async (response) => {
+          // let range = document.querySelector(".room-main");
+          // await html2canvas(range, { scale: 4, backgroundColor: null }).then(
+          //   (canvas) => {
+          //     resultURL = canvas.toDataURL("image/jpg");
+          //     console.log("HTML@");
+          //   }
+          // );
+          console.log("IMAGE");
+          const binaryImageData = atob(resultURL.split(",")[1]);
+          const arrayBufferData = new Uint8Array(binaryImageData.length);
+          for (let i = 0; i < binaryImageData.length; i++) {
+            arrayBufferData[i] = binaryImageData.charCodeAt(i);
+          }
+          const blob = new Blob([arrayBufferData], { type: "image/jpg" });
+          // Blob 객체에서 File 객체 생성
+          const imageFile = new File([blob], `${sessionId}.jpg`, {
+            type: "image/jpg",
+          });
+          console.log(imageFile);
+          // const image = new Image();
+          // image.src = URL.createObjectURL(imageFile);
+          // document.body.appendChild(image);
+          await fetch(response.data.preSignUrl, {
+            method: "PUT",
+            body: imageFile,
+            headers: {
+              // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+              "Content-Type": "image/jpg",
+            },
+          }).then(async (response) => {
+            console.log("DATA");
+            console.log(response);
+            // fileName, type(image), tags, roomCode to Back(Article)
+          });
+        });
+    } catch (error) {
+      alert(error);
+      console.error("Error:", error);
+      return;
+    }
+  };
+  // 결과창 사진 공유 버튼 눌렀을 때
+  const handleImageUpload = async (imageId) => {
+    try {
+      const request = await axios.post(
+        "/api/article/image",
+        {
+          imageId: imageId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjIifQ.OUP4gSxVM-CV0JeNYLxTtbwY9B0YGuS1PYjss9X0y5a9Q61g7Gjb43RsTVTK7L-EVhPvHS-DuUBN9Chy2SLgVg`,
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+        }
+      );
+      console.log(request);
+    } catch (error) {
+      alert("업로드 실패");
+      console.error("Error:", error);
+    }
+  };
+  // 결과창 사진 다운
+  const handleDownload = () => {
+    let range = document.querySelector(".room-main");
+    console.log(range);
+    const imageURL = range.style.backgroundImage;
+    console.log(imageURL);
+    const imageURLCleaned = imageURL.replace(/url\(['"]?(.*?)['"]?\)/, "$1");
+    // const imageElement = document.createElement("img");
+    // imageElement.src = imageURLCleaned;
+    const downloadLink = document.createElement("a");
+    downloadLink.href = imageURLCleaned;
+    downloadLink.download = `${sessionConnectId}.png`; // 원하는 파일명 설정
+    // 다운로드 링크 클릭 이벤트 트리거
+    downloadLink.click();
+  };
 
   return (
     <div className="room">
@@ -412,20 +689,24 @@ const Room = () => {
           <div className="room-top">
             <RoomHeader status={roomStatus} />
             <RoomButtons
-              onConfirm={() => {
+              onButton1={() => {
                 navigate("/");
               }}
-              onClose={() => {
-                setRoomStatus(1);
+              onButton2={() => {
+                handleDownload();
+              }}
+              onButton3={() => {
+                handleImageUpload("4");
               }}
               buttonName1="나가기"
-              buttonName2="사진 공유"
+              buttonName2="사진 다운"
+              buttonName3="사진 공유"
               option1={false}
-              option2={!isHost}
+              option2={false}
+              option3={!isHost}
             />
           </div>
           <div className="room-mid">
-            {/* <RoomPhoto /> */}
             <div
               className="room-main"
               style={{
@@ -438,7 +719,21 @@ const Room = () => {
             {chatData && <ChatComponent user={chatData} />}
           </div>
           <div className="room-bot">
-            <RoomFooter status={roomStatus} />
+            <div className="video-container">
+              <UserVideoComponent
+                streamManager={publisher}
+                myName={myUserName}
+              />
+              {subscribers.map((sub, i) => (
+                <div
+                  key={sub.id}
+                  className="stream-container col-md-6 col-xs-6"
+                >
+                  <span>{sub.id}</span>
+                  <UserVideoComponent streamManager={sub} />
+                </div>
+              ))}
+            </div>
             <Timer minutes="5" seconds="0" />
           </div>
         </div>
@@ -447,16 +742,19 @@ const Room = () => {
           <div className="room-top">
             <RoomHeader status={roomStatus} />
             <RoomButtons
-              onConfirm={() => {
+              onButton1={() => {}}
+              onButton2={() => {
                 setRoomStatus(2);
               }}
-              onClose={() => {
+              onButton3={() => {
                 setRoomStatus(0);
               }}
-              buttonName1="촬영하기"
-              buttonName2="다시 찍기"
-              option1={!isHost}
+              buttonName1="나가기"
+              buttonName2="촬영하기"
+              buttonName3="다시 찍기"
+              option1={true}
               option2={!isHost}
+              option3={!isHost}
             />
           </div>
           <div className="room-mid">
@@ -481,7 +779,6 @@ const Room = () => {
             {chatData && <ChatComponent user={chatData} myName={myUserName} />}
           </div>
           <div className="room-bot">
-            {/* <RoomFooter status={roomStatus} /> */}
             <div className="video-container">
               <UserVideoComponent
                 streamManager={publisher}
@@ -505,30 +802,36 @@ const Room = () => {
           <div className="room-top">
             <RoomHeader status={roomStatus} />
             <RoomButtons
-              onConfirm={() => {
-                console.log(session);
-                handleGameMode(mySessionId);
-
-                console.log("COMPLE");
+              onButton1={() => {
+                navigate("/");
               }}
-              onClose={() => {
+              onButton2={() => {
+                handleStartGameMode(mySessionId);
+              }}
+              onButton3={() => {
                 console.log("pub: ", publisher);
                 console.log("sub: ", subscribers);
                 console.log("session: ", session);
                 console.log("connecionId: ", sessionConnectId);
               }}
-              buttonName1="시작하기"
-              buttonName2="초대 링크"
-              option1={!isHost}
+              buttonName1="나가기"
+              buttonName2="시작하기"
+              buttonName3="초대 링크"
               option2={!isHost}
+              option3={!isHost}
             />
           </div>
           <div className="room-mid">
-            <div className="room-main">
-              <UserVideoComponent
-                streamManager={publisher}
-                myName={myUserName}
-              />
+            <div
+              className="room-main"
+              style={{
+                backgroundImage: `url('${sampleImage}')`,
+                backgroundSize: "contain",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+              }}
+            >
+              <UserVideoComponent streamManager={publisher} />
               {subscribers.map((sub, i) => (
                 <div key={i} className="stream-container col-md-6 col-xs-6">
                   <UserVideoComponent streamManager={sub} />
@@ -538,7 +841,7 @@ const Room = () => {
             {chatData && <ChatComponent user={chatData} myName={myUserName} />}
           </div>
           <div className="room-bot">
-            <RoomFooter status={roomStatus} />
+            <div className="frame-container"></div>
           </div>
         </div>
       )}

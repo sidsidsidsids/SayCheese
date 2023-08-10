@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./RoomCreateModal.css";
 import ModalButtons from "./ModalButtons";
 import l_Frame from "./assets/ladder_shape.PNG";
@@ -63,6 +64,43 @@ function RoomCreateModal({ open, close }) {
     setIsComplete(true);
   };
 
+  const sendRoomData = async () => {
+    let selectedMode;
+    let selectedFrame;
+    if (isModeActive === true) {
+      selectedMode = "game";
+    } else {
+      selectedMode = "normal";
+    }
+    if (isWindowFrame === true) {
+      selectedFrame = "gradle";
+    } else {
+      selectedFrame = "row";
+    }
+    try {
+      const request = await axios.post(
+        "/api/room",
+        {
+          password: roomPassword,
+          maxCount: roomLimit,
+          mode: selectedMode,
+          roomCode: roomCode,
+          specification: selectedFrame,
+        },
+        {
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+        }
+      );
+      console.log(request);
+      navigate(`/room/${roomCode}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="room-create-modal">
       {isComplete ? (
@@ -96,7 +134,7 @@ function RoomCreateModal({ open, close }) {
             onConfirm={() => {
               console.log("방 코드(roomCode): ", roomCode);
               console.log("방 초대링크(roomInvite): ", roomInvite);
-              navigate(`/room/${roomCode}`);
+              sendRoomData();
               setIsComplete(false);
             }}
             onClose={close}
