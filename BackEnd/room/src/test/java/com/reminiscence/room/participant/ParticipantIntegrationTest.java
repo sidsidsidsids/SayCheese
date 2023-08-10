@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reminiscence.room.domain.Member;
+import com.reminiscence.room.filter.JwtUtil;
 import com.reminiscence.room.member.repository.MemberRepository;
 import com.reminiscence.room.participant.dto.DummyDeleteParticipantRequestDto;
 import com.reminiscence.room.participant.dto.DummyUpdateConnectionYnParticipantRequestDto;
@@ -29,6 +30,8 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -54,6 +57,9 @@ public class ParticipantIntegrationTest {
     @Autowired
     WebApplicationContext applicationContext;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     MockMvc mvc;
     @Autowired
     private Environment env;
@@ -72,9 +78,16 @@ public class ParticipantIntegrationTest {
                 .build();
         Member guest = memberRepository.findById(5L).orElse(null);
         Member member = memberRepository.findById(3L).orElse(null);
-        guestToken= JWT.create()
-                .withClaim("memberId",String.valueOf(guest.getId()))
-                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
+
+        Map<String, Object> customClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(guest.getId()));
+
+        int ACCESS_TOKEN_EXPIRATION_TIME = 60 * 30 * 1000 ; // 30분
+
+        guestToken = jwtUtil.generateToken(guest.getEmail(), ACCESS_TOKEN_EXPIRATION_TIME, customClaims);
+
+//        guestToken= JWT.create()
+//                .withClaim("memberId",String.valueOf(guest.getId()))
+//                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
         memberToken= JWT.create()
                 .withClaim("memberId",String.valueOf(member.getId()))
                 .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
