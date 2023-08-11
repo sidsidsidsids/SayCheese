@@ -39,12 +39,10 @@ public class MemberServiceImpl implements MemberService {
     private final String GUEST_PREFIX = "GUEST ";
     private final String GUEST_PASSWORD = "GUEST PASSWORD";
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String BUCKET_NAME;
-    @Value("${cloud.aws.region.static}")
-    private String BUCKET_REGION;
-    @Value("${spring.data.base-url}")
-    private String BASE_URL;
+//    @Value("${cloud.aws.s3.bucket}")
+//    private String BUCKET_NAME;
+//    @Value("${cloud.aws.region.static}")
+//    private String BUCKET_REGION;
 
 
 
