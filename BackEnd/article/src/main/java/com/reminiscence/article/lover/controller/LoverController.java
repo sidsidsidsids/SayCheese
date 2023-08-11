@@ -31,9 +31,11 @@ public class LoverController {
      *  NOT_FOUND_IMAGE_ARTICLE : 존재하지 않는 게시글을 좋아요를 누른 경우
      *
      */
-    @PostMapping("/{articleId}")
-    public ResponseEntity<Response> writeLoverArticle(@AuthenticationPrincipal UserDetail userDetail, @PathVariable("articleId") Long articleId){
-        loverService.writeLoverArticle(userDetail.getMember().getId(),articleId);
+    @PostMapping("{articleType}/{articleId}")
+    public ResponseEntity<Response> writeLoverArticle(@AuthenticationPrincipal UserDetail userDetail,
+                                                      @PathVariable("articleType") String articleType,
+                                                      @PathVariable("articleId") Long articleId){
+        loverService.writeLoverArticle(userDetail.getMember().getId(),articleId, articleType);
         return new ResponseEntity<>(Response.of(LoverResponseMessage.LOVER_CLICK_SUCCESS),HttpStatus.OK);
     }
 

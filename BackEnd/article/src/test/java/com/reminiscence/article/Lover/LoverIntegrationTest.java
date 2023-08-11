@@ -90,11 +90,12 @@ public class LoverIntegrationTest {
     @DisplayName("좋아요 추가 테스트(정상)")
     public void insertLoverSuccessTest() throws Exception {
         Long articleId = 58L;
+        String articleType = "image";
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+memberToken);
 
-        mvc.perform(post("/api/article/lover/{articleId}", articleId)
+        mvc.perform(post("/api/article/lover/{articleType}/{articleId}",articleType, articleId)
                     .headers(headers)
                     .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -103,7 +104,8 @@ public class LoverIntegrationTest {
                                 headerWithName("Authorization").description("로그인 성공한 토큰")
                         ),
                         pathParameters(
-                                parameterWithName("articleId").description("이미지 게시글 ID")
+                                parameterWithName("articleId").description("이미지 게시글 ID"),
+                                parameterWithName("articleType").description("게시글 타입 : image, frame")
                         )
                 ));
     }
@@ -112,9 +114,10 @@ public class LoverIntegrationTest {
     @DisplayName("게시글 존재하지 않을 때 좋아요 추가 테스트(비정상)")
     public void insertLoverFailTest() throws Exception {
         Long articleId = 100L;
+        String articleType = "image";
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+memberToken);
-        mvc.perform(post("/api/article/lover/{articleId}", articleId)
+        mvc.perform(post("/api/article/lover/{articleType}/{articleId}", articleType, articleId)
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -123,7 +126,8 @@ public class LoverIntegrationTest {
                                 headerWithName("Authorization").description("로그인 성공한 토큰")
                         ),
                         pathParameters(
-                                parameterWithName("articleId").description("이미지 게시글 ID")
+                                parameterWithName("articleId").description("이미지 게시글 ID"),
+                                parameterWithName("articleType").description("게시글 타입 : image, frame")
                         ),
                         responseFields(
                                 fieldWithPath("httpStatus").description("HTTP 상태코드"),
@@ -136,11 +140,12 @@ public class LoverIntegrationTest {
     @DisplayName("좋아요 삭제 테스트(정상)")
     public void deleteLoverSuccessTest() throws Exception {
         Long articleId = 50L;
+        String articleType = "image";
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+memberToken);
 
-        mvc.perform(delete("/api/article/lover/{articleId}", articleId)
+        mvc.perform(delete("/api/article/lover/{articleType}/{articleId}", articleType, articleId)
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -149,7 +154,8 @@ public class LoverIntegrationTest {
                                 headerWithName("Authorization").description("로그인 성공한 토큰")
                         ),
                         pathParameters(
-                                parameterWithName("articleId").description("이미지 게시글 ID")
+                                parameterWithName("articleId").description("이미지 게시글 ID"),
+                                parameterWithName("articleType").description("게시글 타입 : image, frame")
                         )
                 ));
     }
@@ -157,9 +163,10 @@ public class LoverIntegrationTest {
     @DisplayName("존재하지 않는 좋아요 삭제 테스트(비정상)")
     public void deleteLoverFailTest() throws Exception {
         Long articleId = 100L;
+        String articleType = "image";
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+memberToken);
-        mvc.perform(delete("/api/article/lover/{articleId}", articleId)
+        mvc.perform(delete("/api/article/lover/{articleType}/{articleId}",articleType, articleId)
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -168,7 +175,9 @@ public class LoverIntegrationTest {
                                 headerWithName("Authorization").description("로그인 성공한 토큰")
                         ),
                         pathParameters(
-                                parameterWithName("articleId").description("이미지 게시글 ID")
+                                parameterWithName("articleId").description("이미지 게시글 ID"),
+                                parameterWithName("articleType").description("게시글 타입 : image, frame")
+
                         ),
                         responseFields(
                                 fieldWithPath("httpStatus").description("HTTP 상태코드"),
