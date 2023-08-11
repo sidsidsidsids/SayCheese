@@ -35,6 +35,8 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests().antMatchers("/docs/**").permitAll()
                 .and()
+                .authorizeRequests().antMatchers("/api/participant/**").permitAll()
+                .and()
                 .authorizeRequests().anyRequest().authenticated();
         http.exceptionHandling().authenticationEntryPoint(new AuthenticaitionEntryPoint());
         http.exceptionHandling().accessDeniedHandler(new AccessDenyHandler());
