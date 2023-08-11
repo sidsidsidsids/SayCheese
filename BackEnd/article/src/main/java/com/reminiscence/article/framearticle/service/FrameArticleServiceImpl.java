@@ -14,6 +14,7 @@ import com.reminiscence.article.framearticle.vo.FrameArticleVo;
 import com.reminiscence.article.framearticle.repository.FrameArticleRepository;
 import com.reminiscence.article.lover.repository.LoverRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,10 @@ public class FrameArticleServiceImpl implements FrameArticleService {
     private final FrameArticleRepository frameArticleRepository;
     private final FrameRepository frameRepository;
     private final LoverRepository loverRepository;
+    @Value("${cloud.aws.s3.bucket}")
+    private String BUCKET_NAME;
+    @Value("${cloud.aws.region.static}")
+    private String BUCKET_REGION;
 
     @Override
     public FrameArticleListResponseDto getHotFrameArticleList(Pageable tempPageable, UserDetail userDetail, String searchWord) {
@@ -87,7 +92,16 @@ public class FrameArticleServiceImpl implements FrameArticleService {
 
     @Override
     public void writeFrameArticle(FrameArticleAndMemberRequestDto frameArticleAndMemberRequestDto) {
-        Frame frame = FrameArticleAndMemberRequestDto.toEntity(frameArticleAndMemberRequestDto.getFrameArticleRequestDto());
+        StringBuilder link = new StringBuilder();
+        link.append("https://")
+                .append(BUCKET_NAME)
+                .append(".s3.")
+                .append(BUCKET_REGION)
+                .append("./amazonaws.com/")
+                .append(frameArticleAndMemberRequestDto.getFrameArticleRequestDto().getFileType())
+                .append("/")
+                .append(frameArticleAndMemberRequestDto.getFrameArticleRequestDto().getName());
+        Frame frame = FrameArticleAndMemberRequestDto.toEntity(frameArticleAndMemberRequestDto.getFrameArticleRequestDto(), link.toString());
         frameRepository.save(frame);
         FrameArticle frameArticle = FrameArticle.builder()
                 .frame(frame)

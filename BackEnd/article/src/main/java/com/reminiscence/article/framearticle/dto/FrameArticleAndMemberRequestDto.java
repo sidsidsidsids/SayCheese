@@ -18,12 +18,13 @@ public class FrameArticleAndMemberRequestDto {
         this.frameArticleRequestDto = frameArticleRequestDto;
     }
 
-    public static Frame toEntity(FrameArticleRequestDto requestDto) {
-        String type=requestDto.getLink().substring(requestDto.getLink().lastIndexOf('.')+1);
+    public static Frame toEntity(FrameArticleRequestDto requestDto, String link) {
+        String type=requestDto.getName().substring(requestDto.getName().lastIndexOf('.')+1);
+        String name = requestDto.getName().substring(requestDto.getName().lastIndexOf(".")+1);
         Character openYn=requestDto.getIsPublic()?'Y':'N';
         return Frame.builder()
-                .name(requestDto.getName())
-                .link(requestDto.getLink())
+                .name(name)
+                .link(link)
                 .frameSpecification(requestDto.getFrameSpecification())
                 .type(type)
                 .open_yn(openYn)

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reminiscence.article.domain.Frame;
 import com.reminiscence.article.domain.FrameArticle;
+import com.reminiscence.article.domain.FrameSpecification;
 import com.reminiscence.article.exception.customexception.FrameArticleException;
 import com.reminiscence.article.exception.message.FrameArticleExceptionMessage;
 import com.reminiscence.article.frame.repository.FrameRepository;
@@ -47,21 +48,21 @@ public class FrameArticleJpaTest {
     @Test
     @DisplayName("프레임 저장 테스트")
     public void writeFrameArticleTest() throws JsonProcessingException {
-        DummyFrameArticleRequestDto dummyFrameArticleRequestDto=new DummyFrameArticleRequestDto.Builder()
-                .name("test")
+        DummyFrameArticleRequestDto dummyFrameArticleRequestDto = DummyFrameArticleRequestDto.builder()
+                .name("test.jpg")
                 .subject("test")
-                .link("http://special.com/frame/21241test.jpg")
+                .fileType("frame")
                 .isPublic(true)
-                .frameSpecification("A")
+                .frameSpecification("vertical")
                 .build();
+
         FrameArticleRequestDto frameArticleRequestDto=objectMapper.readValue(objectMapper.writeValueAsString(dummyFrameArticleRequestDto),FrameArticleRequestDto.class);
-
-
+        String link = "https://test.s3.region.amazonaws.com/test/test.jpg";
         FrameArticleAndMemberRequestDto frameArticleAndMemberRequestDto=FrameArticleAndMemberRequestDto.builder()
                 .frameArticleRequestDto(frameArticleRequestDto)
                 .member(memberRepository.findById(2L).orElse(null))
                 .build();
-        Frame frame= FrameArticleAndMemberRequestDto.toEntity(frameArticleAndMemberRequestDto.getFrameArticleRequestDto());
+        Frame frame= FrameArticleAndMemberRequestDto.toEntity(frameArticleAndMemberRequestDto.getFrameArticleRequestDto(), link);
         frameRepository.save(frame);
         FrameArticle frameArticle=FrameArticle.builder()
                 .frame(frame)
