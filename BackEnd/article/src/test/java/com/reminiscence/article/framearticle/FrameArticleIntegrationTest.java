@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reminiscence.article.domain.Member;
-import com.reminiscence.article.framearticle.dto.FrameArticleListRequestDto;
 import com.reminiscence.article.framearticle.dummy.DummyFrameArticleListRequestDto;
 import com.reminiscence.article.framearticle.dummy.DummyFrameArticleRequestDto;
 import com.reminiscence.article.member.repository.MemberRepository;
@@ -24,6 +23,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
@@ -495,6 +495,26 @@ public class FrameArticleIntegrationTest {
                                 fieldWithPath("frameArticleVoList[].author").type(JsonFieldType.STRING).description("게시글 작성자"),
                                 fieldWithPath("frameArticleVoList[].frameSpecification").type(JsonFieldType.STRING).description("프레임 규격"),
                                 fieldWithPath("frameArticleVoList[].loverYn").type(JsonFieldType.NUMBER).description("좋아요 여부")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("프레임 게시판 글 공개 여부 수정")
+    public void alterFrameArticlePublicStatusTest() throws Exception{
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + memberToken);
+        Long articleId = 70L;
+        mvc.perform(put("/api/article/frame/{frameArticleId}", articleId)
+                        .headers(headers)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        pathParameters(
+                                parameterWithName("frameArticleId").description("프레임 게시글 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
                         )
                 ));
     }

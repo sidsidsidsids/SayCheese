@@ -188,7 +188,7 @@ public class FrameArticleJpaTest {
         assertEquals(0L, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverYn());
 
         pageable = PageRequest.of(0, 5, Sort.Direction.DESC, "lover");
-        searchWord = "se6815";
+        searchWord = "se";
         //when
         hotFrameArticles = frameArticleRepository.findNonMemberFrameArticles(pageable, searchWord);
 

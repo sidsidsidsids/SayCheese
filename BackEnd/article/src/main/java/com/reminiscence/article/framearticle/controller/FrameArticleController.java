@@ -29,7 +29,7 @@ public class FrameArticleController {
      * @param
      *  userDetail : 로그인한 사용자 정보
      * @param
-     * searchWord : 검색어 정보를 담은 Dto
+     * searchWord : 검색어 (저자명 또는 제목)
      * @Return
      * ImageArticleListResponseDto : 이미지 게시글 상세 정보
      *  frameLink : 이미지 링크
@@ -47,7 +47,7 @@ public class FrameArticleController {
      * @param
      *  userDetail : 로그인한 사용자 정보
      * @param
-     * searchWord : 검색어 정보를 담은 Dto
+     * searchWord : 검색어 (저자명 또는 제목)
      * @Return
      * ImageArticleListResponseDto : 이미지 게시글 상세 정보
      *  imageLink : 이미지 링크
@@ -65,7 +65,7 @@ public class FrameArticleController {
      * @param
      *  userDetail : 로그인한 사용자 정보
      * @param
-     * searchWord
+     * searchWord : 검색어 (저자명 또는 제목)
      * @Return
      * ImageArticleListResponseDto : 이미지 게시글 상세 정보
      *  imageLink : 이미지 링크
@@ -117,7 +117,7 @@ public class FrameArticleController {
      * @param
      *  userDetail : 로그인한 사용자 정보
      * @param
-     * searchWord
+     * searchWord : 검색어 (저자명 또는 제목)
      * @Return
      * ImageArticleListResponseDto : 이미지 게시글 상세 정보
      *  imageLink : 이미지 링크
@@ -130,4 +130,24 @@ public class FrameArticleController {
         FrameArticleListResponseDto recentFrameArticleList = frameArticleService.getMyFrameArticleList(pageable, userDetail, searchWord);
         return new ResponseEntity<>(recentFrameArticleList, HttpStatus.OK);
     }
+
+    /**
+     * 프레임 저장
+     * @param
+     * userDetail : JWT 토큰으로 인증된 사용자 정보
+     * @param
+     * frameArticleId : 프레임 Article Id
+     * @return
+     * Response : HttpStatus.OK
+     */
+    @PutMapping("/{frameArticleId}")
+    public ResponseEntity<Response> alterPublicStatusFrameArticle(@AuthenticationPrincipal UserDetail userDetail,
+                                                                  @PathVariable Long frameArticleId) {
+        FrameArticleAlterPublicRequestDto frameArticleAlterPublicRequestDto =FrameArticleAlterPublicRequestDto.builder()
+                .frameArticleId(frameArticleId)
+                .member(userDetail.getMember())
+                .build();
+        return new ResponseEntity<>(frameArticleService.alterPublicStatusFrameArticle(frameArticleAlterPublicRequestDto),HttpStatus.OK);
+    }
+
 }
