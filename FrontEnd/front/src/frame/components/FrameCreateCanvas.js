@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 // third party
 import { fabric } from "fabric";
 import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
 import { ResetSignal } from "../../redux/features/frame/frameSlice";
 // CSS
 import "../css/FrameCreateCanvas.css";
@@ -231,7 +232,6 @@ const addDrawing = (canvas, brush, drawingMode) => {
 // STEP4-1. handleDownload 함수를 통해 캔버스 이미지를 다운로드할 수 있습니다
 function handleDownload(canvas) {
   const dataURL = canvas.toDataURL("image/png");
-  console.log(dataURL);
   const link = document.createElement("a");
   link.download = "frame.png";
   link.href = dataURL;
@@ -241,11 +241,74 @@ function handleDownload(canvas) {
 }
 
 // STEP4-2. 사용자는 서버에 프레임을 업로드 할 수 있습니다.
+function handleUpload(canvas, frameInfo, frameSpecification) {
+  let preSignUrl = ""; // 여기서만 사용하니까 LET 가능
+  let fileName = "";
+  console.log("업로드 시작");
+  const accessToken = localStorage.getItem("accessToken");
+  if (accessToken) {
+    axios
+      .post(
+        "/api/amazon/presigned",
+        {
+          fileName: frameInfo.frameName,
+          fileType: "frame",
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${accessToken}`,
+          },
+        }
+      )
+      .then(function (response) {
+        fileName = response.data.fileName;
+        // base64 형태 url을 가진 image를 File 객체로
+        // imageURL : data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAFIQAAA...
+        const dataURL = canvas.toDataURL("image/jpg");
+        const binaryImageData = atob(dataURL.split(",")[1]);
+        const arrayBufferData = new Uint8Array(binaryImageData.length);
+        for (let i = 0; i < binaryImageData.length; i++) {
+          arrayBufferData[i] = binaryImageData.charCodeAt(i);
+        }
+        const blob = new Blob([arrayBufferData], { type: "image/jpg" });
+        const imageFile = new File([blob], `${frameInfo.frameName}.jpg`, {
+          type: "image/jpg",
+        });
+        preSignUrl = response.data.preSignUrl;
+        fetch(preSignUrl, {
+          method: "PUT",
+          headers: {
+            "Content-Type": " image",
+          },
+          body: imageFile,
+        }).then(function (response) {
+          console.log(response);
+          axios.post(
+            "/api/article/frame",
+            {
+              name: fileName,
+              isPublic: !frameInfo.privateCheck,
+              frameSpecification: frameSpecification,
+              subject: frameInfo.frameName,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `${accessToken}`,
+              },
+            }
+          );
+        });
+      });
+  }
+}
 
 // Canvas
 const CanvasArea = () => {
   const canvasRef = useRef(null);
   const [canvasInstance, setCanvasInstance] = useState(null);
+  const [frameSpecification, setFrameSpecification] = useState("vertical");
   const dispatch = useDispatch();
   // store에서 canvas에 사용할 재료들을 가져옴
   const {
@@ -259,7 +322,7 @@ const CanvasArea = () => {
     brush,
     deleteSignal,
     downloadSignal,
-    frameName,
+    frameInfo,
     postSignal,
   } = useSelector((store) => store.frame);
 
@@ -355,6 +418,20 @@ const CanvasArea = () => {
     }
   }, [downloadSignal]);
 
+  // 업로드 요청이 들어오면 handleUpload(canvasInstance)를 실행합니다
+  useEffect(() => {
+    if (width > height) {
+      setFrameSpecification("horizon");
+    }
+
+    async function upload() {
+      handleUpload(canvasInstance, frameInfo, frameSpecification);
+      return "success";
+    }
+    if (postSignal && canvasInstance) {
+      upload().then(() => dispatch(ResetSignal("postSignal")));
+    }
+  }, [postSignal]);
   return (
     <div className="canvasBackground">
       <canvas

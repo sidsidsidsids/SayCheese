@@ -14,9 +14,9 @@ function PhotoModal() {
   // state는 전체 리덕스 스토어를 의미하며, modal 리듀서에서 관리되는 상태 객체 modalContent를 추출합니다.
   const { isOpen } = useSelector((store) => store.modal);
   const { modalContent } = useSelector((state) => state.modal);
+
   const { userInfo } = useSelector((store) => store.login);
   const [imageData, setImageData] = useState([]);
-
   const dispatch = useDispatch();
   const movePage = useNavigate();
   // 좋아요 체크 되어있으면 like:1 안 했으면 :0

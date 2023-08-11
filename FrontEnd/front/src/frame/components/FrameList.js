@@ -44,15 +44,16 @@ export default function FrameList({ searchWord }) {
   }
 
   function fetchRecetAll() {
+    const accessToken = localStorage.getItem("accessToken");
     axios
       .get(`/api/article/frame/list/recent?curPage=${activePage}`, {
         headers: {
           "Content-Type": "application/json",
           "ngrok-skip-browser-warning": "69420",
+          Authorization: `${accessToken}`,
         },
       })
       .then((res) => {
-        console.log("으악 일반데이터");
         setFrameList(res.data.frameArticleVoList);
         setPage(res.data.pageNavigator);
       })
@@ -62,6 +63,7 @@ export default function FrameList({ searchWord }) {
   }
 
   function fetchRecentSearch() {
+    const accessToken = localStorage.getItem("accessToken");
     axios
       .get(
         `/api/article/frame/list/recent?searchWord=${searchWord}&curPage=${activePage}`,
@@ -69,6 +71,7 @@ export default function FrameList({ searchWord }) {
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "69420",
+            Authorization: `${accessToken}`,
           },
         }
       )

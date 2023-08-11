@@ -1,10 +1,16 @@
 // 프레임 저장하기 컴포넌트 입니다
-import React, { useState, useEffect, useInsertionEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 import { useDispatch } from "react-redux";
-import { DoDownload, PostSignal } from "../../redux/features/frame/frameSlice";
-// 저장하기 -> 여기서 버튼 클릭하면 이벤트로 캔버스 JS에서 저장하기 만들어야함
+import axios from "axios";
 
+import { DoDownload, PostSignal } from "../../redux/features/frame/frameSlice";
+import {
+  getUserInfo,
+  loginSuccess,
+} from "../../redux/features/login/loginSlice";
+// 저장하기 -> 여기서 버튼 클릭하면 이벤트로 캔버스 JS에서 저장하기 만들어야함
+// 업로드 STAGE 로직 설명 //
 // (0)업로드를 누르지 않은 상태, 업로드를 누르면 (1)
 // (1)이미 로그인 된 유저라면 uploadStage를 바로 stage2으로 가고
 // (2)로그인 안된 유저라면 로그인 유도하고 로그인하면 stage2으로 간다
@@ -12,35 +18,34 @@ import { DoDownload, PostSignal } from "../../redux/features/frame/frameSlice";
 
 // 포스트 AXIOS 요청하기
 export default function Saving() {
-  const [isUser, setIsUser] = useState(false);
-  const [frameName, setFrameName] = useState("");
-  const [privateCheck, setPrivateCheck] = useState("");
-  const [uploadStage, setUploadStage] = useState(0);
+  const [frameName, setFrameName] = useState(""); // 유저가 작성한 프레임 이름
+  const [privateCheck, setPrivateCheck] = useState(""); // 프레임 비공개 여부
+  const [uploadStage, setUploadStage] = useState(0); // 업로드 논리는 순차적 단계여야 합니다.
+  const [email, setEmail] = useState(""); // 유저 이메일
+  const [password, setPassword] = useState(""); // 유저 비밀번호
+  const accessToken = localStorage.getItem("accessToken");
   const dispatch = useDispatch();
 
+  // stage1
   function stage1() {
     return (
       <div>
         <form>
-          <input id="userId" placeholder="ID"></input>
-          <input id="userPw" placeholder="Password"></input>
-          <button className="btn alignCenter">로그인하기</button>
-          {/* TODO: 로그인 되는 즉시 return 200이라면 setisUser(true) + 그리고 setUploadStage(2) */}
+          <input id="userId" type="text" onChange={setEmail}></input>
+          <input id="userPw" type="password" onChange={setPassword}></input>
+          <button
+            className="btn alignCenter"
+            onClick={() => {
+              handleLogin();
+            }}
+          >
+            로그인하기
+          </button>
         </form>
       </div>
     );
   }
-  function postFrame() {
-    if (frameName !== "") {
-      const payload = {
-        frameName,
-        privateCheck,
-      };
-      dispatch(PostSignal(payload));
-    } else {
-      alert("제목을 입력하세요");
-    }
-  }
+  // stage2
   function stage2() {
     return (
       <div>
@@ -76,15 +81,60 @@ export default function Saving() {
       </div>
     );
   }
-
+  // stage3
   function stage3() {
-    return <div>업로드가 완료되었습니다.</div>;
+    return <div>업로드가 요청 완료되었습니다.</div>;
   }
+  //  프레임 정보 전역상태관리 함수 for stage2
+  function postFrame() {
+    // 텅 빈 제목은 허용하지 않습니다
+    if (frameName !== "") {
+      const payload = {
+        frameName,
+        privateCheck,
+      };
+      dispatch(PostSignal(payload));
+      setUploadStage(3); // 마지막 단계로 넘어갑니다
+    } else {
+      alert("제목을 입력하세요");
+    }
+  }
+  // 로그인 처리 함수 for  stage1
+  function handleLogin(event) {
+    event.preventDefault();
 
-  // useEffect(
+    let data = {
+      email,
+      password,
+    };
 
-  // ,[uploadStage])
+    axios
+      .post("/api/login", JSON.stringify(data), {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        console.log("로그인 성공함");
+        const accessToken = response.headers["authorization"];
+        const refreshToken = response.headers["refreshtoken"];
+        axios.defaults.headers.common["Authorization"] = `${accessToken}`;
 
+        if (response.status === 200) {
+          localStorage.setItem("accessToken", accessToken);
+          localStorage.setItem("refreshToken", refreshToken);
+          dispatch(loginSuccess());
+          dispatch(getUserInfo());
+          setUploadStage(2); // 다음 단계(프레임 정보 입력 단계)로 넘어갑니다
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response.status === 401) {
+          alert("이메일이나 비밀번호를 확인해주세요.");
+        }
+      });
+  }
   return (
     <>
       <button
@@ -97,7 +147,7 @@ export default function Saving() {
         className="whtbtn alignCenter"
         style={{ margin: "20px auto 20px auto" }}
         onClick={() => {
-          isUser === true ? setUploadStage(2) : setUploadStage(1);
+          accessToken ? setUploadStage(2) : setUploadStage(1); // 이미 로그인된 유저는 바로 프레임 입력 폼을 봅니다
         }}
       >
         업로드
@@ -109,7 +159,6 @@ export default function Saving() {
         : uploadStage === 1
         ? stage1() // 로그인
         : null}
-      {true ? stage2() : 0}
     </>
   );
 }

@@ -21,7 +21,7 @@ function Header() {
   useEffect(() => {
     if (localStorage.getItem("accessToken")) {
       dispatch(loginSuccess());
-      dispatch(getUserInfo());
+      // dispatch(getUserInfo());
     } else {
       dispatch(logoutSuccess());
     }
