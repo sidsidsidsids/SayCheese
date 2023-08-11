@@ -35,7 +35,7 @@ public class RoomJpaTest {
 
         //then
         assertNotNull(roomInfo);
-        assertEquals(Specification.GRID, roomInfo.getSpecification());
+        assertEquals(Specification.HORIZONTAL, roomInfo.getSpecification());
         assertEquals(Mode.GAME, roomInfo.getMode());
     }
 
@@ -89,7 +89,7 @@ public class RoomJpaTest {
                 .mode(Mode.GAME)
                 .maxCount(4)
                 .endDate(LocalDateTime.now())
-                .specification(Specification.GRID)
+                .specification(Specification.HORIZONTAL)
                 .build();
         // when
         roomRepository.save(room);
