@@ -122,11 +122,10 @@ public class MemberController {
         return new ResponseEntity<>(memberNicknameResponseDto, HttpStatus.OK);
     }
 
-    @PostMapping
+    @PutMapping("/profile")
     public ResponseEntity saveProfile(@AuthenticationPrincipal MemberDetail memberDetail,
                                                    @RequestBody @Valid MemberProfileSaveRequestDto requestDto) {
-        memberService.saveProfile(memberDetail, requestDto);
-        return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_PROFILE_MODIFY_SUCCESS),HttpStatus.OK);
+        return new ResponseEntity<>(memberService.saveProfile(memberDetail, requestDto),HttpStatus.OK);
     }
 
 }

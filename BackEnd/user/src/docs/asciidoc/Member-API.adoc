@@ -42,6 +42,9 @@ operation::MemberIntegrationTest/testGetMemberInfo[snippets='http-request,reques
 === 회원정보 수정 API
 operation::MemberIntegrationTest/testUpdateMemberInfo[snippets='http-request,request-headers,request-fields,http-response,response-fields']
 
+=== 프로필 수정 API
+operation::MemberIntegrationTest/testSaveMemberProfile[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+
 [[계정삭제-API]]
 
 === 계정삭제 API(정상)

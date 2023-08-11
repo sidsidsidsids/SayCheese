@@ -24,5 +24,5 @@ public interface MemberService {
 
     MemberNicknameResponseDto getMemberNickName(MemberDetail memberDetail);
 
-    void saveProfile(MemberDetail memberDetail, MemberProfileSaveRequestDto requestDto);
+    MemberProfileResponseDto saveProfile(MemberDetail memberDetail, MemberProfileSaveRequestDto requestDto);
 }

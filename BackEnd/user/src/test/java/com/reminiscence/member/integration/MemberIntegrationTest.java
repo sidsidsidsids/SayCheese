@@ -7,6 +7,7 @@ import com.reminiscence.filter.JwtProperties;
 import com.reminiscence.filter.JwtTokenProvider;
 import com.reminiscence.filter.JwtUtil;
 import com.reminiscence.member.dto.MemberInfoUpdateRequestDto;
+import com.reminiscence.member.dto.MemberProfileSaveRequestDto;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -1394,4 +1395,58 @@ public class MemberIntegrationTest {
                 ));
     }
 
+    @Test
+    @DisplayName("프로필 수정")
+    public void testSaveMemberProfile() throws Exception {
+        String email = "kkk@naver.com";
+        String password = "salmusa444";
+        String nickname = "thisIsNickname";
+
+        memberRepository.save(Member.builder()
+                .email(email)
+                .password(bCryptPasswordEncoder.encode(password))
+                .nickname(nickname)
+                .role(Role.MEMBER)
+                .genderFm('F')
+                .age(30)
+                .name("name")
+                .build());
+
+        MemberLoginRequestDto memberLoginRequestDto = MemberLoginRequestDto.builder()
+                .email(email)
+                .password(password)
+                .build();
+
+        MvcResult result = mvc.perform(post("/api/login")
+                        .content(objectMapper.writeValueAsString(memberLoginRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"))
+                .andReturn();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(JwtProperties.HEADER_STRING, result.getResponse().getHeader(JwtProperties.HEADER_STRING));
+
+        String profileName = "thisIsProfile.jpg";
+
+        MemberProfileSaveRequestDto memberProfileSaveRequestDto = new MemberProfileSaveRequestDto(profileName);
+
+        mvc.perform(put("/api/member/profile")
+                        .headers(headers)
+                        .content(objectMapper.writeValueAsString(memberProfileSaveRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("회원 AccessToken")
+                        ),
+                        requestFields(
+                                fieldWithPath("profileName").description("프로필 파일 이름").attributes(key("constraints").value("Not Null"))
+                        ),
+                        responseFields(
+                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필"),
+                                fieldWithPath("response.message").type(JsonFieldType.STRING).description("API 응답 메시지")
+                        )
+                ));
+    }
 }
