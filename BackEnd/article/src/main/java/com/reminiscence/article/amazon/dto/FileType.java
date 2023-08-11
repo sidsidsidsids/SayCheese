@@ -1,22 +1,21 @@
-package com.reminiscence.article.image.dto;
+package com.reminiscence.article.amazon.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum ImageType {
+public enum FileType {
     IMAGE("image"),
     FRAME("frame"),
     PROFILE("profile");
 
     private final String value;
 
-    ImageType(String value) {
+    private FileType(String value) {
         this.value = value;
     }
-
     @JsonCreator
-    public static ImageType from(String value) {
-        for (ImageType type : ImageType.values()) {
+    public static FileType from(String value) {
+        for (FileType type : FileType.values()) {
             if (type.getValue().equals(value)) {
                 return type;
             }
@@ -28,4 +27,7 @@ public enum ImageType {
     public String getValue() {
         return value;
     }
+
+
+
 }

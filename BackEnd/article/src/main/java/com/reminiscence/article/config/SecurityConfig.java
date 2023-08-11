@@ -1,5 +1,6 @@
 package com.reminiscence.article.config;
 
+import com.reminiscence.article.domain.Role;
 import com.reminiscence.article.filter.JWTAuthorizationFilter;
 import com.reminiscence.article.handler.AccessDenyHandler;
 import com.reminiscence.article.handler.AuthenticaitionEntryPoint;
@@ -32,11 +33,15 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests().antMatchers("/api/article/notice").access("hasRole('ADMIN')")
                 .and()
-                .authorizeRequests().antMatchers(HttpMethod.POST,"/api/frame/**").authenticated()
+                .authorizeRequests().antMatchers(HttpMethod.GET,"/api/article/frame/my/**").hasAnyRole(Role.ADMIN.name(), Role.MEMBER.name())
                 .and()
-                .authorizeRequests().antMatchers(HttpMethod.POST,"/api/article/frame/**").authenticated()
+                .authorizeRequests().antMatchers(HttpMethod.GET,"/api/article/frame/**").permitAll()
                 .and()
-                .authorizeRequests().antMatchers(HttpMethod.DELETE,"/api/article/frame/**").authenticated()
+                .authorizeRequests().antMatchers(HttpMethod.POST,"/api/frame/**").hasAnyRole(Role.ADMIN.name(), Role.MEMBER.name())
+                .and()
+                .authorizeRequests().antMatchers(HttpMethod.POST,"/api/article/frame/**").hasAnyRole(Role.ADMIN.name(), Role.MEMBER.name())
+                .and()
+                .authorizeRequests().antMatchers(HttpMethod.DELETE,"/api/article/frame/**").hasAnyRole(Role.ADMIN.name(), Role.MEMBER.name())
                 .and()
                 .authorizeRequests().antMatchers(HttpMethod.GET,"/api/article/notice/**").permitAll()
                 .and()
@@ -46,15 +51,15 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests().antMatchers(HttpMethod.GET,"/api/article/image/**").permitAll()
                 .and()
-                .authorizeRequests().antMatchers(HttpMethod.POST,"/api/article/image/**").authenticated()
+                .authorizeRequests().antMatchers(HttpMethod.POST,"/api/article/image/**").hasAnyRole(Role.ADMIN.name(), Role.MEMBER.name())
                 .and()
-                .authorizeRequests().antMatchers(HttpMethod.DELETE,"/api/article/image/**").authenticated()
+                .authorizeRequests().antMatchers(HttpMethod.DELETE,"/api/article/image/**").hasAnyRole(Role.ADMIN.name(), Role.MEMBER.name())
                 .and()
-                .authorizeRequests().antMatchers("/api/image/**").authenticated()
+                .authorizeRequests().antMatchers("/api/image/**").hasAnyRole(Role.ADMIN.name(), Role.MEMBER.name())
                 .and()
-                .authorizeRequests().antMatchers("/api/article/lover/**").authenticated()
+                .authorizeRequests().antMatchers("/api/article/lover/**").hasAnyRole(Role.ADMIN.name(), Role.MEMBER.name())
                 .and()
-                .authorizeRequests().antMatchers("/api/article/**").authenticated()
+                .authorizeRequests().antMatchers("/api/article/**").hasAnyRole(Role.ADMIN.name(), Role.MEMBER.name())
                 .and()
                 .authorizeRequests().antMatchers("/docs/**").permitAll()
                 .and()
