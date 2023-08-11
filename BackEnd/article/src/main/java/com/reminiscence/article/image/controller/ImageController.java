@@ -50,7 +50,7 @@ public class ImageController {
      *      tag : 태그
      */
 
-    @GetMapping("/random/tag")
+    @PostMapping("/random/tag")
     public ResponseEntity<List<RandomTagResponseDto>> readRandomTag(){
         List<RandomTagResponseDto> randomTags = imageService.getRandomTags();
         return new ResponseEntity(randomTags, HttpStatus.OK);
