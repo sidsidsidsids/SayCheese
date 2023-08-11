@@ -129,7 +129,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
     public Optional<ImageArticleDetailResponseDto> findMemberImageArticleDetailById(Long articleId, Long memberId) {
         return Optional.ofNullable(queryFactory
                 .select(Projections.constructor(ImageArticleDetailResponseDto.class,
-                        QMember.member.email.as("email"),
+                        memberIdEq(memberId).as("isMine"),
                         QImage.image.id.as("imageId"),
                         QMember.member.nickname.as("author"),
                         QImageArticle.imageArticle.createdDate.as("createdDate"),
@@ -152,7 +152,6 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
     public Optional<ImageArticleDetailResponseDto> findNonMemberImageArticleDetailById(Long articleId) {
         return Optional.ofNullable(queryFactory
                 .select(Projections.constructor(ImageArticleDetailResponseDto.class,
-                        QMember.member.email.as("email"),
                         QImage.image.id.as("imageId"),
                         QMember.member.nickname.as("name"),
                         QImageArticle.imageArticle.createdDate.as("createdDate"),
@@ -225,6 +224,9 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
     }
     private BooleanExpression tagIdEq(Long tagId) {
         return QTag.tag.id.eq(tagId);
+    }
+    private BooleanExpression memberIdEq(Long memberId) {
+        return QMember.member.id.eq(memberId);
     }
 
     private BooleanExpression imageArticleIdEq(Long imageArticleId) {

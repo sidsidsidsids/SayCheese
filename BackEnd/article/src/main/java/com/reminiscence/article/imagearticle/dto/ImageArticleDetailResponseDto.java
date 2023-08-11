@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 public class ImageArticleDetailResponseDto {
 
-    private String email;
+    private int isMine;
     private Long imageId;
     private String author;
     private LocalDateTime createdDate;
@@ -19,9 +19,9 @@ public class ImageArticleDetailResponseDto {
     private Long loverYn;
     private List<String> tags = new ArrayList<>();
 
-    public ImageArticleDetailResponseDto(String email, Long imageId, String author, LocalDateTime createdDate,
+    public ImageArticleDetailResponseDto(boolean isMine, Long imageId, String author, LocalDateTime createdDate,
                                          String imgLink, Long loverCnt, Long loverYn) {
-        this.email = email;
+        this.isMine = checkMine(isMine);
         this.imageId = imageId;
         this.author = author;
         this.createdDate = createdDate;
@@ -32,9 +32,9 @@ public class ImageArticleDetailResponseDto {
         else
             this.loverYn = 1L;
     }
-    public ImageArticleDetailResponseDto(String email, Long imageId, String author, LocalDateTime createdDate,
+    public ImageArticleDetailResponseDto(Long imageId, String author, LocalDateTime createdDate,
                                          String imgLink, Long loverCnt) {
-        this.email = email;
+        this.isMine = 0;
         this.imageId = imageId;
         this.author = author;
         this.createdDate = createdDate;
@@ -44,5 +44,11 @@ public class ImageArticleDetailResponseDto {
     }
     public void setTags(List<String> tags) {
         this.tags = tags;
+    }
+    private int checkMine(boolean isMine){
+        if(isMine)
+            return 1;
+        else
+            return 0;
     }
 }
