@@ -7,33 +7,28 @@ import { persistStore } from "redux-persist";
 // 라우터
 import "./index.css";
 import App from "./App";
-
 import Main from "./main/Main";
 import Frame from "./frame/pages/Frame";
 import ErrorPage from "./error-page";
-
 import CustomerCenter from "./customercenter/CustomerCenter";
 import NoticeList from "./customercenter/NoticeList";
 import Notice from "./customercenter/Notice";
 import NoticeWrite from "./customercenter/NoticeWrite";
 import Faq from "./customercenter/Faq";
-
 import User from "./user/User";
 import Login from "./user/Login";
 import SignUp from "./user/SignUp";
 import MyPage from "./user/MyPage";
-
 import Photo from "./photo/Photo";
-
 import Room from "./room/Room";
+import MyInfoModify from "./user/MyInfoModify";
+import MyPagePhoto from "./user/MyPagePhoto";
+import MyPageFrame from "./user/MyPageFrame";
 
 // Redux
 import { Provider } from "react-redux"; // React 앱에 Redux 스토어를 연결하기 위한 Provider
 import store from "./redux/store";
 import axios from "axios";
-import MyInfoModify from "./user/MyInfoModify";
-import MyPagePhoto from "./user/MyPagePhoto";
-import MyPageFrame from "./user/MyPageFrame";
 
 const router = createBrowserRouter([
   {
@@ -127,9 +122,11 @@ export let persistor = persistStore(store);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  // <React.StrictMode>
-  <Provider store={store}>
-    <RouterProvider router={router} />
-  </Provider>
-  // </React.StrictMode>
+  <React.StrictMode>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <RouterProvider router={router} />
+      </PersistGate>
+    </Provider>
+  </React.StrictMode>
 );

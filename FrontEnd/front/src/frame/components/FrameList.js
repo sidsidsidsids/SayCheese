@@ -55,6 +55,7 @@ export default function FrameList({ searchWord }) {
       })
       .then((res) => {
         setFrameList(res.data.frameArticleVoList);
+        console.log(res.data.frameArticleVoList);
         setPage(res.data.pageNavigator);
       })
       .catch((err) => {
@@ -102,6 +103,7 @@ export default function FrameList({ searchWord }) {
         {frameList.map((item) => (
           <FrameCard
             key={item.articleId}
+            articleId={item.articleId}
             name={item.subject}
             imageLink={item.frameLink}
             loverCnt={item.loverCnt}

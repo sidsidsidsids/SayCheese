@@ -98,7 +98,7 @@
   color: #000;
 }
 .modal .heart.heart-active {
-  animation: animate 0.8s steps(28) 1;
+  animation: animate 0.1s steps(28) 1;
   background-position: right;
 }
 @keyframes animate {

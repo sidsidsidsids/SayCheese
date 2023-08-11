@@ -251,7 +251,7 @@ function handleUpload(canvas, frameInfo, frameSpecification) {
       .post(
         "/api/amazon/presigned",
         {
-          fileName: frameInfo.frameName,
+          fileName: `${frameInfo.frameName}.png`,
           fileType: "frame",
         },
         {
@@ -265,29 +265,37 @@ function handleUpload(canvas, frameInfo, frameSpecification) {
         fileName = response.data.fileName;
         // base64 형태 url을 가진 image를 File 객체로
         // imageURL : data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAFIQAAA...
-        const dataURL = canvas.toDataURL("image/jpg");
+        const dataURL = canvas.toDataURL("image/png");
         const binaryImageData = atob(dataURL.split(",")[1]);
         const arrayBufferData = new Uint8Array(binaryImageData.length);
         for (let i = 0; i < binaryImageData.length; i++) {
           arrayBufferData[i] = binaryImageData.charCodeAt(i);
         }
-        const blob = new Blob([arrayBufferData], { type: "image/jpg" });
-        const imageFile = new File([blob], `${frameInfo.frameName}.jpg`, {
-          type: "image/jpg",
+        const blob = new Blob([arrayBufferData], { type: "image/png" });
+        const imageFile = new File([blob], `${frameInfo.frameName}.png`, {
+          type: "image/png",
         });
         preSignUrl = response.data.preSignUrl;
         fetch(preSignUrl, {
           method: "PUT",
           headers: {
-            "Content-Type": " image",
+            "Content-Type": " image/png",
           },
           body: imageFile,
         }).then(function (response) {
-          console.log(response);
+          console.log("url에 이미지 올렸음");
+          console.log({
+            name: fileName,
+            fileType: "frame",
+            isPublic: !frameInfo.privateCheck,
+            frameSpecification: frameSpecification,
+            subject: frameInfo.frameName,
+          });
           axios.post(
             "/api/article/frame",
             {
               name: fileName,
+              fileType: "frame",
               isPublic: !frameInfo.privateCheck,
               frameSpecification: frameSpecification,
               subject: frameInfo.frameName,
@@ -360,6 +368,10 @@ const CanvasArea = () => {
       if (newCanvas) {
         newCanvas.dispose();
       }
+      if (width > height) {
+        setFrameSpecification("horizontal");
+        console.log(frameSpecification);
+      }
     };
   }, [width, height, bgColor, bgImg]); // width, height, bg 바뀔 때마다 리렌더
 
@@ -420,10 +432,6 @@ const CanvasArea = () => {
 
   // 업로드 요청이 들어오면 handleUpload(canvasInstance)를 실행합니다
   useEffect(() => {
-    if (width > height) {
-      setFrameSpecification("horizon");
-    }
-
     async function upload() {
       handleUpload(canvasInstance, frameInfo, frameSpecification);
       return "success";

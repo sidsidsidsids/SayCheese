@@ -15,17 +15,16 @@ export default function CardModal() {
   const [isFrameDeleteModalOpen, setIsFrameDeleteModalOpen] = useState(false); // 삭제 모달과 프레임 모달의 차이를 위해 프레임 모달이 열려있는지 변수를 선언합니다
   const [isFrameAccessControlModalOpen, setIsFrameAccessControlModalOpen] =
     useState(false); // 삭제 모달과 프레임 모달의 차이를 위해 프레임 모달이 열려있는지 변수를 선언합니다
-  const [authorEmail, setAuthorEmail] = useState(""); // 작성자 이메일
+
   const dispatch = useDispatch();
-  setLoading(true);
-  setAuthorEmail(modalContent.author); // authorEmail에 이미지 작성자 이메일 저장
   const accessToken = localStorage.getItem("accessToken");
 
   // 좋아요 함수 로직 //
   // 좋아요
   async function handleLikePlus() {
+    console.log(modalContent.articleId);
     axios
-      .post(`/api/article/lover/${modalContent.articleId}`, {
+      .post(`/api/article/lover/frame/${modalContent.articleId}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `${accessToken}`,
@@ -55,55 +54,38 @@ export default function CardModal() {
         console.log(error);
       });
   }
-
+  // 좋아요
   function clickLike(event) {
     event.stopPropagation();
     if (like) {
       handleLikeMinus();
-    } else if (like === 0) {
+    } else if (!like) {
       handleLikePlus();
     }
   }
-
+  // 프레임 삭제 API
   async function handleFrameDelete() {
-    axios
-      .delete("/api/article/image", {
-        data: { articleId: modalContent.articleId },
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${accessToken}`,
-        },
-      })
-      .then((response) => {
-        alert("게시글이 정상적으로 삭제되었습니다.");
-        window.location.reload();
-      })
-      .catch((error) => {
-        alert(
-          "오류로 인해 게시글을 삭제할 수 없습니다.\n다시 시도해주시길 바랍니다."
-        );
-      });
     if (accessToken) {
       axios
-        .delete("/api/image", {
-          data: { imageId: modalContent.articleId },
+        .delete(`/api/article/frame/${modalContent.articleId}`, {
+          data: { frameArticleId: modalContent.articleId },
           headers: {
             "Content-Type": "application/json",
             Authorization: `${accessToken}`,
           },
         })
         .then((response) => {
-          alert("프레임이 정상적으로 삭제되었습니다.");
+          alert("게시글이 정상적으로 삭제되었습니다.");
           window.location.reload();
         })
         .catch((error) => {
           alert(
-            "오류로 인해 삭제를 진행할 수 없습니다.\n다시 시도해주시길 바랍니다."
+            "오류로 인해 게시글을 삭제할 수 없습니다.\n다시 시도해주시길 바랍니다."
           );
         });
     }
   }
-
+  // 공개 여부 수정 API
   function handleFrameAccessControl() {
     axios
       .put(`/api/article/frame/${modalContent.articleId}`, {
@@ -134,68 +116,69 @@ export default function CardModal() {
         <div className="modal">
           {loading ? (
             <div>loading..</div>
-          ) : isFrameAccessControlModalOpen ? ( // 전체공개 여부를 수정하고 싶을때
-            <div className="DeletePhotoModal">
-              <div className="DeleteQuestion">
-                <h1>삭제를 하시겠습니까?</h1>
-              </div>
-
-              <div className="DeleteBtnSort">
-                <button
-                  className="whtbtn"
-                  onClick={() => {
-                    setIsFrameDeleteModalOpen(false);
-                  }}
-                >
-                  이전으로
-                </button>
-                <button
-                  className="btn"
-                  onClick={() => {
-                    document.body.style.overflow = "auto";
-                    dispatch(closeModal());
-                    handleFrameDelete();
-                  }}
-                >
-                  확인
-                </button>
-              </div>
-            </div>
-          ) : isFrameDeleteModalOpen ? (
-            // 삭제 버튼 눌렀을 경우
-            <div className="DeletePhotoModal">
-              <div className="DeleteQuestion">
-                <h1>삭제를 하시겠습니까?</h1>
-              </div>
-
-              <div className="DeleteBtnSort">
-                <button
-                  className="whtbtn"
-                  onClick={() => {
-                    setIsFrameDeleteModalOpen(false);
-                  }}
-                >
-                  이전으로
-                </button>
-                <button
-                  className="btn"
-                  onClick={() => {
-                    document.body.style.overflow = "auto";
-                    dispatch(closeModal());
-                    handleFrameDelete();
-                  }}
-                >
-                  확인
-                </button>
-              </div>
-            </div>
           ) : (
             <>
+              {isFrameAccessControlModalOpen ? ( // 전체공개 여부를 수정하고 싶을때
+                <div className="DeletePhotoModal">
+                  <div className="DeleteQuestion">
+                    <h1>공개 여부를 수정 하시겠습니까?</h1>
+                  </div>
+
+                  <div className="DeleteBtnSort">
+                    <button
+                      className="whtbtn"
+                      onClick={() => {
+                        setIsFrameAccessControlModalOpen(false);
+                      }}
+                    >
+                      이전으로
+                    </button>
+                    <button
+                      className="btn"
+                      onClick={() => {
+                        document.body.style.overflow = "auto";
+                        dispatch(closeModal());
+                        handleFrameAccessControl();
+                      }}
+                    >
+                      확인
+                    </button>
+                  </div>
+                </div>
+              ) : isFrameDeleteModalOpen ? (
+                // 삭제 버튼 눌렀을 경우
+                <div className="DeletePhotoModal">
+                  <div className="DeleteQuestion">
+                    <h1>삭제를 하시겠습니까?</h1>
+                  </div>
+
+                  <div className="DeleteBtnSort">
+                    <button
+                      className="whtbtn"
+                      onClick={() => {
+                        setIsFrameDeleteModalOpen(false);
+                      }}
+                    >
+                      이전으로
+                    </button>
+                    <button
+                      className="btn"
+                      onClick={() => {
+                        document.body.style.overflow = "auto";
+                        dispatch(closeModal());
+                        handleFrameDelete();
+                      }}
+                    >
+                      확인
+                    </button>
+                  </div>
+                </div>
+              ) : null}
               <div className="modal-name">{modalContent.name}</div>
               <div className="modal-author">작성자 : {modalContent.author}</div>
-              <img src={modalContent.imageLink} alt="프레임 이미지" />
+              <img src={modalContent.frameLink} alt="프레임 이미지" />
 
-              <div className="heart-btn" onClick={() => clickLike()}>
+              <div className="heart-btn" onClick={(event) => clickLike(event)}>
                 <div className="heart-content">
                   <span
                     className={
@@ -216,13 +199,18 @@ export default function CardModal() {
                 <div className="alignTwoButtons">
                   <button
                     className="btn"
-                    onClick={() => setIsFrameDeleteModalOpen(true)}
+                    onClick={() => {
+                      setIsFrameDeleteModalOpen(true);
+                    }}
                   >
                     삭제하기
                   </button>
                   <button
                     className="btn"
-                    onClick={() => setIsFrameAccessControlModalOpen(true)}
+                    onClick={() => {
+                      // dispatch(closeModal());
+                      setIsFrameAccessControlModalOpen(true);
+                    }}
                   >
                     공개 수정하기
                   </button>
