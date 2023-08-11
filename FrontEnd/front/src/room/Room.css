@@ -57,3 +57,15 @@
   flex: 1 1 80%;
   overflow: hidden;
 }
+
+.room-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  border: 0;
+  /* border: 1px dashed black; */
+  /* width: 80%; */
+  flex: 1 1 80%;
+  overflow: hidden;
+}

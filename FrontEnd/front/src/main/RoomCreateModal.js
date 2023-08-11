@@ -73,9 +73,9 @@ function RoomCreateModal({ open, close }) {
       selectedMode = "normal";
     }
     if (isWindowFrame === true) {
-      selectedFrame = "gradle";
+      selectedFrame = "horizon";
     } else {
-      selectedFrame = "row";
+      selectedFrame = "vertical";
     }
     try {
       const request = await axios.post(
