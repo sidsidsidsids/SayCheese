@@ -39,7 +39,7 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom 
     // 로그인한 유저 검색어에 해당하는 프레임 게시판 항목들(좋아요 포함) 반환
     // 공개된 프레임 게시글과 회원이 작성한 게시글 모두 반환 (공개 여부 포함)
     @Override
-    public Page<FrameArticleVo> findMemberFrameArticles(Pageable pageable, Long memberId, String authorSubject) {
+    public Page<FrameArticleVo> findMemberFrameArticles(Pageable pageable, Long memberId, String authorSubject, String frameSpec) {
         List<FrameArticleVo> list = queryFactory
                 .select(Projections.constructor(FrameArticleVo.class,
                         QFrameArticle.frameArticle.id.as("articleId"),
@@ -56,7 +56,8 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom 
                                 .from(QLover.lover)
                                 .where(QLover.lover.article.id.eq(QFrameArticle.frameArticle.id)
                                         , (loverMemberIdEq(memberId)))
-                                .limit(1), "loverYn")
+                                .limit(1), "loverYn"),
+                        isMyFrame(memberId).as("isMine")
                 ))
                 .from(QFrameArticle.frameArticle)
                 .join(QFrameArticle.frameArticle.member, QMember.member)
@@ -82,7 +83,7 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom 
     // 비회원(로그인 하지 않은) 유저의 검색어에 해당하는 프레임 게시판 항목들(좋아요 불포함) 반환
     // 공개된 개시글만 반환 (공개 여부 포함)
     @Override
-    public Page<FrameArticleVo> findNonMemberFrameArticles(Pageable pageable, String authorSubject) {
+    public Page<FrameArticleVo> findNonMemberFrameArticles(Pageable pageable, String authorSubject, String frameSpec) {
         List<FrameArticleVo> list = queryFactory
                 .select(Projections.constructor(FrameArticleVo.class,
                         QFrameArticle.frameArticle.id.as("articleId"),
@@ -117,7 +118,7 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom 
     }
 
     @Override
-    public Page<FrameArticleVo> findMyFrameArticles(Pageable pageable, Long memberId, String authorSubject) {
+    public Page<FrameArticleVo> findMyFrameArticles(Pageable pageable, Long memberId, String authorSubject, String frameSpec) {
         List<FrameArticleVo> list = queryFactory
                 .select(Projections.constructor(FrameArticleVo.class,
                         QFrameArticle.frameArticle.id.as("articleId"),
@@ -129,7 +130,13 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom 
                         QFrameArticle.frameArticle.createdDate.as("createdDate"),
                         QFrameArticle.frameArticle.member.nickname.as("author"),
                         QFrame.frame.open_yn.as("openYn"),
-                        QFrame.frame.frameSpecification.as("frameSpecification")
+                        QFrame.frame.frameSpecification.as("frameSpecification"),
+                        ExpressionUtils.as(JPAExpressions.select(QLover.lover.id)
+                                .from(QLover.lover)
+                                .where(QLover.lover.article.id.eq(QFrameArticle.frameArticle.id)
+                                        , (loverMemberIdEq(memberId)))
+                                .limit(1), "loverYn"),
+                        isMyFrame(memberId).as("isMine")
                 ))
                 .from(QFrameArticle.frameArticle)
                 .join(QFrameArticle.frameArticle.member, QMember.member)

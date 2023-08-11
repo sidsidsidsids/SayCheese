@@ -95,7 +95,7 @@ public class FrameArticleIntegrationTest {
                 .subject("test")
                 .link("http://naver.com")
                 .isPublic(true)
-                .frameSpecification("A")
+                .frameSpecification("VERTICAL")
                 .build();
         HttpHeaders headers=new HttpHeaders();
         headers.add("Authorization","Bearer "+memberToken);
@@ -128,7 +128,7 @@ public class FrameArticleIntegrationTest {
                 .subject("test2")
                 .link("http://naver.com")
                 .isPublic(true)
-                .frameSpecification("A")
+                .frameSpecification("VERTICAL")
                 .build();
         mvc.perform(post("/api/article/frame")
                         .content(objectMapper.writeValueAsString(dummyFrameArticleRequestDto))
@@ -278,7 +278,8 @@ public class FrameArticleIntegrationTest {
                                 fieldWithPath("frameArticleVoList[].createdDate").type(JsonFieldType.STRING).description("게시글 작성일"),
                                 fieldWithPath("frameArticleVoList[].author").type(JsonFieldType.STRING).description("게시글 작성자"),
                                 fieldWithPath("frameArticleVoList[].frameSpecification").type(JsonFieldType.STRING).description("프레임 규격"),
-                                fieldWithPath("frameArticleVoList[].loverYn").type(JsonFieldType.NUMBER).description("좋아요 여부")
+                                fieldWithPath("frameArticleVoList[].loverYn").type(JsonFieldType.NUMBER).description("좋아요 여부"),
+                                fieldWithPath("frameArticleVoList[].isMine").type(JsonFieldType.BOOLEAN).description("작성자 여부")
                         )
                 ));
     }
@@ -311,7 +312,8 @@ public class FrameArticleIntegrationTest {
                                 fieldWithPath("frameArticleVoList[].createdDate").type(JsonFieldType.STRING).description("게시글 작성일"),
                                 fieldWithPath("frameArticleVoList[].author").type(JsonFieldType.STRING).description("게시글 작성자"),
                                 fieldWithPath("frameArticleVoList[].frameSpecification").type(JsonFieldType.STRING).description("프레임 규격"),
-                                fieldWithPath("frameArticleVoList[].loverYn").type(JsonFieldType.NUMBER).description("좋아요 여부")
+                                fieldWithPath("frameArticleVoList[].loverYn").type(JsonFieldType.NUMBER).description("좋아요 여부"),
+                                fieldWithPath("frameArticleVoList[].isMine").type(JsonFieldType.BOOLEAN).description("작성자 여부")
                         )
                 ));
     }
@@ -349,7 +351,8 @@ public class FrameArticleIntegrationTest {
                                 fieldWithPath("frameArticleVoList[].createdDate").type(JsonFieldType.STRING).description("게시글 작성일"),
                                 fieldWithPath("frameArticleVoList[].author").type(JsonFieldType.STRING).description("게시글 작성자"),
                                 fieldWithPath("frameArticleVoList[].frameSpecification").type(JsonFieldType.STRING).description("프레임 규격"),
-                                fieldWithPath("frameArticleVoList[].loverYn").type(JsonFieldType.NUMBER).description("좋아요 여부")
+                                fieldWithPath("frameArticleVoList[].loverYn").type(JsonFieldType.NUMBER).description("좋아요 여부"),
+                                fieldWithPath("frameArticleVoList[].isMine").type(JsonFieldType.BOOLEAN).description("작성자 여부")
                         )
                 ));
     }
@@ -384,7 +387,8 @@ public class FrameArticleIntegrationTest {
                                 fieldWithPath("frameArticleVoList[].createdDate").type(JsonFieldType.STRING).description("게시글 작성일"),
                                 fieldWithPath("frameArticleVoList[].author").type(JsonFieldType.STRING).description("게시글 작성자"),
                                 fieldWithPath("frameArticleVoList[].frameSpecification").type(JsonFieldType.STRING).description("프레임 규격"),
-                                fieldWithPath("frameArticleVoList[].loverYn").type(JsonFieldType.NUMBER).description("좋아요 여부")
+                                fieldWithPath("frameArticleVoList[].loverYn").type(JsonFieldType.NUMBER).description("좋아요 여부"),
+                                fieldWithPath("frameArticleVoList[].isMine").type(JsonFieldType.BOOLEAN).description("작성자 여부")
                         )
                 ));
     }
@@ -422,7 +426,8 @@ public class FrameArticleIntegrationTest {
                                 fieldWithPath("frameArticleVoList[].createdDate").type(JsonFieldType.STRING).description("게시글 작성일"),
                                 fieldWithPath("frameArticleVoList[].author").type(JsonFieldType.STRING).description("게시글 작성자"),
                                 fieldWithPath("frameArticleVoList[].frameSpecification").type(JsonFieldType.STRING).description("프레임 규격"),
-                                fieldWithPath("frameArticleVoList[].loverYn").type(JsonFieldType.NUMBER).description("좋아요 여부")
+                                fieldWithPath("frameArticleVoList[].loverYn").type(JsonFieldType.NUMBER).description("좋아요 여부"),
+                                fieldWithPath("frameArticleVoList[].isMine").type(JsonFieldType.BOOLEAN).description("작성자 여부")
                         )
                 ));
     }
@@ -458,7 +463,8 @@ public class FrameArticleIntegrationTest {
                                 fieldWithPath("frameArticleVoList[].createdDate").type(JsonFieldType.STRING).description("게시글 작성일"),
                                 fieldWithPath("frameArticleVoList[].author").type(JsonFieldType.STRING).description("게시글 작성자"),
                                 fieldWithPath("frameArticleVoList[].frameSpecification").type(JsonFieldType.STRING).description("프레임 규격"),
-                                fieldWithPath("frameArticleVoList[].loverYn").type(JsonFieldType.NUMBER).description("좋아요 여부")
+                                fieldWithPath("frameArticleVoList[].loverYn").type(JsonFieldType.NUMBER).description("좋아요 여부"),
+                                fieldWithPath("frameArticleVoList[].isMine").type(JsonFieldType.BOOLEAN).description("작성자 여부")
                         )
                 ));
     }
@@ -494,7 +500,8 @@ public class FrameArticleIntegrationTest {
                                 fieldWithPath("frameArticleVoList[].createdDate").type(JsonFieldType.STRING).description("게시글 작성일"),
                                 fieldWithPath("frameArticleVoList[].author").type(JsonFieldType.STRING).description("게시글 작성자"),
                                 fieldWithPath("frameArticleVoList[].frameSpecification").type(JsonFieldType.STRING).description("프레임 규격"),
-                                fieldWithPath("frameArticleVoList[].loverYn").type(JsonFieldType.NUMBER).description("좋아요 여부")
+                                fieldWithPath("frameArticleVoList[].loverYn").type(JsonFieldType.NUMBER).description("좋아요 여부"),
+                                fieldWithPath("frameArticleVoList[].isMine").type(JsonFieldType.BOOLEAN).description("작성자 여부")
                         )
                 ));
     }

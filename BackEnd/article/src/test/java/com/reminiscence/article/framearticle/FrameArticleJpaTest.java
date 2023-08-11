@@ -52,7 +52,7 @@ public class FrameArticleJpaTest {
                 .subject("test")
                 .link("http://special.com/frame/21241test.jpg")
                 .isPublic(true)
-                .frameSpecification("A")
+                .frameSpecification("VERTICAL")
                 .build();
         FrameArticleRequestDto frameArticleRequestDto=objectMapper.readValue(objectMapper.writeValueAsString(dummyFrameArticleRequestDto),FrameArticleRequestDto.class);
 
@@ -144,9 +144,10 @@ public class FrameArticleJpaTest {
 
         Long memberId = 1L;
         String searchWord = "se";
+        String frameSpec = "";
 
         //when
-        Page<FrameArticleVo> hotFrameArticles = frameArticleRepository.findMemberFrameArticles(pageable, memberId, searchWord);
+        Page<FrameArticleVo> hotFrameArticles = frameArticleRepository.findMemberFrameArticles(pageable, memberId, searchWord, frameSpec);
         FrameArticleListResponseDto frameArticleListResponseDto = new FrameArticleListResponseDto(page, hotFrameArticles.getTotalPages(), hotFrameArticles.getTotalElements());
 
         for(FrameArticleVo frameArticleVo:hotFrameArticles.getContent()){
@@ -158,7 +159,7 @@ public class FrameArticleJpaTest {
         assertEquals(1, frameArticleListResponseDto.getPageNavigator().getCurPage());
         assertEquals(2, frameArticleListResponseDto.getPageNavigator().getTotalPages());
         assertEquals(12, frameArticleListResponseDto.getPageNavigator().getTotalDataCount());
-        assertEquals("www.naver.com", frameArticleListResponseDto.getFrameArticleVoList().get(0).getFrameLink());
+        assertEquals("https://png.pngtree.com/png-vector/20210324/ourmid/pngtree-picture-frame-png-image_3135232.jpg", frameArticleListResponseDto.getFrameArticleVoList().get(0).getFrameLink());
         assertEquals(3, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverCnt());
         assertEquals("se6815", frameArticleListResponseDto.getFrameArticleVoList().get(0).getAuthor());
         assertEquals(1L, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverYn());
@@ -169,8 +170,9 @@ public class FrameArticleJpaTest {
         //given
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "lover");
         String searchWord = "";
+        String frameSpec = "";
         //when
-        Page<FrameArticleVo> hotFrameArticles = frameArticleRepository.findNonMemberFrameArticles(pageable, searchWord);
+        Page<FrameArticleVo> hotFrameArticles = frameArticleRepository.findNonMemberFrameArticles(pageable, searchWord, frameSpec);
         FrameArticleListResponseDto frameArticleListResponseDto = new FrameArticleListResponseDto(pageable.getPageNumber(), hotFrameArticles.getTotalPages(), hotFrameArticles.getTotalElements());
 
         for(FrameArticleVo frameArticleVo:hotFrameArticles.getContent()){
@@ -182,7 +184,7 @@ public class FrameArticleJpaTest {
         assertEquals(1, frameArticleListResponseDto.getPageNavigator().getCurPage());
         assertEquals(2, frameArticleListResponseDto.getPageNavigator().getTotalPages());
         assertEquals(12, frameArticleListResponseDto.getPageNavigator().getTotalDataCount());
-        assertEquals("www.naver.com", frameArticleListResponseDto.getFrameArticleVoList().get(0).getFrameLink());
+        assertEquals("https://png.pngtree.com/png-vector/20210324/ourmid/pngtree-picture-frame-png-image_3135232.jpg", frameArticleListResponseDto.getFrameArticleVoList().get(0).getFrameLink());
         assertEquals(3, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverCnt());
         assertEquals("se6815", frameArticleListResponseDto.getFrameArticleVoList().get(0).getAuthor());
         assertEquals(0L, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverYn());
@@ -190,7 +192,7 @@ public class FrameArticleJpaTest {
         pageable = PageRequest.of(0, 5, Sort.Direction.DESC, "lover");
         searchWord = "se";
         //when
-        hotFrameArticles = frameArticleRepository.findNonMemberFrameArticles(pageable, searchWord);
+        hotFrameArticles = frameArticleRepository.findNonMemberFrameArticles(pageable, searchWord, frameSpec);
 
         frameArticleListResponseDto = new FrameArticleListResponseDto(pageable.getPageNumber(), hotFrameArticles.getTotalPages(), hotFrameArticles.getContent().size());
 
@@ -203,12 +205,10 @@ public class FrameArticleJpaTest {
         assertEquals(1, frameArticleListResponseDto.getPageNavigator().getCurPage());
         assertEquals(3, frameArticleListResponseDto.getPageNavigator().getTotalPages());
         assertEquals(5, frameArticleListResponseDto.getPageNavigator().getTotalDataCount());
-        assertEquals("www.naver.com", frameArticleListResponseDto.getFrameArticleVoList().get(0).getFrameLink());
+        assertEquals("https://png.pngtree.com/png-vector/20210324/ourmid/pngtree-picture-frame-png-image_3135232.jpg", frameArticleListResponseDto.getFrameArticleVoList().get(0).getFrameLink());
         assertEquals(3, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverCnt());
         assertEquals("se6815", frameArticleListResponseDto.getFrameArticleVoList().get(0).getAuthor());
         assertEquals(0L, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverYn());
-
-
 
     }
 
@@ -219,8 +219,9 @@ public class FrameArticleJpaTest {
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "createdDate");
         Long memberId = 1L;
         String searchWord = "";
+        String frameSpec = "";
         //when
-        Page<FrameArticleVo> recentFrameArticle = frameArticleRepository.findMemberFrameArticles(pageable,memberId,searchWord);
+        Page<FrameArticleVo> recentFrameArticle = frameArticleRepository.findMemberFrameArticles(pageable,memberId,searchWord, frameSpec);
         FrameArticleListResponseDto frameArticleListResponseDto = new FrameArticleListResponseDto(pageable.getPageNumber(), recentFrameArticle.getTotalPages(), recentFrameArticle.getTotalElements());
 
         for(FrameArticleVo frameArticleVo:recentFrameArticle.getContent()){
@@ -244,8 +245,9 @@ public class FrameArticleJpaTest {
         //given
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "createdDate");
         String searchWord = "";
+        String frameSpec = "";
         //when
-        Page<FrameArticleVo> recentFrameArticle = frameArticleRepository.findNonMemberFrameArticles(pageable,searchWord);
+        Page<FrameArticleVo> recentFrameArticle = frameArticleRepository.findNonMemberFrameArticles(pageable,searchWord, frameSpec);
         FrameArticleListResponseDto frameArticleListResponseDto = new FrameArticleListResponseDto(pageable.getPageNumber(), recentFrameArticle.getTotalPages(), recentFrameArticle.getTotalElements());
 
         for(FrameArticleVo frameArticleVo:recentFrameArticle.getContent()){
@@ -269,9 +271,10 @@ public class FrameArticleJpaTest {
         Long memberId = 1L;
         Pageable pageable = PageRequest.of(0, 5, Sort.Direction.DESC, "random");
         String searchWord = "";
+        String frameSpec = "";
 
         //when
-        Page<FrameArticleVo> randomFrameArticles = frameArticleRepository.findMemberFrameArticles(pageable,memberId,searchWord);
+        Page<FrameArticleVo> randomFrameArticles = frameArticleRepository.findMemberFrameArticles(pageable,memberId,searchWord, frameSpec);
         FrameArticleListResponseDto frameArticleListResponseDto = new FrameArticleListResponseDto(pageable.getPageNumber(), randomFrameArticles.getTotalPages(), randomFrameArticles.getTotalElements());
 
         for(FrameArticleVo frameArticleVo:randomFrameArticles.getContent()){
@@ -291,9 +294,10 @@ public class FrameArticleJpaTest {
         //given
         Pageable pageable = PageRequest.of(0, 5, Sort.Direction.DESC, "random");
         String searchWord = "";
+        String frameSpec = "";
 
         //when
-        Page<FrameArticleVo> randomFrameArticles = frameArticleRepository.findNonMemberFrameArticles(pageable,searchWord);
+        Page<FrameArticleVo> randomFrameArticles = frameArticleRepository.findNonMemberFrameArticles(pageable, searchWord, frameSpec);
         FrameArticleListResponseDto frameArticleListResponseDto = new FrameArticleListResponseDto(pageable.getPageNumber(), randomFrameArticles.getTotalPages(), randomFrameArticles.getTotalElements());
 
         for(FrameArticleVo frameArticleVo:randomFrameArticles.getContent()){

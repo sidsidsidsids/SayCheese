@@ -1,5 +1,6 @@
 package com.reminiscence.article.framearticle.vo;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.reminiscence.article.domain.FrameSpecification;
 import lombok.Getter;
 import lombok.ToString;
@@ -20,6 +21,7 @@ public class FrameArticleVo implements Serializable {
     private Boolean isPublic; // DB에서의 공개여부(openYn) 값을 boolean 형태로 반환
     private FrameSpecification frameSpecification;
     private Long loverYn;
+    private Boolean isMine;
 
     public FrameArticleVo(FrameArticleVo frameArticleVo) {
         this.articleId = frameArticleVo.getArticleId();
@@ -31,10 +33,11 @@ public class FrameArticleVo implements Serializable {
         this.isPublic = frameArticleVo.getIsPublic();
         this.frameSpecification = frameArticleVo.getFrameSpecification();
         this.loverYn = frameArticleVo.getLoverYn();
+        this.isMine = frameArticleVo.getIsMine();
     }
 
-    public FrameArticleVo(Long articleId, String subject, String frameLink, Long loverCnt, LocalDateTime createdDate, String author, Character openYn, FrameSpecification frameSpecification, Long loverYn) {
-        Boolean isPublic = (openYn=='Y') ? true:false;
+    public FrameArticleVo(Long articleId, String subject, String frameLink, Long loverCnt, LocalDateTime createdDate, String author, Character openYn, FrameSpecification frameSpecification, Long loverYn, Boolean isMine) {
+        boolean isPublic = openYn == 'Y';
         this.articleId = articleId;
         this.subject = subject;
         this.frameLink = frameLink;
@@ -48,10 +51,11 @@ public class FrameArticleVo implements Serializable {
         } else {
             this.loverYn = 1L;
         }
+        this.isMine = isMine;
     }
 
     public FrameArticleVo(Long articleId, String subject, String frameLink, Long loverCnt, LocalDateTime createdDate, String author, Character openYn, FrameSpecification frameSpecification) {
-        Boolean isPublic = (openYn=='Y') ? true:false;
+        boolean isPublic = openYn == 'Y';
         this.articleId = articleId;
         this.subject = subject;
         this.frameLink = frameLink;
@@ -61,6 +65,7 @@ public class FrameArticleVo implements Serializable {
         this.isPublic = isPublic;
         this.frameSpecification = frameSpecification;
         this.loverYn = 0L;
+        this.isMine = false;
     }
 
     public void changeLoverYn(Long loverYn) {

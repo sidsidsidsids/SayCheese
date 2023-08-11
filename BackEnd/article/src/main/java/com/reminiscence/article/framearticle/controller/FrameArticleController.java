@@ -38,8 +38,8 @@ public class FrameArticleController {
      *  author : 게시글 작성자
      */
     @GetMapping("/list/random")
-    public ResponseEntity<FrameArticleListResponseDto> readRandomFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestParam(required = false, defaultValue = "") String searchWord){
-        FrameArticleListResponseDto randomFrameArticleList = frameArticleService.getRandomFrameArticleList(pageable, userDetail, searchWord);
+    public ResponseEntity<FrameArticleListResponseDto> readRandomFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestParam(required = false, defaultValue = "") String searchWord, @RequestParam(required = false, defaultValue = "") String frameSpec){
+        FrameArticleListResponseDto randomFrameArticleList = frameArticleService.getRandomFrameArticleList(pageable, userDetail, searchWord, frameSpec);
         return new ResponseEntity<>(randomFrameArticleList, HttpStatus.OK);
     }
     /**
@@ -56,8 +56,8 @@ public class FrameArticleController {
      *  author : 게시글 작성자
      */
     @GetMapping("/list/hot")
-    public ResponseEntity<FrameArticleListResponseDto> readHotFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestParam(required = false, defaultValue = "")  String searchWord) {
-        FrameArticleListResponseDto hotFrameArticleList = frameArticleService.getHotFrameArticleList(pageable, userDetail, searchWord);
+    public ResponseEntity<FrameArticleListResponseDto> readHotFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestParam(required = false, defaultValue = "")  String searchWord, @RequestParam(required = false, defaultValue = "") String frameSpec) {
+        FrameArticleListResponseDto hotFrameArticleList = frameArticleService.getHotFrameArticleList(pageable, userDetail, searchWord, frameSpec);
         return new ResponseEntity<>(hotFrameArticleList, HttpStatus.OK);
     }
     /**
@@ -74,8 +74,8 @@ public class FrameArticleController {
      *  author : 게시글 작성자
      */
     @GetMapping("/list/recent")
-    public ResponseEntity<FrameArticleListResponseDto> readRecentFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestParam(required = false, defaultValue = "") String searchWord) {
-        FrameArticleListResponseDto recentFrameArticleList = frameArticleService.getRecentFrameArticleList(pageable, userDetail, searchWord);
+    public ResponseEntity<FrameArticleListResponseDto> readRecentFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestParam(required = false, defaultValue = "") String searchWord, @RequestParam(required = false, defaultValue = "") String frameSpec) {
+        FrameArticleListResponseDto recentFrameArticleList = frameArticleService.getRecentFrameArticleList(pageable, userDetail, searchWord, frameSpec);
         return new ResponseEntity<>(recentFrameArticleList, HttpStatus.OK);
     }
 
@@ -126,8 +126,8 @@ public class FrameArticleController {
      *  author : 게시글 작성자
      */
     @GetMapping("/my/list")
-    public ResponseEntity<FrameArticleListResponseDto> readMyFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestParam(required = false, defaultValue = "") String searchWord) {
-        FrameArticleListResponseDto recentFrameArticleList = frameArticleService.getMyFrameArticleList(pageable, userDetail, searchWord);
+    public ResponseEntity<FrameArticleListResponseDto> readMyFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestParam(required = false, defaultValue = "") String searchWord, @RequestParam(required = false, defaultValue = "") String frameSpec) {
+        FrameArticleListResponseDto recentFrameArticleList = frameArticleService.getMyFrameArticleList(pageable, userDetail, searchWord, frameSpec);
         return new ResponseEntity<>(recentFrameArticleList, HttpStatus.OK);
     }
 
