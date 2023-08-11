@@ -25,12 +25,12 @@ function Header() {
     } else {
       dispatch(logoutSuccess());
     }
-  }, [dispatch]);
+  }, []);
 
   function temporary() {
     localStorage.setItem(
       "accessToken",
-      "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A"
+      "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjIifQ.OUP4gSxVM-CV0JeNYLxTtbwY9B0YGuS1PYjss9X0y5a9Q61g7Gjb43RsTVTK7L-EVhPvHS-DuUBN9Chy2SLgVg"
     );
     dispatch(logintemporary("se6816@naver.com"));
   }
@@ -79,7 +79,7 @@ function Header() {
         </ul>
         <ul>
           <li style={{ margin: "auto 0 auto 10px" }}>
-            <Link to="/frame" className="HoverEffect">
+            <Link to="/frame/" className="HoverEffect">
               프레임
             </Link>
           </li>

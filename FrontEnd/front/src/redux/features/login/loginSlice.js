@@ -1,6 +1,10 @@
 // login 상태 관련  redux tookit 모듈 파일
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { combineReducers } from "redux";
+import { persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage"; // 로컬스토리지 사용
 import axios from "axios";
+
 // 초기 상태 정의
 const initialState = {
   isLogin: false, // 초기 로그인 상태 (로그인 되어있지 않음 = false)

@@ -7,16 +7,18 @@ import { AuthContext, AuthProvider } from "./contexts/AuthContext";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserInfo } from "./redux/features/login/loginSlice";
 
+import { persistStore } from "redux-persist";
+import store from "./redux/store";
+
 function App() {
-  const { userInfo } = useSelector((store) => store.login);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    if (accessToken) {
-      dispatch(getUserInfo());
-    }
-  }, [dispatch]);
+  // useEffect(() => {
+  //   const accessToken = localStorage.getItem("accessToken");
+  //   if (accessToken) {
+  //     dispatch(getUserInfo());
+  //   }
+  // }, [dispatch]);
 
   return (
     <div className="App">
@@ -26,7 +28,6 @@ function App() {
           <Outlet />
         </div>
       </AuthProvider>
-
       <p>app.js</p>
     </div>
   );
