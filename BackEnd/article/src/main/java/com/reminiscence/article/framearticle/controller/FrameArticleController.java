@@ -85,8 +85,11 @@ public class FrameArticleController {
      * userDetail : JWT 토큰으로 인증된 사용자 정보
      * @param
      * frameArticleRequestDto : 프레임 정보를 담은 Dto
-     *     frameName : 프레임 파일 이름
-     *     frameType : 프레임 타입(Frame, Image)
+     *     name : 프레임 파일 이름
+     *     fileType : 프레임 타입(Frame, Image, Profile)
+     *     isPublic : 공개 여부
+     *     frameSpecification : 프레임 규격
+     *     subject : 제목
      * @return
      * Response : HttpStatus.OK
      */

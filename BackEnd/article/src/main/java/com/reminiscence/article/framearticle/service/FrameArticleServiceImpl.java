@@ -123,7 +123,7 @@ public class FrameArticleServiceImpl implements FrameArticleService {
                 .append(BUCKET_NAME)
                 .append(".s3.")
                 .append(BUCKET_REGION)
-                .append("./amazonaws.com/")
+                .append(".amazonaws.com/")
                 .append(frameArticleAndMemberRequestDto.getFrameArticleRequestDto().getFileType())
                 .append("/")
                 .append(frameArticleAndMemberRequestDto.getFrameArticleRequestDto().getName());
