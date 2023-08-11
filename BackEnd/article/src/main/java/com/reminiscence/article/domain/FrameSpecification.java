@@ -3,7 +3,7 @@ package com.reminiscence.article.domain;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum FrameSpecification {
-    A,B;
+    VERTICAL, HORIZONTAL;
 
     @JsonCreator
     public static FrameSpecification from(String value) {
