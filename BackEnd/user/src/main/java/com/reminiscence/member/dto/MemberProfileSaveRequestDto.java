@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 public class MemberProfileSaveRequestDto {
 
-    @NotBlank(message = "이미지 파일 이름을 입력해주세요.")
-    private String imageName;
+    @NotBlank(message = "파일 이름을 입력해주세요.")
+    private String profileName;
 
 }

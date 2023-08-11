@@ -122,13 +122,12 @@ public class MemberController {
         return new ResponseEntity<>(memberNicknameResponseDto, HttpStatus.OK);
     }
 
-
-//    @PostMapping
-//    public ResponseEntity setProfile(@AuthenticationPrincipal MemberDetail memberDetail,
-//                                                   @RequestBody @Valid MemberProfileSaveRequestDto requestDto) {
-//        memberService.saveProfile(memberDetail, requestDto);
-//        return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_PROFILE_MODIFY_SUCCESS),HttpStatus.OK);
-//    }
+    @PostMapping
+    public ResponseEntity saveProfile(@AuthenticationPrincipal MemberDetail memberDetail,
+                                                   @RequestBody @Valid MemberProfileSaveRequestDto requestDto) {
+        memberService.saveProfile(memberDetail, requestDto);
+        return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_PROFILE_MODIFY_SUCCESS),HttpStatus.OK);
+    }
 
 }
 
