@@ -1,20 +1,20 @@
 package com.reminiscence.member.service;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.reminiscence.config.auth.MemberDetail;
 import com.reminiscence.domain.Member;
+import com.reminiscence.domain.Role;
+import com.reminiscence.exception.customexception.MemberException;
+import com.reminiscence.exception.message.MemberExceptionMessage;
 import com.reminiscence.member.dto.*;
 import com.reminiscence.member.repository.MemberRepository;
 import com.reminiscence.message.Response;
 import com.reminiscence.message.custom_message.MemberResponseMessage;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,54 +24,42 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 //import java.util.Map;
 
-
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
 @Service
 public class MemberServiceImpl implements MemberService {
 
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public MemberServiceImpl(MemberRepository memberRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
-        super();
-        this.memberRepository = memberRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
+    private final String GUEST_PREFIX = "GUEST ";
+    private final String GUEST_PASSWORD = "GUEST PASSWORD";
 
-//    @Override
-//    public Member login(MemberLoginRequestDto memberLoginRequestDto) throws Exception {
-//
-//        Member member = memberRepository.findByEmail(memberLoginRequestDto.getEmail());
-//        // 해당 아이디의 멤버가 없을 때
-//        if(member == null){
-//            return null;
-//        }
-//        // 비밀번호가 다를 경우
-//        if(!bCryptPasswordEncoder.matches(memberLoginRequestDto.getPassword(), member.getPassword())){
-//            return null;
-//        }
-//        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);;
-//        objectMapper.registerModule(new JavaTimeModule());
-//        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-//        MemberResponseDto memberResponseDto = objectMapper.convertValue(memberRepository.findByEmail(memberLoginRequestDto.getEmail()), MemberResponseDto.class);
-//        return memberResponseDto.toEntity();
-//    }
+    @Value("${cloud.aws.s3.bucket}")
+    private String BUCKET_NAME;
+    @Value("${cloud.aws.region.static}")
+    private String BUCKET_REGION;
 
+
+
+    @Transactional
     @Override
-    public ResponseEntity<Response> joinMember(MemberJoinRequestDto memberJoinRequestDto) throws Exception {
+    public void joinMember(MemberJoinRequestDto memberJoinRequestDto) throws Exception {
         memberJoinRequestDto.setPassword(bCryptPasswordEncoder.encode(memberJoinRequestDto.getPassword()));
         Member member = memberJoinRequestDto.toEntity();
+        if(memberJoinRequestDto.getNickname().startsWith(GUEST_PREFIX))
+            throw new MemberException(MemberExceptionMessage.MEMBER_JOIN_FAILURE_NICKNAME_PROTECTED);
         // 이메일 중복 시 HttpStatus를 Already_Reported 상태로 응답 전달
         if (memberRepository.findByEmail(member.getEmail()) != null)
-            return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_JOIN_FAILURE_EAMIL_DUPLICATED), HttpStatus.ALREADY_REPORTED);
+            throw new MemberException(MemberExceptionMessage.MEMBER_JOIN_FAILURE_EMAIL_DUPLICATED);
         // 닉네임 중복 시 HttpStatus를 Conflict 상태로 응답 전달
         if (memberRepository.findByNickname(member.getNickname()) != null)
-            return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_JOIN_FAILURE_NICKNAME_DUPLICATED), HttpStatus.CONFLICT);
+            throw new MemberException(MemberExceptionMessage.MEMBER_JOIN_FAILURE_NICKNAME_DUPLICATED);
         memberRepository.save(member);
-        return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_JOIN_SUCCESS), HttpStatus.OK);
     }
 
     @Override
@@ -132,10 +120,7 @@ public class MemberServiceImpl implements MemberService {
                 .snsType(member.getSnsType())
                 .personalAgreement(member.getPersonalAgreement())
                 .build();
-//        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);;
-//        objectMapper.registerModule(new JavaTimeModule());
-//        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-//        MemberInfoResponseDto memberInfoResponseDto = objectMapper.convertValue(member, MemberInfoResponseDto.class);
+
         return memberInfoResponseDto;
     }
 
@@ -143,42 +128,92 @@ public class MemberServiceImpl implements MemberService {
     public List<MemberSearchResponseDto> getMemberList(String key) throws SQLException {
 
         List<MemberSearchResponseDto> memberlist = memberRepository.searchMembers(key);
-//        List<Member> memberlist = memberRepository.getMemberList(key);
         return memberlist;
     }
 
+    @Transactional
     @Override
     public Member updateMemberPassword(MemberUpdatePasswordRequestDto memberUpdatePasswordRequestDto) throws Exception {
         Member member = memberUpdatePasswordRequestDto.toEntity();
         return memberRepository.save(member);
     }
 
+    @Transactional
     @Override
     public void deleteMember(long memberId) throws Exception {
         Member member = memberRepository.findById(memberId).orElse(null);
-        member.modifyDelYn('Y');
-        memberRepository.save(member);
+        if(member != null)
+//        member.modifyDelYn('Y');
+//        memberRepository.save(member);
+
+        memberRepository.delete(member);
     }
 
-//    @Override
-//    public void saveRefreshToken(String memberId, String refreshToken) throws Exception {
-////        Map<String, String> map = new HashMap<String, String>();
-////        map.put("memberId", memberId);
-////        map.put("token", refreshToken);
-//        memberRepository.saveRefreshToken(memberId, refreshToken);
-//    }
-//
-//    @Override
-//    public Object getRefreshToken(String memberId) throws Exception {
-//        return memberRepository.getRefreshToken(memberId);
-//    }
-//
-//    @Override
-//    public void deleteRefreshToken(String memberId) throws Exception {
-////        Map<String, String> map = new HashMap<String, String>();
-////        map.put("memberId", memberId);
-////        map.put("token", null);
-//        memberRepository.deleteRefreshToken(memberId, null);
-//    }
+    @Transactional
+    @Override
+    public Member joinGuestMember(String nickname) throws SQLException {
+        String email = UUID.randomUUID().toString();
+        while(memberRepository.findByEmail(email) != null){
+            email = UUID.randomUUID().toString();
+        }
+        String savedNickname = GUEST_PREFIX + nickname;
+        while(memberRepository.findByNickname(savedNickname) != null){
+            savedNickname = GUEST_PREFIX + nickname;
+        }
+
+        Member member = Member.builder()
+                .email(email)
+                .password(bCryptPasswordEncoder.encode(GUEST_PASSWORD))
+                .nickname(savedNickname)
+                .role(Role.GUEST)
+                .build();
+        return memberRepository.save(member);
+    }
+
+    @Override
+    public MemberNicknameResponseDto getMemberNickName(MemberDetail memberDetail){
+        Member member = memberRepository.findById(memberDetail.getMember().getId()).orElse(null);
+        String nickname;
+        if(member == null){
+            return null;
+        } else if (memberDetail.getMember().getRole() == Role.GUEST) {
+            nickname = member.getNickname().substring(GUEST_PREFIX.length()).trim();
+            return new MemberNicknameResponseDto(nickname);
+        } else {
+            nickname = member.getNickname();
+            return new MemberNicknameResponseDto(nickname);
+        }
+    }
+
+    @Override
+    public void saveProfile(MemberDetail memberDetail, MemberProfileSaveRequestDto requestDto) {
+//        StringBuilder imageLink = new StringBuilder();
+//        imageLink.append("https://")
+//                .append(BUCKET_NAME)
+//                .append(".s3.")
+//                .append(BUCKET_REGION)
+//                .append("./amazonaws.com/")
+//                .append(requestDto.getFileType().getValue())
+//                .append("/")
+//                .append(requestDto.getImageName());
+//        String imageType = getFileType(requestDto.getImageName());
+//        String name = getFileName(requestDto.getImageName());
+//        Image image = Image.builder()
+//                .link(imageLink.toString())
+//                .type(imageType)
+//                .name(name)
+//                .build();
+//        imageRepository.save(image);
+//        for(int i=0;i<4;i++){
+//            imageTagRepository.save(new ImageTag(image,requestDto.getTags().get(i)));
+//        }
+    }
+
+    private String getFileType(String fileName){
+        return fileName.substring(fileName.lastIndexOf(".")+1);
+    }
+    private String getFileName(String fileName){
+        return fileName.substring(0, fileName.lastIndexOf("."));
+    }
 
 }

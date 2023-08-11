@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FrameArticleRepositoryCustom {
-    Page<FrameArticleVo> findMemberFrameArticles(Pageable page, Long memberId, String authorSubject);
-    Page<FrameArticleVo> findNonMemberFrameArticles(Pageable page, String authorSubject);
+    Page<FrameArticleVo> findMemberFrameArticles(Pageable page, Long memberId, String authorSubject, String frameSpec);
+    Page<FrameArticleVo> findNonMemberFrameArticles(Pageable page, String authorSubject, String frameSpec);
 
-    Page<FrameArticleVo> findMyFrameArticles(Pageable pageable, Long memberId, String searchWord);
+    Page<FrameArticleVo> findMyFrameArticles(Pageable pageable, Long memberId, String searchWord, String frameSpec);
 //    Optional<List<FrameArticle>> findFrameArticleAllBySearchWord(Pageable pageable, String authorSubject);
 
 }

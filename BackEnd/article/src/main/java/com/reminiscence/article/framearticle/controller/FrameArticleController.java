@@ -29,7 +29,7 @@ public class FrameArticleController {
      * @param
      *  userDetail : 로그인한 사용자 정보
      * @param
-     * searchWord : 검색어 정보를 담은 Dto
+     * searchWord : 검색어 (저자명 또는 제목)
      * @Return
      * ImageArticleListResponseDto : 이미지 게시글 상세 정보
      *  frameLink : 이미지 링크
@@ -38,8 +38,8 @@ public class FrameArticleController {
      *  author : 게시글 작성자
      */
     @GetMapping("/list/random")
-    public ResponseEntity<FrameArticleListResponseDto> readRandomFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestParam(required = false, defaultValue = "") String searchWord){
-        FrameArticleListResponseDto randomFrameArticleList = frameArticleService.getRandomFrameArticleList(pageable, userDetail, searchWord);
+    public ResponseEntity<FrameArticleListResponseDto> readRandomFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestParam(required = false, defaultValue = "") String searchWord, @RequestParam(required = false, defaultValue = "") String frameSpec){
+        FrameArticleListResponseDto randomFrameArticleList = frameArticleService.getRandomFrameArticleList(pageable, userDetail, searchWord, frameSpec);
         return new ResponseEntity<>(randomFrameArticleList, HttpStatus.OK);
     }
     /**
@@ -47,7 +47,7 @@ public class FrameArticleController {
      * @param
      *  userDetail : 로그인한 사용자 정보
      * @param
-     * searchWord : 검색어 정보를 담은 Dto
+     * searchWord : 검색어 (저자명 또는 제목)
      * @Return
      * ImageArticleListResponseDto : 이미지 게시글 상세 정보
      *  imageLink : 이미지 링크
@@ -56,8 +56,8 @@ public class FrameArticleController {
      *  author : 게시글 작성자
      */
     @GetMapping("/list/hot")
-    public ResponseEntity<FrameArticleListResponseDto> readHotFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestParam(required = false, defaultValue = "")  String searchWord) {
-        FrameArticleListResponseDto hotFrameArticleList = frameArticleService.getHotFrameArticleList(pageable, userDetail, searchWord);
+    public ResponseEntity<FrameArticleListResponseDto> readHotFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestParam(required = false, defaultValue = "")  String searchWord, @RequestParam(required = false, defaultValue = "") String frameSpec) {
+        FrameArticleListResponseDto hotFrameArticleList = frameArticleService.getHotFrameArticleList(pageable, userDetail, searchWord, frameSpec);
         return new ResponseEntity<>(hotFrameArticleList, HttpStatus.OK);
     }
     /**
@@ -65,7 +65,7 @@ public class FrameArticleController {
      * @param
      *  userDetail : 로그인한 사용자 정보
      * @param
-     * searchWord
+     * searchWord : 검색어 (저자명 또는 제목)
      * @Return
      * ImageArticleListResponseDto : 이미지 게시글 상세 정보
      *  imageLink : 이미지 링크
@@ -74,8 +74,8 @@ public class FrameArticleController {
      *  author : 게시글 작성자
      */
     @GetMapping("/list/recent")
-    public ResponseEntity<FrameArticleListResponseDto> readRecentFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestParam(required = false, defaultValue = "") String searchWord) {
-        FrameArticleListResponseDto recentFrameArticleList = frameArticleService.getRecentFrameArticleList(pageable, userDetail, searchWord);
+    public ResponseEntity<FrameArticleListResponseDto> readRecentFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestParam(required = false, defaultValue = "") String searchWord, @RequestParam(required = false, defaultValue = "") String frameSpec) {
+        FrameArticleListResponseDto recentFrameArticleList = frameArticleService.getRecentFrameArticleList(pageable, userDetail, searchWord, frameSpec);
         return new ResponseEntity<>(recentFrameArticleList, HttpStatus.OK);
     }
 
@@ -117,7 +117,7 @@ public class FrameArticleController {
      * @param
      *  userDetail : 로그인한 사용자 정보
      * @param
-     * searchWord
+     * searchWord : 검색어 (저자명 또는 제목)
      * @Return
      * ImageArticleListResponseDto : 이미지 게시글 상세 정보
      *  imageLink : 이미지 링크
@@ -126,8 +126,28 @@ public class FrameArticleController {
      *  author : 게시글 작성자
      */
     @GetMapping("/my/list")
-    public ResponseEntity<FrameArticleListResponseDto> readMyFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestParam(required = false, defaultValue = "") String searchWord) {
-        FrameArticleListResponseDto recentFrameArticleList = frameArticleService.getMyFrameArticleList(pageable, userDetail, searchWord);
+    public ResponseEntity<FrameArticleListResponseDto> readMyFrameArticleList(@PageableDefault(size=10, page=1, direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetail userDetail, @RequestParam(required = false, defaultValue = "") String searchWord, @RequestParam(required = false, defaultValue = "") String frameSpec) {
+        FrameArticleListResponseDto recentFrameArticleList = frameArticleService.getMyFrameArticleList(pageable, userDetail, searchWord, frameSpec);
         return new ResponseEntity<>(recentFrameArticleList, HttpStatus.OK);
     }
+
+    /**
+     * 프레임 저장
+     * @param
+     * userDetail : JWT 토큰으로 인증된 사용자 정보
+     * @param
+     * frameArticleId : 프레임 Article Id
+     * @return
+     * Response : HttpStatus.OK
+     */
+    @PutMapping("/{frameArticleId}")
+    public ResponseEntity<Response> alterPublicStatusFrameArticle(@AuthenticationPrincipal UserDetail userDetail,
+                                                                  @PathVariable Long frameArticleId) {
+        FrameArticleAlterPublicRequestDto frameArticleAlterPublicRequestDto =FrameArticleAlterPublicRequestDto.builder()
+                .frameArticleId(frameArticleId)
+                .member(userDetail.getMember())
+                .build();
+        return new ResponseEntity<>(frameArticleService.alterPublicStatusFrameArticle(frameArticleAlterPublicRequestDto),HttpStatus.OK);
+    }
+
 }

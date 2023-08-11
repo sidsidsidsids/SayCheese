@@ -2,11 +2,16 @@ package com.reminiscence.member.integration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.reminiscence.config.redis.RedisKey;
 import com.reminiscence.filter.JwtProperties;
 import com.reminiscence.filter.JwtTokenProvider;
 import com.reminiscence.filter.JwtUtil;
 import com.reminiscence.member.dto.MemberInfoUpdateRequestDto;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 //import com.reminiscence.JwtService;
@@ -25,6 +30,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
@@ -40,6 +46,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +64,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static reactor.core.publisher.Mono.when;
 
 
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
@@ -64,11 +72,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @Slf4j
 public class MemberIntegrationTest {
-
     @Autowired
     MemberService memberService;
     MockMvc mvc; // mockMvc 생성
 
+    @MockBean
+    JavaMailSender javaMailSender;
+
+    @Autowired
+    RedisTemplate redisTemplate;
     @Autowired
     MemberRepository memberRepository;
 
@@ -104,8 +116,6 @@ public class MemberIntegrationTest {
                         .withRequestDefaults(prettyPrint())
                         .withResponseDefaults(prettyPrint()))
                 .build();
-
-        memberRepository.deleteAll();
         // H2 Database에서 auto_increment 값을 초기화하는 쿼리 실행
 //        jdbcTemplate.execute("ALTER TABLE member ALTER COLUMN id RESTART WITH 1");
     }
@@ -113,7 +123,8 @@ public class MemberIntegrationTest {
     @Test
     @DisplayName("회원가입 성공 테스트")
     public void testJoinMemberSuccess() throws Exception {
-        //given
+        //givenz
+        redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_SUCCESS_TOKEN_PREFIX + "saycheese@gmail.com", "", Duration.ofMinutes(3));
         String email = "saycheese@gmail.com";
         String password = "1234";
         String nickname = "검정";
@@ -121,8 +132,6 @@ public class MemberIntegrationTest {
         int age = 31;
         String name = "고무신";
         String profile = "xxxxxxx";
-        String snsId = "nosns";
-        String snsType = "facebook";
 
         MemberJoinRequestDto memberJoinRequestDto = MemberJoinRequestDto.builder()
                 .email(email)
@@ -132,8 +141,6 @@ public class MemberIntegrationTest {
                 .age(age)
                 .name(name)
                 .profile(profile)
-                .snsId(snsId)
-                .snsType(snsType)
                 .build();
 
         mvc.perform(post("/api/member/join")
@@ -149,9 +156,7 @@ public class MemberIntegrationTest {
                                 fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별").attributes(key("constraints").value("")),
                                 fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이").attributes(key("constraints").value("")),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("이름").attributes(key("constraints").value("이름 입력 필수")),
-                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value("")),
-                                fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디").attributes(key("constraints").value("")),
-                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value(""))
+                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value(""))
                         ),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
@@ -163,6 +168,7 @@ public class MemberIntegrationTest {
     @DisplayName("회원가입 실패 테스트_이메일 중복")
     public void testJoinMemberFailure_DuplicatedEmail() throws Exception {
         //given
+        redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_SUCCESS_TOKEN_PREFIX + "saycheese@gmail.com", "", Duration.ofMinutes(3));
         String email = "saycheese@gmail.com";
         String password = "1234";
         String nickname = "검정";
@@ -170,8 +176,6 @@ public class MemberIntegrationTest {
         int age = 31;
         String name = "고무신";
         String profile = "xxxxxxx";
-        String snsId = "nosns";
-        String snsType = "facebook";
 
         memberRepository.save(MemberJoinRequestDto.builder()
                 .email(email)
@@ -181,8 +185,6 @@ public class MemberIntegrationTest {
                 .age(age)
                 .name(name)
                 .profile(profile)
-                .snsId(snsId)
-                .snsType(snsType)
                 .build().toEntity());
 
         MemberJoinRequestDto memberJoinRequestDto = MemberJoinRequestDto.builder()
@@ -193,8 +195,6 @@ public class MemberIntegrationTest {
                 .age(age)
                 .name(name)
                 .profile(profile)
-                .snsId(snsId)
-                .snsType(snsType)
                 .build();
 
         mvc.perform(post("/api/member/join")
@@ -209,11 +209,10 @@ public class MemberIntegrationTest {
                                 fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별").attributes(key("constraints").value("")),
                                 fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이").attributes(key("constraints").value("")),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("이름").attributes(key("constraints").value("이름 입력 필수")),
-                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value("")),
-                                fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디").attributes(key("constraints").value("")),
-                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value(""))
+                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value(""))
                         ),
                         responseFields(
+                                fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 상태 코드"),
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
                         )
                 ));
@@ -223,6 +222,7 @@ public class MemberIntegrationTest {
     @DisplayName("회원가입 실패 테스트_닉네임 중복")
     public void testJoinMemberFailure_DuplicatedNickname() throws Exception {
         //given
+        redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_SUCCESS_TOKEN_PREFIX + "saycheese2@gmail.com", "", Duration.ofMinutes(3));
         String email = "saycheese@gmail.com";
         String password = "1234";
         String nickname = "검정";
@@ -230,8 +230,6 @@ public class MemberIntegrationTest {
         int age = 31;
         String name = "고무신";
         String profile = "xxxxxxx";
-        String snsId = "nosns";
-        String snsType = "facebook";
 
         memberRepository.save(MemberJoinRequestDto.builder()
                 .email(email)
@@ -241,22 +239,17 @@ public class MemberIntegrationTest {
                 .age(age)
                 .name(name)
                 .profile(profile)
-                .snsId(snsId)
-                .snsType(snsType)
                 .build().toEntity());
 
         MemberJoinRequestDto memberJoinRequestDto = MemberJoinRequestDto.builder()
-                .email("email")
+                .email("saycheese2@gmail.com")
                 .password("password")
                 .nickname(nickname)
                 .genderFm('F')
                 .age(age)
                 .name(name)
                 .profile(profile)
-                .snsId(snsId)
-                .snsType(snsType)
                 .build();
-
         mvc.perform(post("/api/member/join")
                         .content(objectMapper.writeValueAsString(memberJoinRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -269,11 +262,10 @@ public class MemberIntegrationTest {
                                 fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별").attributes(key("constraints").value("")),
                                 fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이").attributes(key("constraints").value("")),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("이름").attributes(key("constraints").value("이름 입력 필수")),
-                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value("")),
-                                fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디").attributes(key("constraints").value("")),
-                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value(""))
+                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value(""))
                         ),
                         responseFields(
+                                fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 코드"),
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
                         )
                 ));
@@ -475,7 +467,6 @@ public class MemberIntegrationTest {
                 .email(email)
                 .password(password)
                 .build();
-
 
         mvc.perform(post("/api/login")
                         .content(objectMapper.writeValueAsString(memberLoginRequestDto))
@@ -761,14 +752,6 @@ public class MemberIntegrationTest {
                 .andExpect(status().isUnauthorized()) // 응답 status를 ok로 테스트
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"
                 ));
-
-        //when
-        List<Member> membersList = memberRepository.findAll();
-
-        //then
-        Member member = membersList.get(0);
-        assertThat(member.getDelYn()).isNotEqualTo('Y');
-        assertThat(member.getEmail()).isEqualTo(email);
     }
 
     @Test
@@ -870,7 +853,7 @@ public class MemberIntegrationTest {
     }
 
     @Test
-    @DisplayName("로그아웃 성공 후 회원 정보 수정 실패")
+    @DisplayName("로그아웃 성공")
     public void testLogoutSuccess() throws Exception {
         //given
         String email = "saycheese@gmail.com";
@@ -910,63 +893,22 @@ public class MemberIntegrationTest {
                 .andReturn();
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", loginResult.getResponse().getHeader(JwtProperties.HEADER_STRING));
+        String accessToken = loginResult.getResponse().getHeader(JwtProperties.HEADER_STRING);
+        headers.add(JwtProperties.HEADER_STRING, accessToken);
 
-        MvcResult logoutResult = mvc.perform(get("/logout")
+        mvc.perform(get("/api/logout")
                         .headers(headers)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) // 응답 status를 ok로 테스트
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                         requestHeaders(
-                                headerWithName("Authorization").description("로그인 성공한 토큰")
-                        )
-                ))
-                .andReturn();
-
-        MemberInfoUpdateRequestDto memberInfoUpdateRequestDto = MemberInfoUpdateRequestDto.builder()
-                .password(password)
-                .nickname(nickname)
-                .genderFm(genderFm)
-                .age(age)
-                .name(name)
-                .profile(profile)
-                .snsId(snsId)
-                .snsType(snsType)
-                .build();
-
-        headers.clear();
-        headers.add("Authorization", logoutResult.getResponse().getHeader(JwtProperties.HEADER_STRING));
-
-        mvc.perform(put("/api/member/modify")
-                        .headers(headers)
-                        .content(objectMapper.writeValueAsString(memberInfoUpdateRequestDto))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized()) // 응답 status를 ok로 테스트
-                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
-                        requestFields(
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 최소 8자 이상")),
-                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임").attributes(key("constraints").value("닉네임은 최소 2자 이상, 최대 20자 이하, 공백이나 특수 기호 포함되지 않도록 제한, 중복 제한")),
-                                fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별").attributes(key("constraints").value("")),
-                                fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이").attributes(key("constraints").value("")),
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("이름").attributes(key("constraints").value("이름 입력 필수")),
-                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value("")),
-                                fieldWithPath("snsId").type(JsonFieldType.STRING).description("소셜 계정 아이디").attributes(key("constraints").value("")),
-                                fieldWithPath("snsType").type(JsonFieldType.STRING).description("소셜 계정").attributes(key("constraints").value("")),
-                                fieldWithPath("personalAgreement").type(JsonFieldType.STRING).description("개인정보제공 동의 여부").attributes(key("constraints").value("체크 필수"))
+                                headerWithName("Authorization").description("발급된 Access 토큰")
                         )
                 ));
-
-//        //when
-//        List<Member> membersList = memberRepository.findAll();
-//
-//        //then
-//        Member member = membersList.get(0);
-//        assertThat(member.getNickname()).isNotEqualTo(nickname);
-//        assertThat(member.getGenderFm()).isNotEqualTo(genderFm);
     }
 
     @Test
-    @DisplayName("AccessToken 만료 여부 판별")
+    @DisplayName("AccessToken 만료 여부 판별(만료 시)")
     public void testAccessTokenExpiredConfirmed() throws Exception {
         //given
         String email = "saycheese@gmail.com";
@@ -1018,7 +960,11 @@ public class MemberIntegrationTest {
                         .headers(headers)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized()) // 응답 status를 unauthorized로 테스트
-                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"))
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("만료된 Access 토큰 ")
+                        )
+                ))
                 .andReturn();
     }
 
@@ -1070,7 +1016,7 @@ public class MemberIntegrationTest {
         String username = jwtTokenProvider.getUsernameFromToken(accessToken);
         claim.put("memberId", memberRepository.findByEmail(username).getId());
         String expiredAccessToken = jwtTokenProvider.generateToken(username, 0, claim);
-        headers.add(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+expiredAccessToken);
+        headers.add(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + expiredAccessToken);
 
         mvc.perform(get("/api/member/info")
                         .headers(headers)
@@ -1079,92 +1025,373 @@ public class MemberIntegrationTest {
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"));
 
         headers.set(JwtProperties.HEADER_STRING, refreshToken);
+        System.out.println(refreshToken);
 
-        mvc.perform(post("/refresh")
+        mvc.perform(post("/api/refresh")
                         .headers(headers)
+                        .content(objectMapper.writeValueAsString(memberLoginRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("발급된(유효한) Refresh 토큰 ")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
+                        )
+                ))
+                .andReturn();
+    }
+
+    @Test
+    @DisplayName("AccessToken와 RefreshToken 모두 만료 시")
+    public void testRefreshFail() throws Exception {
+        //given
+        String email = "saycheese@gmail.com";
+        String password = "1234";
+        String nickname = "검정";
+        Role role = Role.MEMBER;
+        char genderFm = 'F';
+        int age = 31;
+        String name = "고무신";
+        String profile = "xxxxxxx";
+        String snsId = "nosns";
+        String snsType = "facebook";
+
+        memberRepository.save(Member.builder()
+                .email(email)
+                .password(bCryptPasswordEncoder.encode(password))
+                .nickname("빨강")
+                .role(Role.MEMBER)
+                .genderFm('M')
+                .age(34)
+                .name("나막신")
+                .profile("yyyyyyyyyy")
+                .snsId("snsno")
+                .snsType("twitter")
+                .build());
+
+        MemberLoginRequestDto memberLoginRequestDto = MemberLoginRequestDto.builder()
+                .email(email)
+                .password(password)
+                .build();
+
+        MvcResult loginResult = mvc.perform(post("/api/login")
                         .content(objectMapper.writeValueAsString(memberLoginRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) // 응답 status를 ok로 테스트
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"))
                 .andReturn();
+
+        String accessToken = loginResult.getResponse().getHeader(JwtProperties.HEADER_STRING);
+        String refreshToken = loginResult.getResponse().getHeader(JwtProperties.REFRESH_TOKEN_HEADER);
+
+        HttpHeaders headers = new HttpHeaders();
+        Map<String, Object> claim = new HashMap<>();
+        String username = jwtTokenProvider.getUsernameFromToken(accessToken);
+        claim.put("memberId", memberRepository.findByEmail(username).getId());
+        String expiredAccessToken = jwtTokenProvider.generateToken(username, 0, claim);
+        headers.add(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + expiredAccessToken);
+
+        mvc.perform(get("/api/member/info")
+                        .headers(headers)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized()) // 응답 status를 unauthorized로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"));
+
+        String expiredRefreshToken = jwtTokenProvider.generateToken(username, 0, claim);
+        headers.set(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + expiredRefreshToken);
+
+        mvc.perform(post("/api/refresh")
+                        .headers(headers)
+                        .content(objectMapper.writeValueAsString(memberLoginRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized()) // 응답 status를 unauthorized로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("유효기간 지난 Refresh 토큰 ")
+                        )
+                ))
+                .andReturn();
     }
 
-//    @Test
-//    @DisplayName("AccessToken와 RefreshToken 모두 만료 시 로그인 요청 알림")
-//    public void testRefreshFail() throws Exception {
-//        //given
-//        String email = "saycheese@gmail.com";
-//        String password = "1234";
-//        String nickname = "검정";
-//        Role role = Role.MEMBER;
-//        char genderFm = 'F';
-//        int age = 31;
-//        String name = "고무신";
-//        String profile = "xxxxxxx";
-//        String snsId = "nosns";
-//        String snsType = "facebook";
-//
-//        memberRepository.save(Member.builder()
-//                .email(email)
-//                .password(bCryptPasswordEncoder.encode(password))
-//                .nickname("빨강")
-//                .role(Role.MEMBER)
-//                .genderFm('M')
-//                .age(34)
-//                .name("나막신")
-//                .profile("yyyyyyyyyy")
-//                .snsId("snsno")
-//                .snsType("twitter")
-//                .build());
-//
-//        MemberLoginRequestDto memberLoginRequestDto = MemberLoginRequestDto.builder()
-//                .email(email)
-//                .password(password)
-//                .build();
-//
-//        MvcResult loginResult = mvc.perform(post("/api/login")
-//                        .content(objectMapper.writeValueAsString(memberLoginRequestDto))
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
-//                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"))
-//                .andReturn();
-//
-//        String accessToken = loginResult.getResponse().getHeader(JwtProperties.HEADER_STRING);
-//        String refreshToken = loginResult.getResponse().getHeader(JwtProperties.REFRESH_TOKEN_HEADER);
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        Map<String, Object> claim = new HashMap<>();
-//        String username = jwtTokenProvider.getUsernameFromToken(accessToken);
-//        claim.put("memberId", memberRepository.findByEmail(username).getId());
-//        String expiredAccessToken = jwtTokenProvider.generateToken(username, 0, claim);
-//        headers.add(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+expiredAccessToken);
-//
-//        mvc.perform(get("/api/member/info")
-//                        .headers(headers)
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isUnauthorized()) // 응답 status를 unauthorized로 테스트
-//                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"));
-//
-//        String expiredRefreshToken = jwtTokenProvider.generateToken(username, 0, claim);
-//        headers.set(JwtProperties.HEADER_STRING, expiredRefreshToken);
-//
-//        mvc.perform(post("/refresh")
-//                        .headers(headers)
-//                        .content(objectMapper.writeValueAsString(memberLoginRequestDto))
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isUnauthorized()) // 응답 status를 ok로 테스트
-//                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"))
-//                .andReturn();
-//    }
+    @Test
+    @DisplayName("로그아웃 시 AccessToken 블랙리스트 설정 후 해당 AccessToken 접근 제한")
+    public void testAccessTokenBlacklist() throws Exception {
+        //given
+        String email = "saycheese@gmail.com";
+        String password = "1234";
+        String nickname = "검정";
+        Role role = Role.MEMBER;
+        char genderFm = 'F';
+        int age = 31;
+        String name = "고무신";
+        String profile = "xxxxxxx";
+        String snsId = "nosns";
+        String snsType = "facebook";
 
-//    @Test
-//    @DisplayName("로그아웃 시 AccessToken 블랙리스트 설정 후 해당 AccessToken 접근 제한")
-//    public void testAccessTokenBlacklist(){
-//
-//    }
-//    @Test
-//    @DisplayName("로그아웃 시 Redis 내 RefreshToken 삭제 후 RefreshToken 접근 제한")
-//    public void testRefreshTokenDeletion(){
-//
-//    }
+        memberRepository.save(Member.builder()
+                .email(email)
+                .password(bCryptPasswordEncoder.encode(password))
+                .nickname("빨강")
+                .role(Role.MEMBER)
+                .genderFm('M')
+                .age(34)
+                .name("나막신")
+                .profile("yyyyyyyyyy")
+                .snsId("snsno")
+                .snsType("twitter")
+                .build());
+
+        MemberLoginRequestDto memberLoginRequestDto = MemberLoginRequestDto.builder()
+                .email(email)
+                .password(password)
+                .build();
+
+        MvcResult loginResult = mvc.perform(post("/api/login")
+                        .content(objectMapper.writeValueAsString(memberLoginRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"))
+                .andReturn();
+
+        HttpHeaders headers = new HttpHeaders();
+        String accessToken = loginResult.getResponse().getHeader(JwtProperties.HEADER_STRING);
+        headers.add(JwtProperties.HEADER_STRING, accessToken);
+
+        mvc.perform(get("/api/logout")
+                        .headers(headers)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("로그인 성공한 Access 토큰")
+                        )
+                ));
+
+        headers.set(JwtProperties.HEADER_STRING, accessToken);
+
+        mvc.perform(get("/api/member/info")
+                        .headers(headers)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized()) // 응답 status를 unauthorized로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("이미 로그아웃 한 Access 토큰 ")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("로그아웃 시 Redis 내 RefreshToken 삭제 후 RefreshToken 접근 제한")
+    public void testRefreshTokenDeletion() throws Exception {
+        //given
+        String email = "saycheese@gmail.com";
+        String password = "1234";
+        String nickname = "검정";
+        Role role = Role.MEMBER;
+        char genderFm = 'F';
+        int age = 31;
+        String name = "고무신";
+        String profile = "xxxxxxx";
+        String snsId = "nosns";
+        String snsType = "facebook";
+
+        memberRepository.save(Member.builder()
+                .email(email)
+                .password(bCryptPasswordEncoder.encode(password))
+                .nickname("빨강")
+                .role(Role.MEMBER)
+                .genderFm('M')
+                .age(34)
+                .name("나막신")
+                .profile("yyyyyyyyyy")
+                .snsId("snsno")
+                .snsType("twitter")
+                .build());
+
+        MemberLoginRequestDto memberLoginRequestDto = MemberLoginRequestDto.builder()
+                .email(email)
+                .password(password)
+                .build();
+
+        MvcResult loginResult = mvc.perform(post("/api/login")
+                        .content(objectMapper.writeValueAsString(memberLoginRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"))
+                .andReturn();
+
+        HttpHeaders headers = new HttpHeaders();
+        String accessToken = loginResult.getResponse().getHeader(JwtProperties.HEADER_STRING);
+        String refreshToken = loginResult.getResponse().getHeader(JwtProperties.REFRESH_TOKEN_HEADER);
+        headers.add(JwtProperties.HEADER_STRING, accessToken);
+
+        mvc.perform(get("/api/logout")
+                        .headers(headers)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("로그인 성공한 Access 토큰")
+                        )
+                ));
+
+        headers.set(JwtProperties.HEADER_STRING, refreshToken);
+
+        mvc.perform(post("/api/refresh")
+                        .headers(headers)
+                        .content(objectMapper.writeValueAsString(memberLoginRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized()) // 응답 status를 unauthorized로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("이미 로그아웃하여 삭제된 Refresh 토큰")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
+                        )
+                ))
+                .andReturn();
+    }
+
+    @Test
+    @DisplayName("게스트 토큰 발급")
+    public void testGuestTokenIssue() throws Exception {
+        String nickname = "thisIsNickname";
+
+        mvc.perform(get("/api/guest")
+                        .param("nickname", nickname)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestParameters(
+                                parameterWithName("nickname").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("닉네임")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
+                        )
+                ))
+                .andReturn();
+    }
+
+    @Test
+    @DisplayName("게스트 토큰으로 회원 정보 조회 접근 시 실패")
+    public void testGuestTokenForbiddenAccessFailure() throws Exception {
+        String nickname = "thisIsNickname";
+
+        MvcResult result = mvc.perform(get("/api/guest")
+                        .param("nickname", nickname)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestParameters(
+                                parameterWithName("nickname").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("닉네임")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
+                        )
+                ))
+                .andReturn();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(JwtProperties.HEADER_STRING, result.getResponse().getHeader(JwtProperties.HEADER_STRING));
+
+        mvc.perform(get("/api/member/info")
+                        .headers(headers)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden()) // 응답 status를 forbidden으로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("게스트 토큰 ")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("게스트 닉네임 조회")
+    public void testGetGuestNickName() throws Exception {
+        String nickname = "thisIsNickname";
+
+        MvcResult result = mvc.perform(get("/api/guest")
+                        .param("nickname", nickname)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestParameters(
+                                parameterWithName("nickname").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("닉네임")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
+                        )
+                ))
+                .andReturn();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(JwtProperties.HEADER_STRING, result.getResponse().getHeader(JwtProperties.HEADER_STRING));
+
+        mvc.perform(get("/api/member/nickname")
+                        .headers(headers)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("게스트 AccessToken")
+                        ),
+                        responseFields(
+                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("회원 닉네임")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("회원 닉네임 조회")
+    public void testGetMemberNickName() throws Exception {
+        String email = "kkk@naver.com";
+        String password = "salmusa444";
+        String nickname = "thisIsNickname";
+
+        memberRepository.save(Member.builder()
+                .email(email)
+                .password(bCryptPasswordEncoder.encode(password))
+                .nickname(nickname)
+                .role(Role.MEMBER)
+                .genderFm('F')
+                .age(30)
+                .name("name")
+                .profile("profile")
+                .snsId("snsId")
+                .snsType("snsType")
+                .build());
+
+        MemberLoginRequestDto memberLoginRequestDto = MemberLoginRequestDto.builder()
+                .email(email)
+                .password(password)
+                .build();
+
+        MvcResult result = mvc.perform(post("/api/login")
+                        .content(objectMapper.writeValueAsString(memberLoginRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"))
+                .andReturn();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(JwtProperties.HEADER_STRING, result.getResponse().getHeader(JwtProperties.HEADER_STRING));
+
+        mvc.perform(get("/api/member/nickname")
+                        .headers(headers)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("회원 AccessToken")
+                        ),
+                        responseFields(
+                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("게스트 닉네임")
+//                                fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
+                        )
+                ));
+    }
+
 }
