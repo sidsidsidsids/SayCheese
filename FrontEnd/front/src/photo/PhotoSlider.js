@@ -50,6 +50,7 @@ function PhotoSlider({ photoList }) {
             <div>
               <PhotoCard
                 key={item.articleId}
+                articleId={item.articleId}
                 name={item.name}
                 imageLink={item.imageLink}
                 loverCnt={item.loverCnt}

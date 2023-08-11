@@ -30,6 +30,7 @@ import { Provider } from "react-redux"; // React 앱에 Redux 스토어를 연�
 import store from "./redux/store";
 import axios from "axios";
 import MyInfoModify from "./user/MyInfoModify";
+import MyPagePhoto from "./user/MyPagePhoto";
 
 const router = createBrowserRouter([
   {
@@ -84,6 +85,10 @@ const router = createBrowserRouter([
           {
             path: "mypage/:email",
             element: <MyPage />,
+          },
+          {
+            path: "mypage/myphoto/:email",
+            element: <MyPagePhoto />,
           },
           {
             path: "modify/:email",

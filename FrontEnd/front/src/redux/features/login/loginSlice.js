@@ -7,6 +7,17 @@ const initialState = {
   userInfo: {},
 };
 
+//임시로 사용할 함수
+export const logintemporary = createAsyncThunk(
+  "login/logintemporary",
+  async (email) => {
+    const userInfo = {
+      email: email,
+    };
+    return userInfo;
+  }
+);
+
 // 비동기 액션 생성자
 export const getUserInfo = createAsyncThunk("login/getUserInfo", async () => {
   try {
@@ -22,10 +33,55 @@ export const getUserInfo = createAsyncThunk("login/getUserInfo", async () => {
       return response.data;
     }
   } catch (error) {
+    // status가 401인 경우 액세스 토큰 재발급
+    if (error.response && error.response.status === 401) {
+      try {
+        const newAccessToken = refreshToken();
+
+        const response = await axios.get("/api/member/info", {
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "69420",
+            Authorization: `${newAccessToken}`,
+          },
+        });
+        return response.data;
+      } catch (refreshError) {
+        console.log(refreshError);
+        throw refreshError;
+      }
+    }
     console.log(error);
     throw error;
   }
 });
+
+// 리프레시토큰으로 액세스 토큰 재발급
+export const refreshToken = createAsyncThunk(
+  "login/refreshToken",
+  async (_, thunkAPI) => {
+    try {
+      const localRefreshToken = localStorage.getItem("refreshToken");
+      if (refreshToken) {
+        const response = await axios.post("/api/refresh", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${localRefreshToken}`,
+          },
+        });
+        const accessToken = response.headers["Authorization"];
+
+        axios.defaults.headers.common["Authorization"] = `${accessToken}`;
+
+        localStorage.setItem("accessToken", accessToken);
+
+        thunkAPI.dispatch(getUserInfo());
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+);
 
 // 액션 생성 함수
 const loginSlice = createSlice({
@@ -43,9 +99,17 @@ const loginSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(getUserInfo.fulfilled, (state, action) => {
-      state.userInfo = action.payload;
-    });
+    builder
+      .addCase(getUserInfo.fulfilled, (state, action) => {
+        state.userInfo = action.payload;
+      })
+      .addCase(refreshToken.fulfilled, (state, action) => {
+        state.isLogin = true;
+      })
+      // 나중에 삭제
+      .addCase(logintemporary.fulfilled, (state, action) => {
+        state.userInfo = action.payload;
+      });
   },
 });
 
