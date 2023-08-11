@@ -1,8 +1,11 @@
 package com.reminiscence.config.redis;
 
-import org.springframework.stereotype.Service;
+public interface TokenRevocationService {
 
-@Service
-public class TokenRevocationService {
+    // 액세스 토큰 무효화
+    void revokeAccessToken(String userId, String accessToken);
+
+    String getRevokedToken(String userId);
+
 
 }

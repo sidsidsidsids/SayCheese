@@ -12,16 +12,16 @@ public class MemberInfoResponseDto {
 
     private String email;
     private String nickname;
-    private char genderFm;
-    private int age;
+    private Character genderFm;
+    private Integer age;
     private String name;
     private String profile;
     private String snsId;
     private String snsType;
-    private char personalAgreement;
+    private Character personalAgreement;
 
     @Builder
-    public MemberInfoResponseDto(String email, String nickname, char genderFm, int age, String name, String profile, String snsId, String snsType, char personalAgreement) {
+    public MemberInfoResponseDto(String email, String nickname, Character genderFm, Integer age, String name, String profile, String snsId, String snsType, Character personalAgreement) {
         this.email = email;
         this.nickname = nickname;
         this.genderFm = genderFm;
