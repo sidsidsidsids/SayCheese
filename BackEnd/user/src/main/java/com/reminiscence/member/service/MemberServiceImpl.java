@@ -189,27 +189,27 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void saveProfile(MemberDetail memberDetail, MemberProfileSaveRequestDto requestDto) {
-        StringBuilder imageLink = new StringBuilder();
-        imageLink.append("https://")
-                .append(BUCKET_NAME)
-                .append(".s3.")
-                .append(BUCKET_REGION)
-                .append("./amazonaws.com/")
-                .append(requestDto.getFileType().getValue())
-                .append("/")
-                .append(requestDto.getImageName());
-        String imageType = getFileType(requestDto.getImageName());
-        String name = getFileName(requestDto.getImageName());
-        Image image = Image.builder()
-                .link(imageLink.toString())
-                .type(imageType)
-                .name(name)
-                .build();
-        imageRepository.save(image);
-        for(int i=0;i<4;i++){
-            imageTagRepository.save(new ImageTag(image,requestDto.getTags().get(i)));
-        }
-        WebClient build = WebClientBuild();
+//        StringBuilder imageLink = new StringBuilder();
+//        imageLink.append("https://")
+//                .append(BUCKET_NAME)
+//                .append(".s3.")
+//                .append(BUCKET_REGION)
+//                .append("./amazonaws.com/")
+//                .append(requestDto.getFileType().getValue())
+//                .append("/")
+//                .append(requestDto.getImageName());
+//        String imageType = getFileType(requestDto.getImageName());
+//        String name = getFileName(requestDto.getImageName());
+//        Image image = Image.builder()
+//                .link(imageLink.toString())
+//                .type(imageType)
+//                .name(name)
+//                .build();
+//        imageRepository.save(image);
+//        for(int i=0;i<4;i++){
+//            imageTagRepository.save(new ImageTag(image,requestDto.getTags().get(i)));
+//        }
+//        WebClient build = WebClientBuild();
     }
 
     private String getFileType(String fileName){
@@ -219,11 +219,11 @@ public class MemberServiceImpl implements MemberService {
         return fileName.substring(0, fileName.lastIndexOf("."));
     }
 
-    public WebClient WebClientBuild(){
-        return WebClient.builder()
-                .baseUrl(BASE_URL)
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                .build();
-    }
+//    public WebClient WebClientBuild(){
+//        return WebClient.builder()
+//                .baseUrl(BASE_URL)
+//                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+//                .build();
+//    }
 
 }
