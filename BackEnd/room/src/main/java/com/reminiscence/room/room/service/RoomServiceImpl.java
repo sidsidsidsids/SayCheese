@@ -70,6 +70,7 @@ public class RoomServiceImpl implements RoomService{
         }
     }
 
+    @Transactional
     @Override
     public void updateRoomStart(String roomCode) {
         Optional<Room> room = roomRepository.findByRoomCode(roomCode);
@@ -79,12 +80,14 @@ public class RoomServiceImpl implements RoomService{
         room.get().updateRoomStart();
     }
 
+    @Transactional
     @Override
     public void deleteRoom(String roomCode) {
         Optional<Room> room = roomRepository.findByRoomCode(roomCode);
-        room.orElseThrow(() -> new RoomException(RoomExceptionMessage.NOT_FOUND_ROOM));
-        participantRepository.deleteByRoomId(room.get().getId());
-        roomRepository.deleteByRoomCode(roomCode);
+        room.orElseThrow(
+                () -> new RoomException(RoomExceptionMessage.NOT_FOUND_ROOM));
+        participantRepository.deleteAllByRoomId(room.get().getId());
+        roomRepository.delete(room.get());
     }
 
     private void checkSession(String roomCode, WebClient build) {

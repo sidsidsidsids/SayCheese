@@ -130,8 +130,8 @@ public class RoomJpaTest {
         assertNotNull(room);
 
         // when
-        participantRepository.deleteByRoomId(room.getId());
-        roomRepository.deleteByRoomCode(roomCode);
+        participantRepository.deleteAllByRoomId(room.getId());
+        roomRepository.delete(room);
         Room findRoom = roomRepository.findByRoomCode(roomCode).orElse(null);
         // then
         assertNull(findRoom);

@@ -7,8 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface RoomRepository extends JpaRepository<Room, Long>, RoomRepositoryCustom {
-
-    public void deleteByRoomCode(String roomCode);
+public interface RoomRepository extends JpaRepository<Room, Long> {
     public Optional<Room> findByRoomCode(String roomCode);
 }

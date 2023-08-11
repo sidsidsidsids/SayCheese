@@ -72,10 +72,10 @@ public class RoomController {
         return new ResponseEntity(Response.of(RoomMessage.ROOM_START_SUCCESS), HttpStatus.OK);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{roomCode}")
     public ResponseEntity<Response> deleteRoom(
-            @RequestBody @Valid DeleteRoomRequestDto requestDto) {
-        roomService.deleteRoom(requestDto.getRoomCode());
+            @PathVariable("roomCode") String roomCode) {
+        roomService.deleteRoom(roomCode);
         return new ResponseEntity(Response.of(RoomMessage.ROOM_DELETE_SUCCESS), HttpStatus.OK);
     }
 }

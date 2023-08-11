@@ -319,21 +319,19 @@ public class RoomIntegrationTest {
     @Test
     @DisplayName("방 삭제 테스트(정상)")
     public void deleteRoomSuccessTest() throws Exception{
-        DummyRoomDeleteRequestDto.Builder builder = new DummyRoomDeleteRequestDto.Builder();
-        DummyRoomDeleteRequestDto requestDto = builder.roomCode("sessionA").build();
+        String roomCode = "sessionA";
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+guestToken);
-        mvc.perform(delete("/api/room")
+        mvc.perform(delete("/api/room/{roomCode}", roomCode)
                 .headers(headers)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestDto)))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                         requestHeaders(
                                 headerWithName("Authorization").description("로그인 성공한 토큰 ")
                         ),
-                        requestFields(
-                                fieldWithPath("roomCode").description("방 코드").attributes(key("constraints").value("Not Null"))
-                        )));
+                        pathParameters(
+                                parameterWithName("roomCode").description("방 코드"))
+                        ));
     }
 }
