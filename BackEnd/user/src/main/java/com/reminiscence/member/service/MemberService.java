@@ -23,4 +23,6 @@ public interface MemberService {
     Member joinGuestMember(String nickname) throws Exception;
 
     MemberNicknameResponseDto getMemberNickName(MemberDetail memberDetail);
+
+    void saveProfile(MemberDetail memberDetail, MemberProfileSaveRequestDto requestDto);
 }
