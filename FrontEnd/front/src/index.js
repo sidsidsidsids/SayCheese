@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { PersistGate } from "redux-persist/integration/react";
+import { persistStore } from "redux-persist";
 
 // 라우터
 import "./index.css";
@@ -31,6 +33,7 @@ import store from "./redux/store";
 import axios from "axios";
 import MyInfoModify from "./user/MyInfoModify";
 import MyPagePhoto from "./user/MyPagePhoto";
+import MyPageFrame from "./user/MyPageFrame";
 
 const router = createBrowserRouter([
   {
@@ -91,6 +94,10 @@ const router = createBrowserRouter([
             element: <MyPagePhoto />,
           },
           {
+            path: "mypage/myframe/:email",
+            element: <MyPageFrame />,
+          },
+          {
             path: "modify/:email",
             element: <MyInfoModify />,
           },
@@ -115,6 +122,8 @@ const accessToken = localStorage.getItem("accessToken");
 if (accessToken) {
   axios.defaults.headers.common["Authorization"] = accessToken;
 }
+
+export let persistor = persistStore(store);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

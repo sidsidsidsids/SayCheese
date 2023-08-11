@@ -104,6 +104,7 @@ function SignUp() {
           "사용 가능한 이메일입니다.\n해당 이메일로 인증번호를 전송했습니다.\n인증번호 입력을 부탁합니다."
         );
       } catch (secondError) {
+        console.log(secondError);
         setEmailMessage(
           "오류로 인해 인증번호 전송이 불가능합니다.\n다시 시도해주시길 바랍니다."
         );
