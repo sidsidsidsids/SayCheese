@@ -1,17 +1,13 @@
 package com.reminiscence.room.room;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reminiscence.room.domain.Member;
 import com.reminiscence.room.domain.Mode;
+import com.reminiscence.room.domain.Specification;
 import com.reminiscence.room.filter.JwtUtil;
 import com.reminiscence.room.member.repository.MemberRepository;
-import com.reminiscence.room.participant.dto.DummyUpdateConnectionYnParticipantRequestDto;
 import com.reminiscence.room.room.dto.DummyRoomCheckRequestDto;
 import com.reminiscence.room.room.dto.DummyRoomCreateRequestDto;
-import com.reminiscence.room.room.dto.DummyRoomDeleteRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +28,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -210,7 +205,7 @@ public class RoomIntegrationTest {
                                 fieldWithPath("password").description("방 비밀번호").attributes(key("constraints").value("Not Null"))
                         )
                         ,responseFields(
-                                fieldWithPath("existParticipantYn").description("방 비밀번호가 일치하지 않습니다.")
+                                fieldWithPath("existParticipantYn").description("기존 참여자 여부, Y : 기존 참여자, N : 새로운 참가자.")
                         )
                 ));
 
@@ -271,12 +266,12 @@ public class RoomIntegrationTest {
     @Test
     @DisplayName("방 생성 테스트(정상)")
     public void createRoomSuccessTest() throws Exception {
-        DummyRoomCreateRequestDto.Builder builder = new DummyRoomCreateRequestDto.Builder();
-        DummyRoomCreateRequestDto requestDto = builder.password("1234")
+        DummyRoomCreateRequestDto requestDto =
+                DummyRoomCreateRequestDto.builder().password("1234")
                 .roomCode("tussle")
                 .mode(Mode.GAME)
                 .maxCount(4)
-                .specification("grid")
+                .specification(Specification.HORIZONTAL)
                 .build();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+guestToken);
