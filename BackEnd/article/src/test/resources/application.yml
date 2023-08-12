@@ -18,11 +18,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  cloud:
-    config:
-      enabled: false
-  data:
-    base-url: https://localhost:3303;
 jwt:
   secret: secret-key
   expiration: 86400000
