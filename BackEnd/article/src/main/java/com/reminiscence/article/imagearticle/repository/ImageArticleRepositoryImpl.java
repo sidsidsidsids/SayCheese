@@ -49,6 +49,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
                 .from(QImageArticle.imageArticle)
                 .join(QImageArticle.imageArticle.member, QMember.member)
                 .join(QImageArticle.imageArticle.image, QImage.image)
+                .where(memberDelNEq())
                 .orderBy(getOrderSpecifiers(page))
                 .limit(page.getPageSize())
                 .fetch());
@@ -69,6 +70,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
                 .from(QImageArticle.imageArticle)
                 .join(QImageArticle.imageArticle.member, QMember.member)
                 .join(QImageArticle.imageArticle.image, QImage.image)
+                .where(memberDelNEq())
                 .orderBy(getOrderSpecifiers(page))
                 .limit(page.getPageSize())
                 .fetch());
@@ -96,7 +98,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
                 .join(QImageArticle.imageArticle.image, QImage.image)
                 .join(QImage.image.imageTags, QImageTag.imageTag)
                 .join(QImageTag.imageTag.tag, QTag.tag)
-                .where(tagIdEq(tagId))
+                .where(tagIdEq(tagId), memberDelNEq())
                 .orderBy(getOrderSpecifiers(page))
                 .limit(page.getPageSize())
                 .fetch());
@@ -119,7 +121,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
                 .join(QImageArticle.imageArticle.image, QImage.image)
                 .join(QImage.image.imageTags, QImageTag.imageTag)
                 .join(QImageTag.imageTag.tag, QTag.tag)
-                .where(tagIdEq(tagId))
+                .where(tagIdEq(tagId),memberDelNEq())
                 .orderBy(getOrderSpecifiers(page))
                 .limit(page.getPageSize())
                 .fetch());
@@ -228,7 +230,9 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
     private BooleanExpression memberIdEq(Long memberId) {
         return QMember.member.id.eq(memberId);
     }
-
+    private BooleanExpression memberDelNEq() {
+        return QMember.member.delYn.eq('N');
+    }
     private BooleanExpression imageArticleIdEq(Long imageArticleId) {
         return QImageArticle.imageArticle.id.eq(imageArticleId);
     }
