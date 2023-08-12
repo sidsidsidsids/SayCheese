@@ -1,6 +1,7 @@
 package com.reminiscence.article.framearticle.repository;
 
 import com.reminiscence.article.domain.FrameArticle;
+import com.reminiscence.article.framearticle.dto.FrameArticleReadRequestDto;
 import com.reminiscence.article.framearticle.vo.FrameArticleVo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,6 @@ public interface FrameArticleRepositoryCustom {
     Page<FrameArticleVo> findNonMemberFrameArticles(Pageable page, String authorSubject, String frameSpec);
 
     Page<FrameArticleVo> findMyFrameArticles(Pageable pageable, Long memberId, String searchWord, String frameSpec);
-//    Optional<List<FrameArticle>> findFrameArticleAllBySearchWord(Pageable pageable, String authorSubject);
 
+    FrameArticleVo findMemberFrameArticle(FrameArticleReadRequestDto frameArticleReadRequestDto);
 }

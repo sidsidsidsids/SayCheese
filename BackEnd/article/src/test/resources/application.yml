@@ -1,8 +1,8 @@
 server:
 port: 8080
 spring:
-  config:
-    import: "optional:configserver:"
+#  config:
+#    import: "optional:configserver:"
   sql:
     init:
       mode: always

@@ -1,18 +1,18 @@
-package com.reminiscence.article.framearticle.vo;
+package com.reminiscence.article.framearticle.dto;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.reminiscence.article.domain.FrameSpecification;
-import lombok.Builder;
+import com.reminiscence.article.framearticle.vo.FrameArticleVo;
+import com.reminiscence.article.message.Response;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
-@ToString
-public class FrameArticleVo implements Serializable {
-
+@NoArgsConstructor
+@AllArgsConstructor
+public class FrameArticleResponseDto {
     private Long articleId;
     private String subject;
     private String frameLink;
@@ -24,7 +24,7 @@ public class FrameArticleVo implements Serializable {
     private Long loverYn;
     private Boolean isMine;
 
-    public FrameArticleVo(FrameArticleVo frameArticleVo) {
+    public FrameArticleResponseDto(FrameArticleVo frameArticleVo) {
         this.articleId = frameArticleVo.getArticleId();
         this.subject = frameArticleVo.getSubject();
         this.frameLink = frameArticleVo.getFrameLink();
@@ -37,7 +37,7 @@ public class FrameArticleVo implements Serializable {
         this.isMine = frameArticleVo.getIsMine();
     }
 
-    public FrameArticleVo(Long articleId, String subject, String frameLink, Long loverCnt, LocalDateTime createdDate, String author, Character openYn, FrameSpecification frameSpecification, Long loverYn, Boolean isMine) {
+    public FrameArticleResponseDto(Long articleId, String subject, String frameLink, Long loverCnt, LocalDateTime createdDate, String author, Character openYn, FrameSpecification frameSpecification, Long loverYn, Boolean isMine) {
         boolean isPublic = openYn == 'Y';
         this.articleId = articleId;
         this.subject = subject;
@@ -55,7 +55,7 @@ public class FrameArticleVo implements Serializable {
         this.isMine = isMine;
     }
 
-    public FrameArticleVo(Long articleId, String subject, String frameLink, Long loverCnt, LocalDateTime createdDate, String author, Character openYn, FrameSpecification frameSpecification) {
+    public FrameArticleResponseDto(Long articleId, String subject, String frameLink, Long loverCnt, LocalDateTime createdDate, String author, Character openYn, FrameSpecification frameSpecification) {
         boolean isPublic = openYn == 'Y';
         this.articleId = articleId;
         this.subject = subject;

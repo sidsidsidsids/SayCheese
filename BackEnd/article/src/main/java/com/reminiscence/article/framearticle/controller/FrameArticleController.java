@@ -143,11 +143,33 @@ public class FrameArticleController {
     @PutMapping("/{frameArticleId}")
     public ResponseEntity<Response> alterPublicStatusFrameArticle(@AuthenticationPrincipal UserDetail userDetail,
                                                                   @PathVariable Long frameArticleId) {
+
         FrameArticleAlterPublicRequestDto frameArticleAlterPublicRequestDto =FrameArticleAlterPublicRequestDto.builder()
                 .frameArticleId(frameArticleId)
                 .member(userDetail.getMember())
                 .build();
         return new ResponseEntity<>(frameArticleService.alterPublicStatusFrameArticle(frameArticleAlterPublicRequestDto),HttpStatus.OK);
+    }
+
+    /**
+     * 프레임 저장
+     * @param
+     * userDetail : JWT 토큰으로 인증된 사용자 정보
+     * @param
+     * frameArticleId : 프레임 Article Id
+     * @return
+     * Response : HttpStatus.OK
+     */
+    @GetMapping("/{frameArticleId}")
+    public ResponseEntity readFrameArticle(@AuthenticationPrincipal UserDetail userDetail,
+                                                                  @PathVariable Long frameArticleId) {
+
+        FrameArticleReadRequestDto frameArticleReadRequestDto =FrameArticleReadRequestDto.builder()
+                .frameArticleId(frameArticleId)
+                .userDetail(userDetail)
+                .build();
+
+        return new ResponseEntity<>(frameArticleService.readFrameArticle(frameArticleReadRequestDto),HttpStatus.OK);
     }
 
 }

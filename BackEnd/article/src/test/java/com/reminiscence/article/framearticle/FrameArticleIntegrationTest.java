@@ -250,9 +250,11 @@ public class FrameArticleIntegrationTest {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + memberToken);
         String searchWord = "se";
+        String frameSpec = "HORIZONTAL";
         mvc.perform(get("/api/article/frame/list/hot")
                         .headers(headers)
                         .param("searchWord", searchWord)
+                        .param("frameSpec", frameSpec)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
@@ -260,7 +262,8 @@ public class FrameArticleIntegrationTest {
                                 headerWithName("Authorization").description("로그인 성공한 토큰 ")
                         ),
                         requestParameters(
-                                parameterWithName("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
+                                parameterWithName("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어"),
+                                parameterWithName("frameSpec").attributes(key("constraints").value("빈 값도 가능(Optional), 빈 값의 경우 전체 검색, VERTICAL 또는 HORITZONTAL만 설정 가능")).description("프레임 규격")
                         ),
                         responseFields(
                                 fieldWithPath("pageNavigator").type(JsonFieldType.OBJECT).description("페이지 정보"),
@@ -288,13 +291,16 @@ public class FrameArticleIntegrationTest {
     @DisplayName("좋아요순 프레임 게시글 리스트 조회(비회원)")
     public void NonMemberListHotFrameArticleSuccessTest() throws Exception{
         String searchWord = "se";
+        String frameSpec = "";
         mvc.perform(get("/api/article/frame/list/hot")
                         .param("searchWord", searchWord)
+                        .param("frameSpec", frameSpec)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                         requestParameters(
-                                parameterWithName("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
+                                parameterWithName("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어"),
+                                parameterWithName("frameSpec").attributes(key("constraints").value("빈 값도 가능(Optional), 빈 값의 경우 전체 검색, VERTICAL 또는 HORITZONTAL만 설정 가능")).description("프레임 규격")
                         ),
                         responseFields(
                                 fieldWithPath("pageNavigator").type(JsonFieldType.OBJECT).description("페이지 정보"),
@@ -323,9 +329,11 @@ public class FrameArticleIntegrationTest {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + memberToken);
         String searchWord = "se";
+        String frameSpec = "VERTICAL";
         mvc.perform(get("/api/article/frame/list/random")
                         .headers(headers)
                         .param("searchWord", searchWord)
+                        .param("frameSpec", frameSpec)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
@@ -333,7 +341,8 @@ public class FrameArticleIntegrationTest {
                                 headerWithName("Authorization").description("로그인 성공한 토큰")
                         ),
                         requestParameters(
-                                parameterWithName("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
+                                parameterWithName("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어"),
+                                parameterWithName("frameSpec").attributes(key("constraints").value("빈 값도 가능(Optional), 빈 값의 경우 전체 검색, VERTICAL 또는 HORITZONTAL만 설정 가능")).description("프레임 규격")
                         ),
                         responseFields(
                                 fieldWithPath("pageNavigator").type(JsonFieldType.OBJECT).description("페이지 정보"),
@@ -360,16 +369,17 @@ public class FrameArticleIntegrationTest {
     @DisplayName("랜덤 프레임 게시글 리스트 조회(비회원)")
     public void NonMemberListRandomFrameArticleSuccessTest() throws Exception{
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + memberToken);
         String searchWord = "se";
+        String frameSpec = "";
         mvc.perform(get("/api/article/frame/list/random")
-                        .headers(headers)
                         .param("searchWord", searchWord)
+                        .param("frameSpec", frameSpec)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                         requestParameters(
-                                parameterWithName("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
+                                parameterWithName("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어"),
+                                parameterWithName("frameSpec").attributes(key("constraints").value("빈 값도 가능(Optional), 빈 값의 경우 전체 검색, VERTICAL 또는 HORITZONTAL만 설정 가능")).description("프레임 규격")
                         ),
                         responseFields(
                                 fieldWithPath("pageNavigator").type(JsonFieldType.OBJECT).description("페이지 정보"),
@@ -398,9 +408,11 @@ public class FrameArticleIntegrationTest {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + memberToken);
         String searchWord = "se";
+        String frameSpec = "";
         mvc.perform(get("/api/article/frame/list/recent")
                         .headers(headers)
                         .param("searchWord", searchWord)
+                        .param("frameSpec", frameSpec)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
@@ -408,7 +420,8 @@ public class FrameArticleIntegrationTest {
                                 headerWithName("Authorization").description("로그인 성공한 토큰")
                         ),
                         requestParameters(
-                                parameterWithName("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
+                                parameterWithName("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어"),
+                                parameterWithName("frameSpec").attributes(key("constraints").value("빈 값도 가능(Optional), 빈 값의 경우 전체 검색, VERTICAL 또는 HORITZONTAL만 설정 가능")).description("프레임 규격")
                         ),
                         responseFields(
                                 fieldWithPath("pageNavigator").type(JsonFieldType.OBJECT).description("페이지 정보"),
@@ -436,16 +449,17 @@ public class FrameArticleIntegrationTest {
     @DisplayName("최신순 프레임 게시글 리스트 조회(비회원)")
     public void NonMemberListRecentFrameArticleSuccessTest() throws Exception{
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + memberToken);
         String searchWord = "se";
+        String frameSpec = "HORIZONTAL";
         mvc.perform(get("/api/article/frame/list/recent")
-                        .headers(headers)
                         .param("searchWord", searchWord)
+                        .param("frameSpec", frameSpec)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                         requestParameters(
-                                parameterWithName("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
+                                parameterWithName("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어"),
+                                parameterWithName("frameSpec").attributes(key("constraints").value("빈 값도 가능(Optional), 빈 값의 경우 전체 검색, VERTICAL 또는 HORITZONTAL만 설정 가능")).description("프레임 규격")
                         ),
                         responseFields(
                                 fieldWithPath("pageNavigator").type(JsonFieldType.OBJECT).description("페이지 정보"),
@@ -475,14 +489,20 @@ public class FrameArticleIntegrationTest {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + memberToken);
         String searchWord = "se";
+        String frameSpec = "";
         mvc.perform(get("/api/article/frame/my/list")
                         .headers(headers)
                         .param("searchWord", searchWord)
+                        .param("frameSpec", frameSpec)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("로그인 성공한 토큰")
+                        ),
                         requestParameters(
-                                parameterWithName("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어")
+                                parameterWithName("searchWord").attributes(key("constraints").value("빈 값도 가능(Optional)")).description("검색어"),
+                                parameterWithName("frameSpec").attributes(key("constraints").value("빈 값도 가능(Optional), 빈 값의 경우 전체 검색, VERTICAL 또는 HORITZONTAL만 설정 가능")).description("프레임 규격")
                         ),
                         responseFields(
                                 fieldWithPath("pageNavigator").type(JsonFieldType.OBJECT).description("페이지 정보"),
@@ -517,11 +537,90 @@ public class FrameArticleIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("로그인 성공한 토큰")
+                        ),
                         pathParameters(
                                 parameterWithName("frameArticleId").description("프레임 게시글 ID")
                         ),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("프레임 게시판 글 상세조회(회원)")
+    public void readMemberFrameArticleDetailTest() throws Exception{
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + memberToken);
+        Long articleId = 70L;
+        mvc.perform(get("/api/article/frame/{frameArticleId}", articleId)
+                        .headers(headers)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("로그인 성공한 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("frameArticleId").description("프레임 게시글 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("articleId").type(JsonFieldType.NUMBER).description("게시글 ID"),
+                                fieldWithPath("subject").type(JsonFieldType.STRING).description("제목"),
+                                fieldWithPath("isPublic").type(JsonFieldType.BOOLEAN).description("공개 여부"),
+                                fieldWithPath("frameLink").type(JsonFieldType.STRING).description("프레임 링크"),
+                                fieldWithPath("loverCnt").type(JsonFieldType.NUMBER).description("좋아요 수"),
+                                fieldWithPath("createdDate").type(JsonFieldType.STRING).description("게시글 작성일"),
+                                fieldWithPath("author").type(JsonFieldType.STRING).description("게시글 작성자"),
+                                fieldWithPath("frameSpecification").type(JsonFieldType.STRING).description("프레임 규격"),
+                                fieldWithPath("loverYn").type(JsonFieldType.NUMBER).description("좋아요 여부"),
+                                fieldWithPath("isMine").type(JsonFieldType.BOOLEAN).description("작성자 여부")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("프레임 게시판 글 상세조회(비회원)")
+    public void readNonMemberFrameArticleDetailTest() throws Exception{
+        Long articleId = 70L;
+        mvc.perform(get("/api/article/frame/{frameArticleId}", articleId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        pathParameters(
+                                parameterWithName("frameArticleId").description("프레임 게시글 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("articleId").type(JsonFieldType.NUMBER).description("게시글 ID"),
+                                fieldWithPath("subject").type(JsonFieldType.STRING).description("제목"),
+                                fieldWithPath("isPublic").type(JsonFieldType.BOOLEAN).description("공개 여부"),
+                                fieldWithPath("frameLink").type(JsonFieldType.STRING).description("프레임 링크"),
+                                fieldWithPath("loverCnt").type(JsonFieldType.NUMBER).description("좋아요 수"),
+                                fieldWithPath("createdDate").type(JsonFieldType.STRING).description("게시글 작성일"),
+                                fieldWithPath("author").type(JsonFieldType.STRING).description("게시글 작성자"),
+                                fieldWithPath("frameSpecification").type(JsonFieldType.STRING).description("프레임 규격"),
+                                fieldWithPath("loverYn").type(JsonFieldType.NUMBER).description("좋아요 여부"),
+                                fieldWithPath("isMine").type(JsonFieldType.BOOLEAN).description("작성자 여부")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("프레임 게시판 글 상세조회(이미 삭제되었거나 없는 글)")
+    public void readFrameArticleDetailFailureTest() throws Exception{
+        Long articleId = 80L;
+        mvc.perform(get("/api/article/frame/{frameArticleId}", articleId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        pathParameters(
+                                parameterWithName("frameArticleId").description("프레임 게시글 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지")
                         )
                 ));
     }
