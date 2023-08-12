@@ -4,6 +4,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.reminiscence.room.domain.Participant;
+import com.reminiscence.room.domain.QMember;
 import com.reminiscence.room.domain.QParticipant;
 import com.reminiscence.room.domain.Role;
 import com.reminiscence.room.participant.dto.ParticipantRoomUserResponseDto;
@@ -11,6 +12,7 @@ import com.reminiscence.room.participant.dto.ParticipantRoomUserResponseDto;
 import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
+
 
 public class ParticipantRepositoryImpl implements ParticipantRepositoryCustom{
     private final JPAQueryFactory queryFactory;
@@ -21,10 +23,11 @@ public class ParticipantRepositoryImpl implements ParticipantRepositoryCustom{
     @Override
     public Optional<List<ParticipantRoomUserResponseDto>> findUserByRoomID(Long roomId) {
         return Optional.ofNullable(queryFactory.select(Projections.constructor(ParticipantRoomUserResponseDto.class,
-                        QParticipant.participant.member.id.as("memberId")
+                        QMember.member.id.as("memberId")
                 ))
                 .from(QParticipant.participant)
-                .where(eqRoomId(roomId), eqMemberId())
+                .join(QParticipant.participant.member, QMember.member)
+                .where(eqRoomId(roomId), eqMemberId(), eqConnection())
                 .fetch());
     }
 

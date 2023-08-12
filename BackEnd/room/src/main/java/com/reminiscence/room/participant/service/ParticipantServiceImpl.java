@@ -30,11 +30,10 @@ public class ParticipantServiceImpl implements ParticipantService{
     @Override
     public List<ParticipantRoomUserResponseDto> getRoomUserParticipant(String roomCode) {
         Optional<Room> room = roomRepository.findByRoomCode(roomCode);
-        room.orElseThrow(()->
+        room.orElseThrow(() ->
                 new RoomException(RoomExceptionMessage.NOT_FOUND_ROOM));
-
-        participantRepository.findUserByRoomID(room.get().getId());
-        return null;
+        List<ParticipantRoomUserResponseDto> participants = participantRepository.findUserByRoomID(room.get().getId()).orElse(null);
+        return participants;
     }
 
     @Override
