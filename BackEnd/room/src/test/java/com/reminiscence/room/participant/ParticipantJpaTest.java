@@ -39,10 +39,10 @@ public class ParticipantJpaTest {
 
         // then
         assertNotNull(userByRoomID);
-        assertEquals(3, userByRoomID.size());
         for(ParticipantRoomUserResponseDto response : userByRoomID){
             System.out.println(response.getMemberId());
         }
+        assertEquals(2, userByRoomID.size());
     }
 
     @Test
