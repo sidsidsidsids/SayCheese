@@ -11,7 +11,7 @@ import java.util.List;
 
 @Getter
 public class ImageWriteRequestDto {
-    @NotBlank(message = "이미지 파일 타입(Image, Frame, Profile)을 입력해주세요.")
+    @NotNull(message = "이미지 파일 타입(Image, Frame, Profile)을 입력해주세요.")
     private FileType fileType;
 
     @NotBlank(message = "이미지 파일 이름을 입력해주세요.")

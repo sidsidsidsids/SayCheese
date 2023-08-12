@@ -63,7 +63,7 @@ public class ImageController {
      * userDetail : JWT 토큰으로 인증된 사용자 정보
      * @param
      * requestDto : JWT 토큰으로 인증된 사용자 정보
-     *     imageType : 이미지 분류(Image, Frame, Profile)
+     *     fileType : 이미지 분류(Image, Frame, Profile)
      *     imageName : 이미지 파일 이름
      *     roomCode : 방 코드
      *     tags : 태그 리스트
@@ -95,7 +95,5 @@ public class ImageController {
         imageService.deleteImage(requestDto.getImageId(), userDetail.getMember().getId());
         return new ResponseEntity<>(Response.of(ImageResponseMessage.DELETE_IMAGE_SUCCESS), HttpStatus.OK);
     }
-
-
 
 }
