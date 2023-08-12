@@ -64,13 +64,13 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom 
                 .join(QFrameArticle.frameArticle.frame, QFrame.frame)
                 .where(searchWord(authorSubject),
                         ((frameIsOpened())
-                                .or(isMyFrame(memberId))))
+                                .or(isMyFrame(memberId))), searchFrameSpec(frameSpec))
                 .orderBy(getOrderSpecifiers(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        Long count =  queryFactory.select(Wildcard.count)
+        Long count = queryFactory.select(Wildcard.count)
                 .from(QFrameArticle.frameArticle)
                 .where(searchWord(authorSubject),
                         ((frameIsOpened())
@@ -107,7 +107,7 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom 
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        Long count =  queryFactory.select(Wildcard.count)
+        Long count = queryFactory.select(Wildcard.count)
                 .from(QFrameArticle.frameArticle)
                 .where(searchWord(authorSubject),
                         (frameIsOpened()))
@@ -147,7 +147,7 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom 
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        Long count =  queryFactory.select(Wildcard.count)
+        Long count = queryFactory.select(Wildcard.count)
                 .from(QFrameArticle.frameArticle)
                 .where(isMyFrame(memberId), searchWord(authorSubject))
                 .fetchOne();
@@ -242,4 +242,9 @@ public class FrameArticleRepositoryImpl implements FrameArticleRepositoryCustom 
         return QFrameArticle.frameArticle.member.id.eq(memberId);
     }
 
+    private BooleanExpression searchFrameSpec(String frameSpecification) {
+        if (frameSpecification.toString().equals("")) return QFrame.frame.frameSpecification.eq(FrameSpecification.VERTICAL).or(QFrame.frame.frameSpecification.eq(FrameSpecification.HORIZONTAL));
+        return QFrame.frame.frameSpecification.eq(FrameSpecification.valueOf(frameSpecification));
+    }
 }
+
