@@ -14,26 +14,26 @@ module.exports = function (app) {
     })
   );
   app.use(
+    createProxyMiddleware("/api/image", {
+      target: "https://00c9-211-192-210-169.ngrok-free.app",
+      changeOrigin: true,
+    })
+  );
+  app.use(
     createProxyMiddleware("/api/amazon", {
-      target: "https://4dc8-211-192-210-169.ngrok-free.app",
+      target: "https://00c9-211-192-210-169.ngrok-free.app",
       changeOrigin: true,
     })
   );
   app.use(
     createProxyMiddleware("/api/article", {
-      target: "https://fdef-211-192-210-169.ngrok-free.app",
-      changeOrigin: true,
-    })
-  );
-  app.use(
-    createProxyMiddleware("/api/image", {
-      target: "https://9177-211-192-210-179.ngrok-free.app",
+      target: "https://00c9-211-192-210-169.ngrok-free.app",
       changeOrigin: true,
     })
   );
   app.use(
     createProxyMiddleware("/api", {
-      target: "https://9177-211-192-210-179.ngrok-free.app",
+      target: "https://00c9-211-192-210-169.ngrok-free.app",
       changeOrigin: true,
     })
   );

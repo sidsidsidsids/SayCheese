@@ -18,12 +18,16 @@ export default function Frame() {
     {
       tabItem: "프레임 만들기",
       component: <FrameCreate />,
-      router: "/frame/create/",
+      router: "/frame/create",
     },
   ];
   // 활성화된 탭을 위한 data 입니다
   const location = useLocation().pathname;
   const focusedItem = tabItems.find((item) => item.router === location);
+
+  if (focusedItem === false) {
+    return focusedItem === tabItems[0];
+  }
 
   return (
     <div className="frame">
@@ -40,9 +44,7 @@ export default function Frame() {
             <Link
               key={index}
               to={
-                item.tabItem === "프레임 구경하기"
-                  ? "/frame/"
-                  : "/frame/create/"
+                item.tabItem === "프레임 구경하기" ? "/frame/" : "/frame/create"
               }
             >
               {item.tabItem}

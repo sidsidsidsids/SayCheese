@@ -2,6 +2,8 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { Resize } from "../../redux/features/frame/frameSlice";
+import verticalFrame from "../assets/사다리형.png";
+import horizontalFrame from "../assets/창문형.png";
 
 export default function Standard() {
   const dispatch = useDispatch();
@@ -19,9 +21,23 @@ export default function Standard() {
   };
 
   return (
-    <div>
-      <button onClick={handleVerticalResize}>Vertical Resize</button>
-      <button onClick={handleHorizontalResize}>Horizontal Resize</button>
+    <div className="standardWrapper">
+      <img
+        width="40px"
+        onClick={handleVerticalResize}
+        className="standardImg"
+        src={verticalFrame}
+        alt="사다리형 프레임"
+      />
+
+      <img
+        width="90px"
+        onClick={handleHorizontalResize}
+        className="standardImg"
+        src={horizontalFrame}
+        alt="창문형 프레임"
+      />
+
       {/* 다른 툴바 버튼들 */}
     </div>
   );

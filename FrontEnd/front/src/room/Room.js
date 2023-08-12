@@ -4,15 +4,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { OpenVidu } from "openvidu-browser";
 import html2canvas from "html2canvas";
 import axios from "axios";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import "./Room.css";
 import RoomButtons from "./RoomButtons";
-import RoomHeader from "./RoomHeader";
 import UserVideoComponent from "./UserVideoComponent";
 import TargetVideoComponent from "./TargetVideoComponent";
 import ChatComponent from "./ChatComponent";
 import Timer from "./Timer";
-
 import sampleImage from "./assets/sample.jpg";
+import logo from "./assets/favicon.ico";
 
 const APPLICATION_SERVER_SECRET = "my_secret";
 let chatData;
@@ -21,7 +23,8 @@ let joinUsers;
 let locationX;
 let locationY;
 let resultSrc;
-let resultData;
+let tempSrc;
+let normalCnt = 0;
 // const accessToken = localStorage.getItem("accessToken");
 const Room = () => {
   const params = useParams();
@@ -38,18 +41,36 @@ const Room = () => {
   const [subscribers, setSubscribers] = useState([]);
   // room 관련
   const [isHost, setHost] = useState(false);
+  const [frameSortType, setFrameSortType] = useState("hot");
+  const [frameList, setFrameList] = useState([]);
+  const [frameSearch, setFrameSearch] = useState("");
+  const [selectFrame, setSelectFrame] = useState(`url('${sampleImage}')`);
+  const [selectedMode, setSelectedMode] = useState("game");
+  const [selectedSpec, setSelectedSpec] = useState(undefined);
   const [roomStatus, setRoomStatus] = useState(0);
   const [Minutes, setMinutes] = useState(0);
   const [Seconds, setSeconds] = useState(0);
+  // normalMode 관련
+  const [orders, setOrders] = useState([]);
+  const [locations, setLocations] = useState([
+    [150, 120],
+    [-150, 120],
+    [150, -120],
+    [-150, -120],
+  ]);
+  // gameMode 관련
+  const [randomTags, setRandomTags] = useState([]);
+  const [randomTag, setRandomTag] = useState("");
 
-  useEffect(() => {});
+  useEffect(() => {}, []);
   useEffect(() => {
     window.addEventListener("beforeunload", onbeforeunload);
     joinSession();
     userJoin(mySessionId);
-    return () => {
-      window.removeEventListener("beforeunload", onbeforeunload);
-    };
+    if (params.id[0])
+      return () => {
+        window.removeEventListener("beforeunload", onbeforeunload);
+      };
   }, [params.id]);
 
   useEffect(() => {
@@ -77,9 +98,14 @@ const Room = () => {
 
   useEffect(() => {
     if (isHost) {
+      getRoomInfo(mySessionId);
       hostPost(mySessionId);
     }
   }, [isHost]);
+
+  useEffect(() => {
+    getFrames(frameSortType, frameSearch);
+  }, [frameSortType]);
 
   const onbeforeunload = (event) => {
     leaveSession();
@@ -121,8 +147,12 @@ const Room = () => {
 
     mySession.on("startNormalMode", (event) => {
       console.log(event);
-      setRoomStatus(1);
-      // normalMode();
+      normalMode();
+    });
+
+    mySession.on("selectFrame", (event) => {
+      console.log(event);
+      // setSelectFrame(event.data);
     });
 
     getToken().then((token) => {
@@ -146,6 +176,9 @@ const Room = () => {
           mySession.publish(publisher);
           // 방에 유저 정보 보낼 곳
           userStream(mySessionId, publisher.stream.streamId);
+          if (isHost) {
+            getRoomInfo(mySessionId);
+          }
           // 카메라 선택 옵션 넣을 때 사용됨
           const devices = await OV.getDevices();
           // const videoDevices = devices.filter((device) => device.kind === "videoinput");
@@ -256,7 +289,60 @@ const Room = () => {
     );
     return response.data.token;
   };
-
+  // Frame Carousel
+  const carouselSettings = {
+    arrows: true,
+    infinite: true,
+    draggable: false,
+    speed: 350,
+    slidesToShow: 4,
+    slidesToScroll: 2,
+    initialSlide: 0,
+  };
+  // selectFrame Signal
+  const handleSelectFrame = async (sessionId, frameURL) => {
+    try {
+      const request = await axios.post(
+        "/openvidu/api/signal",
+        {
+          session: sessionId,
+          to: [],
+          type: "selectFrame",
+          data: frameURL,
+        },
+        {
+          headers: {
+            Authorization: `Basic ${btoa(
+              `OPENVIDUAPP:${APPLICATION_SERVER_SECRET}`
+            )}`,
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,POST",
+          },
+        }
+      );
+      console.log(request);
+    } catch (error) {}
+  };
+  // 방 정보 조회
+  const getRoomInfo = async (sessionId) => {
+    try {
+      await axios
+        .get("/api/room" + `?roomCode=${sessionId}`, {
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+        })
+        .then((response) => {
+          console.log(response);
+          // setSelectedMode(response.data.)
+          // setSelectedSpec(response.data.)
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   // 유저 정보 방 입장 시 전달
   const userJoin = async (sessionId) => {
     console.log("USERJOIN");
@@ -409,6 +495,27 @@ const Room = () => {
       console.log(error);
     }
   };
+  // 프레임 목록 가져오기
+  const getFrames = async (sortType, searchInput) => {
+    try {
+      console.log("send to: ", "/api/article/frame/list/" + sortType);
+      await axios
+        .get(
+          "/api/article/frame/list/" + sortType + `?searchWord=${searchInput}`,
+          {
+            headers: {
+              "Content-Type": `application/json;charset=UTF-8`,
+              Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjIifQ.OUP4gSxVM-CV0JeNYLxTtbwY9B0YGuS1PYjss9X0y5a9Q61g7Gjb43RsTVTK7L-EVhPvHS-DuUBN9Chy2SLgVg`,
+              "ngrok-skip-browser-warning": "69420",
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response);
+          setFrameList(response.data.frameArticleVoList);
+        });
+    } catch (error) {}
+  };
   // 사진 캡처(사진 찍기)
   const handleCapture = (locationX, locationY) => {
     // 비디오 요소 가져오기
@@ -437,7 +544,8 @@ const Room = () => {
       );
       // 캔버스의 데이터 URL을 얻어 이미지로 사용할 수 있습니다.
       const dataURL = canvas.toDataURL("image/png");
-      // console.log(dataURL);
+      // normal Mode용 temp data;
+      tempSrc = dataURL;
       range.style.backgroundImage = `url(${dataURL})`;
       // 이미지를 다른 요소에 적용하려면 아래와 같이 설정합니다.
       // const image = new Image();
@@ -466,11 +574,21 @@ const Room = () => {
     } else if (targetUsers.length === 1) {
       targetUsers.push(...targetUsers, ...targetUsers, ...targetUsers);
     }
+
+    // 방장은 주제 받아오기
+    // let tags;
+    // if (isHost) {
+    //   const responseTags = getRandomTags();
+    //   console.log(responseTags);
+    //   tags = responseTags;
+    // }
+    // console.log(tags);
     // 유저 정보
     // const Users = [publisher, ...subscribers];
     const Users = joinUsers;
     // gameMode 로직
     const gamePhase = (count) => {
+      console.log("RANDOM", randomTags);
       // 4번 다 돌았을 때
       if (count === 0) {
         const range = document.querySelector(".room-main");
@@ -531,6 +649,64 @@ const Room = () => {
     };
     gamePhase(4);
   };
+  // 일반모드 (settings)
+  const normalMode = () => {
+    console.log("NORMALMODE");
+    setRoomStatus(1);
+    // 유저 순서 설정(without RoomServer ver)
+    // 순서 설정 기능 구현 후 userStreamIds ~ targetUsers 부분 삭제할 것
+    const userStreamIds = joinUsers.map((user) => user.stream.streamId);
+    const targetUsers = [...userStreamIds];
+    if (targetUsers.length === 3) {
+      targetUsers.push(targetUsers[0]);
+    } else if (targetUsers.length === 2) {
+      targetUsers.push(...targetUsers);
+    } else if (targetUsers.length === 1) {
+      targetUsers.push(...targetUsers, ...targetUsers, ...targetUsers);
+    }
+    setOrders(targetUsers);
+    console.log(orders, targetUsers);
+  };
+  // 일반모드 (display)
+  const handleNormalPhase = (count) => {
+    console.log("COUNT : ", count);
+    if (count === 4) {
+      const range = document.querySelector(".room-main");
+      const imageURL = range.style.backgroundImage;
+      console.log("imageURL: ", imageURL);
+      const imageURLCleaned = imageURL.replace(/url\(['"]?(.*?)['"]?\)/, "$1");
+      resultSrc = imageURLCleaned;
+      console.log("finish");
+      setRoomStatus(2);
+      return;
+    } else {
+      console.log(locations[count][0], locations[count][1], orders[count]);
+      locationX = locations[count][0];
+      locationY = locations[count][1];
+      joinUsers.forEach((user) => {
+        console.log(user.stream.streamId, orders[count]);
+        if (user && user.stream && user.stream.streamId === orders[count]) {
+          // 해당 유저를 MainPublisher로 설정합니다.
+          setMainStreamManager(user);
+        } else {
+          if (count === 0) {
+            setMainStreamManager(joinUsers[0]);
+          }
+        }
+      });
+    }
+  };
+  // 일반모드 (capture)
+  const nextNormalPhase = async () => {
+    handleCapture(locationX, locationY);
+    normalCnt = normalCnt + 1;
+    setMainStreamManager(undefined);
+  };
+  // 다시하기에서 백그라운드 이미지 복구
+  const setOriginImage = () => {
+    const canvas = document.querySelector(".room-main");
+    canvas.style.backgroundImage = selectFrame;
+  };
   // 방 유저 전체 게임모드 돌입
   const handleStartGameMode = async (sessionId) => {
     try {
@@ -585,6 +761,31 @@ const Room = () => {
       console.error("Error checking session:", error);
     }
   };
+  const getRandomTags = async () => {
+    try {
+      await axios
+        .post("/api/image/random/tag", {
+          headers: {
+            "Content-Type": `application/json`,
+            Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzZTY4MTVAbmF2ZXIuY29tIiwiZXhwIjoxNjkxNzM3MzgyLCJpYXQiOjE2OTE3MzU1ODIsIm1lbWJlcklkIjoiMiJ9.4mWd1tsOy363Lj8a53feRrXYcdYF9AhuWdHn8Okm6VqugCnbgZLTjyhFZo-h2Q0SL7Tm2-nlAe-en7YNqzhovQ`,
+            "ngrok-skip-browser-warning": "69420",
+          },
+        })
+        // await fetch("/api/image/random/tag", {
+        //   method: "GET",
+        //   headers: {
+        //     "Content-Type": `application/json`,
+        //     Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzZTY4MTVAbmF2ZXIuY29tIiwiZXhwIjoxNjkxNzM3MzgyLCJpYXQiOjE2OTE3MzU1ODIsIm1lbWJlcklkIjoiMiJ9.4mWd1tsOy363Lj8a53feRrXYcdYF9AhuWdHn8Okm6VqugCnbgZLTjyhFZo-h2Q0SL7Tm2-nlAe-en7YNqzhovQ`,
+        //   },
+        // })
+        .then((response) => {
+          console.log("대답:", response);
+          setRandomTags(response.data);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   // 결과창에서 DB에 이미지 저장
   const sendImageData = async (resultURL, sessionId) => {
     console.log("SEND");
@@ -604,40 +805,35 @@ const Room = () => {
           }
         )
         .then(async (response) => {
-          // let range = document.querySelector(".room-main");
-          // await html2canvas(range, { scale: 4, backgroundColor: null }).then(
-          //   (canvas) => {
-          //     resultURL = canvas.toDataURL("image/jpg");
-          //     console.log("HTML@");
-          //   }
-          // );
+          // PRESIGNED URL에 이미지 보내는 코드
+          // 아래 주석 절대 지우지 말기
           console.log("IMAGE");
-          const binaryImageData = atob(resultURL.split(",")[1]);
-          const arrayBufferData = new Uint8Array(binaryImageData.length);
-          for (let i = 0; i < binaryImageData.length; i++) {
-            arrayBufferData[i] = binaryImageData.charCodeAt(i);
-          }
-          const blob = new Blob([arrayBufferData], { type: "image/jpg" });
-          // Blob 객체에서 File 객체 생성
-          const imageFile = new File([blob], `${sessionId}.jpg`, {
-            type: "image/jpg",
-          });
-          console.log(imageFile);
-          // const image = new Image();
-          // image.src = URL.createObjectURL(imageFile);
-          // document.body.appendChild(image);
-          await fetch(response.data.preSignUrl, {
-            method: "PUT",
-            body: imageFile,
-            headers: {
-              // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
-              "Content-Type": "image/jpg",
-            },
-          }).then(async (response) => {
-            console.log("DATA");
-            console.log(response);
-            // fileName, type(image), tags, roomCode to Back(Article)
-          });
+          // const binaryImageData = atob(resultURL.split(",")[1]);
+          // const arrayBufferData = new Uint8Array(binaryImageData.length);
+          // for (let i = 0; i < binaryImageData.length; i++) {
+          //   arrayBufferData[i] = binaryImageData.charCodeAt(i);
+          // }
+          // const blob = new Blob([arrayBufferData], { type: "image/jpg" });
+          // // Blob 객체에서 File 객체 생성
+          // const imageFile = new File([blob], `${sessionId}.jpg`, {
+          //   type: "image/jpg",
+          // });
+          // console.log(imageFile);
+          // // const image = new Image();
+          // // image.src = URL.createObjectURL(imageFile);
+          // // document.body.appendChild(image);
+          // await fetch(response.data.preSignUrl, {
+          //   method: "PUT",
+          //   body: imageFile,
+          //   headers: {
+          //     // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+          //     "Content-Type": "image/jpg",
+          //   },
+          // }).then(async (response) => {
+          //   console.log("DATA");
+          //   console.log(response);
+          //   // fileName, type(image), tags, roomCode to Back(Article)
+          // });
         });
     } catch (error) {
       alert(error);
@@ -687,9 +883,17 @@ const Room = () => {
       {roomStatus === 2 ? (
         <div className="room-active">
           <div className="room-top">
-            <RoomHeader status={roomStatus} />
+            {/* <RoomHeader status={roomStatus} /> */}
+            <div className="room-header">
+              <img src={logo} alt="LOGO" />
+              <br />
+              <div>
+                <p>방이 5분 후 종료됩니다</p>
+              </div>
+            </div>
             <RoomButtons
               onButton1={() => {
+                console.log(randomTags);
                 navigate("/");
               }}
               onButton2={() => {
@@ -710,7 +914,7 @@ const Room = () => {
             <div
               className="room-main"
               style={{
-                backgroundImage: `url('${sampleImage}')`,
+                backgroundImage: selectFrame,
                 backgroundSize: "contain",
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
@@ -740,21 +944,34 @@ const Room = () => {
       ) : roomStatus === 1 ? (
         <div className="room-active">
           <div className="room-top">
-            <RoomHeader status={roomStatus} />
+            {/* <RoomHeader status={roomStatus} /> */}
+            <div className="room-header">
+              <div>
+                <p>주제 : {randomTag}</p>
+              </div>
+            </div>
             <RoomButtons
               onButton1={() => {}}
               onButton2={() => {
-                setRoomStatus(2);
+                nextNormalPhase();
+                setTimeout(() => {
+                  handleNormalPhase(normalCnt);
+                }, 100);
               }}
               onButton3={() => {
-                setRoomStatus(0);
+                normalCnt = 0;
+                setOriginImage();
+                setMainStreamManager(undefined);
+                setTimeout(() => {
+                  handleNormalPhase(normalCnt);
+                }, 100);
               }}
               buttonName1="나가기"
               buttonName2="촬영하기"
               buttonName3="다시 찍기"
               option1={true}
-              option2={!isHost}
-              option3={!isHost}
+              option2={selectedMode === "game"}
+              option3={normalCnt === 0}
             />
           </div>
           <div className="room-mid">
@@ -762,7 +979,7 @@ const Room = () => {
             <div
               className="room-main"
               style={{
-                backgroundImage: `url('${sampleImage}')`,
+                backgroundImage: selectFrame,
                 backgroundSize: "contain",
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
@@ -800,19 +1017,37 @@ const Room = () => {
       ) : (
         <div className="room-active">
           <div className="room-top">
-            <RoomHeader status={roomStatus} />
+            {/* <RoomHeader status={roomStatus} /> */}
+            <div className="room-header">
+              <img src={logo} alt="LOGO" />
+              <p>대기중</p>
+              <div className="concepts-list" style={{ display: "flex" }}></div>
+            </div>
             <RoomButtons
               onButton1={() => {
                 navigate("/");
               }}
               onButton2={() => {
-                handleStartGameMode(mySessionId);
+                if (selectedMode === "game") {
+                  handleStartGameMode(mySessionId);
+                  const tags = getRandomTags();
+                  console.log("TAGTAGTAGTAG", tags);
+                } else {
+                  if (selectedMode === "normal") {
+                    handleStartNormalMode(mySessionId);
+                    handleNormalPhase(normalCnt);
+                  } else {
+                  }
+                }
+                // handleStartGameMode(mySessionId);
+                // alert("Invalid Room")
               }}
               onButton3={() => {
                 console.log("pub: ", publisher);
                 console.log("sub: ", subscribers);
                 console.log("session: ", session);
                 console.log("connecionId: ", sessionConnectId);
+                console.log("frames: ", frameList);
               }}
               buttonName1="나가기"
               buttonName2="시작하기"
@@ -825,7 +1060,7 @@ const Room = () => {
             <div
               className="room-main"
               style={{
-                backgroundImage: `url('${sampleImage}')`,
+                backgroundImage: selectFrame,
                 backgroundSize: "contain",
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
@@ -841,7 +1076,28 @@ const Room = () => {
             {chatData && <ChatComponent user={chatData} myName={myUserName} />}
           </div>
           <div className="room-bot">
-            <div className="frame-container"></div>
+            <div className="video-container">
+              {frameList && (
+                <>
+                  <Slider {...carouselSettings} />
+                  {frameList.map((item) => (
+                    <div key={item.id}>
+                      <img
+                        src={item.imageLink}
+                        alt={item.name}
+                        style={{
+                          width: "200px",
+                          height: "100px",
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => handleSelectFrame(item.imageLink)}
+                      />
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}

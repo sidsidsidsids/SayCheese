@@ -4,11 +4,11 @@
   place-items: center;
   justify-content: center;
   min-width: 800px;
-  min-height: 60dvh;
+  min-height: 600px;
 }
 
 .createWrapper {
-  padding: 100px 0;
+  padding: 50px 0;
 }
 
 .createCanvas {

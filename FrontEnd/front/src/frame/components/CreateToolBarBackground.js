@@ -1,9 +1,11 @@
 // 프레임 배경을 바꾸는 툴의 디테일 컴포넌트입니다
 import React, { useState, useRef } from "react";
 // third party
+import { Tooltip } from "react-tooltip";
 import { useDispatch, useSelector } from "react-redux";
-// redux
+
 import { Repaint, RemoveBgImg } from "../../redux/features/frame/frameSlice";
+import Button from "../../Button";
 
 export default function BgColor() {
   const [customColor, setCustomColor] = useState();
@@ -16,7 +18,7 @@ export default function BgColor() {
   // 이미지 업로드 input의 onChange
   const saveImgFile = () => {
     const file = imgRef.current.files[0];
-    const reader = new FileReader();
+    var reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
       setImgFile(reader.result);
@@ -35,16 +37,47 @@ export default function BgColor() {
     dispatch(Repaint(payload));
   };
 
+  // 파일 인풋 값 초기화
+  const resetInput = () => {
+    imgRef.current.value = ""; // 파일 선택을 리셋
+    setImgFile(false); // 이미지 파일 상태 초기화
+    dispatch(RemoveBgImg()); // Redux 액션을 사용하여 배경 이미지 상태 초기화
+  };
+
   return (
     <>
-      <br></br>
-      <label htmlFor="bgColor">색을 선택할 수 있습니다.</label>
-      <br />
+      <Tooltip id="bg-menual" place="bottom" />
+      <label
+        htmlFor="bgColor"
+        data-tooltip-place="bottom"
+        data-tooltip-id="bg-menual"
+        data-tooltip-content="배경을 바꾸면 프레임의 꾸미기는 모두 초기화됩니다"
+      >
+        색을 선택할 수 있습니다.
+      </label>
       <input id="bgColor" type="color" value={bgColor} onChange={colorPick} />
-
-      <br></br>
-      <label htmlFor="bgImage">색을 선택할 수 있습니다.</label>
-      <br />
+      <label
+        htmlFor="bgColor"
+        data-tooltip-place="top"
+        data-tooltip-id="bg-menual"
+        data-tooltip-content="배경을 바꾸면 프레임의 꾸미기는 모두 초기화됩니다"
+      >
+        배경 이미지를 첨부할 수 있습니다.
+      </label>
+      <div className="alignTwoButtons">
+        <label htmlFor="bgImage" className="forFile">
+          이미지 파일
+        </label>
+        <button
+          className="btn "
+          type="button"
+          onClick={() => {
+            resetInput();
+          }}
+        >
+          제거하기
+        </button>
+      </div>
       <input
         id="bgImage"
         type="file"
@@ -52,16 +85,9 @@ export default function BgColor() {
         ref={imgRef}
         onChange={saveImgFile}
       />
-      <div>이미지 미리보기 </div>
-      <img width="100px" src={bgImg} />
-      <div
-        onClick={() => {
-          console.log("이미지 제거, imgFile");
-          setImgFile(null);
-          dispatch(RemoveBgImg());
-        }}
-      >
-        이미지 제거하기{" "}
+      <div className="preview">
+        <div>이미지 미리보기</div>
+        {bgImg ? <img src={bgImg} alt="배경 이미지 미리보기" /> : ""}
       </div>
     </>
   );
