@@ -5,8 +5,13 @@ package com.reminiscence.member.controller;
 import com.reminiscence.config.auth.MemberDetail;
 import com.reminiscence.config.redis.RedisKey;
 import com.reminiscence.domain.Member;
+import com.reminiscence.email.EmailType;
+import com.reminiscence.email.dto.EmailRequestDto;
+import com.reminiscence.email.service.EmailService;
 import com.reminiscence.exception.customexception.EmailException;
+import com.reminiscence.exception.customexception.MemberException;
 import com.reminiscence.exception.message.EmailExceptionMessage;
+import com.reminiscence.exception.message.MemberExceptionMessage;
 import com.reminiscence.member.dto.*;
 import com.reminiscence.member.service.MemberService;
 import com.reminiscence.message.Response;
@@ -21,11 +26,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static com.reminiscence.filter.JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,13 +41,13 @@ public class MemberController {
 
     private final MemberService memberService;
 
-
+    private final EmailService emailService;
 
     @PostMapping("/join")
     public ResponseEntity join(@Valid @RequestBody MemberJoinRequestDto requestDto) throws Exception {
         log.debug("MemberJoinRequestDto info : {}", requestDto);
-        String token=(String)redisTemplate.opsForValue().get(RedisKey.EMAIL_AUTH_SUCCESS_TOKEN_PREFIX+requestDto.getEmail());
-        if(token==null){
+        String token = (String) redisTemplate.opsForValue().get(RedisKey.EMAIL_AUTH_SUCCESS_TOKEN_PREFIX + requestDto.getEmail());
+        if (token == null) {
             throw new EmailException(EmailExceptionMessage.DATA_NOT_FOUND);
         }
         memberService.joinMember(requestDto);
@@ -86,14 +87,18 @@ public class MemberController {
     }
 
     @PostMapping("/password")
-    public Member findPassword(@RequestBody MemberFindPasswordDto memberFindPasswordDto) throws Exception {
-        Member member = memberService.emailCheck(memberFindPasswordDto.getEmail());
-        return member;
+    public ResponseEntity findPassword(@RequestBody MemberFindPasswordRequestDto memberFindPasswordRequestDto) throws Exception {
+        Member member = memberService.emailCheck(memberFindPasswordRequestDto.getEmail());
+        if (member == null)
+            return new ResponseEntity(new MemberFindPasswordResponseDto(MemberResponseMessage.MEMBER_EMAIL_CHECK_REQUEST), HttpStatus.BAD_REQUEST);
+        emailService.storeAuthToken(new EmailRequestDto(member.getEmail()), EmailType.FIND_PW);
+        return new ResponseEntity(new MemberFindPasswordResponseDto(MemberResponseMessage.MEMBER_PASSWORD_FIND_EMAIL_SEND_SUCCESS), HttpStatus.OK);
     }
 
     @PutMapping("/password")
-    public void modifyPassword(@RequestBody MemberUpdatePasswordRequestDto memberUpdatePasswordRequestDto) throws Exception {
+    public ResponseEntity modifyPassword(@RequestBody MemberUpdatePasswordRequestDto memberUpdatePasswordRequestDto) throws Exception {
         memberService.updateMemberPassword(memberUpdatePasswordRequestDto);
+        return new ResponseEntity(Response.of(MemberResponseMessage.MEMBER_PASSWORD_MODIFY_SUCCESS), HttpStatus.OK);
     }
 
     @GetMapping("/search-member/{email-nickname}")
@@ -124,8 +129,8 @@ public class MemberController {
 
     @PutMapping("/profile")
     public ResponseEntity saveProfile(@AuthenticationPrincipal MemberDetail memberDetail,
-                                                   @RequestBody @Valid MemberProfileSaveRequestDto requestDto) {
-        return new ResponseEntity<>(memberService.saveProfile(memberDetail, requestDto),HttpStatus.OK);
+                                      @RequestBody @Valid MemberProfileSaveRequestDto requestDto) {
+        return new ResponseEntity<>(memberService.saveProfile(memberDetail, requestDto), HttpStatus.OK);
     }
 
 }

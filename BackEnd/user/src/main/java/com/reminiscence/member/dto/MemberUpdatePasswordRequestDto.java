@@ -1,21 +1,15 @@
 package com.reminiscence.member.dto;
 
-import com.reminiscence.domain.Member;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class MemberUpdatePasswordRequestDto {
-    private String password;
 
-    @Builder
-    public MemberUpdatePasswordRequestDto(String password) {
-        this.password = password;
-    }
-
-    public Member toEntity() {
-        return Member.builder()
-                .password(password)
-                .build();
-    }
+    private String email;
+    private String newPassword;
+    private String passwordConfirm;
 }

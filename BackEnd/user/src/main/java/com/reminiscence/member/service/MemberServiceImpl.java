@@ -43,13 +43,12 @@ public class MemberServiceImpl implements MemberService {
     private String BUCKET_REGION;
 
 
-
     @Transactional
     @Override
     public void joinMember(MemberJoinRequestDto memberJoinRequestDto) throws Exception {
         memberJoinRequestDto.setPassword(bCryptPasswordEncoder.encode(memberJoinRequestDto.getPassword()));
         Member member = memberJoinRequestDto.toEntity();
-        if(memberJoinRequestDto.getNickname().startsWith(GUEST_PREFIX))
+        if (memberJoinRequestDto.getNickname().startsWith(GUEST_PREFIX))
             throw new MemberException(MemberExceptionMessage.MEMBER_JOIN_FAILURE_NICKNAME_PROTECTED);
         // 이메일 중복 시 HttpStatus를 Already_Reported 상태로 응답 전달
         if (memberRepository.findByEmail(member.getEmail()) != null)
@@ -131,31 +130,34 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public Member updateMemberPassword(MemberUpdatePasswordRequestDto memberUpdatePasswordRequestDto) throws Exception {
-        Member member = memberUpdatePasswordRequestDto.toEntity();
-        return memberRepository.save(member);
+    public void updateMemberPassword(MemberUpdatePasswordRequestDto memberUpdatePasswordRequestDto) throws Exception {
+        if (!memberUpdatePasswordRequestDto.getNewPassword().equals(memberUpdatePasswordRequestDto.getPasswordConfirm()))
+            throw new MemberException(MemberExceptionMessage.MEMBER_PASSWORD_CONFIRM_FAILURE);
+        Member member = memberRepository.findByEmail(memberUpdatePasswordRequestDto.getEmail());
+        if (member == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
+        member.modifyPassword(bCryptPasswordEncoder.encode(memberUpdatePasswordRequestDto.getNewPassword()));
     }
 
     @Transactional
     @Override
     public void deleteMember(long memberId) throws Exception {
         Member member = memberRepository.findById(memberId).orElse(null);
-        if(member != null)
+        if (member != null)
 //        member.modifyDelYn('Y');
 //        memberRepository.save(member);
 
-        memberRepository.delete(member);
+            memberRepository.delete(member);
     }
 
     @Transactional
     @Override
     public Member joinGuestMember(String nickname) throws SQLException {
         String email = UUID.randomUUID().toString();
-        while(memberRepository.findByEmail(email) != null){
+        while (memberRepository.findByEmail(email) != null) {
             email = UUID.randomUUID().toString();
         }
         String savedNickname = GUEST_PREFIX + nickname;
-        while(memberRepository.findByNickname(savedNickname) != null){
+        while (memberRepository.findByNickname(savedNickname) != null) {
             savedNickname = GUEST_PREFIX + nickname;
         }
 
@@ -169,10 +171,10 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public MemberNicknameResponseDto getMemberNickName(MemberDetail memberDetail){
+    public MemberNicknameResponseDto getMemberNickName(MemberDetail memberDetail) {
         Member member = memberRepository.findById(memberDetail.getMember().getId()).orElse(null);
         String nickname;
-        if(member == null){
+        if (member == null) {
             return null;
         } else if (memberDetail.getMember().getRole() == Role.GUEST) {
             nickname = member.getNickname().substring(GUEST_PREFIX.length()).trim();

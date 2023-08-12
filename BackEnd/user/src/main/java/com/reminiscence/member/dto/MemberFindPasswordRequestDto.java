@@ -1,10 +1,12 @@
 package com.reminiscence.member.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class MemberFindPasswordDto {
+@AllArgsConstructor
+public class MemberFindPasswordRequestDto {
     String email;
 }
