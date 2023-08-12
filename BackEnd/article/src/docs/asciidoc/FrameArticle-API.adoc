@@ -30,19 +30,28 @@ operation::FrameArticleIntegrationTest/MemberListHotFrameArticleSuccessTest[snip
 operation::FrameArticleIntegrationTest/NonMemberListHotFrameArticleSuccessTest[snippets='http-request,request-parameters,http-response,response-fields']
 
 === FrameArticle 목록 API(무작위 - 회원)
-operation::FrameArticleIntegrationTest/MemberListRandomFrameArticleSuccessTest[snippets='http-request,request-parameters,request-fields,http-response,response-fields']
+operation::FrameArticleIntegrationTest/MemberListRandomFrameArticleSuccessTest[snippets='http-request,request-headers,request-parameters,request-fields,http-response,response-fields']
 
 === FrameArticle 목록 API(무작위 - 비회원)
 operation::FrameArticleIntegrationTest/NonMemberListRandomFrameArticleSuccessTest[snippets='http-request,request-parameters,http-response,response-fields']
 
 === FrameArticle 목록 API(최신 - 회원)
-operation::FrameArticleIntegrationTest/MemberListRecentFrameArticleSuccessTest[snippets='http-request,request-parameters,request-fields,http-response,response-fields']
+operation::FrameArticleIntegrationTest/MemberListRecentFrameArticleSuccessTest[snippets='http-request,request-headers,request-parameters,request-fields,http-response,response-fields']
 
 === FrameArticle 목록 API(최신 - 비회원)
 operation::FrameArticleIntegrationTest/NonMemberListRecentFrameArticleSuccessTest[snippets='http-request,request-parameters,http-response,response-fields']
 
 === 나의 FrameArticle 목록 API
-operation::FrameArticleIntegrationTest/getMyFrameArticleListSuccessTest[snippets='http-request,request-parameters,http-response,response-fields']
+operation::FrameArticleIntegrationTest/getMyFrameArticleListSuccessTest[snippets='http-request,request-headers,request-parameters,http-response,response-fields']
 
 === FrameArticle 공개여부 수정 API
-operation::FrameArticleIntegrationTest/alterFrameArticlePublicStatusTest[snippets='http-request,path-parameters,http-response,response-fields']
+operation::FrameArticleIntegrationTest/alterFrameArticlePublicStatusTest[snippets='http-request,request-headers,path-parameters,http-response,response-fields']
+
+=== FrameArticle 상세정보 조회 API(회원)
+operation::FrameArticleIntegrationTest/readMemberFrameArticleDetailTest[snippets='http-request,request-headers,path-parameters,http-response,response-fields']
+
+=== FrameArticle 상세정보 조회 API(비회원)
+operation::FrameArticleIntegrationTest/readNonMemberFrameArticleDetailTest[snippets='http-request,path-parameters,http-response,response-fields']
+
+=== FrameArticle 상세정보 조회 API(이미 삭제되었거나 없는 글)
+operation::FrameArticleIntegrationTest/readFrameArticleDetailFailureTest[snippets='http-request,path-parameters,http-response,response-fields']
