@@ -1,5 +1,6 @@
 package com.reminiscence.email.controller;
 
+import com.reminiscence.email.dto.EmailCheckRequestDto;
 import com.reminiscence.email.dto.EmailRequestDto;
 import com.reminiscence.email.service.EmailService;
 import com.reminiscence.message.Response;
@@ -16,13 +17,19 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/email")
+@RequestMapping("/api/email/auth")
 public class EmailController {
     private final EmailService emailService;
 
     @PostMapping("")
     public ResponseEntity<Response> sendAuthToken(@Valid @RequestBody EmailRequestDto emailRequestDto){
-        emailService.sendAuthToken(emailRequestDto);
+        emailService.storeAuthToken(emailRequestDto);
         return new ResponseEntity<>(Response.of(EmailResponseMessage.EMAIL_SEND_SUCCESS),HttpStatus.OK);
+    }
+
+    @PostMapping("/check")
+    public ResponseEntity<Response> checkAuthToken(@Valid @RequestBody EmailCheckRequestDto emailCheckRequestDto){
+        emailService.checkAuthToken(emailCheckRequestDto);
+        return new ResponseEntity<>(Response.of(EmailResponseMessage.EMAIL_AUTH_SUCCESS),HttpStatus.OK);
     }
 }

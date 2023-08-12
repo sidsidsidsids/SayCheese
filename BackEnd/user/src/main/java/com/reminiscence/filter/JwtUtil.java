@@ -43,18 +43,8 @@ public class JwtUtil {
         }
     }
 
-    // Request의 Header에서 AccessToken 값을 가져옵니다. "Authorization" : "Bearer "
-    public String resolveAccessToken(HttpServletRequest request) {
-        String requestHeader = request.getHeader(JwtProperties.HEADER_STRING);
-//        String tokenPrefix = JwtProperties.TOKEN_PREFIX+JwtProperties.ACCESS_TOKEN_PREFIX;
-
-        if(requestHeader != null && requestHeader.startsWith(JwtProperties.TOKEN_PREFIX))
-            return requestHeader.substring(JwtProperties.TOKEN_PREFIX.length());
-        return null;
-    }
-
-    // Request의 Header에서 RefreshToken 값을 가져옵니다. "Authorization" : "Bearer "
-    public String resolveRefreshToken(HttpServletRequest request) {
+    // Request의 Header에서 Token 값을 가져옵니다. "Authorization" : "Bearer "
+    public String resolveToken(HttpServletRequest request) {
         String requestHeader = request.getHeader(JwtProperties.HEADER_STRING);
 //        String tokenPrefix = JwtProperties.TOKEN_PREFIX+JwtProperties.REFRESH_TOKEN_PREFIX;
 
@@ -63,12 +53,11 @@ public class JwtUtil {
         return null;
     }
 
-//    // 클레임 정보 설정
-//    public Map<String, Object> setCustomClaims(String key, String value) {
-//        Map<String, Object> customClaims = new HashMap<>();
-//        customClaims.put(key, value);
-//
-//        return customClaims;
-//    }
+    // 클레임 정보 설정
+    public Map<String, Object> setCustomClaims(Map<String, Object> customClaims, String key, String value) {
+        customClaims.put(key, value);
+
+        return customClaims;
+    }
 
 }

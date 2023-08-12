@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.reminiscence.config.redis.RefreshTokenService;
-import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,25 +20,23 @@ import com.reminiscence.config.auth.MemberDetail;
 import com.reminiscence.member.dto.MemberLoginRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import lombok.RequiredArgsConstructor;
-
 import static com.reminiscence.filter.JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME;
 import static com.reminiscence.filter.JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
 
-    private final Environment env;
-
     private final RefreshTokenService refreshTokenService;
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, Environment env, RefreshTokenService refreshTokenService, JwtTokenProvider jwtTokenProvider,String processUrl) {
+    private final JwtUtil jwtUtil;
+
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, RefreshTokenService refreshTokenService, JwtTokenProvider jwtTokenProvider, JwtUtil jwtUtil, String processUrl) {
         this.authenticationManager = authenticationManager;
-        this.env = env;
         this.refreshTokenService = refreshTokenService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.jwtUtil = jwtUtil;
         setFilterProcessesUrl(processUrl);
     }
 
@@ -89,8 +86,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         MemberDetail memberDetail = (MemberDetail) authResult.getPrincipal();
 
-        Map<String, Object> customClaims = new HashMap<>();
-        customClaims.put("memberId", String.valueOf(memberDetail.getMember().getId()));
+        Map<String, Object> customClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(memberDetail.getMember().getId()));
 
         String accessToken = jwtTokenProvider.generateToken(memberDetail.getUsername(), ACCESS_TOKEN_EXPIRATION_TIME, customClaims);
         String refreshToken = jwtTokenProvider.generateToken(memberDetail.getUsername(), REFRESH_TOKEN_EXPIRATION_TIME, customClaims);
@@ -108,6 +104,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 ////                .withClaim("id", memberDetail.getMember().getId())
 //                .withClaim("memberId", String.valueOf(memberDetail.getMember().getId()))
 //                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
+
         jwtTokenProvider.addHeaderAccessToken(response, accessToken);
 
         // 사용자로부터 헤더 값으로 리프레시 토큰을 받는 것을 테스트하는 용도로, 실제 구현에서는 쿠키 값으로 전달하므로 빼야 함
