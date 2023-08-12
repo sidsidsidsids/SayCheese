@@ -31,18 +31,13 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         // 토큰 유무 확인
-//        String token = jwtUtil.resolveAccessToken(request);
-        String header=request.getHeader(JWTKey.REQUIRED_HEADER);
-        if(header==null || !header.startsWith(JWTKey.TOKEN_PREFIX)){
+        String token = jwtUtil.resolveAccessToken(request);
+
+        if(token==null){
             chain.doFilter(request,response);
             return;
         }
-//        if(token==null){
-//            chain.doFilter(request,response);
-//            return;
-//        }
 
-        String token=header.substring(JWTKey.TOKEN_PREFIX.length());
         String secretKey=env.getProperty("jwt.secret");
         logger.debug("secretKey: "+ secretKey);
         if(secretKey==null) {
@@ -50,22 +45,17 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
-//
-//        if (!jwtUtil.isTokenExpired(token)){
-//            String errorMessage = "Access 토큰이 만료되었습니다.";
-//            response.sendError(HttpStatus.UNAUTHORIZED.value(), errorMessage);
-//            return;
-//        }
+
+        if (!jwtUtil.isTokenExpired(token)){
+            String errorMessage = "Access 토큰이 만료되었습니다.";
+            response.sendError(HttpStatus.UNAUTHORIZED.value(), errorMessage);
+            return;
+        }
 
 
 
         // JWT 토큰에서 memberId 부분만 추출
-//        String memberId= jwtUtil.extractClaimValue(token, "memberId");
-        String memberId= JWT.require(Algorithm.HMAC512(secretKey)).build()
-                .verify(token)
-                .getClaim("memberId")
-                .asString();
-
+        String memberId= jwtUtil.extractClaimValue(token, "memberId");
 
         // token 값을 권한 처리를 위해 Authentication에 주입
         if(memberId!=null){
