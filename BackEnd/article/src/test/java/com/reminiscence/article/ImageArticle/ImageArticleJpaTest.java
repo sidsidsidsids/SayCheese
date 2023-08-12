@@ -181,7 +181,6 @@ public class ImageArticleJpaTest{
         //given
         Tag randomTag = tagRepository.findRandomTag().orElse(null);
         assertNotNull(randomTag, "잘못된 태그가 들어왔습니다.");
-        System.out.println("randomTag: " + randomTag.getName());
 
         Pageable page = PageRequest.of(0, 10, Sort.Direction.DESC, "random");
 
