@@ -70,10 +70,4 @@ public class ImageRepositoryImpl implements ImageRepositoryCustom{
     private BooleanExpression eqMemberId(Long memberId){
         return QImageOwner.imageOwner.imageOwnerKey.memberId.eq(memberId);
     }
-//    private NumberExpression<Long> ownImageLoveCntCal(QImageArticle imageArticle, QLover lover){
-//        return new CaseBuilder()
-//                .when(imageArticle.isNotNull()).then(lover.count())
-//                .otherwise(0L);
-//    }
-
 }
