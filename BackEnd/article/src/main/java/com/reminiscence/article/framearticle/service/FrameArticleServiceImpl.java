@@ -89,6 +89,7 @@ public class FrameArticleServiceImpl implements FrameArticleService {
         return getFrameArticleListResponseDto(pageable, frameArticlePageList);
     }
 
+    @Transactional
     @Override
     public Response alterPublicStatusFrameArticle(FrameArticleAlterPublicRequestDto frameArticleAlterPublicRequestDto) {
         FrameArticle frameArticle = frameArticleRepository.findById(frameArticleAlterPublicRequestDto.getFrameArticleId())
@@ -101,10 +102,6 @@ public class FrameArticleServiceImpl implements FrameArticleService {
         Frame frame = frameRepository.findById(frameArticle.getFrame().getId()).orElseThrow(() -> new FrameArticleException(FrameArticleExceptionMessage.NOT_FOUND_DATA));
 
         frame.modifyOpenYn(frame.getOpen_yn());
-
-        frameArticle = new FrameArticle(frameArticle.getSubject(), frame, frameArticleAlterPublicRequestDto.getMember());
-
-        frameArticleRepository.save(frameArticle);
 
         if (frame.getOpen_yn() == 'Y')
             return Response.of(FrameResponseMessage.FRAME_MODIFY_PUBLIC_SUCCESS);
