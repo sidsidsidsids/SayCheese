@@ -4,13 +4,11 @@ import com.reminiscence.article.common.Pagination;
 import com.reminiscence.article.config.auth.UserDetail;
 import com.reminiscence.article.domain.Frame;
 import com.reminiscence.article.domain.FrameArticle;
+import com.reminiscence.article.domain.FrameSpecification;
 import com.reminiscence.article.exception.customexception.FrameArticleException;
 import com.reminiscence.article.exception.message.FrameArticleExceptionMessage;
 import com.reminiscence.article.frame.repository.FrameRepository;
-import com.reminiscence.article.framearticle.dto.FrameArticleAlterPublicRequestDto;
-import com.reminiscence.article.framearticle.dto.FrameArticleAndMemberRequestDto;
-import com.reminiscence.article.framearticle.dto.FrameArticleDeleteRequestDto;
-import com.reminiscence.article.framearticle.dto.FrameArticleListResponseDto;
+import com.reminiscence.article.framearticle.dto.*;
 import com.reminiscence.article.framearticle.vo.FrameArticleVo;
 import com.reminiscence.article.framearticle.repository.FrameArticleRepository;
 import com.reminiscence.article.lover.repository.LoverRepository;
@@ -23,6 +21,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -93,6 +94,7 @@ public class FrameArticleServiceImpl implements FrameArticleService {
         return getFrameArticleListResponseDto(pageable, frameArticlePageList);
     }
 
+    @Transactional
     @Override
     public Response alterPublicStatusFrameArticle(FrameArticleAlterPublicRequestDto frameArticleAlterPublicRequestDto) {
         FrameArticle frameArticle = frameArticleRepository.findById(frameArticleAlterPublicRequestDto.getFrameArticleId())
@@ -106,11 +108,7 @@ public class FrameArticleServiceImpl implements FrameArticleService {
 
         frame.modifyOpenYn(frame.getOpen_yn());
 
-        frameArticle = new FrameArticle(frameArticle.getSubject(), frame, frameArticleAlterPublicRequestDto.getMember());
-
-        frameArticleRepository.save(frameArticle);
-
-        if(frame.getOpen_yn()=='Y')
+        if (frame.getOpen_yn() == 'Y')
             return Response.of(FrameResponseMessage.FRAME_MODIFY_PUBLIC_SUCCESS);
         else
             return Response.of(FrameResponseMessage.FRAME_MODIFY_NOT_PUBLIC_SUCCESS);
@@ -136,9 +134,9 @@ public class FrameArticleServiceImpl implements FrameArticleService {
                 .build();
 
         frameArticleRepository.save(frameArticle);
-
     }
 
+    @Transactional
     @Override
     public void deleteFrameArticle(FrameArticleDeleteRequestDto frameArticleDeleteRequestDto) {
         FrameArticle frameArticle = frameArticleRepository.findById(frameArticleDeleteRequestDto.getFrameArticleId())
@@ -152,6 +150,40 @@ public class FrameArticleServiceImpl implements FrameArticleService {
         frameArticleRepository.delete(frameArticle);
     }
 
+    @Override
+    public FrameArticleResponseDto readFrameArticle(FrameArticleReadRequestDto frameArticleReadRequestDto) {
+        // 회원일 때
+        if (frameArticleReadRequestDto.getUserDetail() != null) {
+            FrameArticleVo frameArticleVo = frameArticleRepository.findMemberFrameArticle(frameArticleReadRequestDto);
+            if(frameArticleVo == null) throw new FrameArticleException(FrameArticleExceptionMessage.NOT_FOUND_DATA);
+            return new FrameArticleResponseDto(frameArticleVo);
+        }
+
+        // 비회원일 때
+        FrameArticle frameArticle = frameArticleRepository.findById(frameArticleReadRequestDto.getFrameArticleId()).orElseThrow(() -> new FrameArticleException(FrameArticleExceptionMessage.NOT_FOUND_DATA));
+
+        /* 속성 값 순서
+        Long articleId
+        String subject
+        String frameLink
+        Long loverCnt
+        LocalDateTime createdDate
+        String author
+        Character open_yn
+        FrameSpecification frameSpecification
+        */
+        FrameArticleResponseDto frameArticleResponseDto = new FrameArticleResponseDto(
+                frameArticle.getId(),
+                frameArticle.getSubject(),
+                frameArticle.getFrame().getLink(),
+                (long) frameArticle.getLovers().size(),
+                frameArticle.getCreatedDate(),
+                frameArticle.getMember().getNickname(),
+                frameArticle.getFrame().getOpen_yn(),
+                frameArticle.getFrame().getFrameSpecification()
+        );
+        return frameArticleResponseDto;
+    }
 
 
     private FrameArticleListResponseDto getMemberFrameArticleList(Pageable pageable, Long memberId, String searchWord, String frameSpec) {

@@ -18,4 +18,6 @@ public interface FrameArticleService {
     void writeFrameArticle(FrameArticleAndMemberRequestDto frameArticleAndMemberRequestDto);
 
     void deleteFrameArticle(FrameArticleDeleteRequestDto frameArticleDeleteRequestDto);
+
+    FrameArticleResponseDto readFrameArticle(FrameArticleReadRequestDto frameArticleReadRequestDto);
 }
