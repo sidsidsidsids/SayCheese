@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -124,6 +125,7 @@ public class FrameArticleServiceImpl implements FrameArticleService {
         frameArticleRepository.save(frameArticle);
     }
 
+    @Transactional
     @Override
     public void deleteFrameArticle(FrameArticleDeleteRequestDto frameArticleDeleteRequestDto) {
         FrameArticle frameArticle = frameArticleRepository.findById(frameArticleDeleteRequestDto.getFrameArticleId())
