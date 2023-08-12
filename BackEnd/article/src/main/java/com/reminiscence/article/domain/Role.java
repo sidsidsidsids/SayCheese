@@ -2,5 +2,5 @@ package com.reminiscence.article.domain;
 
 
 public enum Role {
-    ADMIN, MEMBER;
+    ADMIN, MEMBER, GUEST;
 }

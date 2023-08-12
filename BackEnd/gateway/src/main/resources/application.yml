@@ -18,38 +18,26 @@ spring:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=user-service/login
-            - Method=POST
+            - Path=/user/**
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
-        - id: user-service
-          uri: lb://USER-SERVICE
-          predicates:
-            - Path=user-service/**
-          filters:
-            - RemoveRequestHeader=Cookie
-            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
-            - AuthorizationFilter
+            - RewritePath=/user/(?<segment>.*), /$\{segment}
 
         - id: article-service
           uri: lb://ARTICLE-SERVICE
           predicates:
-            - Path=article-service/**
+            - Path=/article/**
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/article-service/(?<segment>.*), /$\{segment}
-            - AuthorizationFilter
-
+            - RewritePath=/article/(?<segment>.*), /$\{segment}
 
         - id: room-service
           uri: lb://ROOM-SERVICE
           predicates:
-            - Path=room-service/**
+            - Path=/room/**
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/room-service/(?<segment>.*), /$\{segment}
-            - AuthorizationFilter
+            - RewritePath=/room/(?<segment>.*), /$\{segment}
 
 
 
