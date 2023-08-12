@@ -85,13 +85,13 @@ public class MemberController {
         return memberService.updateMemberInfo(memberDetail, requestDto);
     }
 
-    @GetMapping("/find-password/{memberId}")
-    public Member findPassword(@PathVariable("memberId") String memberId) throws Exception {
-        Member member = memberService.emailCheck(memberId);
+    @PostMapping("/password")
+    public Member findPassword(@RequestBody MemberFindPasswordDto memberFindPasswordDto) throws Exception {
+        Member member = memberService.emailCheck(memberFindPasswordDto.getEmail());
         return member;
     }
 
-    @PutMapping("/modify-password")
+    @PutMapping("/password")
     public void modifyPassword(@RequestBody MemberUpdatePasswordRequestDto memberUpdatePasswordRequestDto) throws Exception {
         memberService.updateMemberPassword(memberUpdatePasswordRequestDto);
     }
