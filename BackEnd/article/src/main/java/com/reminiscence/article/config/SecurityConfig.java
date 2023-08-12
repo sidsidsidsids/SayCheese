@@ -66,6 +66,8 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests().antMatchers("/docs/**").permitAll()
                 .and()
+                .authorizeRequests().antMatchers("/api/amazon/**").hasAnyRole(Role.ADMIN.name(), Role.MEMBER.name())
+                .and()
                 .authorizeRequests().anyRequest().authenticated();
         http.exceptionHandling().authenticationEntryPoint(new AuthenticaitionEntryPoint());
         http.exceptionHandling().accessDeniedHandler(new AccessDenyHandler());
@@ -73,7 +75,5 @@ public class SecurityConfig {
         http.httpBasic().disable();
         http.formLogin().disable();
         return http.build();
-
-
     }
 }
