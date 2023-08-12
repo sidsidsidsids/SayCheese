@@ -1,6 +1,7 @@
 package com.reminiscence.room.config;
 
 
+import com.reminiscence.room.domain.Role;
 import com.reminiscence.room.filter.JWTAuthorizationFilter;
 import com.reminiscence.room.filter.JwtUtil;
 import com.reminiscence.room.handler.AccessDenyHandler;
@@ -35,7 +36,13 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests().antMatchers("/docs/**").permitAll()
                 .and()
-                .authorizeRequests().antMatchers("/api/participant/**").permitAll()
+                .authorizeRequests().antMatchers(HttpMethod.GET, "/api/participant/**").permitAll()
+                .and()
+                .authorizeRequests().antMatchers(HttpMethod.POST, "/api/participant/**").authenticated()
+                .and()
+                .authorizeRequests().antMatchers(HttpMethod.PUT, "/api/participant/**").authenticated()
+                .and()
+                .authorizeRequests().antMatchers(HttpMethod.DELETE, "/api/participant/**").authenticated()
                 .and()
                 .authorizeRequests().anyRequest().authenticated();
         http.exceptionHandling().authenticationEntryPoint(new AuthenticaitionEntryPoint());
@@ -44,7 +51,5 @@ public class SecurityConfig {
         http.httpBasic().disable();
         http.formLogin().disable();
         return http.build();
-
-
     }
 }
