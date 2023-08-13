@@ -18,7 +18,7 @@ export default function FrameList({ searchWord }) {
   //
   const [beforeSearch, setBeforeSearch] = useState("");
 
-  console.log("ㄴㅇㄻㄴㅇㄻㄴㅇㄻㄴㅇㄹㄴㅇㄹ", searchWord);
+  console.log("이거 검색할거임", searchWord);
   // TODO: 이후 서버 API가 나오면 프레임 리스트를 fetch해야 합니다
   const [frameList, setFrameList] = useState([]);
 
@@ -55,7 +55,7 @@ export default function FrameList({ searchWord }) {
       })
       .then((res) => {
         setFrameList(res.data.frameArticleVoList);
-        console.log(res.data.frameArticleVoList);
+        console.log("이러한 데이터를 받아옴", res.data.frameArticleVoList);
         setPage(res.data.pageNavigator);
       })
       .catch((err) => {
