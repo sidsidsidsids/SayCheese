@@ -3,7 +3,7 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 module.exports = function (app) {
   app.use(
     createProxyMiddleware("/api", {
-      target: "https://fe53-211-192-210-189.ngrok-free.app/",
+      target: "https://c0d8-175-197-19-209.ngrok-free.app/",
       changeOrigin: true,
     })
   );

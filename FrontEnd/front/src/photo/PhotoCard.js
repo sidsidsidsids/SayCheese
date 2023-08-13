@@ -21,18 +21,24 @@ function PhotoCard({
   const [like, setLike] = useState(loverYn);
 
   const handleCardClick = () => {
-    if (!isLogin || !userInfo) {
-      alert(
-        "네컷사진을 자세히 보기 위해서는 로그인이 필요합니다.\n로그인 후 진행해주시길 바랍니다."
-      );
-    } else {
-      dispatch(openModal(payload));
-    }
+    // if (!isLogin || !userInfo) {
+    //   alert(
+    //     "네컷사진을 자세히 보기 위해서는 로그인이 필요합니다.\n로그인 후 진행해주시길 바랍니다."
+    //   );
+    // } else {
+    dispatch(openModal(payload));
+    // }
   };
 
   return (
     <div className="PhotoCard" onClick={handleCardClick}>
-      <img width="200px" src={imageLink} alt="네컷 이미지" />
+      <img
+        width="200px"
+        height="200px"
+        style={{ objectFit: "contain" }}
+        src={imageLink}
+        alt="네컷 이미지"
+      />
       <div className="HeartBtn">
         <div className="Heartcontent">
           <span className={like === 1 ? "Heart Full" : "Heart"}></span>

@@ -12,6 +12,7 @@ function MyPhotoCard({
   loverCnt,
   loverYn,
   tags,
+  articleYn,
   myPhotoChange,
   setMyPhotochange,
   payload,
@@ -38,21 +39,7 @@ function MyPhotoCard({
     <div className="MyPhotoCard">
       <div>
         <div style={{ alignItems: "center" }}>
-          <img
-            width="160px"
-            src={imageLink}
-            alt="네컷 이미지"
-            onMouseEnter={handleMouseHover}
-          />
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <div className="HeartBtn">
-              <div className="Heartcontent">
-                <span
-                  className={loverCnt === -1 ? "MyHeart" : "MyHeart Full"}
-                ></span>
-              </div>
-            </div>
-
             <p
               className="MyPhotoDeleteBtn"
               style={{ margin: "20px" }}
@@ -60,7 +47,25 @@ function MyPhotoCard({
             >
               삭제
             </p>
+            <div className="HeartBtn">
+              <div className="Heartcontent">
+                {articleYn === "N" ? (
+                  <div style={{ width: "60px", height: "60px" }}></div>
+                ) : (
+                  <span
+                    className={loverYn === 0 ? "MyHeart" : "MyHeart Full"}
+                  ></span>
+                )}
+              </div>
+            </div>
           </div>
+          <img
+            className="MyPhotoCardImg"
+            src={imageLink}
+            alt="네컷 이미지"
+            onMouseEnter={handleMouseHover}
+          />
+
           {isPhotoDelModalOpen && (
             <DeleteMyPhotoModal
               setMyPhotochange={setMyPhotochange}
@@ -77,6 +82,8 @@ function MyPhotoCard({
                 imageId={imageId}
                 createdDate={createdDate}
                 loverCnt={loverCnt}
+                loverYn={loverYn}
+                articleYn={articleYn}
               />
               {/* <img src={imageLink} width="500px" alt="네컷 이미지" /> */}
             </div>

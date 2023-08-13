@@ -88,12 +88,7 @@
   margin: 10px 30px;
 }
 
-.DeleteBtnSort Button:nth-child(1) {
-  width: 100px;
-  height: 35px;
-}
-
-.DeleteBtnSort Button:nth-child(2) {
+.DeleteBtnSort Button {
   width: 70px;
   height: 35px;
 }
@@ -182,7 +177,7 @@
 }
 
 .modal .Heart.HeartActive {
-  animation: animate 0.8s steps(28) 1;
+  animation: animate 0.1s steps(28) 1;
   background-position: right;
 }
 @keyframes animate {

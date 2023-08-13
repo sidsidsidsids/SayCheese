@@ -77,17 +77,16 @@ function SignUp() {
 
   // axios 통신을 통해 emailMessage에 alert할 메시지 담기
   async function getEmailMessage(currentEmail) {
+    let data = {
+      email: currentEmail,
+    };
     try {
       // 이메일 중복 체크 - currentEmail은 입력한 이메일
-      const response = await axios.get(
-        `/api/member/join/${currentEmail}/id-check`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "69420",
-          },
-        }
-      );
+      const response = await axios.post("/api/member/id-check", data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       // 이메일이 사용가능할 경우 인증번호 발송
       try {
         const secondResponse = await axios.post(
@@ -165,17 +164,16 @@ function SignUp() {
 
   // axios 통신을 통해 nicknameMessage alert할 메시지 담기
   async function getNicknameMessage(currentNickname) {
+    let data = {
+      nickname: currentNickname,
+    };
     try {
       // 닉네임 중복체크
-      const response = await axios.get(
-        `/api/member/join/${currentNickname}/nickname-check`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "69420",
-          },
-        }
-      );
+      const response = await axios.post("/api/member/nickname-check", data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       setNicknameCheck(true);
       setNicknameMessage(response.data.message);
     } catch (error) {

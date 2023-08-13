@@ -36,6 +36,8 @@ function MyPagePhoto() {
               payload={item}
               createdDate={item.createdDate}
               loverCnt={item.loverCnt}
+              loverYn={item.loverYn}
+              articleYn={item.articleYn}
               myPhotoChange={myPhotoChange}
               setMyPhotochange={setMyPhotochange}
             />
@@ -58,6 +60,10 @@ function MyPagePhoto() {
             payload={currentRow[0]}
             createdDate={currentRow[0].createdDate}
             loverCnt={currentRow[0].loverCnt}
+            loverYn={currentRow[0].loverYn}
+            articleYn={currentRow[0].articleYn}
+            myPhotoChange={myPhotoChange}
+            setMyPhotochange={setMyPhotochange}
           />
           <MyPhotoNull />
           <MyPhotoNull />
@@ -74,6 +80,10 @@ function MyPagePhoto() {
               payload={item}
               createdDate={item.createdDate}
               loverCnt={item.loverCnt}
+              loverYn={item.loverYn}
+              articleYn={item.articleYn}
+              myPhotoChange={myPhotoChange}
+              setMyPhotochange={setMyPhotochange}
             />
           ))}
           <MyPhotoNull />
@@ -93,6 +103,7 @@ function MyPagePhoto() {
         },
       });
       setPhotos(response.data.imageVoList);
+      console.log(response.data.imageVoList);
       setCount(response.data.pageNavigator.totalDataCount);
     } catch (error) {
       console.log(error);
