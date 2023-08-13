@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./RoomCreateModal.css";
 import ModalButtons from "./ModalButtons";
-import l_Frame from "./assets/ladder_shape.PNG";
-import w_Frame from "./assets/window_shape.PNG";
+import l_Frame from "./assets/ladder_shape.svg";
+import w_Frame from "./assets/window_shape.png";
 
 function RoomCreateModal({ open, close }) {
   // 이동 위한 navigate 선언

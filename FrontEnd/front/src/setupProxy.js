@@ -3,7 +3,7 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 module.exports = function (app) {
   app.use(
     createProxyMiddleware("/api", {
-      target: "https://00c9-211-192-210-169.ngrok-free.app", // 비즈니스 서버 URL 설정
+      target: "https://84cb-175-197-19-209.ngrok-free.app", // 비즈니스 서버 URL 설정
       changeOrigin: true,
     })
   );

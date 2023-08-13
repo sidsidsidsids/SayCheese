@@ -35,6 +35,9 @@ dependencies:
   http-proxy-middleware:
     specifier: ^2.0.6
     version: 2.0.6(@types/express@4.17.17)
+  jquery:
+    specifier: ^3.7.0
+    version: 3.7.0
   openvidu-browser:
     specifier: ^2.28.0
     version: 2.28.0
@@ -53,9 +56,12 @@ dependencies:
   react-js-pagination:
     specifier: ^3.0.3
     version: 3.0.3
+  react-parallax-tilt:
+    specifier: ^1.7.158
+    version: 1.7.158(react-dom@18.2.0)(react@18.2.0)
   react-redux:
     specifier: ^8.1.1
-    version: 8.1.1(react-dom@18.2.0)(react@18.2.0)(redux@4.2.1)
+    version: 8.1.1(@types/react-dom@18.2.7)(@types/react@18.2.19)(react-dom@18.2.0)(react@18.2.0)(redux@4.2.1)
   react-router-dom:
     specifier: ^6.14.1
     version: 6.14.1(react-dom@18.2.0)(react@18.2.0)
@@ -64,10 +70,13 @@ dependencies:
     version: 5.0.1(@babel/plugin-syntax-flow@7.22.5)(@babel/plugin-transform-react-jsx@7.22.5)(eslint@8.46.0)(react@18.2.0)(sass@1.65.1)(typescript@5.1.6)
   react-select:
     specifier: ^5.7.4
-    version: 5.7.4(react-dom@18.2.0)(react@18.2.0)
+    version: 5.7.4(@types/react@18.2.19)(react-dom@18.2.0)(react@18.2.0)
   react-slick:
     specifier: ^0.29.0
     version: 0.29.0(react-dom@18.2.0)(react@18.2.0)
+  react-tilt:
+    specifier: ^1.0.2
+    version: 1.0.2(@types/react-dom@18.2.7)(@types/react@18.2.19)(react-dom@18.2.0)(react@18.2.0)
   react-tooltip:
     specifier: ^5.20.0
     version: 5.20.0(react-dom@18.2.0)(react@18.2.0)
@@ -1723,7 +1732,7 @@ packages:
     resolution: {integrity: sha512-W2P2c/VRW1/1tLox0mVUalvnWXxavmv/Oum2aPsRcoDJuob75FC3Y8FbpfLwUegRcxINtGUMPq0tFCvYNTBXNA==}
     dev: false
 
-  /@emotion/react@11.11.1(react@18.2.0):
+  /@emotion/react@11.11.1(@types/react@18.2.19)(react@18.2.0):
     resolution: {integrity: sha512-5mlW1DquU5HaxjLkfkGN1GA/fvVGdyHURRiX/0FHl2cfIfRxSOfmxEH5YS43edp0OldZrZ+dkBKbngxcNCdZvA==}
     peerDependencies:
       '@types/react': '*'
@@ -1739,6 +1748,7 @@ packages:
       '@emotion/use-insertion-effect-with-fallbacks': 1.0.1(react@18.2.0)
       '@emotion/utils': 1.2.1
       '@emotion/weak-memoize': 0.3.1
+      '@types/react': 18.2.19
       hoist-non-react-statics: 3.3.2
       react: 18.2.0
     dev: false
@@ -2261,7 +2271,7 @@ packages:
     dependencies:
       immer: 9.0.21
       react: 18.2.0
-      react-redux: 8.1.1(react-dom@18.2.0)(react@18.2.0)(redux@4.2.1)
+      react-redux: 8.1.1(@types/react-dom@18.2.7)(@types/react@18.2.19)(react-dom@18.2.0)(react@18.2.0)(redux@4.2.1)
       redux: 4.2.1
       redux-thunk: 2.4.2(redux@4.2.1)
       reselect: 4.1.8
@@ -9188,7 +9198,17 @@ packages:
       tar: 2.2.2
     dev: false
 
-  /react-redux@8.1.1(react-dom@18.2.0)(react@18.2.0)(redux@4.2.1):
+  /react-parallax-tilt@1.7.158(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-l3n624twPfekCB/WpKZ0A1OOHhWG+BewgjorPrr2CX03K3pwKz/EK21/xeqI1jMWLpqnVMWzQnrZWV4tU5cBuA==}
+    peerDependencies:
+      react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /react-redux@8.1.1(@types/react-dom@18.2.7)(@types/react@18.2.19)(react-dom@18.2.0)(react@18.2.0)(redux@4.2.1):
     resolution: {integrity: sha512-5W0QaKtEhj+3bC0Nj0NkqkhIv8gLADH/2kYFMTHxCVqQILiWzLv6MaLuV5wJU3BQEdHKzTfcvPN0WMS6SC1oyA==}
     peerDependencies:
       '@types/react': ^16.8 || ^17.0 || ^18.0
@@ -9211,6 +9231,8 @@ packages:
     dependencies:
       '@babel/runtime': 7.22.10
       '@types/hoist-non-react-statics': 3.3.1
+      '@types/react': 18.2.19
+      '@types/react-dom': 18.2.7
       '@types/use-sync-external-store': 0.0.3
       hoist-non-react-statics: 3.3.2
       react: 18.2.0
@@ -9345,7 +9367,7 @@ packages:
       - webpack-plugin-serve
     dev: false
 
-  /react-select@5.7.4(react-dom@18.2.0)(react@18.2.0):
+  /react-select@5.7.4(@types/react@18.2.19)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-NhuE56X+p9QDFh4BgeygHFIvJJszO1i1KSkg/JPcIJrbovyRtI+GuOEa4XzFCEpZRAEoEI8u/cAHK+jG/PgUzQ==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
@@ -9353,7 +9375,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.22.10
       '@emotion/cache': 11.11.0
-      '@emotion/react': 11.11.1(react@18.2.0)
+      '@emotion/react': 11.11.1(@types/react@18.2.19)(react@18.2.0)
       '@floating-ui/dom': 1.5.1
       '@types/react-transition-group': 4.4.6
       memoize-one: 6.0.0
@@ -9361,7 +9383,7 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       react-transition-group: 4.4.5(react-dom@18.2.0)(react@18.2.0)
-      use-isomorphic-layout-effect: 1.1.2(react@18.2.0)
+      use-isomorphic-layout-effect: 1.1.2(@types/react@18.2.19)(react@18.2.0)
     transitivePeerDependencies:
       - '@types/react'
     dev: false
@@ -9379,6 +9401,20 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       resize-observer-polyfill: 1.5.1
+    dev: false
+
+  /react-tilt@1.0.2(@types/react-dom@18.2.7)(@types/react@18.2.19)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-21tUUsmuw5id/6NDtKqwYTG4taVnw+BoUwIG6YsgPC9GI6cx4BnBuSqgriQYAYcv3bdGNzecaBL+rvQRAm28bg==}
+    peerDependencies:
+      '@types/react': ^18.0.29
+      '@types/react-dom': ^18.0.11
+      react: ^18.2.0
+      react-dom: ^18.2.0
+    dependencies:
+      '@types/react': 18.2.19
+      '@types/react-dom': 18.2.7
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: false
 
   /react-tooltip@5.20.0(react-dom@18.2.0)(react@18.2.0):
@@ -10828,7 +10864,7 @@ packages:
       requires-port: 1.0.0
     dev: false
 
-  /use-isomorphic-layout-effect@1.1.2(react@18.2.0):
+  /use-isomorphic-layout-effect@1.1.2(@types/react@18.2.19)(react@18.2.0):
     resolution: {integrity: sha512-49L8yCO3iGT/ZF9QttjwLF/ZD9Iwto5LnH5LmEdk/6cFmXddqi2ulF0edxTwjj+7mqvpVVGQWvbXZdn32wRSHA==}
     peerDependencies:
       '@types/react': '*'
@@ -10837,6 +10873,7 @@ packages:
       '@types/react':
         optional: true
     dependencies:
+      '@types/react': 18.2.19
       react: 18.2.0
     dev: false
 
