@@ -7,7 +7,7 @@
   place-items: center;
   justify-content: center;
   justify-items: center;
-  padding: 50px;
+  padding: 100px 80px;
 }
 
 @media (max-width: 1382px){

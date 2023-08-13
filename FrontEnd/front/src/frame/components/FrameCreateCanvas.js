@@ -105,15 +105,74 @@ const addPlainBlocks = (canvas, height, width) => {
   }
 };
 
-// 원형 투명칸 만드는 함수 입니다
-const addCircleBlocks = (canvas, height, width) => {
-  // 원형 네모칸 만드는 함수입니다
-  const VerticalCircleBlock = (left, top) =>
-    new fabric.Circle({
+// 가장 기본형 사각형 프레임 투명칸을 만드는 함수입니다
+const addSmoothPlainBlocks = (canvas, height, width) => {
+  //사다리 기본형 프레임 투명한 네모칸 만드는 함수입니다
+  const VerticalSmoothPlainBlock = (left, top) =>
+    new fabric.Rect({
+      left: left,
+      top: top,
+      width: 170,
+      height: 114,
+      fill: "#7767AC",
+      rx: 10,
+      ry: 10,
+      lockMovementX: true, // 움직이지 않도록 합니다
+      lockMovementY: true,
+      lockRotation: true,
+      selectable: false, // 마우스 선택 불가능
+      globalCompositeOperation: "destination-out", // 이 도형이 겹쳐지는 부분은 사라집니다
+    });
+
+  // 창문형 프레임 투명한 네모칸 만드는 함수입니다
+  const HorizontalSmoothPlainBlock = (left, top) =>
+    new fabric.Rect({
       left: left,
       top: top,
       width: 217,
       height: 165,
+      fill: "#7767AC",
+      rx: 10,
+      ry: 10,
+      lockMovementX: true, // 움직이지 않도록 합니다
+      lockMovementY: true,
+      lockRotation: true,
+      selectable: false, // 마우스 선택 불가능
+      globalCompositeOperation: "destination-out", // 이 도형이 겹쳐지는 부분은 사라집니다
+    });
+
+  if (canvas) {
+    if (height > width) {
+      // 사다리형
+      for (let i = 0; i < 4; i++) {
+        canvas.add(VerticalSmoothPlainBlock(19, 19 + i * 120));
+      }
+    } else {
+      // 창문형
+      for (let i = 0; i < 4; i++) {
+        canvas.add(
+          HorizontalSmoothPlainBlock(
+            32 + (i % 2) * 229,
+            29 + Math.floor(i / 2) * 176
+          )
+        );
+      }
+    }
+  }
+};
+
+// 원형 투명칸 만드는 함수 입니다
+const addCircleBlocks = (canvas, height, width) => {
+  // 원형 네모칸 만드는 함수입니다
+  const VerticalCircleBlock = (left, top) =>
+    new fabric.Ellipse({
+      left: left,
+      top: top,
+      // scaleX: width,
+      // scaleY: height,
+      rx: width / 2.3, // x축 반지름 (가로 길이의 절반)
+      ry: height / 10.6, // y축 반지름 (세로 길이의 절반)
+      radius: 70,
       fill: "#7767AC",
       lockMovementX: true, // 움직이지 않도록 합니다
       lockMovementY: true,
@@ -124,11 +183,14 @@ const addCircleBlocks = (canvas, height, width) => {
 
   // 창문형 프레임 투명한 네모칸 만드는 함수입니다 (width, height) = 217, 165
   const HorizontalCircleBlock = (left, top) =>
-    new fabric.Circle({
+    new fabric.Ellipse({
       left: left,
       top: top,
-      width: 217,
-      height: 165,
+      // scaleX: width,
+      // scaleY: height,
+      rx: 111, // x축 반지름 (가로 길이의 절반)
+      ry: 84, // y축 반지름 (세로 길이의 절반)
+      radius: 70,
       fill: "#7767AC",
       lockMovementX: true, // 움직이지 않도록 합니다
       lockMovementY: true,
@@ -141,14 +203,14 @@ const addCircleBlocks = (canvas, height, width) => {
     if (height > width) {
       // 사다리형
       for (let i = 0; i < 4; i++) {
-        canvas.add(VerticalCircleBlock(19, 19 + i * 120));
+        canvas.add(VerticalCircleBlock(13, 19 + i * 120));
       }
     } else {
       // 창문형
       for (let i = 0; i < 4; i++) {
         canvas.add(
           HorizontalCircleBlock(
-            32 + (i % 2) * 229,
+            30 + (i % 2) * 229,
             29 + Math.floor(i / 2) * 176
           )
         );
@@ -159,8 +221,8 @@ const addCircleBlocks = (canvas, height, width) => {
 
 // STEP 2. 이미지로 프레임을 꾸미기 함수입니다
 const DecorateObjects = (objects, canvas) => {
-  console.log(objects.length);
-  if (objects.length > 0 && canvas) {
+  console.log(objects);
+  if (objects && canvas) {
     canvas.renderOnAddRemove = false; // 추가된 객체가 자동으로 렌더링되지 않도록 설정합니다.
     const object = objects;
     fabric.Image.fromURL(object, function (Img) {
@@ -312,6 +374,7 @@ function handleUpload(canvas, frameInfo, frameSpecification) {
   }
 }
 
+/////////////////////// Canvas ///////////////////////////
 // Canvas
 const CanvasArea = () => {
   const canvasRef = useRef(null);
