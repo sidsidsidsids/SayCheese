@@ -397,6 +397,32 @@ const CanvasArea = () => {
     postSignal,
   } = useSelector((store) => store.frame);
 
+  const [isRedoing, setIsRedoing] = useState(false);
+  const [history, setHistory] = useState([]);
+
+  const undo = () => {
+    if (canvasInstance._objects.length > 0) {
+      const removedObject = canvasInstance._objects.pop();
+      setHistory([...history, removedObject]);
+      canvasInstance.renderAll();
+    }
+  };
+
+  const redo = () => {
+    if (history.length > 0) {
+      setIsRedoing(true);
+      const lastObject = history.pop();
+      canvasInstance.add(lastObject);
+    }
+  };
+
+  const handleObjectAdded = () => {
+    if (!isRedoing) {
+      setHistory([]);
+    }
+    setIsRedoing(false);
+  };
+
   useEffect(() => {
     // useEffect를 사용하여 캔버스를 초기화하고 사다리형과 창문형에 맞게 투명한 블록들을 추가합니다. height와 width의 변화에 따라 캔버스의 크기를 조정합니다.
     const newCanvas = new fabric.Canvas(canvasRef.current, {
@@ -404,6 +430,8 @@ const CanvasArea = () => {
       width: width,
       hoverCursor: "pointer",
     });
+    // useEffect를 사용하여 캔버스를 초기화하고 사다리형과 창문형에 맞게 투명한 블록들을 추가합니다. height와 width의 변화에 따라 캔버스의 크기를 조정합니다.
+    //위의 코드는 리렌더링을 일으키지 않도록 이펙트 내에 두어야 합니다. 안 그러면 too many re redner 에러가 납니다
 
     // 컬러 백그라운드 만들기
     if (bgColor) {
@@ -424,7 +452,12 @@ const CanvasArea = () => {
         });
     }
 
+    // 객체 추가 또는 수정 시 상태 저장
+
+    canvasInstance.on("object:modified", handleObjectAdded);
+
     setCanvasInstance(newCanvas);
+    // 캔버스 객체 초기화
 
     return () => {
       // `newCanvas`가 유효한지 확인하고
@@ -504,14 +537,18 @@ const CanvasArea = () => {
     }
   }, [postSignal]);
   return (
-    <div className="canvasBackground">
-      <canvas
-        ref={canvasRef}
-        className="createCanvas"
-        name="canvas"
-        id="canvas"
-      />
-    </div>
+    <>
+      <div className="canvasBackground">
+        <canvas
+          ref={canvasRef}
+          className="createCanvas"
+          name="canvas"
+          id="canvas"
+        />
+      </div>
+      <button onClick={undo}>Undo</button>
+      <button onClick={redo}>Redo</button>
+    </>
   );
 };
 
