@@ -31,7 +31,9 @@ export default function Saving() {
     return (
       <div>
         <form>
+          <label htmlFor="userId">이메일</label>
           <input id="userId" type="text" onChange={setEmail}></input>
+          <label htmlFor="userPW">비밀번호</label>
           <input id="userPw" type="password" onChange={setPassword}></input>
           <button
             className="btn alignCenter"
@@ -66,7 +68,7 @@ export default function Saving() {
               setPrivateCheck(event.target.checked); //true || false
             }}
           ></input>
-          <label htmlFor="private">혼자만 사용하기</label>
+          <label htmlFor="xprivate">혼자만 사용하기</label>
           <button
             type="button"
             onClick={() => {
@@ -81,6 +83,12 @@ export default function Saving() {
       </div>
     );
   }
+  const [callbackOK, setCallbackOK] = useState(false);
+  useEffect(() => {
+    if (callbackOK) {
+      dispatch(loginSuccess);
+    }
+  });
   // stage3
   function stage3() {
     return <div>업로드가 요청 완료되었습니다.</div>;
@@ -115,17 +123,20 @@ export default function Saving() {
         },
       })
       .then((response) => {
-        console.log("로그인 성공함");
+        console.log(response);
         const accessToken = response.headers["authorization"];
         const refreshToken = response.headers["refreshtoken"];
+
         axios.defaults.headers.common["Authorization"] = `${accessToken}`;
+
+        console.log(axios.defaults.headers.common["Authorization"]);
 
         if (response.status === 200) {
           localStorage.setItem("accessToken", accessToken);
           localStorage.setItem("refreshToken", refreshToken);
+          setCallbackOK(true);
           dispatch(loginSuccess());
           dispatch(getUserInfo());
-          setUploadStage(2); // 다음 단계(프레임 정보 입력 단계)로 넘어갑니다
         }
       })
       .catch((error) => {
