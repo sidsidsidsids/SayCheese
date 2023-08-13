@@ -1,13 +1,12 @@
 package com.reminiscence.article.image.vo;
 
+
 import com.reminiscence.article.domain.Image;
 import com.reminiscence.article.domain.ImageArticle;
-import com.reminiscence.article.domain.ImageOwner;
 import lombok.Getter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 public class ImageVo implements Serializable{
@@ -15,23 +14,19 @@ public class ImageVo implements Serializable{
     private final Long imageId;
     private final String imageLink;
     private final LocalDateTime createdDate;
-    private final int loverCnt;
+    private final Long loverCnt;
+    private final Character articleYn;
 
-    public ImageVo(Long imageId, String imageLink, LocalDateTime createdDate, ImageArticle image) {
+    public ImageVo(Long imageId, String imageLink, LocalDateTime createdDate,
+                   Long articleId, long loverCnt) {
         this.imageId = imageId;
         this.imageLink = imageLink;
         this.createdDate = createdDate;
-//        this.loverCnt = loverCnt;
-        if(image == null)
-            this.loverCnt = -1;
+        this.loverCnt = loverCnt;
+        if(articleId == null)
+            this.articleYn = 'N';
         else{
-            this.loverCnt = image.getLovers().size();
+            this.articleYn = 'Y';
         }
-
-//        if(image.getImageOwners() == null){
-//            this.loverCnt = -1;
-//        }else{
-//            this.loverCnt = image.getImageOwners().size();
-//        }
     }
 }

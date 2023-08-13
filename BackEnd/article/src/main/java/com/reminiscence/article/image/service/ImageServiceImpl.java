@@ -52,9 +52,6 @@ public class ImageServiceImpl implements ImageService{
     private String BUCKET_NAME;
     @Value("${cloud.aws.region.static}")
     private String BUCKET_REGION;
-    @Value("${spring.data.base-url}")
-    private String BASE_URL;
-
 
 
 
