@@ -54,10 +54,10 @@ public class MemberController {
         return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_JOIN_SUCCESS), HttpStatus.OK);
     }
 
-    @GetMapping("/join/{email}/id-check")
-    public ResponseEntity idCheck(@PathVariable("email") String email) throws Exception {
-        log.debug("idCheck email : {}", email);
-        Member member = memberService.emailCheck(email);
+    @PostMapping("/id-check")
+    public ResponseEntity idCheck(@RequestBody MemberIdCheckRequestDto memberIdCheckRequestDto) throws Exception {
+        log.debug("idCheck email : {}", memberIdCheckRequestDto.getEmail());
+        Member member = memberService.emailCheck(memberIdCheckRequestDto.getEmail());
         if (member != null) {
             return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_ID_CHECK_FAILURE), HttpStatus.BAD_REQUEST);
         } else {
@@ -65,11 +65,10 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/join/{nickname}/nickname-check")
-    @ResponseBody
-    public ResponseEntity nicknameCheck(@PathVariable("nickname") String nickname) throws Exception {
-        log.debug("nicknameCheck nickname : {}", nickname);
-        Member member = memberService.nicknameCheck(nickname);
+    @PostMapping("/nickname-check")
+    public ResponseEntity nicknameCheck(@RequestBody MemberNicknameCheckRequestDto memberNicknameCheckRequestDto) throws Exception {
+        log.debug("nicknameCheck nickname : {}", memberNicknameCheckRequestDto.getNickname());
+        Member member = memberService.nicknameCheck(memberNicknameCheckRequestDto.getNickname());
         if (member != null) {
             return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_NICKNAME_CHECK_FAILURE), HttpStatus.BAD_REQUEST);
         } else {
@@ -101,8 +100,8 @@ public class MemberController {
         return new ResponseEntity(Response.of(MemberResponseMessage.MEMBER_PASSWORD_MODIFY_SUCCESS), HttpStatus.OK);
     }
 
-    @GetMapping("/search-member/{email-nickname}")
-    public ResponseEntity findMembers(@PathVariable("email-nickname") String emailNickname) throws Exception {
+    @GetMapping("/search-member")
+    public ResponseEntity findMembers(@RequestParam(value = "email-nickname", required = false, defaultValue = "") String emailNickname) throws Exception {
         List<MemberSearchResponseDto> memberList = memberService.getMemberList(emailNickname);
         return new ResponseEntity<>(memberList, HttpStatus.OK);
     }

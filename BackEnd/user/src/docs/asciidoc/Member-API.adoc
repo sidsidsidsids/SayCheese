@@ -12,19 +12,22 @@ operation::MemberIntegrationTest/testJoinMemberFailure_DuplicatedEmail[snippets=
 === 회원가입 API(닉네임 중복)
 operation::MemberIntegrationTest/testJoinMemberFailure_DuplicatedNickname[snippets='http-request,request-fields,http-response,response-fields']
 
+=== 회원가입 API(비밀번호 제약)
+operation::MemberIntegrationTest/testJoinMemberFailure_PasswordConstraints[snippets='http-request,request-fields,http-response,response-fields']
+
 [[중복확인-API]]
 
 === 이메일 중복확인 API(정상)
-operation::MemberIntegrationTest/testIdCheckSuccess[snippets='http-request,path-parameters,http-response,response-fields']
+operation::MemberIntegrationTest/testIdCheckSuccess[snippets='http-request,request-fields,http-response,response-fields']
 
 === 이메일 중복확인 API(이메일 중복)
-operation::MemberIntegrationTest/testIdCheckFailure[snippets='http-request,path-parameters,http-response,response-fields']
+operation::MemberIntegrationTest/testIdCheckFailure[snippets='http-request,request-fields,http-response,response-fields']
 
 === 닉네임 중복확인 API(정상)
-operation::MemberIntegrationTest/testNicknameCheckSuccess[snippets='http-request,path-parameters,http-response,response-fields']
+operation::MemberIntegrationTest/testNicknameCheckSuccess[snippets='http-request,request-fields,http-response,response-fields']
 
 === 닉네임 중복확인 API(닉네임 중복)
-operation::MemberIntegrationTest/testNicknameCheckFailure[snippets='http-request,path-parameters,http-response,response-fields']
+operation::MemberIntegrationTest/testNicknameCheckFailure[snippets='http-request,request-fields,http-response,response-fields']
 
 [[로그인-API]]
 
@@ -56,7 +59,7 @@ operation::MemberIntegrationTest/testDeleteMemberFailure[snippets='http-request,
 [[회원명단불러오기-API]]
 
 === 회원명단불러오기 API
-operation::MemberIntegrationTest/testGetMembersList[snippets='http-request,path-parameters,http-response,response-fields']
+operation::MemberIntegrationTest/testGetMembersList[snippets='http-request,request-parameters,http-response,response-fields']
 
 [[로그아웃-API]]
 

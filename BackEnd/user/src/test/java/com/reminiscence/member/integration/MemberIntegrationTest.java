@@ -129,7 +129,7 @@ public class MemberIntegrationTest {
         //givenz
         redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_SUCCESS_TOKEN_PREFIX + "saycheese@gmail.com", "", Duration.ofMinutes(3));
         String email = "saycheese@gmail.com";
-        String password = "1234";
+        String password = "password1234$";
         String nickname = "검정";
         char genderFm = 'F';
         int age = 31;
@@ -154,7 +154,7 @@ public class MemberIntegrationTest {
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                         requestFields(
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("아이디(이메일)").attributes(key("constraints").value("이메일 유효성 검사 제한")),
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 최소 8자 이상")),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 영문자, 특수문자, 숫자를 포함한 최소 8자 이상")),
                                 fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임").attributes(key("constraints").value("닉네임은 최소 2자 이상, 최대 20자 이하, 공백이나 특수 기호 포함되지 않도록 제한, 중복 제한")),
                                 fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별").attributes(key("constraints").value("")),
                                 fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이").attributes(key("constraints").value("")),
@@ -192,7 +192,7 @@ public class MemberIntegrationTest {
 
         MemberJoinRequestDto memberJoinRequestDto = MemberJoinRequestDto.builder()
                 .email(email)
-                .password("password")
+                .password("password1234@")
                 .nickname("nickname")
                 .genderFm('F')
                 .age(age)
@@ -207,7 +207,7 @@ public class MemberIntegrationTest {
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                         requestFields(
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("중복된 아이디(이메일)").attributes(key("constraints").value("제목은 최소 3글자, 20글자 이하")),
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 최소 8자 이상")),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 영문자, 특수문자, 숫자를 포함한 최소 8자 이상")),
                                 fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임").attributes(key("constraints").value("닉네임은 최소 2자 이상, 최대 20자 이하, 공백이나 특수 기호 포함되지 않도록 제한, 중복 제한")),
                                 fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별").attributes(key("constraints").value("")),
                                 fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이").attributes(key("constraints").value("")),
@@ -246,7 +246,7 @@ public class MemberIntegrationTest {
 
         MemberJoinRequestDto memberJoinRequestDto = MemberJoinRequestDto.builder()
                 .email("saycheese2@gmail.com")
-                .password("password")
+                .password("password1234!")
                 .nickname(nickname)
                 .genderFm('F')
                 .age(age)
@@ -260,7 +260,60 @@ public class MemberIntegrationTest {
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                         requestFields(
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("아이디(이메일)").attributes(key("constraints").value("제목은 최소 3글자, 20글자 이하")),
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 최소 8자 이상")),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 영문자, 특수문자, 숫자를 포함한 최소 8자 이상")),
+                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("중복된 닉네임").attributes(key("constraints").value("닉네임은 최소 2자 이상, 최대 20자 이하, 공백이나 특수 기호 포함되지 않도록 제한, 중복 제한")),
+                                fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별").attributes(key("constraints").value("")),
+                                fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이").attributes(key("constraints").value("")),
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("이름").attributes(key("constraints").value("이름 입력 필수")),
+                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value(""))
+                        ),
+                        responseFields(
+                                fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("회원가입 실패 테스트_비밀번호 제약")
+    public void testJoinMemberFailure_PasswordConstraints() throws Exception {
+        //given
+        redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_SUCCESS_TOKEN_PREFIX + "saycheese2@gmail.com", "", Duration.ofMinutes(3));
+        String email = "saycheese@gmail.com";
+        String password = "1234";
+        String nickname = "검정";
+        char genderFm = 'F';
+        int age = 31;
+        String name = "고무신";
+        String profile = "xxxxxxx";
+
+        memberRepository.save(MemberJoinRequestDto.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .genderFm(genderFm)
+                .age(age)
+                .name(name)
+                .profile(profile)
+                .build().toEntity());
+
+        MemberJoinRequestDto memberJoinRequestDto = MemberJoinRequestDto.builder()
+                .email("saycheese2@gmail.com")
+                .password("1234!")
+                .nickname(nickname)
+                .genderFm('F')
+                .age(age)
+                .name(name)
+                .profile(profile)
+                .build();
+        mvc.perform(post("/api/member/join")
+                        .content(objectMapper.writeValueAsString(memberJoinRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest()) // 응답 status를 conflict로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestFields(
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("아이디(이메일)").attributes(key("constraints").value("제목은 최소 3글자, 20글자 이하")),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 영문자, 특수문자, 숫자를 포함한 최소 8자 이상")),
                                 fieldWithPath("nickname").type(JsonFieldType.STRING).description("중복된 닉네임").attributes(key("constraints").value("닉네임은 최소 2자 이상, 최대 20자 이하, 공백이나 특수 기호 포함되지 않도록 제한, 중복 제한")),
                                 fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별").attributes(key("constraints").value("")),
                                 fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이").attributes(key("constraints").value("")),
@@ -280,7 +333,7 @@ public class MemberIntegrationTest {
     public void testIdCheckSuccess() throws Exception {
         //given
         String email = "saycheese@gmail.com";
-        String password = "1234";
+        String password = "1234asdf@";
         String nickname = "검정";
         Role role = Role.MEMBER;
         char genderFm = 'F';
@@ -303,12 +356,15 @@ public class MemberIntegrationTest {
                 .snsType(snsType)
                 .build());
 
-        mvc.perform(RestDocumentationRequestBuilders.get("/api/member/join/{email}/id-check", "another-email")
+        MemberIdCheckRequestDto memberIdCheckRequestDto = new MemberIdCheckRequestDto("anotherEmail");
+
+        mvc.perform(post("/api/member/id-check")
+                        .content(objectMapper.writeValueAsString(memberIdCheckRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) // 응답 status를 ok로 테스트
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
-                                pathParameters(
-                                        parameterWithName("email").description("이메일")
+                                requestFields(
+                                        fieldWithPath("email").type(JsonFieldType.STRING).description("중복되지 않는 이메일").attributes(key("constraints").value(""))
                                 ),
                                 responseFields(
                                         fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
@@ -345,12 +401,15 @@ public class MemberIntegrationTest {
                 .snsType(snsType)
                 .build());
 
-        mvc.perform(RestDocumentationRequestBuilders.get("/api/member/join/{email}/id-check", email)
+        MemberIdCheckRequestDto memberIdCheckRequestDto = new MemberIdCheckRequestDto(email);
+
+        mvc.perform(post("/api/member/id-check")
+                        .content(objectMapper.writeValueAsString(memberIdCheckRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest()) // 응답 status를 BadRequest로 테스트
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
-                        pathParameters(
-                                parameterWithName("email").description("중복된 이메일")
+                        requestFields(
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("중복된 이메일").attributes(key("constraints").value(""))
                         ),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
@@ -385,12 +444,16 @@ public class MemberIntegrationTest {
                 .snsId(snsId)
                 .snsType(snsType)
                 .build());
-        mvc.perform(RestDocumentationRequestBuilders.get("/api/member/join/{nickname}/nickname-check", "another-nickname")
+
+        MemberNicknameCheckRequestDto memberNicknameCheckRequestDto = new MemberNicknameCheckRequestDto("anotherNickname");
+
+        mvc.perform(post("/api/member/nickname-check")
+                        .content(objectMapper.writeValueAsString(memberNicknameCheckRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) // 응답 status를 ok로 테스트
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
-                        pathParameters(
-                                parameterWithName("nickname").description("닉네임")
+                        requestFields(
+                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("중복되지 않는 닉네임").attributes(key("constraints").value(""))
                         ),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
@@ -426,12 +489,15 @@ public class MemberIntegrationTest {
                 .snsType(snsType)
                 .build());
 
-        mvc.perform(RestDocumentationRequestBuilders.get("/api/member/join/{nickname}/nickname-check", nickname)
+        MemberNicknameCheckRequestDto memberNicknameCheckRequestDto = new MemberNicknameCheckRequestDto(nickname);
+
+        mvc.perform(post("/api/member/nickname-check")
+                        .content(objectMapper.writeValueAsString(memberNicknameCheckRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest()) // 응답 status를 BadRequest로 테스트
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
-                        pathParameters(
-                                parameterWithName("nickname").description("중복된 닉네임")
+                        requestFields(
+                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("중복된 닉네임").attributes(key("constraints").value(""))
                         ),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
@@ -647,7 +713,7 @@ public class MemberIntegrationTest {
                                 headerWithName("Authorization").description("로그인 성공한 토큰 ")
                         ),
                         requestFields(
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 최소 8자 이상")),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 영문자, 특수문자, 숫자를 포함한 최소 8자 이상")),
                                 fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임").attributes(key("constraints").value("닉네임은 최소 2자 이상, 최대 20자 이하, 공백이나 특수 기호 포함되지 않도록 제한, 중복 제한")),
                                 fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별").attributes(key("constraints").value("")),
                                 fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이").attributes(key("constraints").value("")),
@@ -809,12 +875,13 @@ public class MemberIntegrationTest {
                 .build());
 
         // 이메일로 검색 시
-        MvcResult result1 = mvc.perform(RestDocumentationRequestBuilders.get("/api/member/search-member/{email-nickname}", email)
+        MvcResult result1 = mvc.perform(get("/api/member/search-member")
+                        .param("email-nickname", email)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) // 응답 status를 ok로 테스트
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
-                        pathParameters(
-                                parameterWithName("email-nickname").description("email 또는 nickname")
+                        requestParameters(
+                                parameterWithName("email-nickname").description("email 또는 nickname").attributes(key("constrains").value(""))
                         ),
                         responseFields(
                                 fieldWithPath("[].email").type(JsonFieldType.STRING).description("아이디(이메일)"),
