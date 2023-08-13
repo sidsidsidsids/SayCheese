@@ -47,30 +47,32 @@ function Main() {
       <button
         onClick={() => {
           console.log(userInfo);
-          if (!userInfo) {
-            setNameModalOpen(true);
-          } else {
-            if (able) {
-              setCreateModalOpen(true);
-            } else {
-              alert("이미 접속중입니다");
-            }
-          }
+          // if (!userInfo) {
+          //   setNameModalOpen(true);
+          // } else {
+          //   if (able) {
+          //     setCreateModalOpen(true);
+          //   } else {
+          //     alert("이미 접속중입니다");
+          //   }
+          // }
+          setCreateModalOpen(true)
         }}
       >
         방 생성
       </button>
       <button
         onClick={() => {
-          if (!userInfo) {
-            setNameModalOpen(true);
-          } else {
-            if (able) {
-              setJoinModalOpen(true);
-            } else {
-              alert("이미 접속중입니다");
-            }
-          }
+          // if (!userInfo) {
+          //   setNameModalOpen(true);
+          // } else {
+          //   if (able) {
+          //     setJoinModalOpen(true);
+          //   } else {
+          //     alert("이미 접속중입니다");
+          //   }
+          // }
+          setJoinModalOpen(true)
         }}
       >
         방 입장

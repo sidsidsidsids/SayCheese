@@ -7,7 +7,7 @@
   height: 100%;
   margin: 0;
   padding: 0;
-  font-size: 0;
+  font-size: 40;
 }
 .room-active {
   margin: 0;
@@ -67,5 +67,17 @@
   /* border: 1px dashed black; */
   /* width: 80%; */
   flex: 1 1 80%;
+  overflow: hidden;
+}
+
+.frame-settings {
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  border: 0;
+  /* border: 1px dashed black; */
+  /* width: 80%; */
+  flex: 1 1 20%;
   overflow: hidden;
 }

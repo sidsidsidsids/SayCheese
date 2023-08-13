@@ -73,17 +73,19 @@ function RoomCreateModal({ open, close }) {
       selectedMode = "normal";
     }
     if (isWindowFrame === true) {
-      selectedFrame = "horizon";
+      selectedFrame = "horizontal";
     } else {
       selectedFrame = "vertical";
     }
     try {
-      const request = await axios.post(
+      console.log(roomPassword,roomLimit,selectedMode,roomCode,selectedFrame)
+      await axios.post(
         "/api/room",
         {
           password: roomPassword,
           maxCount: roomLimit,
           mode: selectedMode,
+          // roomCode: "sessionC",
           roomCode: roomCode,
           specification: selectedFrame,
         },
@@ -93,9 +95,10 @@ function RoomCreateModal({ open, close }) {
             "Content-Type": "application/json;charset=UTF-8",
           },
         }
-      );
-      console.log(request);
-      navigate(`/room/${roomCode}`);
+      ).then((response) => {
+        console.log(response);
+        navigate(`/room/${roomCode}`);
+      })
     } catch (error) {
       console.log(error);
     }

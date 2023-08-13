@@ -40,7 +40,8 @@ function RoomJoinModal({ open, close }) {
       navigate(`/room/${roomCode}`);
       close();
     } catch (error) {
-      alert(error);
+      console.log(error)
+      alert("정확한 방 코드와 비밀번호를 입력해주세요");
     }
   };
   return (

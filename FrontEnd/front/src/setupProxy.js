@@ -9,31 +9,31 @@ module.exports = function (app) {
   );
   app.use(
     createProxyMiddleware("/api/room", {
-      target: "https://d107-211-192-210-169.ngrok-free.app",
+      target: "https://17ad-175-197-19-209.ngrok-free.app",
       changeOrigin: true,
     })
   );
   app.use(
     createProxyMiddleware("/api/image", {
-      target: "https://00c9-211-192-210-169.ngrok-free.app",
+      target: "https://c0d8-175-197-19-209.ngrok-free.app",
       changeOrigin: true,
     })
   );
   app.use(
     createProxyMiddleware("/api/amazon", {
-      target: "https://00c9-211-192-210-169.ngrok-free.app",
+      target: "https://c0d8-175-197-19-209.ngrok-free.app",
       changeOrigin: true,
     })
   );
   app.use(
     createProxyMiddleware("/api/article", {
-      target: "https://00c9-211-192-210-169.ngrok-free.app",
+      target: "https://b149-1-238-96-220.ngrok-free.app/",
       changeOrigin: true,
     })
   );
   app.use(
     createProxyMiddleware("/api", {
-      target: "https://00c9-211-192-210-169.ngrok-free.app",
+      target: "https://17ad-175-197-19-209.ngrok-free.app",
       changeOrigin: true,
     })
   );
