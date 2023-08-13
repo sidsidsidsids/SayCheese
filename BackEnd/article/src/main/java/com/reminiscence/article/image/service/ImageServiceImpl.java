@@ -5,10 +5,7 @@ import com.reminiscence.article.config.auth.UserDetail;
 import com.reminiscence.article.domain.*;
 import com.reminiscence.article.exception.customexception.ImageException;
 import com.reminiscence.article.exception.message.ImageExceptionMessage;
-import com.reminiscence.article.image.dto.ImageWriteRequestDto;
-import com.reminiscence.article.image.dto.OwnerImageListResponseDto;
-import com.reminiscence.article.image.dto.RandomTagResponseDto;
-import com.reminiscence.article.image.dto.RoomParticipantDto;
+import com.reminiscence.article.image.dto.*;
 import com.reminiscence.article.image.repository.ImageOwnerRepository;
 import com.reminiscence.article.image.repository.ImageRepository;
 import com.reminiscence.article.image.repository.ImageTagRepository;
@@ -80,7 +77,7 @@ public class ImageServiceImpl implements ImageService{
     }
 
     @Override
-    public void saveImage(UserDetail userDetail, ImageWriteRequestDto requestDto) {
+    public ImageWriteResponseDto saveImage(UserDetail userDetail, ImageWriteRequestDto requestDto) {
         StringBuilder imageLink = new StringBuilder();
          imageLink.append("https://")
                  .append(BUCKET_NAME)
@@ -127,10 +124,7 @@ public class ImageServiceImpl implements ImageService{
                 });
                 }
         );
-
-
-
-
+        return new ImageWriteResponseDto(image.getId());
     }
 
     @Transactional

@@ -72,10 +72,10 @@ public class ImageController {
      */
 
     @PostMapping
-    public ResponseEntity<Response> writeImageInfo(@AuthenticationPrincipal UserDetail userDetail,
+    public ResponseEntity<ImageWriteResponseDto> writeImageInfo(@AuthenticationPrincipal UserDetail userDetail,
                                               @RequestBody @Valid ImageWriteRequestDto requestDto) {
-        imageService.saveImage(userDetail, requestDto);
-        return new ResponseEntity<>(Response.of(ImageResponseMessage.INSERT_IMAGE_SUCCESS),HttpStatus.OK);
+        ImageWriteResponseDto responseDto = imageService.saveImage(userDetail, requestDto);
+        return new ResponseEntity<>(responseDto,HttpStatus.OK);
     }
 
     /**
