@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 // third party
 import { useDispatch } from "react-redux";
 import Select from "react-select";
@@ -9,7 +9,7 @@ import "../css/CreateToolBarText.css";
 
 export default function Text() {
   const [customText, setCustomText] = useState("");
-  const [customTextColor, setCustomTextColor] = useState("#fff");
+  const [customTextColor, setCustomTextColor] = useState("white");
   const [customTextSize, setCustomTextSize] = useState("20");
   const [customTextFont, setCustomTextFont] = useState("Roboto");
   const textRef = useRef();
@@ -43,6 +43,7 @@ export default function Text() {
       <input
         id="textColor"
         type="color"
+        value="#FFFFFF"
         ref={textColorRef}
         onChange={(e) => {
           setCustomTextColor(e.target.value);
