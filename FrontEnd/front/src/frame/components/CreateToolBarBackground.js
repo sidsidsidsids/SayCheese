@@ -18,17 +18,20 @@ export default function BgColor() {
   // 이미지 업로드 input의 onChange
   const saveImgFile = () => {
     const file = imgRef.current.files[0];
-    var reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      setImgFile(reader.result);
-      // image: imgFile이면 안된다.
-      // 리액트 컴포넌트는 일종의 스냅샷이기때문에 지금 이상태에서
-      // reader.result와 imgFile은 서로 다르다!!!
-      // 그래서 바로바로 반영이 안되고 딜레이가 생기는 것이었다
-      const payload = { color: customColor, image: reader.result };
-      dispatch(Repaint(payload));
-    };
+    if (file) {
+      // 파일이 있으면
+      var reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        setImgFile(reader.result);
+        // image: imgFile이면 안된다.
+        // 리액트 컴포넌트는 일종의 스냅샷이기때문에 지금 이상태에서
+        // reader.result와 imgFile은 서로 다르다!!!
+        // 그래서 바로바로 반영이 안되고 딜레이가 생기는 것이었다
+        const payload = { color: customColor, image: reader.result };
+        dispatch(Repaint(payload));
+      };
+    }
   };
   // 배경색 input 의 onChange
   const colorPick = (event) => {
