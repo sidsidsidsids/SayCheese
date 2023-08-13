@@ -19,7 +19,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AmazonServiceImpl implements AmazonService {
 
-    private final FrameRepository frameRepository;
     private final AmazonS3 amazonS3;
     @Value("${cloud.aws.s3.bucket}")
     private String BUCKET_NAME;
@@ -44,6 +43,9 @@ public class AmazonServiceImpl implements AmazonService {
         generatePresignedUrlRequest.addRequestParameter(
                 Headers.S3_CANNED_ACL,
                 CannedAccessControlList.PublicRead.toString());
+
+        generatePresignedUrlRequest.addRequestParameter(
+                Headers.CONTENT_TYPE, "image/png");
         return generatePresignedUrlRequest;
     }
     private Date getPreSignedUrlExpiration() {

@@ -1,10 +1,9 @@
 package com.reminiscence.article.framearticle;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reminiscence.article.domain.Member;
-import com.reminiscence.article.framearticle.dummy.DummyFrameArticleListRequestDto;
+import com.reminiscence.article.filter.JwtUtil;
 import com.reminiscence.article.framearticle.dummy.DummyFrameArticleRequestDto;
 import com.reminiscence.article.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,17 +18,17 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -53,6 +52,10 @@ public class FrameArticleIntegrationTest {
 
     @Autowired
     MemberRepository memberRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
     MockMvc mvc;
     @Autowired
     private Environment env;
@@ -75,27 +78,30 @@ public class FrameArticleIntegrationTest {
         Member admin=memberRepository.findById(1L).orElse(null);
         Member member=memberRepository.findById(2L).orElse(null);
         Member anotherMember=memberRepository.findById(3L).orElse(null);
-        adminToken= JWT.create()
-                .withClaim("memberId",String.valueOf(admin.getId()))
-                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
-        memberToken= JWT.create()
-                .withClaim("memberId",String.valueOf(member.getId()))
-                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
-        anotherMemberToken= JWT.create()
-                .withClaim("memberId",String.valueOf(anotherMember.getId()))
-                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
+
+        Map<String, Object> adminClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(admin.getId()));
+        Map<String, Object> memberClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(member.getId()));
+        Map<String, Object> anotherMemberClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(anotherMember.getId()));
+
+        final int ACCESS_TOKEN_EXPIRATION_TIME = 60 * 30 * 1000 ; // 30분
+
+        adminToken = jwtUtil.generateToken(admin.getEmail(), ACCESS_TOKEN_EXPIRATION_TIME, adminClaims);
+        memberToken = jwtUtil.generateToken(member.getEmail(), ACCESS_TOKEN_EXPIRATION_TIME, memberClaims);
+        anotherMemberToken = jwtUtil.generateToken(anotherMember.getEmail(), ACCESS_TOKEN_EXPIRATION_TIME, anotherMemberClaims);
+
+
     }
 
 
     @Test
     @DisplayName("프레임 저장 테스트(정상)")
     public void writeFrameArticleSuccessTest() throws Exception{
-        DummyFrameArticleRequestDto dummyFrameArticleRequestDto=new DummyFrameArticleRequestDto.Builder()
+        DummyFrameArticleRequestDto dummyFrameArticleRequestDto=DummyFrameArticleRequestDto.builder()
                 .name("test")
                 .subject("test")
-                .link("http://naver.com")
+                .fileType("frame")
                 .isPublic(true)
-                .frameSpecification("VERTICAL")
+                .frameSpecification("vertical")
                 .build();
         HttpHeaders headers=new HttpHeaders();
         headers.add("Authorization","Bearer "+memberToken);
@@ -110,9 +116,9 @@ public class FrameArticleIntegrationTest {
                                 ),
                                 requestFields(
                                         fieldWithPath("name").type(JsonFieldType.STRING).description("프레임 이름").attributes(key("constraints").value("최소 3글자, 100글자 이하")),
-                                        fieldWithPath("link").type(JsonFieldType.STRING).description("프레임 링크 주소").attributes(key("constraints").value("최소 3글자, 최대 1000글자")),
+                                        fieldWithPath("fileType").type(JsonFieldType.STRING).description("파일 타입").attributes(key("constraints").value("Image, Frame, Profile")),
                                         fieldWithPath("isPublic").type(JsonFieldType.BOOLEAN).description("공개 여부").attributes(key("constraints").value("true or false")),
-                                        fieldWithPath("frameSpecification").type(JsonFieldType.STRING).description("프레임 타입").attributes(key("constraints").value("A or B")),
+                                        fieldWithPath("frameSpecification").type(JsonFieldType.STRING).description("프레임 타입").attributes(key("constraints").value("vertical or horizontal")),
                                         fieldWithPath("subject").type(JsonFieldType.STRING).description("프레임 게시글 제목").attributes(key("constraints").value("최소 3글자, 20글자 이하"))
                                 ),
                                 responseFields(
@@ -123,10 +129,10 @@ public class FrameArticleIntegrationTest {
     @Test
     @DisplayName("프레임 저장 테스트(비로그인 시도 시)")
     public void writeFrameArticleNotAuthFailTest() throws Exception{
-        DummyFrameArticleRequestDto dummyFrameArticleRequestDto=new DummyFrameArticleRequestDto.Builder()
+        DummyFrameArticleRequestDto dummyFrameArticleRequestDto=DummyFrameArticleRequestDto.builder()
                 .name("test2")
                 .subject("test2")
-                .link("http://naver.com")
+                .fileType("image")
                 .isPublic(true)
                 .frameSpecification("VERTICAL")
                 .build();
@@ -136,23 +142,23 @@ public class FrameArticleIntegrationTest {
                 .andExpect(status().isUnauthorized())
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                         requestFields(
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("프레임 이름").attributes(key("constraints").value("최소 3글자, 100글자 이하")),
-                                fieldWithPath("link").type(JsonFieldType.STRING).description("프레임 링크 주소").attributes(key("constraints").value("최소 3글자, 최대 1000글자")),
-                                fieldWithPath("isPublic").type(JsonFieldType.BOOLEAN).description("공개 여부").attributes(key("constraints").value("true or false")),
-                                fieldWithPath("frameSpecification").type(JsonFieldType.STRING).description("프레임 타입").attributes(key("constraints").value("A or B")),
-                                fieldWithPath("subject").type(JsonFieldType.STRING).description("프레임 게시글 제목").attributes(key("constraints").value("최소 3글자, 20글자 이하"))
+                                fieldWithPath("name").description("프레임 이름").attributes(key("constraints").value("최소 3글자, 100글자 이하")),
+                                fieldWithPath("fileType").description("파일 타입").attributes(key("constraints").value("image, frame, profile")),
+                                fieldWithPath("isPublic").description("공개 여부").attributes(key("constraints").value("true or false")),
+                                fieldWithPath("frameSpecification").description("프레임 타입").attributes(key("constraints").value("vertical or horizontal")),
+                                fieldWithPath("subject").description("프레임 게시글 제목").attributes(key("constraints").value("최소 3글자, 20글자 이하"))
                         )
                 ));
     }
     @Test
     @DisplayName("프레임 저장 테스트(잘못된 값이 들어올 시)")
     public void writeFrameArticleValidFailTest() throws Exception{
-        DummyFrameArticleRequestDto dummyFrameArticleRequestDto=new DummyFrameArticleRequestDto.Builder()
-                .name("test2")
+        DummyFrameArticleRequestDto dummyFrameArticleRequestDto=DummyFrameArticleRequestDto.builder()
+                .name("test.jpg")
+                .fileType("frame")
                 .subject("test2")
-                .link("http://naver.com")
                 .isPublic(true)
-                .frameSpecification("C")
+                .frameSpecification("X")
                 .build();
         HttpHeaders headers=new HttpHeaders();
         headers.add("Authorization","Bearer "+memberToken);
@@ -166,11 +172,11 @@ public class FrameArticleIntegrationTest {
                                 headerWithName("Authorization").description("로그인 성공한 토큰 ")
                         ),
                         requestFields(
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("프레임 이름").attributes(key("constraints").value("최소 3글자, 100글자 이하")),
-                                fieldWithPath("link").type(JsonFieldType.STRING).description("프레임 링크 주소").attributes(key("constraints").value("최소 3글자, 최대 1000글자")),
-                                fieldWithPath("isPublic").type(JsonFieldType.BOOLEAN).description("공개 여부").attributes(key("constraints").value("true or false")),
-                                fieldWithPath("frameSpecification").type(JsonFieldType.STRING).description("프레임 타입").attributes(key("constraints").value("A or B")),
-                                fieldWithPath("subject").type(JsonFieldType.STRING).description("프레임 게시글 제목").attributes(key("constraints").value("최소 3글자, 20글자 이하"))
+                                fieldWithPath("name").description("프레임 이름").attributes(key("constraints").value("최소 3글자, 100글자 이하")),
+                                fieldWithPath("fileType").description("파일 타입").attributes(key("constraints").value("image, frame, profile")),
+                                fieldWithPath("isPublic").description("공개 여부").attributes(key("constraints").value("true or false")),
+                                fieldWithPath("frameSpecification").description("프레임 타입").attributes(key("constraints").value("vertical or horizontal")),
+                                fieldWithPath("subject").description("프레임 게시글 제목").attributes(key("constraints").value("최소 3글자, 20글자 이하"))
                         ),
                         responseFields(
                                 fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 코드"),

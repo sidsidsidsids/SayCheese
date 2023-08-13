@@ -1,24 +1,41 @@
 package com.reminiscence.article.image.service;
 
-import com.amazonaws.services.s3.AmazonS3;
+import com.reminiscence.article.common.Pagination;
 import com.reminiscence.article.config.auth.UserDetail;
-import com.reminiscence.article.domain.Image;
-import com.reminiscence.article.domain.ImageOwner;
-import com.reminiscence.article.domain.ImageTag;
+import com.reminiscence.article.domain.*;
 import com.reminiscence.article.exception.customexception.ImageException;
 import com.reminiscence.article.exception.message.ImageExceptionMessage;
 import com.reminiscence.article.image.dto.ImageWriteRequestDto;
-import com.reminiscence.article.image.dto.OwnerImageResponseDto;
+import com.reminiscence.article.image.dto.OwnerImageListResponseDto;
 import com.reminiscence.article.image.dto.RandomTagResponseDto;
+import com.reminiscence.article.image.dto.RoomParticipantDto;
 import com.reminiscence.article.image.repository.ImageOwnerRepository;
 import com.reminiscence.article.image.repository.ImageRepository;
 import com.reminiscence.article.image.repository.ImageTagRepository;
 import com.reminiscence.article.image.repository.TagRepository;
+import com.reminiscence.article.image.vo.ImageVo;
+import com.reminiscence.article.notice.dto.NoticeArticleListResponseDto;
+import com.reminiscence.article.notice.vo.NoticeArticleVo;
+import io.jsonwebtoken.lang.Collections;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -29,10 +46,32 @@ public class ImageServiceImpl implements ImageService{
     private final ImageOwnerRepository imageOwnerRepository;
     private final TagRepository tagRepository;
     private final ImageTagRepository imageTagRepository;
+    private final WebClient webClient;
+    private final JdbcTemplate jdbcTemplate;
+    @Value("${cloud.aws.s3.bucket}")
+    private String BUCKET_NAME;
+    @Value("${cloud.aws.region.static}")
+    private String BUCKET_REGION;
+    @Value("${spring.data.base-url}")
+    private String BASE_URL;
+
+
+
 
     @Override
-    public List<OwnerImageResponseDto> getReadRecentOwnImages(Long memberId) {
-        return null;
+    public OwnerImageListResponseDto getReadRecentOwnImages(Long memberId, Pageable requestPageable) {
+        int page = requestPageable.getPageNumber();
+        if(page<=0){
+            page=1;
+        }
+        Pageable pageable= PageRequest.of(page-1, Pagination.DEFAULT_OWN_IMAGE_PER_PAGE_SIZE, Sort.Direction.DESC,"id");
+        Optional<Page<ImageVo>> images = imageRepository.findRecentOwnerImage(memberId, pageable);
+        images.orElseThrow(()->
+                new ImageException(ImageExceptionMessage.NOT_FOUND_IMAGE));
+
+        OwnerImageListResponseDto ownerImageListResponseDto = new OwnerImageListResponseDto(page, images.get().getTotalPages(), images.get().getTotalElements(), images.get().getContent());
+        
+        return ownerImageListResponseDto;
     }
 
     @Override
@@ -43,21 +82,57 @@ public class ImageServiceImpl implements ImageService{
         return randomTags.get();
     }
 
-    // 이미지 소유자 저장 기능 추가 필요!!
-    // 방 참여자 로직이 정해지지 않아서 나중에 추가해야 한다.
     @Override
     public void saveImage(UserDetail userDetail, ImageWriteRequestDto requestDto) {
-        String fileType = getFileType(requestDto.getImageName());
+        StringBuilder imageLink = new StringBuilder();
+         imageLink.append("https://")
+                 .append(BUCKET_NAME)
+                 .append(".s3.")
+                 .append(BUCKET_REGION)
+                 .append(".amazonaws.com/")
+                 .append(requestDto.getFileType().getValue())
+                 .append("/")
+                 .append(requestDto.getImageName());
+        String imageType = getFileType(requestDto.getImageName());
         String name = getFileName(requestDto.getImageName());
         Image image = Image.builder()
-                .link(requestDto.getImageLink())
-                .type(fileType)
+                .link(imageLink.toString())
+                .type(imageType)
                 .name(name)
                 .build();
         imageRepository.save(image);
-        for(int i=0;i<4;i++){
-            imageTagRepository.save(new ImageTag(image,requestDto.getTags().get(i)));
+        List<ImageTag> imageTags = new ArrayList<>();
+        for(Long tagId : requestDto.getTags()){
+            imageTags.add(new ImageTag(image,tagId));
         }
+        String imageSql = "insert into image_tag(image_id, tag_id) values(?,?)";
+        jdbcTemplate.batchUpdate(imageSql,
+                imageTags,
+                imageTags.size(),
+                (ps, imageTag)->{
+            ps.setLong(1,imageTag.getImageTagKey().getImageId());
+            ps.setLong(2,imageTag.getImageTagKey().getTagId());
+        });
+        Mono<RoomParticipantDto[]> participants = webClient.get()
+                .uri("/api/participant/" + requestDto.getRoomCode())
+                .retrieve()
+                .bodyToMono(RoomParticipantDto[].class);
+
+
+        participants.subscribe(
+                response->{
+                    String imageOwnerSql = "insert into image_owner(image_id, member_id) values(?,?)";
+                    List<RoomParticipantDto> list = Collections.arrayToList(response);
+                    jdbcTemplate.batchUpdate(imageOwnerSql, list, list.size(),
+                    (ps, memberId)->{
+                    ps.setLong(1,image.getId());
+                    ps.setLong(2, memberId.getMemberId());
+                });
+                }
+        );
+
+
+
 
     }
 
@@ -77,5 +152,4 @@ public class ImageServiceImpl implements ImageService{
     private String getFileName(String fileName){
         return fileName.substring(0, fileName.lastIndexOf("."));
     }
-
 }

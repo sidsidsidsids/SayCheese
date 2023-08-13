@@ -1,13 +1,14 @@
 package com.reminiscence.article.image.repository;
 
-import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.reminiscence.article.domain.QImage;
-import com.reminiscence.article.domain.QImageOwner;
-import com.reminiscence.article.domain.QLover;
-import com.reminiscence.article.image.dto.OwnerImageResponseDto;
+import com.reminiscence.article.domain.*;
+import com.reminiscence.article.image.vo.ImageVo;
 import com.reminiscence.article.schedule.dto.ImageDeleteResponseDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
@@ -26,6 +27,7 @@ public class ImageRepositoryImpl implements ImageRepositoryCustom{
     public Optional<List<ImageDeleteResponseDto>> findNonOwnerImage() {
         return Optional.ofNullable(queryFactory
                 .select(Projections.constructor(ImageDeleteResponseDto.class,
+                        QImage.image.id.as("imageId"),
                         QImage.image.link.as("imageName"),
                         QImage.image.type.as("imageType")
                 ))
@@ -36,19 +38,36 @@ public class ImageRepositoryImpl implements ImageRepositoryCustom{
     }
 
     @Override
-    public Optional<List<OwnerImageResponseDto>> findRecentOwnerImage(Pageable page, Long memberId) {
-        return Optional.ofNullable(queryFactory
-                .select(Projections.constructor(OwnerImageResponseDto.class,
+    public Optional<Page<ImageVo>> findRecentOwnerImage(Long memberId, Pageable pageable ) {
+
+        List<ImageVo> images = queryFactory
+                .select(Projections.constructor(ImageVo.class,
                         QImage.image.id.as("imageId"),
                         QImage.image.link.as("imageLink"),
-                        QImage.image.createdDate.as("createdDate")
+                        QImage.image.createdDate.as("createDate"),
+                        ExpressionUtils.as(
+                                queryFactory
+                                        .select(QImageArticle.imageArticle)
+                                        .from(QImageArticle.imageArticle)
+                                        .where(QImageArticle.imageArticle.image.eq(QImage.image)),
+                                "loverCnt")
                 ))
                 .from(QImageOwner.imageOwner)
                 .join(QImageOwner.imageOwner.image, QImage.image)
-                .where(QImageOwner.imageOwner.imageOwnerKey.memberId.eq(memberId))
-                .orderBy(QImage.image.createdDate.desc())
-                .offset(page.getOffset())
-                .limit(page.getPageSize())
-                .fetch());
+                .where(eqMemberId(memberId))
+                .orderBy(QImageOwner.imageOwner.image.createdDate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long count =  queryFactory.select(Wildcard.count)
+                .from(QImageOwner.imageOwner)
+                .where(eqMemberId(memberId))
+                .fetchOne();
+
+        return Optional.ofNullable(new PageImpl(images, pageable, count));
+    }
+    private BooleanExpression eqMemberId(Long memberId){
+        return QImageOwner.imageOwner.imageOwnerKey.memberId.eq(memberId);
     }
 }
