@@ -24,9 +24,7 @@ div.frameSearch > form > input {
   background-color: transparent;
   width: 200px;
   font-size: 22px;
-  
 }
 &:focus {
   outline: none;
 }
-

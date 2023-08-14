@@ -8,6 +8,8 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import Header from "./header/Header";
 import "./App.css";
 
+import { getUserInfo } from "./redux/features/login/loginSlice";
+
 function App() {
   const dispatch = useDispatch();
 
