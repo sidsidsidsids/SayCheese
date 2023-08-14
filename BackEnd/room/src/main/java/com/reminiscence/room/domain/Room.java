@@ -21,7 +21,10 @@ public class Room {
     @Column(name="max_count")
     private int maxCount;
     @Column(name="specification")
-    private String specification;
+    @Enumerated(EnumType.STRING)
+    private Specification specification;
+    @Column(name="start_yn")
+    private Character startYn;
     @Column(name="mode")
     @Enumerated(EnumType.STRING)
     private Mode mode;
@@ -33,13 +36,18 @@ public class Room {
     private List<Participant> participants = new ArrayList<>();
 
     @Builder
-    public Room(String password, int maxCount, String specification,
-                Mode mode, LocalDateTime endDate, String roomCode) {
+    public Room(String password, int maxCount, Specification specification,
+                Mode mode, LocalDateTime endDate, String roomCode, Character startYn){
         this.password = password;
         this.maxCount = maxCount;
         this.specification = specification;
         this.mode = mode;
         this.endDate = endDate;
         this.roomCode = roomCode;
+        this.startYn = startYn;
+    }
+
+    public void updateRoomStart(){
+        this.startYn = 'Y';
     }
 }

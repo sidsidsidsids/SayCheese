@@ -27,4 +27,7 @@ public class Lover {
         this.memberId = memberId;
         this.article = article;
     }
+    public void setArticle(Article article){
+        this.article = article;
+    }
 }

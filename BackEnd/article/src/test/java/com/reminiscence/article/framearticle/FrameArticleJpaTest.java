@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reminiscence.article.domain.Frame;
 import com.reminiscence.article.domain.FrameArticle;
+import com.reminiscence.article.domain.FrameSpecification;
 import com.reminiscence.article.exception.customexception.FrameArticleException;
 import com.reminiscence.article.exception.message.FrameArticleExceptionMessage;
 import com.reminiscence.article.frame.repository.FrameRepository;
@@ -47,21 +48,21 @@ public class FrameArticleJpaTest {
     @Test
     @DisplayName("프레임 저장 테스트")
     public void writeFrameArticleTest() throws JsonProcessingException {
-        DummyFrameArticleRequestDto dummyFrameArticleRequestDto=new DummyFrameArticleRequestDto.Builder()
-                .name("test")
+        DummyFrameArticleRequestDto dummyFrameArticleRequestDto = DummyFrameArticleRequestDto.builder()
+                .name("test.jpg")
                 .subject("test")
-                .link("http://special.com/frame/21241test.jpg")
+                .fileType("frame")
                 .isPublic(true)
-                .frameSpecification("VERTICAL")
+                .frameSpecification("vertical")
                 .build();
+
         FrameArticleRequestDto frameArticleRequestDto=objectMapper.readValue(objectMapper.writeValueAsString(dummyFrameArticleRequestDto),FrameArticleRequestDto.class);
-
-
+        String link = "https://test.s3.region.amazonaws.com/test/test.jpg";
         FrameArticleAndMemberRequestDto frameArticleAndMemberRequestDto=FrameArticleAndMemberRequestDto.builder()
                 .frameArticleRequestDto(frameArticleRequestDto)
                 .member(memberRepository.findById(2L).orElse(null))
                 .build();
-        Frame frame= FrameArticleAndMemberRequestDto.toEntity(frameArticleAndMemberRequestDto.getFrameArticleRequestDto());
+        Frame frame= FrameArticleAndMemberRequestDto.toEntity(frameArticleAndMemberRequestDto.getFrameArticleRequestDto(), link);
         frameRepository.save(frame);
         FrameArticle frameArticle=FrameArticle.builder()
                 .frame(frame)
@@ -159,7 +160,6 @@ public class FrameArticleJpaTest {
         assertEquals(1, frameArticleListResponseDto.getPageNavigator().getCurPage());
         assertEquals(2, frameArticleListResponseDto.getPageNavigator().getTotalPages());
         assertEquals(12, frameArticleListResponseDto.getPageNavigator().getTotalDataCount());
-        assertEquals("https://png.pngtree.com/png-vector/20210324/ourmid/pngtree-picture-frame-png-image_3135232.jpg", frameArticleListResponseDto.getFrameArticleVoList().get(0).getFrameLink());
         assertEquals(3, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverCnt());
         assertEquals("se6815", frameArticleListResponseDto.getFrameArticleVoList().get(0).getAuthor());
         assertEquals(1L, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverYn());
@@ -184,13 +184,11 @@ public class FrameArticleJpaTest {
         assertEquals(1, frameArticleListResponseDto.getPageNavigator().getCurPage());
         assertEquals(2, frameArticleListResponseDto.getPageNavigator().getTotalPages());
         assertEquals(12, frameArticleListResponseDto.getPageNavigator().getTotalDataCount());
-        assertEquals("https://png.pngtree.com/png-vector/20210324/ourmid/pngtree-picture-frame-png-image_3135232.jpg", frameArticleListResponseDto.getFrameArticleVoList().get(0).getFrameLink());
         assertEquals(3, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverCnt());
         assertEquals("se6815", frameArticleListResponseDto.getFrameArticleVoList().get(0).getAuthor());
         assertEquals(0L, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverYn());
 
         pageable = PageRequest.of(0, 5, Sort.Direction.DESC, "lover");
-        searchWord = "se";
         //when
         hotFrameArticles = frameArticleRepository.findNonMemberFrameArticles(pageable, searchWord, frameSpec);
 
@@ -205,10 +203,11 @@ public class FrameArticleJpaTest {
         assertEquals(1, frameArticleListResponseDto.getPageNavigator().getCurPage());
         assertEquals(3, frameArticleListResponseDto.getPageNavigator().getTotalPages());
         assertEquals(5, frameArticleListResponseDto.getPageNavigator().getTotalDataCount());
-        assertEquals("https://png.pngtree.com/png-vector/20210324/ourmid/pngtree-picture-frame-png-image_3135232.jpg", frameArticleListResponseDto.getFrameArticleVoList().get(0).getFrameLink());
         assertEquals(3, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverCnt());
         assertEquals("se6815", frameArticleListResponseDto.getFrameArticleVoList().get(0).getAuthor());
         assertEquals(0L, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverYn());
+
+
 
     }
 
@@ -246,6 +245,7 @@ public class FrameArticleJpaTest {
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "createdDate");
         String searchWord = "";
         String frameSpec = "";
+
         //when
         Page<FrameArticleVo> recentFrameArticle = frameArticleRepository.findNonMemberFrameArticles(pageable,searchWord, frameSpec);
         FrameArticleListResponseDto frameArticleListResponseDto = new FrameArticleListResponseDto(pageable.getPageNumber(), recentFrameArticle.getTotalPages(), recentFrameArticle.getTotalElements());
@@ -297,7 +297,7 @@ public class FrameArticleJpaTest {
         String frameSpec = "";
 
         //when
-        Page<FrameArticleVo> randomFrameArticles = frameArticleRepository.findNonMemberFrameArticles(pageable, searchWord, frameSpec);
+        Page<FrameArticleVo> randomFrameArticles = frameArticleRepository.findNonMemberFrameArticles(pageable,searchWord,frameSpec);
         FrameArticleListResponseDto frameArticleListResponseDto = new FrameArticleListResponseDto(pageable.getPageNumber(), randomFrameArticles.getTotalPages(), randomFrameArticles.getTotalElements());
 
         for(FrameArticleVo frameArticleVo:randomFrameArticles.getContent()){

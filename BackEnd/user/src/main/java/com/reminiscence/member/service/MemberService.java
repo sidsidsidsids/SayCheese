@@ -15,7 +15,7 @@ public interface MemberService {
 //    /* Admin */
 	List<MemberSearchResponseDto> getMemberList(String key) throws Exception;
     MemberInfoResponseDto getMemberInfo(String memberId) throws Exception;
-    Member updateMemberPassword(MemberUpdatePasswordRequestDto memberUpdatePasswordRequestDto) throws Exception;
+    void updateMemberPassword(MemberUpdatePasswordRequestDto memberUpdatePasswordRequestDto) throws Exception;
     ResponseEntity updateMemberInfo(MemberDetail memberDetail, MemberInfoUpdateRequestDto memberInfoUpdateRequestDto) throws  Exception;
 
     void deleteMember(long memberId) throws Exception;
@@ -24,5 +24,5 @@ public interface MemberService {
 
     MemberNicknameResponseDto getMemberNickName(MemberDetail memberDetail);
 
-    void saveProfile(MemberDetail memberDetail, MemberProfileSaveRequestDto requestDto);
+    MemberProfileResponseDto saveProfile(MemberDetail memberDetail, MemberProfileSaveRequestDto requestDto);
 }

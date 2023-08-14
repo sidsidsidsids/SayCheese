@@ -1,8 +1,11 @@
 server:
 port: 8080
 spring:
-#  config:
-#    import: "optional:configserver:"
+  cloud:
+    config:
+      enabled: false
+  config:
+    import: "optional:configserver:/"
   sql:
     init:
       mode: always
@@ -18,9 +21,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  cloud:
-    config:
-      enabled: false
 jwt:
   secret: secret-key
   expiration: 86400000

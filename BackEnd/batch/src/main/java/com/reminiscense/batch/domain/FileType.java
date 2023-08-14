@@ -1,22 +1,21 @@
-package com.reminiscence.article.domain;
-
+package com.reminiscense.batch.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum Mode {
-    GAME("game"),
-    NORMAL("normal");
+public enum FileType {
+    IMAGE("image"),
+    FRAME("frame"),
+    PROFILE("profile");
 
     private final String value;
 
-    Mode(String value) {
+    private FileType(String value) {
         this.value = value;
     }
-
     @JsonCreator
-    public static Mode from(String value) {
-        for (Mode type : Mode.values()) {
+    public static FileType from(String value) {
+        for (FileType type : FileType.values()) {
             if (type.getValue().equals(value)) {
                 return type;
             }
@@ -28,4 +27,7 @@ public enum Mode {
     public String getValue() {
         return value;
     }
+
+
+
 }

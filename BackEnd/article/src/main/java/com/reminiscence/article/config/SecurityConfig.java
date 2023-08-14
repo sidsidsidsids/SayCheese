@@ -2,6 +2,7 @@ package com.reminiscence.article.config;
 
 import com.reminiscence.article.domain.Role;
 import com.reminiscence.article.filter.JWTAuthorizationFilter;
+import com.reminiscence.article.filter.JwtUtil;
 import com.reminiscence.article.handler.AccessDenyHandler;
 import com.reminiscence.article.handler.AuthenticaitionEntryPoint;
 import com.reminiscence.article.member.repository.MemberRepository;
@@ -23,10 +24,12 @@ public class SecurityConfig {
     private final Environment env;
     private final MemberRepository memberRepository;
     private final CorsConfig corsConfig;
+    private final JwtUtil jwtUtil;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.addFilter(corsConfig.corsFilter());
-        http.addFilterBefore(new JWTAuthorizationFilter(env,memberRepository), BasicAuthenticationFilter.class);
+        http.addFilterBefore(new JWTAuthorizationFilter(env,memberRepository, jwtUtil), BasicAuthenticationFilter.class);
         http.authorizeRequests().antMatchers(HttpMethod.GET,"/api/article/notice").permitAll()
                 .and()
                 .authorizeRequests().antMatchers("/actuator/**").access("hasRole('ADMIN')")
@@ -63,6 +66,8 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests().antMatchers("/docs/**").permitAll()
                 .and()
+                .authorizeRequests().antMatchers("/api/amazon/**").hasAnyRole(Role.ADMIN.name(), Role.MEMBER.name())
+                .and()
                 .authorizeRequests().anyRequest().authenticated();
         http.exceptionHandling().authenticationEntryPoint(new AuthenticaitionEntryPoint());
         http.exceptionHandling().accessDeniedHandler(new AccessDenyHandler());
@@ -70,7 +75,5 @@ public class SecurityConfig {
         http.httpBasic().disable();
         http.formLogin().disable();
         return http.build();
-
-
     }
 }

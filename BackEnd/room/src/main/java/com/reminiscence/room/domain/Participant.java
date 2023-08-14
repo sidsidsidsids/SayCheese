@@ -14,7 +14,11 @@ public class Participant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name="owner_yn")
-    private String ownerYn;
+    private Character ownerYn;
+    @Column(name = "stream_id")
+    private String streamId;
+    @Column(name = "connection_yn")
+    private Character connectionYn;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="room_id")
@@ -25,10 +29,23 @@ public class Participant {
     private Member member;
 
     @Builder
-    public Participant(String ownerYn, Room room, Member member) {
+    public Participant(Character ownerYn, Room room, Member member, String streamId, Character connectionYn) {
         this.ownerYn = ownerYn;
         this.room = room;
         this.member = member;
+        this.streamId = streamId;
+        this.connectionYn = connectionYn;
+    }
+
+    public void updateOwnerYn(Character ownerYn){
+        this.ownerYn = ownerYn;
+    }
+
+    public void updateStreamId(String streamId){
+        this.streamId = streamId;
+    }
+    public void updateConnectionYn(Character connectionYn){
+        this.connectionYn = connectionYn;
     }
 
 }
