@@ -43,7 +43,7 @@ export default function Text() {
       <input
         id="textColor"
         type="color"
-        value="#FFFFFF"
+        value={customTextColor}
         ref={textColorRef}
         onChange={(e) => {
           setCustomTextColor(e.target.value);
