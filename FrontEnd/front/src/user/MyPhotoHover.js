@@ -2,7 +2,15 @@ import { useState, useEffect } from "react";
 import "./MyPhotoHover.css";
 import DeleteMyPhotoModal from "./DeleteMyPhotoModal";
 
-function MyPhotoHover({ imageId, imageLink, createdDate, loverCnt, props }) {
+function MyPhotoHover({
+  imageId,
+  imageLink,
+  createdDate,
+  loverCnt,
+  loverYn,
+  articleYn,
+  props,
+}) {
   useEffect(() => {
     document.body.style.overflow = "hidden";
     const modalbg = document.getElementsByClassName("modalBackdrop")[0]; // Get the first element with the class name
@@ -33,18 +41,20 @@ function MyPhotoHover({ imageId, imageLink, createdDate, loverCnt, props }) {
                   second: "2-digit",
                 })}
               </div>
-              {loverCnt !== -1 ? (
+              {articleYn === "N" ? (
+                <div></div>
+              ) : (
                 <div className="Heartcontent">
-                  <span className="Heart Full"></span>
+                  <span
+                    className={loverYn === 0 ? "MyHeart" : "MyHeart Full"}
+                  ></span>
                   <span className="PhotoLikeNum">{loverCnt}</span>
                 </div>
-              ) : (
-                <div></div>
               )}
             </div>
           </div>
           <div className="MyPohtoUploadInfo">
-            {loverCnt === -1 ? (
+            {articleYn === "N" ? (
               <p>네컷사진 게시판에 업로드 되지 않은 이미지입니다.</p>
             ) : null}
           </div>

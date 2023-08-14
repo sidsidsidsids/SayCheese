@@ -10,9 +10,12 @@ function MyPageFrame() {
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
   const [postPerPage] = useState(9); // 페이지 당 사진 개수
 
+  const [myFrameChange, setMyFrameChange] = useState(false);
+
   useEffect(() => {
     getMyFrames();
-  }, [currentPage]);
+    setMyFrameChange(false);
+  }, [currentPage, myFrameChange]);
 
   const itemsPerRow = 3; // 각 줄의 아이템 개수
   const rows = [];
@@ -36,6 +39,8 @@ function MyPageFrame() {
               isPublic={item.isPublic}
               frameSpecification={item.frameSpecification}
               loverYn={item.loverYn}
+              myFrameChange={myFrameChange}
+              setMyFrameChange={setMyFrameChange}
             />
           ))}
         </div>
@@ -60,6 +65,8 @@ function MyPageFrame() {
             isPublic={currentRow[0].isPublic}
             frameSpecification={currentRow[0].frameSpecification}
             loverYn={currentRow[0].loverYn}
+            myFrameChange={myFrameChange}
+            setMyFrameChange={setMyFrameChange}
           />
           <MyPhotoNull />
           <MyPhotoNull />
@@ -68,18 +75,22 @@ function MyPageFrame() {
     } else if (currentRow.length === 2) {
       rows.push(
         <div key={frames.length} className="Rows">
-          <MyFrameCard
-            key={currentRow[0].articleId}
-            articleId={currentRow[0].articleId}
-            subject={currentRow[0].subject}
-            frameLink={currentRow[0].frameLink}
-            loverCnt={currentRow[0].loverCnt}
-            createdDate={currentRow[0].createdDate}
-            author={currentRow[0].author}
-            isPublic={currentRow[0].isPublic}
-            frameSpecification={currentRow[0].frameSpecification}
-            loverYn={currentRow[0].loverYn}
-          />
+          {currentRow.map((item) => (
+            <MyFrameCard
+              key={item.articleId}
+              articleId={item.articleId}
+              subject={item.subject}
+              frameLink={item.frameLink}
+              loverCnt={item.loverCnt}
+              createdDate={item.createdDate}
+              author={item.author}
+              isPublic={item.isPublic}
+              frameSpecification={item.frameSpecification}
+              loverYn={item.loverYn}
+              myFrameChange={myFrameChange}
+              setMyFrameChange={setMyFrameChange}
+            />
+          ))}
           <MyPhotoNull />
         </div>
       );

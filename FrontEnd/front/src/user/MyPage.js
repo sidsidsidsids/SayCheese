@@ -23,6 +23,7 @@ function MyPage() {
   const [myPhotoChange, setMyPhotochange] = useState(false);
   const [myPhotoList, setMyPhotoList] = useState([]);
 
+  const [myFrameChange, setMyFrameChange] = useState(false);
   const [myFrameList, setMyFrameList] = useState([]);
 
   // useEffect(() => {
@@ -36,7 +37,8 @@ function MyPage() {
     getMyPhotoList();
     setMyPhotochange(false);
     getMyFrameList();
-  }, [myPhotoChange]);
+    setMyFrameChange(false);
+  }, [myPhotoChange, myFrameChange]);
 
   const handleWithdrawModalOpen = () => {
     setIsWithdrawModalOpen(true);
@@ -111,7 +113,7 @@ function MyPage() {
           </div> */}
         </div>
         <div className="MyPagePhoto">
-          {/* {myPhotoList.slice(0, 3).map((item) => (
+          {myPhotoList.slice(0, 3).map((item) => (
             <MyPhotoCard
               key={item.imageId}
               imageId={item.imageId}
@@ -119,17 +121,18 @@ function MyPage() {
               createdDate={item.createdDate}
               loverCnt={item.loverCnt}
               loverYn={item.loverYn}
+              articleYn={item.articleYn}
               myPhotoChange={myPhotoChange}
               setMyPhotochange={setMyPhotochange}
               payload={item}
             />
-          ))} */}
+          ))}
           {/* 마이페이지에서 내가 찍은 사진 3개 넘을 경우 3개만 보여주기 위함 */}
-          {/* {myPhotoList.length > 0 &&
+          {myPhotoList.length > 0 &&
             myPhotoList.length < 3 &&
             Array(3 - myPhotoList.length)
               .fill(null)
-              .map((num, index) => <MyPhotoNull key={index} />)} */}
+              .map((num, index) => <MyPhotoNull key={index} />)}
           {/* 내가 찍은 사진이 1개일 경우 <MyPhotoNull /> 2개 출력하고, 2개일 경우 <MyPhotoNull /> 1개 출력
             마이페이지에서 내가 찍은 사진 왼쪽 정렬 깔끔히 하기 위해 내용 없는 <MyPhotoNull /> 임의로 생성 */}
         </div>
@@ -154,6 +157,8 @@ function MyPage() {
               isPublic={item.isPublic}
               frameSpecification={item.frameSpecification}
               loverYn={item.loverYn}
+              myFrameChange={myFrameChange}
+              setMyFrameChange={setMyFrameChange}
             />
           ))}
           {myFrameList.length > 0 &&

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./RoomJoinModal.css";
 import ModalButtons from "./ModalButtons";
 
@@ -18,8 +19,30 @@ function RoomJoinModal({ open, close }) {
     console.log("해당 방 코드가 있는지 확인");
     console.log("해당 방 코드가 존재한다면 => 비밀번호 일치 확인");
     console.log("비밀번호가 일치한다면 => 이후 로그인 여부에 따라 진행");
-    navigate(`/room/${inputRoomCode}`);
-    close();
+    checkJoinable(inputRoomCode, inputRoomPassword);
+  };
+
+  const checkJoinable = async (roomCode, roomPassword) => {
+    try {
+      const request = await axios.post(
+        "/api/room/check/" + roomCode,
+        {
+          password: roomPassword,
+        },
+        {
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+        }
+      );
+      console.log(request);
+      navigate(`/room/${roomCode}`);
+      close();
+    } catch (error) {
+      console.log(error)
+      alert("정확한 방 코드와 비밀번호를 입력해주세요");
+    }
   };
   return (
     <div className="room-join-modal">

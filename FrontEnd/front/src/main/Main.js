@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import RoomCreateModal from "./RoomCreateModal";
 import RoomJoinModal from "./RoomJoinModal";
+import SetNameModal from "./SetNameModal";
 import leftBooth from "./assets/booth(left).png";
 import rightBooth from "./assets/booth(right).png";
 import sign from "./assets/sign.png";
@@ -23,9 +24,45 @@ import l_Frame from "./assets/ladder_shape.svg";
 import w_Frame from "./assets/window_shape.png";
 
 import "./Main.css";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { getUserInfo } from "../redux/features/login/loginSlice";
+
+let able;
 function Main() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [joinModalOpen, setJoinModalOpen] = useState(false);
+  const [nameModalOpen, setNameModalOpen] = useState(false);
+  const { userInfo } = useSelector((store) => store.login);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getUserInfo());
+    able = checkAvailable();
+  }, []);
+
+  const checkAvailable = async () => {
+    try {
+      const response = await axios.post(
+        "/api/room/check",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
 
   const defaultOptions = {
     reverse: false, // reverse the tilt direction
@@ -147,6 +184,13 @@ function Main() {
           </div>
         </div>
       </div>
+      <SetNameModal
+        open={nameModalOpen}
+        close={() => setNameModalOpen(false)}
+        onConfirm={(inputNickname) => {
+          // dispatch()
+        }}
+      />
       <RoomCreateModal
         open={createModalOpen}
         close={() => setCreateModalOpen(false)}

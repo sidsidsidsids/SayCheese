@@ -1,6 +1,10 @@
 import React, { useRef, useEffect } from "react";
 
-export default function OpenViduVideoComponent({ streamManager }) {
+export default function OpenViduVideoComponent({
+  streamManager,
+  locationX,
+  locationY,
+}) {
   const videoRef = useRef();
 
   useEffect(() => {
@@ -9,5 +13,11 @@ export default function OpenViduVideoComponent({ streamManager }) {
     }
   }, [streamManager]);
 
-  return <video autoPlay={true} ref={videoRef} />;
+  return (
+    <video
+      style={{ top: `${locationY}px`, left: `${locationX}px` }}
+      autoPlay={true}
+      ref={videoRef}
+    />
+  );
 }
