@@ -1,19 +1,25 @@
 /* 툴탭과 툴탭 디테일 정렬 */
 * {
   word-break: keep-all;
-  -webkit-user-select:none; /* 드래그 금지 */
-  -moz-user-select:none;
-  -ms-user-select:none;
-  user-select:none
+  -webkit-user-select: none; /* 드래그 금지 */
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
+body {
+  min-width: 375px;
+}
+
 .ToolBar {
   display: grid;
-  grid-template-columns: 0.5fr 1fr 0fr; /* 의도치 않은 <canvasarear/>가 자동으로 생겨서 정렬을 망치기 때문에 0fr이 필요함  */
+  grid-template-columns: 0.5fr 1fr; /* 의도치 않은 <canvasarear/>가 자동으로 생겨서 정렬을 망치기 때문에 0fr이 필요함  */
+  position: relative;
 }
+
 /* ---------------- 툴탭 ---------------- */
-.ToolBar:nth-child(n) {
+/* .ToolBar:nth-child(n) {
   margin: 20px;
-}
+} */
 
 .toolBarTap > li {
   padding: 25px 10px 25px 30px;
@@ -66,7 +72,7 @@
   color: #131111;
   text-shadow: 4px 4px 5px #777777, 8px 8px 5px #ffffff;
   -webkit-text-stroke: 0.5px rgb(255, 255, 255);
-text-stroke: 0.5px rgb(255, 255, 255);
+  text-stroke: 0.5px rgb(255, 255, 255);
   margin: 0 auto;
   /* padding: 10px 30px; */
 }
@@ -211,8 +217,8 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 /* ---------------- Text Tool CSS  ---------------- */
 /* 디테일 툴바 인풋 css */
 
-.createWrapper input[type="text"]#text,
-.createWrapper input[type="number"]#textSize{
+.createWrapper input[type="text"],
+.createWrapper input[type="number"] {
   background-color: white;
   color: gray;
   height: 42px;
@@ -227,7 +233,7 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 }
 
 #userPw,
-#userId{
+#userId {
   background-color: white;
   color: gray;
   height: 42px;
@@ -263,7 +269,7 @@ div.detailedToolBar {
 }
 
 /* ---------------- Drawing Tool CSS  ---------------- */
-div.range-wrap{
+div.range-wrap {
   box-sizing: border-box;
   width: 240px;
 }
@@ -295,7 +301,7 @@ input[type="range"]::-webkit-slider-thumb {
   margin-top: -3px; /* 동글 포인터 위아래 위치 조정 */
 }
 input[type="range"]::-webkit-slider-runnable-track {
-  background: linear-gradient(90deg, #fbc8d4 0%, #9795f0 100%);; /* 막대바 색*/
+  background: linear-gradient(90deg, #fbc8d4 0%, #9795f0 100%); /* 막대바 색*/
 }
 .range-wrap {
   margin: auto;
@@ -482,8 +488,6 @@ input[type="range"]::-webkit-slider-runnable-track {
   transform: translate3d(0, 0, -1em);
 }
 
-
-
 .alignTwoButtons {
   /* 버튼을 정렬 위한 */
   display: flex;
@@ -492,3 +496,81 @@ input[type="range"]::-webkit-slider-runnable-track {
   margin: 0 20px 30px;
 }
 
+@media (min-width: 892px) and (max-width: 1382px) {
+  /* 브라우저 사이즈 이하일때*/
+  .ToolBar {
+    grid-template-columns: 1fr;
+    grid-template-rows: 0.3fr 0.3fr;
+    display: flex;
+    flex-direction: column;
+  }
+  .toolBarTap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0;
+  }
+  .toolBarTap > li.focusedTool {
+    border-radius: 50px 50px 0 0;
+    padding: 25px 30px;
+  }
+  .detailedToolBar {
+    width: 700px;
+  }
+  .alignTwoButtons {
+    justify-content: center;
+  }
+  .alignTwoButtons > button {
+    margin: 0 10px;
+  }
+}
+
+@media (max-width: 495px) {
+  .ToolBar {
+    grid-template-columns: 100%;
+    grid-template-rows: auto auto;
+    width: inherit;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+  }
+  .toolBarTap {
+    display: flex;
+    justify-content: center;
+    font-size: 16px;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+  }
+
+  .toolBarTap > li {
+    border-radius: 0;
+    text-align: center;
+    margin: 0;
+    padding: 10px;
+  }
+  .toolBarTap > li.focusedTool {
+    border-radius: 50px 50px 0 0;
+    transform: rotateX(0);
+  }
+
+  .detailedToolBar {
+    width: 100%;
+    border-radius: 0 0 30px 30px;
+  }
+
+  .canvasBackground {
+    transform: scale(0.5);
+  }
+}
+
+input[id="private"] {
+  display: inline-block;
+  background-color: #9795f0;
+}
+label[for="private"] {
+  display: inline-block;
+  position: relative;
+  padding-left: 10px;
+  top: -6px;
+}

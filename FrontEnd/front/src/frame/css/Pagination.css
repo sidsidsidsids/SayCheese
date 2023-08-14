@@ -34,6 +34,10 @@ ul.pagination li a {
   font-size: 2rem;
 }
 
+ul.pagination li a:active {
+  color: white;
+}
+
 ul.pagination li.active a {
   color: white;
 }

@@ -12,13 +12,16 @@ export default function Objects() {
 
   function addObjects() {
     const file = imgRef.current.files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      objects.push(reader.result);
-      const payload = reader.result;
-      dispatch(Decorate(payload));
-    };
+    if (file) {
+      // 파일이 있으면
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        objects.push(reader.result);
+        const payload = reader.result;
+        dispatch(Decorate(payload));
+      };
+    }
   }
 
   function deleteObjects() {

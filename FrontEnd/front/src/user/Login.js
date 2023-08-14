@@ -1,26 +1,27 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Login.css";
 import Button from "../Button";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { AuthContext } from "../contexts/AuthContext";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+
+import { useSelector, useDispatch } from "react-redux";
 import { getUserInfo, loginSuccess } from "../redux/features/login/loginSlice";
+import PwFindModal from "./PwFindModal";
 
 function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(""); // 이메일
+  const [password, setPassword] = useState(""); // 비밀번호
 
   const [callbackOK, setCallbackOK] = useState(false);
+  const [isPwFindModalOpen, setIsPwFindModalOpen] = useState(false);
 
   const movePage = useNavigate();
-  const { isLogin } = useSelector((store) => store.login);
+  const { isLogin } = useSelector((store) => store.login); // 로그인 여부
 
   const dispatch = useDispatch();
-  // 회원가입 페이지로 이동
+
   const moveSignUpPage = () => {
-    movePage("/user/signup");
+    movePage("/user/signup"); // 회원가입 페이지로 이동
   };
 
   const [activeIndex, setActiveIndex] = useState(null);
@@ -33,6 +34,10 @@ function Login() {
   // input 요소가 포커스 잃었을 때 activeIndex 초기화
   const handleInputBlur = () => {
     setActiveIndex(null);
+  };
+
+  const handlePwFineModalOpen = () => {
+    setIsPwFindModalOpen(true);
   };
 
   useEffect(() => {
@@ -123,12 +128,17 @@ function Login() {
             <Button className="LoginBtn" text={"로그인"} type="submit" />
           </form>
           <div className="BtnSort">
-            <Button className="LoginEtcBtn" text={"비밀번호 찾기"} />
+            <p className="PwFindBtn" onClick={handlePwFineModalOpen}>
+              비밀번호를 잊어버렸나요?
+            </p>
             <Button
               className="LoginEtcBtn"
               text={"회원가입"}
               onClick={moveSignUpPage}
             />
+            {isPwFindModalOpen && (
+              <PwFindModal close={() => setIsPwFindModalOpen(false)} />
+            )}
           </div>
         </div>
       </div>

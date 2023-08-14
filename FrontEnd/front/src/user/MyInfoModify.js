@@ -70,16 +70,16 @@ function MyInfoModify() {
 
   // 닉네임 중복 체크
   async function getNicknameMessage(currentNickname) {
+    let data = {
+      nickname: currentNickname,
+    };
+    console.log(currentNickname);
     try {
-      const response = await axios.get(
-        `/api/member/join/${currentNickname}/nickname-check`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "69420",
-          },
-        }
-      );
+      const response = await axios.post("/api/member/nickname-check", data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       setNicknameCheck(true);
       setNicknameMessage(response.data.message);
     } catch (error) {
@@ -245,6 +245,7 @@ function MyInfoModify() {
         movePage(`/user/mypage/${email}`);
       })
       .catch((error) => {
+        console.log(error);
         alert(
           "오류로 인해 회원가입이 불가능합니다.\n다시 시도해주시길 바랍니다."
         );
@@ -252,10 +253,10 @@ function MyInfoModify() {
   }
 
   return (
-    <div className="SignUpWrapper">
+    <div className="ModifyWrapper">
       <div className="ModifyBox">
         <div>
-          <h2>내 정보 수정</h2>
+          <h2 className="UserBoxText">내 정보 수정</h2>
           <form onSubmit={handleUserModify}>
             <div className="SignBtnInputSort">
               <div
@@ -422,6 +423,7 @@ function MyInfoModify() {
                   name="age"
                   placeholder="나이"
                   className="AgeSize"
+                  value={age}
                   onChange={handleAgeChange}
                   onFocus={() => handleInputFocus(6)}
                   onBlur={handleInputBlur}

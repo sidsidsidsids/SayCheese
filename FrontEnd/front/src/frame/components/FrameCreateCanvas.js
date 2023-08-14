@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 // third party
 import { fabric } from "fabric";
 import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
 import { ResetSignal } from "../../redux/features/frame/frameSlice";
 // CSS
 import "../css/FrameCreateCanvas.css";
@@ -104,15 +105,74 @@ const addPlainBlocks = (canvas, height, width) => {
   }
 };
 
-// 원형 투명칸 만드는 함수 입니다
-const addCircleBlocks = (canvas, height, width) => {
-  // 원형 네모칸 만드는 함수입니다
-  const VerticalCircleBlock = (left, top) =>
-    new fabric.Circle({
+// 가장 기본형 사각형 프레임 투명칸을 만드는 함수입니다
+const addSmoothPlainBlocks = (canvas, height, width) => {
+  //사다리 기본형 프레임 투명한 네모칸 만드는 함수입니다
+  const VerticalSmoothPlainBlock = (left, top) =>
+    new fabric.Rect({
+      left: left,
+      top: top,
+      width: 170,
+      height: 114,
+      fill: "#7767AC",
+      rx: 10,
+      ry: 10,
+      lockMovementX: true, // 움직이지 않도록 합니다
+      lockMovementY: true,
+      lockRotation: true,
+      selectable: false, // 마우스 선택 불가능
+      globalCompositeOperation: "destination-out", // 이 도형이 겹쳐지는 부분은 사라집니다
+    });
+
+  // 창문형 프레임 투명한 네모칸 만드는 함수입니다
+  const HorizontalSmoothPlainBlock = (left, top) =>
+    new fabric.Rect({
       left: left,
       top: top,
       width: 217,
       height: 165,
+      fill: "#7767AC",
+      rx: 10,
+      ry: 10,
+      lockMovementX: true, // 움직이지 않도록 합니다
+      lockMovementY: true,
+      lockRotation: true,
+      selectable: false, // 마우스 선택 불가능
+      globalCompositeOperation: "destination-out", // 이 도형이 겹쳐지는 부분은 사라집니다
+    });
+
+  if (canvas) {
+    if (height > width) {
+      // 사다리형
+      for (let i = 0; i < 4; i++) {
+        canvas.add(VerticalSmoothPlainBlock(19, 19 + i * 120));
+      }
+    } else {
+      // 창문형
+      for (let i = 0; i < 4; i++) {
+        canvas.add(
+          HorizontalSmoothPlainBlock(
+            32 + (i % 2) * 229,
+            29 + Math.floor(i / 2) * 176
+          )
+        );
+      }
+    }
+  }
+};
+
+// 원형 투명칸 만드는 함수 입니다
+const addCircleBlocks = (canvas, height, width) => {
+  // 원형 네모칸 만드는 함수입니다
+  const VerticalCircleBlock = (left, top) =>
+    new fabric.Ellipse({
+      left: left,
+      top: top,
+      // scaleX: width,
+      // scaleY: height,
+      rx: width / 2.3, // x축 반지름 (가로 길이의 절반)
+      ry: height / 10.6, // y축 반지름 (세로 길이의 절반)
+      radius: 70,
       fill: "#7767AC",
       lockMovementX: true, // 움직이지 않도록 합니다
       lockMovementY: true,
@@ -123,11 +183,14 @@ const addCircleBlocks = (canvas, height, width) => {
 
   // 창문형 프레임 투명한 네모칸 만드는 함수입니다 (width, height) = 217, 165
   const HorizontalCircleBlock = (left, top) =>
-    new fabric.Circle({
+    new fabric.Ellipse({
       left: left,
       top: top,
-      width: 217,
-      height: 165,
+      // scaleX: width,
+      // scaleY: height,
+      rx: 111, // x축 반지름 (가로 길이의 절반)
+      ry: 84, // y축 반지름 (세로 길이의 절반)
+      radius: 70,
       fill: "#7767AC",
       lockMovementX: true, // 움직이지 않도록 합니다
       lockMovementY: true,
@@ -140,14 +203,14 @@ const addCircleBlocks = (canvas, height, width) => {
     if (height > width) {
       // 사다리형
       for (let i = 0; i < 4; i++) {
-        canvas.add(VerticalCircleBlock(19, 19 + i * 120));
+        canvas.add(VerticalCircleBlock(13, 19 + i * 120));
       }
     } else {
       // 창문형
       for (let i = 0; i < 4; i++) {
         canvas.add(
           HorizontalCircleBlock(
-            32 + (i % 2) * 229,
+            30 + (i % 2) * 229,
             29 + Math.floor(i / 2) * 176
           )
         );
@@ -158,8 +221,8 @@ const addCircleBlocks = (canvas, height, width) => {
 
 // STEP 2. 이미지로 프레임을 꾸미기 함수입니다
 const DecorateObjects = (objects, canvas) => {
-  console.log(objects.length);
-  if (objects.length > 0 && canvas) {
+  console.log(objects);
+  if (objects && canvas) {
     canvas.renderOnAddRemove = false; // 추가된 객체가 자동으로 렌더링되지 않도록 설정합니다.
     const object = objects;
     fabric.Image.fromURL(object, function (Img) {
@@ -227,7 +290,8 @@ const addDrawing = (canvas, brush, drawingMode) => {
   }
 };
 
-// STEP4. handleDownload 함수를 통해 캔버스 이미지를 다운로드할 수 있습니다
+// STEP4.
+// STEP4-1. handleDownload 함수를 통해 캔버스 이미지를 다운로드할 수 있습니다
 function handleDownload(canvas) {
   const dataURL = canvas.toDataURL("image/png");
   const link = document.createElement("a");
@@ -238,10 +302,84 @@ function handleDownload(canvas) {
   document.body.removeChild(link);
 }
 
+// STEP4-2. 사용자는 서버에 프레임을 업로드 할 수 있습니다.
+function handleUpload(canvas, frameInfo, frameSpecification) {
+  let preSignUrl = ""; // 여기서만 사용하니까 LET 가능
+  let fileName = "";
+  console.log("업로드 시작");
+  const accessToken = localStorage.getItem("accessToken");
+  if (accessToken) {
+    axios
+      .post(
+        "/api/amazon/presigned",
+        {
+          fileName: `${frameInfo.frameName}.png`,
+          fileType: "frame",
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${accessToken}`,
+          },
+        }
+      )
+      .then(function (response) {
+        fileName = response.data.fileName;
+        // base64 형태 url을 가진 image를 File 객체로
+        // imageURL : data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAFIQAAA...
+        const dataURL = canvas.toDataURL("image/png");
+        const binaryImageData = atob(dataURL.split(",")[1]);
+        const arrayBufferData = new Uint8Array(binaryImageData.length);
+        for (let i = 0; i < binaryImageData.length; i++) {
+          arrayBufferData[i] = binaryImageData.charCodeAt(i);
+        }
+        const blob = new Blob([arrayBufferData], { type: "image/png" });
+        const imageFile = new File([blob], `${frameInfo.frameName}.png`, {
+          type: "image/png",
+        });
+        preSignUrl = response.data.preSignUrl;
+        fetch(preSignUrl, {
+          method: "PUT",
+          headers: {
+            "Content-Type": " image/png",
+          },
+          body: imageFile,
+        }).then(function (response) {
+          console.log("url에 이미지 올렸음");
+          console.log({
+            name: fileName,
+            fileType: "frame",
+            isPublic: !frameInfo.privateCheck,
+            frameSpecification: frameSpecification,
+            subject: frameInfo.frameName,
+          });
+          axios.post(
+            "/api/article/frame",
+            {
+              name: fileName,
+              fileType: "frame",
+              isPublic: !frameInfo.privateCheck,
+              frameSpecification: frameSpecification,
+              subject: frameInfo.frameName,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `${accessToken}`,
+              },
+            }
+          );
+        });
+      });
+  }
+}
+
+/////////////////////// Canvas ///////////////////////////
 // Canvas
 const CanvasArea = () => {
   const canvasRef = useRef(null);
   const [canvasInstance, setCanvasInstance] = useState(null);
+  const [frameSpecification, setFrameSpecification] = useState("vertical");
   const dispatch = useDispatch();
   // store에서 canvas에 사용할 재료들을 가져옴
   const {
@@ -255,7 +393,35 @@ const CanvasArea = () => {
     brush,
     deleteSignal,
     downloadSignal,
+    frameInfo,
+    postSignal,
   } = useSelector((store) => store.frame);
+
+  const [isRedoing, setIsRedoing] = useState(false);
+  const [history, setHistory] = useState([]);
+
+  const undo = () => {
+    if (canvasInstance._objects.length > 0) {
+      const removedObject = canvasInstance._objects.pop();
+      setHistory([...history, removedObject]);
+      canvasInstance.renderAll();
+    }
+  };
+
+  const redo = () => {
+    if (history.length > 0) {
+      setIsRedoing(true);
+      const lastObject = history.pop();
+      canvasInstance.add(lastObject);
+    }
+  };
+
+  const handleObjectAdded = () => {
+    if (!isRedoing) {
+      setHistory([]);
+    }
+    setIsRedoing(false);
+  };
 
   useEffect(() => {
     // useEffect를 사용하여 캔버스를 초기화하고 사다리형과 창문형에 맞게 투명한 블록들을 추가합니다. height와 width의 변화에 따라 캔버스의 크기를 조정합니다.
@@ -264,6 +430,8 @@ const CanvasArea = () => {
       width: width,
       hoverCursor: "pointer",
     });
+    // useEffect를 사용하여 캔버스를 초기화하고 사다리형과 창문형에 맞게 투명한 블록들을 추가합니다. height와 width의 변화에 따라 캔버스의 크기를 조정합니다.
+    //위의 코드는 리렌더링을 일으키지 않도록 이펙트 내에 두어야 합니다. 안 그러면 too many re redner 에러가 납니다
 
     // 컬러 백그라운드 만들기
     if (bgColor) {
@@ -284,12 +452,21 @@ const CanvasArea = () => {
         });
     }
 
+    // 객체 추가 또는 수정 시 상태 저장
+
+    // canvasInstance.on("object:modified", handleObjectAdded);
+
     setCanvasInstance(newCanvas);
+    // 캔버스 객체 초기화
 
     return () => {
       // `newCanvas`가 유효한지 확인하고
       if (newCanvas) {
         newCanvas.dispose();
+      }
+      if (width > height) {
+        setFrameSpecification("horizontal");
+        console.log(frameSpecification);
       }
     };
   }, [width, height, bgColor, bgImg]); // width, height, bg 바뀔 때마다 리렌더
@@ -349,15 +526,29 @@ const CanvasArea = () => {
     }
   }, [downloadSignal]);
 
+  // 업로드 요청이 들어오면 handleUpload(canvasInstance)를 실행합니다
+  useEffect(() => {
+    async function upload() {
+      handleUpload(canvasInstance, frameInfo, frameSpecification);
+      return "success";
+    }
+    if (postSignal && canvasInstance) {
+      upload().then(() => dispatch(ResetSignal("postSignal")));
+    }
+  }, [postSignal]);
   return (
-    <div className="canvasBackground">
-      <canvas
-        ref={canvasRef}
-        className="createCanvas"
-        name="canvas"
-        id="canvas"
-      />
-    </div>
+    <>
+      <div className="canvasBackground">
+        <canvas
+          ref={canvasRef}
+          className="createCanvas"
+          name="canvas"
+          id="canvas"
+        />
+      </div>
+      <button onClick={undo}>Undo</button>
+      <button onClick={redo}>Redo</button>
+    </>
   );
 };
 

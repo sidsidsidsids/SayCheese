@@ -1,32 +1,38 @@
-import { Outlet } from "react-router-dom";
-import "./App.css";
-import Header from "./header/Header";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext, AuthProvider } from "./contexts/AuthContext";
+// third party
+import { Outlet } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { AuthProvider } from "./contexts/AuthContext";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
-import { useDispatch, useSelector } from "react-redux";
+import Header from "./header/Header";
+import "./App.css";
+
 import { getUserInfo } from "./redux/features/login/loginSlice";
 
 function App() {
-  const { userInfo } = useSelector((store) => store.login);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    if (accessToken) {
-      dispatch(getUserInfo());
-    }
-  }, [dispatch]);
+  // useEffect(() => {
+  //   const accessToken = localStorage.getItem("accessToken");
+  //   if (accessToken) {
+  //     dispatch(getUserInfo());
+  //   }
+  // }, [dispatch]);
+
+  // Create a client
+  const queryClient = new QueryClient();
 
   return (
     <div className="App">
       <AuthProvider>
         <Header />
         <div className="contents">
-          <Outlet />
+          <QueryClientProvider client={queryClient}>
+            <Outlet />
+          </QueryClientProvider>
         </div>
       </AuthProvider>
-
       <p>app.js</p>
     </div>
   );

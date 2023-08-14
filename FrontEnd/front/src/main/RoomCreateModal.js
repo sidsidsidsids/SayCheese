@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./RoomCreateModal.css";
 import ModalButtons from "./ModalButtons";
-import l_Frame from "./assets/ladder_shape.PNG";
-import w_Frame from "./assets/window_shape.PNG";
+import l_Frame from "./assets/ladder_shape.svg";
+import w_Frame from "./assets/window_shape.png";
 
 function RoomCreateModal({ open, close }) {
   // 이동 위한 navigate 선언
@@ -46,6 +46,29 @@ function RoomCreateModal({ open, close }) {
       return false;
     }
   }
+  const checkAvailable = () => {
+    try {
+      const response = axios
+        .post(
+          "/api/room/check",
+          {},
+          {
+            headers: {
+              Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+            },
+          }
+        )
+        .then(() => {
+          handleConfirm();
+        })
+        .catch(() => {
+          alert("이미 접속 중 입니다");
+        });
+    } catch (error) {
+      alert("비정상적 접근");
+      console.log(error);
+    }
+  };
   // 방 초대링크
   let roomInvite;
   // open이 아닐 때 출력 x
@@ -78,27 +101,35 @@ function RoomCreateModal({ open, close }) {
       selectedFrame = "vertical";
     }
     try {
-      console.log(roomPassword,roomLimit,selectedMode,roomCode,selectedFrame)
-      await axios.post(
-        "/api/room",
-        {
-          password: roomPassword,
-          maxCount: roomLimit,
-          mode: selectedMode,
-          // roomCode: "sessionC",
-          roomCode: roomCode,
-          specification: selectedFrame,
-        },
-        {
-          headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
-            "Content-Type": "application/json;charset=UTF-8",
+      console.log(
+        roomPassword,
+        roomLimit,
+        selectedMode,
+        roomCode,
+        selectedFrame
+      );
+      await axios
+        .post(
+          "/api/room",
+          {
+            password: roomPassword,
+            maxCount: roomLimit,
+            mode: selectedMode,
+            // roomCode: "sessionC",
+            roomCode: roomCode,
+            specification: selectedFrame,
           },
-        }
-      ).then((response) => {
-        console.log(response);
-        navigate(`/room/${roomCode}`);
-      })
+          {
+            headers: {
+              Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+              "Content-Type": "application/json;charset=UTF-8",
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response);
+          navigate(`/room/${roomCode}`);
+        });
     } catch (error) {
       console.log(error);
     }
@@ -223,7 +254,12 @@ function RoomCreateModal({ open, close }) {
               maxLength={10}
             />
           </div>
-          <ModalButtons onConfirm={handleConfirm} onClose={close} />
+          <ModalButtons
+            onConfirm={() => {
+              checkAvailable();
+            }}
+            onClose={close}
+          />
         </div>
       )}
     </div>

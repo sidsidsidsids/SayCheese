@@ -21,26 +21,55 @@ function RoomJoinModal({ open, close }) {
     console.log("비밀번호가 일치한다면 => 이후 로그인 여부에 따라 진행");
     checkJoinable(inputRoomCode, inputRoomPassword);
   };
-
-  const checkJoinable = async (roomCode, roomPassword) => {
+  const checkAvailable = async () => {
     try {
-      const request = await axios.post(
-        "/api/room/check/" + roomCode,
-        {
-          password: roomPassword,
-        },
-        {
-          headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
-            "Content-Type": "application/json;charset=UTF-8",
-          },
-        }
-      );
-      console.log(request);
-      navigate(`/room/${roomCode}`);
-      close();
+      const response = await axios
+        .post(
+          "/api/room/check",
+          {},
+          {
+            headers: {
+              Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+            },
+          }
+        )
+        .then(() => {
+          // handleConfirm();
+          checkJoinable(inputRoomCode, inputRoomPassword);
+        })
+        .catch(() => {
+          alert("이미 접속 중 입니다");
+        });
     } catch (error) {
-      console.log(error)
+      alert("비정상적 접근");
+      console.log(error);
+    }
+  };
+  const checkJoinable = (roomCode, roomPassword) => {
+    console.log(roomCode, roomPassword);
+    try {
+      axios
+        .post(
+          `/api/room/check/${roomCode}`,
+          {
+            password: roomPassword,
+          },
+          {
+            headers: {
+              Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+              "Content-Type": "application/json;charset=UTF-8",
+            },
+          }
+        )
+        .then(() => {
+          navigate(`/room/${roomCode}`);
+          close();
+        })
+        .catch(() => {
+          alert("입력값을 확인해주세요");
+        });
+    } catch (error) {
+      console.log(error);
       alert("정확한 방 코드와 비밀번호를 입력해주세요");
     }
   };
@@ -72,7 +101,12 @@ function RoomJoinModal({ open, close }) {
             maxLength={10}
           />
         </p>
-        <ModalButtons onConfirm={handleConfirm} onClose={close} />
+        <ModalButtons
+          onConfirm={() => {
+            checkAvailable();
+          }}
+          onClose={close}
+        />
       </div>
     </div>
   );

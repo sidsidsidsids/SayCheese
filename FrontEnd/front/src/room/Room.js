@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { getUserInfo } from "../redux/features/login/loginSlice";
 import { OpenVidu } from "openvidu-browser";
 import html2canvas from "html2canvas";
 import axios from "axios";
@@ -15,7 +16,6 @@ import ChatComponent from "./ChatComponent";
 import Timer from "./Timer";
 import sampleImage from "./assets/sample.jpg";
 import logo from "./assets/favicon.ico";
-import yeah from "./assets/yeah.jpg";
 
 const APPLICATION_SERVER_SECRET = "my_secret";
 let chatData; // 채팅창에 보낼 데이터
@@ -37,11 +37,10 @@ const Room = () => {
   const params = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { userInfo } = useSelector((store) => store.login);
   // openvidu 관련
   const [mySessionId, setMySessionId] = useState(params.id);
-  const [myUserName, setMyUserName] = useState(
-    "test" + Math.floor(Math.random() * 100)
-  );
+  const [myUserName, setMyUserName] = useState(userInfo.nickname);
   const [session, setSession] = useState(undefined);
   const [mainStreamManager, setMainStreamManager] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined);
@@ -49,64 +48,6 @@ const Room = () => {
   // room 관련
   const [isHost, setHost] = useState(false);
   const [frameSortType, setFrameSortType] = useState("hot");
-  // const [frameList, setFrameList] = useState([]);
-  const imageList = [
-    { id: 0, alt: "sampleImage", src: sampleImage },
-    { id: 1, alt: "fs", src: yeah },
-    { id: 2, alt: "seampleImage", src: sampleImage },
-    { id: 3, alt: "wfs", src: yeah },
-    { id: 4, alt: "satmpleImage", src: sampleImage },
-    { id: 5, alt: "fsg", src: yeah },
-    { id: 6, alt: "saampleImage", src: sampleImage },
-    { id: 7, alt: "f7s", src: yeah },
-  ];
-  // const [frameList, setFrameList] = useState([
-  //   {
-  //     id: 0,
-  //     name: "snoopy",
-  //     frameLink: { yeah },
-  //     author: "sk",
-  //     loverCnt: 10,
-  //     createDate: "2023-07-25T16:00:48",
-  //     loverYn: 1,
-  //   },
-  //   {
-  //     id: 1,
-  //     name: "snoopy2",
-  //     frameLink: { yeah },
-  //     author: "sk",
-  //     loverCnt: 12,
-  //     createDate: "2023-07-25T16:00:48",
-  //     loverYn: 1,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "snoopy3",
-  //     frameLink: { yeah },
-  //     author: "sk",
-  //     loverCnt: 20,
-  //     createDate: "2023-07-25T16:00:48",
-  //     loverYn: 0,
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "snoopy4",
-  //     frameLink: { yeah },
-  //     author: "sk",
-  //     loverCnt: 100,
-  //     createDate: "2023-07-25T16:00:48",
-  //     loverYn: 0,
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "snoopy5",
-  //     frameLink: { yeah },
-  //     author: "sk",
-  //     loverCnt: 99,
-  //     createDate: "2023-07-25T16:00:48",
-  //     loverYn: 1,
-  //   },
-  // ]);
   const [frameList, setFrameList] = useState([]);
   const [frameSearch, setFrameSearch] = useState("");
   const [selectFrame, setSelectFrame] = useState(`url('${sampleImage}')`);
@@ -141,13 +82,13 @@ const Room = () => {
     joinUsers = [publisher, ...subscribers];
   }, [publisher, subscribers]);
 
-  useEffect(() => {
-    if (publisher !== undefined) {
-      const userStreamIds = joinUsers.map((user) => user.stream.streamId);
-      const userStreamId = userStreamIds[0];
-      userStream(mySessionId, userStreamId);
-    }
-  }, [publisher]);
+  // useEffect(() => {
+  //   if (publisher !== undefined) {
+  //     const userStreamIds = joinUsers.map((user) => user.stream.streamId);
+  //     const userStreamId = userStreamIds[0];
+  //     userStream(mySessionId, userStreamId);
+  //   }
+  // }, [publisher]);
 
   useEffect(() => {
     if (roomStatus === 2) {
@@ -168,12 +109,14 @@ const Room = () => {
     }
   }, [roomStatus]);
 
-  // useEffect(() => {
-  //   if (isHost) {
-  //     getRoomInfo(mySessionId);
-  //     hostPost(mySessionId);
-  //   }
-  // }, [isHost]);
+  useEffect(() => {
+    if (isHost) {
+      setTimeout(() => {
+        getRoomInfo();
+        // hostPost(mySessionId);
+      }, 1000);
+    }
+  }, [isHost]);
 
   useEffect(() => {
     getFrames(frameSortType, frameSearch);
@@ -202,7 +145,12 @@ const Room = () => {
     });
 
     mySession.on("streamDestroyed", (event) => {
+      console.log(event);
       deleteSubscriber(event.stream.streamManager);
+      setTimeout(() => {
+        const outStreamId = event.stream.streamId;
+        userDisconnection(mySessionId, outStreamId);
+      }, 1000);
       if (!isHost) {
         updateHost(mySessionId);
       }
@@ -253,19 +201,23 @@ const Room = () => {
           mySession.publish(publisher);
           // 방에 유저 정보 보낼 곳
           userJoin(mySessionId);
-          if (isHost) {
-            console.log("방장");
-            getRoomInfo(mySessionId);
-            hostPost(mySessionId);
-          }
           // 카메라 선택 옵션 넣을 때 사용됨
           const devices = await OV.getDevices();
           setPublisher(publisher);
           console.log(publisher);
 
-          // userStream(mySessionId, sessionStreamId);
           sessionConnectId = publisher.session.connection.connectionId;
-          sessionStreamId = publisher.stream.streamId;
+          setTimeout(() => {
+            sessionStreamId = publisher.stream.streamId;
+            // if (isHost) {
+            //   console.log("방장");
+            //   getRoomInfo(mySessionId);
+            //   hostPost(mySessionId);
+            // }
+            userStream(mySessionId, sessionStreamId);
+          }, 1000);
+
+          setTimeout(() => {}, 1000);
         })
         .catch((error) => {
           console.log(
@@ -409,33 +361,32 @@ const Room = () => {
     // console.log(frameId);
     // setSelectFrame(`url('${imageList[frameId].src})`);
     axios
-      .get(
-        "/api/article/frame/" + `${frameId}`,
-        {},
-        {
-          headers: {
-            "Content-Type": "application/json;charset=UTF-8",
-            Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjIifQ.OUP4gSxVM-CV0JeNYLxTtbwY9B0YGuS1PYjss9X0y5a9Q61g7Gjb43RsTVTK7L-EVhPvHS-DuUBN9Chy2SLgVg`,
-            "ngrok-skip-browser-warning": "69420",
-          },
-        }
-      )
+      .get(`/api/article/frame/${frameId}`, {
+        headers: {
+          "Content-Type": "application/json;charset=UTF-8",
+          Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjIifQ.OUP4gSxVM-CV0JeNYLxTtbwY9B0YGuS1PYjss9X0y5a9Q61g7Gjb43RsTVTK7L-EVhPvHS-DuUBN9Chy2SLgVg`,
+          // Authorization: `${accessToken}`,
+          "ngrok-skip-browser-warning": "69420",
+        },
+      })
       .then((response) => {
         console.log(response);
-        setSelectFrame(`url('${response.frameLink})`);
+        setSelectFrame(`url('${response.data.frameLink})`);
       });
   };
   // 방 정보 조회
-  const getRoomInfo = async (sessionId) => {
+  const getRoomInfo = async () => {
     try {
       await axios
-        .get("/api/room" + `?roomCode=${sessionId}`, {
+        .get("/api/room" + `?roomCode=${mySessionId}`, {
           headers: {
             Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+            // Authorization: `${accessToken}`,
             "Content-Type": "application/json;charset=UTF-8",
           },
         })
         .then((response) => {
+          console.log("ROOMINFO");
           console.log(response);
           // setSelectedMode(response.data.)
           // setSelectedSpec(response.data.)
@@ -451,13 +402,13 @@ const Room = () => {
       const request = await axios.post(
         "/api/participant",
         {
-          ownerYn: "N",
           roomCode: sessionId,
           // roomCode: "sessionA",
         },
         {
           headers: {
             Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+            // Authorization: `${accessToken}`,
             "Content-Type": "application/json;charset=UTF-8",
           },
         }
@@ -476,6 +427,7 @@ const Room = () => {
         {
           headers: {
             Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+            // Authorization: `${accessToken}`,
             "Content-Type": "application/json;charset=UTF-8",
           },
         }
@@ -486,17 +438,18 @@ const Room = () => {
     }
   };
   // 유저와 연결 끊김 (재접속할 수 있음)
-  const userDisconnection = async (sessionId, myName) => {
+  const userDisconnection = async (sessionId, streamId) => {
     console.log("USERSTREAM");
     try {
       const request = await axios.put(
         "/api/participant/fail/connection/" + sessionId,
         {
-          nickname: myName,
+          streamId: streamId,
         },
         {
           headers: {
             Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+            // Authorization: `${accessToken}`,
             "Content-Type": "application/json;charset=UTF-8",
           },
         }
@@ -514,11 +467,12 @@ const Room = () => {
       const request = await axios.put(
         "/api/participant/" + sessionId + "/streamId",
         {
-          streamId: publisher.stream,
+          streamId: streamId,
         },
         {
           headers: {
             Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+            // Authorization: `${accessToken}`,
             "Content-Type": "application/json;charset=UTF-8",
           },
         }
@@ -539,6 +493,7 @@ const Room = () => {
         {
           headers: {
             Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+            // Authorization: `${accessToken}`,
             "Content-Type": "application/json;charset=UTF-8",
           },
         }
@@ -582,7 +537,7 @@ const Room = () => {
   const hostPost = async (sessionId) => {
     console.log("HOSTPOST");
     try {
-      const request = await axios.post(
+      const request = await axios.put(
         "/api/participant/" + sessionId + "/owner",
         {
           roomCode: sessionId,
@@ -590,6 +545,7 @@ const Room = () => {
         {
           headers: {
             Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+            // Authorization: `${accessToken}`,
             "Content-Type": "application/json;charset=UTF-8",
           },
         }
@@ -602,7 +558,6 @@ const Room = () => {
   // 프레임 목록 가져오기
   const getFrames = async (sortType, searchInput) => {
     try {
-      console.log("send to: ", "/api/article/frame/list/" + sortType);
       await axios
         .get(
           "/api/article/frame/list/" + sortType + `?searchWord=${searchInput}`,
@@ -610,6 +565,7 @@ const Room = () => {
             headers: {
               "Content-Type": `application/json;charset=UTF-8`,
               Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjIifQ.OUP4gSxVM-CV0JeNYLxTtbwY9B0YGuS1PYjss9X0y5a9Q61g7Gjb43RsTVTK7L-EVhPvHS-DuUBN9Chy2SLgVg`,
+              // Authorization: `${accessToken}`,
               "ngrok-skip-browser-warning": "69420",
             },
           }
@@ -904,6 +860,7 @@ const Room = () => {
           {},
           {
             headers: {
+              // Authorization: `${accessToken}`,
               Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
             },
           }
@@ -930,6 +887,7 @@ const Room = () => {
           {
             headers: {
               Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+              // Authorization: `${accessToken}`,
               "Content-Type": "application/json;charset=UTF-8",
             },
           }
@@ -1233,7 +1191,7 @@ const Room = () => {
           </div>
           <div className="room-bot">
             <div className="slide-container">
-              {imageList && (
+              {frameList && (
                 <Slider {...carouselSettings}>
                   {/* {imageList.map((item) => ( */}
                   {/* <div className="slide"> */}

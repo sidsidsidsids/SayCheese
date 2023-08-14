@@ -1,14 +1,15 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 // third party
 import { useDispatch } from "react-redux";
 import Select from "react-select";
 // local
+import { Undecorate } from "../../redux/features/frame/frameSlice";
 import { AddText } from "../../redux/features/frame/frameSlice";
 import "../css/CreateToolBarText.css";
 
 export default function Text() {
   const [customText, setCustomText] = useState("");
-  const [customTextColor, setCustomTextColor] = useState("#fff");
+  const [customTextColor, setCustomTextColor] = useState("white");
   const [customTextSize, setCustomTextSize] = useState("20");
   const [customTextFont, setCustomTextFont] = useState("Roboto");
   const textRef = useRef();
@@ -22,6 +23,10 @@ export default function Text() {
     customTextSize,
     customTextFont,
   };
+
+  function deleteText() {
+    dispatch(Undecorate());
+  }
 
   return (
     <>
@@ -38,6 +43,7 @@ export default function Text() {
       <input
         id="textColor"
         type="color"
+        value="#FFFFFF"
         ref={textColorRef}
         onChange={(e) => {
           setCustomTextColor(e.target.value);
@@ -114,7 +120,9 @@ export default function Text() {
           추가하기
         </button>
         <br />
-        <button className="btn">삭제하기</button>
+        <button className="btn" onClick={deleteText}>
+          삭제하기
+        </button>
       </div>
     </>
   );

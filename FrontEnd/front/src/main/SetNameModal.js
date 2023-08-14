@@ -1,21 +1,25 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { notUserNickname } from "../redux/features/login/loginSlice";
 
 import "./SetNameModal.css";
 import ModalButtons from "./ModalButtons";
 
-function SetNameModal({ open, close, onConfirm }) {
+function SetNameModal({ open, close }) {
+  const { userInfo } = useSelector((store) => store.login);
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const [inputNickname, setInputNickname] = useState("");
 
   if (!open) {
     return null;
   }
   const handleConfirm = () => {
-    onConfirm(inputNickname);
+    console.log(inputNickname);
+    dispatch(notUserNickname(inputNickname));
     close();
+    console.log(userInfo);
   };
   return (
     <div className="set-name-modal">

@@ -1,36 +1,34 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { PersistGate } from "redux-persist/integration/react";
+import { persistStore } from "redux-persist";
 
 // 라우터
 import "./index.css";
 import App from "./App";
-
 import Main from "./main/Main";
 import Frame from "./frame/pages/Frame";
-import FrameCreate from "./frame/pages/FrameCreate";
 import ErrorPage from "./error-page";
-
 import CustomerCenter from "./customercenter/CustomerCenter";
 import NoticeList from "./customercenter/NoticeList";
 import Notice from "./customercenter/Notice";
 import NoticeWrite from "./customercenter/NoticeWrite";
 import Faq from "./customercenter/Faq";
-
 import User from "./user/User";
 import Login from "./user/Login";
 import SignUp from "./user/SignUp";
 import MyPage from "./user/MyPage";
-
 import Photo from "./photo/Photo";
-
 import Room from "./room/Room";
+import MyInfoModify from "./user/MyInfoModify";
+import MyPagePhoto from "./user/MyPagePhoto";
+import MyPageFrame from "./user/MyPageFrame";
 
 // Redux
 import { Provider } from "react-redux"; // React 앱에 Redux 스토어를 연결하기 위한 Provider
 import store from "./redux/store";
 import axios from "axios";
-import MyInfoModify from "./user/MyInfoModify";
 
 const router = createBrowserRouter([
   {
@@ -45,7 +43,7 @@ const router = createBrowserRouter([
       {
         path: "frame/",
         element: <Frame />,
-        children: [{ path: "create/", element: <Frame /> }],
+        children: [{ path: "create", element: <Frame /> }],
       },
       // 이제 이미지 게시판, 공지 게시판, 로그인 페이지, 마이페이지를 연결하면 됩니다.
       {
@@ -87,6 +85,14 @@ const router = createBrowserRouter([
             element: <MyPage />,
           },
           {
+            path: "mypage/myphoto/:email",
+            element: <MyPagePhoto />,
+          },
+          {
+            path: "mypage/myframe/:email",
+            element: <MyPageFrame />,
+          },
+          {
             path: "modify/:email",
             element: <MyInfoModify />,
           },
@@ -112,9 +118,13 @@ if (accessToken) {
   axios.defaults.headers.common["Authorization"] = accessToken;
 }
 
+export let persistor = persistStore(store);
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
-    <RouterProvider router={router} />
+    <PersistGate loading={null} persistor={persistor}>
+      <RouterProvider router={router} />
+    </PersistGate>
   </Provider>
 );
