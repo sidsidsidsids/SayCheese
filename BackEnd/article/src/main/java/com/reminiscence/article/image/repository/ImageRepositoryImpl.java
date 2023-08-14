@@ -47,13 +47,20 @@ public class ImageRepositoryImpl implements ImageRepositoryCustom{
                         QImage.image.createdDate.as("createDate"),
                         ExpressionUtils.as(
                                 queryFactory
-                                        .select(QImageArticle.imageArticle)
+                                        .select(QImageArticle.imageArticle.id)
                                         .from(QImageArticle.imageArticle)
-                                        .where(QImageArticle.imageArticle.image.eq(QImage.image)),
+                                        .where(QImageArticle.imageArticle.image.id.eq(QImage.image.id)),
+                                "articleId"),
+                        ExpressionUtils.as(
+                                queryFactory
+                                        .select(QLover.lover.count())
+                                        .from(QLover.lover)
+                                        .where(QLover.lover.article.id.eq(QImage.image.imageArticle.id)),
                                 "loverCnt")
                 ))
                 .from(QImageOwner.imageOwner)
                 .join(QImageOwner.imageOwner.image, QImage.image)
+                .leftJoin(QImageOwner.imageOwner.image.imageArticle, QImageArticle.imageArticle)
                 .where(eqMemberId(memberId))
                 .orderBy(QImageOwner.imageOwner.image.createdDate.desc())
                 .offset(pageable.getOffset())
