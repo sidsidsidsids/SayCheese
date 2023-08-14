@@ -158,3 +158,17 @@ div.forRadio > label {
   width: 100%;
   margin-top: 10px;
 }
+
+.slide {
+  padding: 10px;
+}
+
+.slick-slide {
+  padding-right: 30px;
+  background: black;
+  margin-top: 10x;
+}
+
+.slickPrev {
+  z-index: 10;
+}
