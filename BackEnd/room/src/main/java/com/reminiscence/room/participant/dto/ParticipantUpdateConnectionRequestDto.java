@@ -6,6 +6,6 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 public class ParticipantUpdateConnectionRequestDto {
-    @NotBlank(message = "닉네임을 입력해주세요.")
-    private String nickname;
+    @NotBlank(message = "스트림 ID을 입력해주세요.")
+    private String streamId;
 }

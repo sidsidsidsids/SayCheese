@@ -41,11 +41,20 @@ public class ParticipantRepositoryImpl implements ParticipantRepositoryCustom{
     }
 
     @Override
-    public Optional<Participant> findByNicknameAndRoomId(String nickname,Long roomId) {
+    public Optional<Participant> findByOwnerYAndRoomId(Long roomId) {
+        return Optional.ofNullable(queryFactory
+                .select(QParticipant.participant)
+                .from(QParticipant.participant)
+                .where(eqRoomId(roomId),eqOwner())
+                .fetchFirst());
+    }
+
+    @Override
+    public Optional<Participant> findByStreamIdAndRoomId(String streamId,Long roomId) {
         return Optional.ofNullable(
                 queryFactory.select(QParticipant.participant)
                         .from(QParticipant.participant)
-                        .where(eqNickname(nickname),eqRoomId(roomId))
+                        .where(eqStreamId(streamId),eqRoomId(roomId))
                         .fetchFirst());
     }
 
@@ -66,19 +75,22 @@ public class ParticipantRepositoryImpl implements ParticipantRepositoryCustom{
                 .fetchCount();
     }
 
-    public BooleanExpression eqNickname(String nickname){
-        return QParticipant.participant.member.nickname.eq(nickname);
+    private BooleanExpression eqStreamId(String streamId){
+        return QParticipant.participant.streamId.eq(streamId);
     }
-    public BooleanExpression eqMemberId(Long memberId){
+    private BooleanExpression eqMemberId(Long memberId){
         return QParticipant.participant.member.id.eq(memberId);
     }
-    public BooleanExpression eqRoomId(Long roomId){
+    private BooleanExpression eqRoomId(Long roomId){
         return QParticipant.participant.room.id.eq(roomId);
     }
-    public BooleanExpression eqConnection(){
+    private BooleanExpression eqConnection(){
         return QParticipant.participant.connectionYn.eq('Y');
     }
     private BooleanExpression eqMemberId(){
         return QParticipant.participant.member.role.notIn(Role.GUEST);
+    }
+    private BooleanExpression eqOwner(){
+        return QParticipant.participant.ownerYn.eq('Y');
     }
 }

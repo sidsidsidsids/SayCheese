@@ -107,7 +107,7 @@ public class ParticipantController {
             @PathVariable("roomCode") String roomCode,
             @RequestBody @Valid ParticipantUpdateConnectionRequestDto requestDto
     ){
-        participantService.updateParticipantConnectionFail(requestDto.getNickname(), roomCode);
+        participantService.updateParticipantConnectionFail(requestDto.getStreamId(), roomCode);
         return new ResponseEntity(Response.of(ParticipantMessage.PARTICIPANT_CHANGE_CONNECTION_SUCCESS),HttpStatus.OK);
     }
     /**
