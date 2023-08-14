@@ -1254,36 +1254,42 @@ const Room = () => {
               <div className="frame-type-radio">
                 {/* Frame type selection */}
                 <form>
-                  <label>
-                    <input
-                      type="radio"
-                      name="frameType"
-                      value="hot"
-                      checked={frameSortType === "hot"}
-                      onChange={() => setFrameSortType("hot")}
-                    />
-                    인기
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="frameType"
-                      value="recent"
-                      checked={frameSortType === "recent"}
-                      onChange={() => setFrameSortType("recent")}
-                    />
-                    최신
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="frameType"
-                      value="random"
-                      checked={frameSortType === "random"}
-                      onChange={() => setFrameSortType("random")}
-                    />
-                    무작위
-                  </label>
+                  <div className="forRadio">
+                    <label>
+                      <input
+                        type="radio"
+                        name="frameType"
+                        value="hot"
+                        checked={frameSortType === "hot"}
+                        onChange={() => setFrameSortType("hot")}
+                      />
+                      인기
+                    </label>
+                  </div>
+                  <div className="forRadio">
+                    <label>
+                      <input
+                        type="radio"
+                        name="frameType"
+                        value="recent"
+                        checked={frameSortType === "recent"}
+                        onChange={() => setFrameSortType("recent")}
+                      />
+                      최신
+                    </label>
+                  </div>{" "}
+                  <div className="forRadio">
+                    <label>
+                      <input
+                        type="radio"
+                        name="frameType"
+                        value="random"
+                        checked={frameSortType === "random"}
+                        onChange={() => setFrameSortType("random")}
+                      />
+                      무작위
+                    </label>
+                  </div>
                   {/* Add more type options as needed */}
                 </form>
               </div>

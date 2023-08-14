@@ -13,13 +13,13 @@ function RoomButtons({
 }) {
   return (
     <div className="room-button">
-      <button className="button" onClick={onButton1} disabled={option1}>
+      <button className="button button1" onClick={onButton1} disabled={option1}>
         {buttonName1}
       </button>
-      <button className="button" onClick={onButton2} disabled={option2}>
+      <button className="button button2" onClick={onButton2} disabled={option2}>
         {buttonName2}
       </button>
-      <button className="button" onClick={onButton3} disabled={option3}>
+      <button className="button button3" onClick={onButton3} disabled={option3}>
         {buttonName3}
       </button>
     </div>
