@@ -34,12 +34,19 @@ function Main() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [joinModalOpen, setJoinModalOpen] = useState(false);
   const [nameModalOpen, setNameModalOpen] = useState(false);
-  const { userInfo } = useSelector((store) => store.login);
+  const [loginLink, setLoginLink] = useState("/user/login");
+  const { isLogin, userInfo } = useSelector((store) => store.login);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getUserInfo());
     able = checkAvailable();
+
+    if (isLogin) {
+      // 로그인 되어있으면 마이페이지로 링크 연결합니다
+      setLoginLink(`/user/mypage/${userInfo.email}`);
+    }
   }, []);
 
   const checkAvailable = async () => {
@@ -62,17 +69,6 @@ function Main() {
       console.log(error);
       return false;
     }
-  };
-
-  const defaultOptions = {
-    reverse: false, // reverse the tilt direction
-    max: 35, // max tilt rotation (degrees)
-    perspective: 1000, // Transform perspective, the lower the more extreme the tilt gets.
-    speed: 1000, // Speed of the enter/exit transition
-    transition: true, // Set a transition on enter/exit.
-    axis: null, // What axis should be disabled. Can be X or Y.
-    reset: true, // If the tilt effect has to be reset on exit.
-    easing: "cubic-bezier(.03,.98,.52,.99)", // Easing on enter/exit.
   };
 
   return (
@@ -111,7 +107,8 @@ function Main() {
         </div>
         <div id="main-menu">
           <img id="shelf" src={shelf} alt="shelf"></img>
-          <Link to="/user/login">
+          <Link to={loginLink}>
+            {/* 로그인 되어있다면 마이페이지 안 되어 있다면 로그인 페이지로 이동 */}
             <img id="login" src={login} alt="login"></img>
           </Link>
           <Link to="/photo">
