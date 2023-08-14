@@ -96,3 +96,16 @@
   overflow: hidden;
   font-size: 20px;
 }
+.slide {
+  padding: 10px;
+}
+
+.slick-slide {
+  padding-right: 30px;
+  background: black;
+  margin-top: 10x;
+}
+
+.slickPrev {
+  z-index: 10;
+}
