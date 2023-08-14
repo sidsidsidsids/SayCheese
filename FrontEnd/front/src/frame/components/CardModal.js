@@ -87,7 +87,7 @@ export default function CardModal() {
       // 로그인 한 사람만
       if (like) {
         console.log("좋아요 취소 요청");
-        handleLikePlus();
+        handleLikeMinus();
       } else if (!like) {
         console.log("좋아요 요청");
         handleLikePlus();
