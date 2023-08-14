@@ -3,12 +3,15 @@ package com.reminiscence.member.integration;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.reminiscence.config.redis.RedisKey;
+import com.reminiscence.email.dummy.DummyEmailCheckRequestDto;
+import com.reminiscence.email.dummy.DummyEmailRequestDto;
 import com.reminiscence.filter.JwtProperties;
 import com.reminiscence.filter.JwtTokenProvider;
 import com.reminiscence.filter.JwtUtil;
-import com.reminiscence.member.dto.MemberInfoUpdateRequestDto;
+import com.reminiscence.member.dto.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -17,8 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 //import com.reminiscence.JwtService;
 import com.reminiscence.domain.Member;
 import com.reminiscence.domain.Role;
-import com.reminiscence.member.dto.MemberJoinRequestDto;
-import com.reminiscence.member.dto.MemberLoginRequestDto;
 import com.reminiscence.member.repository.MemberRepository;
 import com.reminiscence.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -52,6 +54,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -126,7 +129,7 @@ public class MemberIntegrationTest {
         //givenz
         redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_SUCCESS_TOKEN_PREFIX + "saycheese@gmail.com", "", Duration.ofMinutes(3));
         String email = "saycheese@gmail.com";
-        String password = "1234";
+        String password = "password1234$";
         String nickname = "검정";
         char genderFm = 'F';
         int age = 31;
@@ -151,7 +154,7 @@ public class MemberIntegrationTest {
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                         requestFields(
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("아이디(이메일)").attributes(key("constraints").value("이메일 유효성 검사 제한")),
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 최소 8자 이상")),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 영문자, 특수문자, 숫자를 포함한 최소 8자 이상")),
                                 fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임").attributes(key("constraints").value("닉네임은 최소 2자 이상, 최대 20자 이하, 공백이나 특수 기호 포함되지 않도록 제한, 중복 제한")),
                                 fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별").attributes(key("constraints").value("")),
                                 fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이").attributes(key("constraints").value("")),
@@ -189,7 +192,7 @@ public class MemberIntegrationTest {
 
         MemberJoinRequestDto memberJoinRequestDto = MemberJoinRequestDto.builder()
                 .email(email)
-                .password("password")
+                .password("password1234@")
                 .nickname("nickname")
                 .genderFm('F')
                 .age(age)
@@ -204,7 +207,7 @@ public class MemberIntegrationTest {
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                         requestFields(
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("중복된 아이디(이메일)").attributes(key("constraints").value("제목은 최소 3글자, 20글자 이하")),
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 최소 8자 이상")),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 영문자, 특수문자, 숫자를 포함한 최소 8자 이상")),
                                 fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임").attributes(key("constraints").value("닉네임은 최소 2자 이상, 최대 20자 이하, 공백이나 특수 기호 포함되지 않도록 제한, 중복 제한")),
                                 fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별").attributes(key("constraints").value("")),
                                 fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이").attributes(key("constraints").value("")),
@@ -243,7 +246,7 @@ public class MemberIntegrationTest {
 
         MemberJoinRequestDto memberJoinRequestDto = MemberJoinRequestDto.builder()
                 .email("saycheese2@gmail.com")
-                .password("password")
+                .password("password1234!")
                 .nickname(nickname)
                 .genderFm('F')
                 .age(age)
@@ -257,7 +260,60 @@ public class MemberIntegrationTest {
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
                         requestFields(
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("아이디(이메일)").attributes(key("constraints").value("제목은 최소 3글자, 20글자 이하")),
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 최소 8자 이상")),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 영문자, 특수문자, 숫자를 포함한 최소 8자 이상")),
+                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("중복된 닉네임").attributes(key("constraints").value("닉네임은 최소 2자 이상, 최대 20자 이하, 공백이나 특수 기호 포함되지 않도록 제한, 중복 제한")),
+                                fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별").attributes(key("constraints").value("")),
+                                fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이").attributes(key("constraints").value("")),
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("이름").attributes(key("constraints").value("이름 입력 필수")),
+                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필").attributes(key("constraints").value(""))
+                        ),
+                        responseFields(
+                                fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("회원가입 실패 테스트_비밀번호 제약")
+    public void testJoinMemberFailure_PasswordConstraints() throws Exception {
+        //given
+        redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_SUCCESS_TOKEN_PREFIX + "saycheese2@gmail.com", "", Duration.ofMinutes(3));
+        String email = "saycheese@gmail.com";
+        String password = "1234";
+        String nickname = "검정";
+        char genderFm = 'F';
+        int age = 31;
+        String name = "고무신";
+        String profile = "xxxxxxx";
+
+        memberRepository.save(MemberJoinRequestDto.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .genderFm(genderFm)
+                .age(age)
+                .name(name)
+                .profile(profile)
+                .build().toEntity());
+
+        MemberJoinRequestDto memberJoinRequestDto = MemberJoinRequestDto.builder()
+                .email("saycheese2@gmail.com")
+                .password("1234!")
+                .nickname(nickname)
+                .genderFm('F')
+                .age(age)
+                .name(name)
+                .profile(profile)
+                .build();
+        mvc.perform(post("/api/member/join")
+                        .content(objectMapper.writeValueAsString(memberJoinRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest()) // 응답 status를 conflict로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestFields(
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("아이디(이메일)").attributes(key("constraints").value("제목은 최소 3글자, 20글자 이하")),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 영문자, 특수문자, 숫자를 포함한 최소 8자 이상")),
                                 fieldWithPath("nickname").type(JsonFieldType.STRING).description("중복된 닉네임").attributes(key("constraints").value("닉네임은 최소 2자 이상, 최대 20자 이하, 공백이나 특수 기호 포함되지 않도록 제한, 중복 제한")),
                                 fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별").attributes(key("constraints").value("")),
                                 fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이").attributes(key("constraints").value("")),
@@ -277,7 +333,7 @@ public class MemberIntegrationTest {
     public void testIdCheckSuccess() throws Exception {
         //given
         String email = "saycheese@gmail.com";
-        String password = "1234";
+        String password = "1234asdf@";
         String nickname = "검정";
         Role role = Role.MEMBER;
         char genderFm = 'F';
@@ -300,12 +356,15 @@ public class MemberIntegrationTest {
                 .snsType(snsType)
                 .build());
 
-        mvc.perform(RestDocumentationRequestBuilders.get("/api/member/join/{email}/id-check", "another-email")
+        MemberIdCheckRequestDto memberIdCheckRequestDto = new MemberIdCheckRequestDto("anotherEmail");
+
+        mvc.perform(post("/api/member/id-check")
+                        .content(objectMapper.writeValueAsString(memberIdCheckRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) // 응답 status를 ok로 테스트
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
-                                pathParameters(
-                                        parameterWithName("email").description("이메일")
+                                requestFields(
+                                        fieldWithPath("email").type(JsonFieldType.STRING).description("중복되지 않는 이메일").attributes(key("constraints").value(""))
                                 ),
                                 responseFields(
                                         fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
@@ -342,12 +401,15 @@ public class MemberIntegrationTest {
                 .snsType(snsType)
                 .build());
 
-        mvc.perform(RestDocumentationRequestBuilders.get("/api/member/join/{email}/id-check", email)
+        MemberIdCheckRequestDto memberIdCheckRequestDto = new MemberIdCheckRequestDto(email);
+
+        mvc.perform(post("/api/member/id-check")
+                        .content(objectMapper.writeValueAsString(memberIdCheckRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest()) // 응답 status를 BadRequest로 테스트
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
-                        pathParameters(
-                                parameterWithName("email").description("중복된 이메일")
+                        requestFields(
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("중복된 이메일").attributes(key("constraints").value(""))
                         ),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
@@ -382,12 +444,16 @@ public class MemberIntegrationTest {
                 .snsId(snsId)
                 .snsType(snsType)
                 .build());
-        mvc.perform(RestDocumentationRequestBuilders.get("/api/member/join/{nickname}/nickname-check", "another-nickname")
+
+        MemberNicknameCheckRequestDto memberNicknameCheckRequestDto = new MemberNicknameCheckRequestDto("anotherNickname");
+
+        mvc.perform(post("/api/member/nickname-check")
+                        .content(objectMapper.writeValueAsString(memberNicknameCheckRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) // 응답 status를 ok로 테스트
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
-                        pathParameters(
-                                parameterWithName("nickname").description("닉네임")
+                        requestFields(
+                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("중복되지 않는 닉네임").attributes(key("constraints").value(""))
                         ),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
@@ -423,12 +489,15 @@ public class MemberIntegrationTest {
                 .snsType(snsType)
                 .build());
 
-        mvc.perform(RestDocumentationRequestBuilders.get("/api/member/join/{nickname}/nickname-check", nickname)
+        MemberNicknameCheckRequestDto memberNicknameCheckRequestDto = new MemberNicknameCheckRequestDto(nickname);
+
+        mvc.perform(post("/api/member/nickname-check")
+                        .content(objectMapper.writeValueAsString(memberNicknameCheckRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest()) // 응답 status를 BadRequest로 테스트
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
-                        pathParameters(
-                                parameterWithName("nickname").description("중복된 닉네임")
+                        requestFields(
+                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("중복된 닉네임").attributes(key("constraints").value(""))
                         ),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
@@ -644,7 +713,7 @@ public class MemberIntegrationTest {
                                 headerWithName("Authorization").description("로그인 성공한 토큰 ")
                         ),
                         requestFields(
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 최소 8자 이상")),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").attributes(key("constraints").value("비밀번호는 영문자, 특수문자, 숫자를 포함한 최소 8자 이상")),
                                 fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임").attributes(key("constraints").value("닉네임은 최소 2자 이상, 최대 20자 이하, 공백이나 특수 기호 포함되지 않도록 제한, 중복 제한")),
                                 fieldWithPath("genderFm").type(JsonFieldType.STRING).description("성별").attributes(key("constraints").value("")),
                                 fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이").attributes(key("constraints").value("")),
@@ -806,12 +875,13 @@ public class MemberIntegrationTest {
                 .build());
 
         // 이메일로 검색 시
-        MvcResult result1 = mvc.perform(RestDocumentationRequestBuilders.get("/api/member/search-member/{email-nickname}", email)
+        MvcResult result1 = mvc.perform(get("/api/member/search-member")
+                        .param("email-nickname", email)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) // 응답 status를 ok로 테스트
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
-                        pathParameters(
-                                parameterWithName("email-nickname").description("email 또는 nickname")
+                        requestParameters(
+                                parameterWithName("email-nickname").description("email 또는 nickname").attributes(key("constrains").value(""))
                         ),
                         responseFields(
                                 fieldWithPath("[].email").type(JsonFieldType.STRING).description("아이디(이메일)"),
@@ -1339,7 +1409,7 @@ public class MemberIntegrationTest {
                                 headerWithName("Authorization").description("게스트 AccessToken")
                         ),
                         responseFields(
-                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("회원 닉네임")
+                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("게스트 닉네임")
                         )
                 ));
     }
@@ -1388,10 +1458,269 @@ public class MemberIntegrationTest {
                                 headerWithName("Authorization").description("회원 AccessToken")
                         ),
                         responseFields(
-                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("게스트 닉네임")
+                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("회원 닉네임")
 //                                fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
                         )
                 ));
     }
 
+    @Test
+    @DisplayName("프로필 수정")
+    public void testSaveMemberProfile() throws Exception {
+        String email = "kkk@naver.com";
+        String password = "salmusa444";
+        String nickname = "thisIsNickname";
+
+        memberRepository.save(Member.builder()
+                .email(email)
+                .password(bCryptPasswordEncoder.encode(password))
+                .nickname(nickname)
+                .role(Role.MEMBER)
+                .genderFm('F')
+                .age(30)
+                .name("name")
+                .build());
+
+        MemberLoginRequestDto memberLoginRequestDto = MemberLoginRequestDto.builder()
+                .email(email)
+                .password(password)
+                .build();
+
+        MvcResult result = mvc.perform(post("/api/login")
+                        .content(objectMapper.writeValueAsString(memberLoginRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}"))
+                .andReturn();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(JwtProperties.HEADER_STRING, result.getResponse().getHeader(JwtProperties.HEADER_STRING));
+
+        String profileName = "thisIsProfile.jpg";
+
+        MemberProfileSaveRequestDto memberProfileSaveRequestDto = new MemberProfileSaveRequestDto(profileName);
+
+        mvc.perform(put("/api/member/profile")
+                        .headers(headers)
+                        .content(objectMapper.writeValueAsString(memberProfileSaveRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestHeaders(
+                                headerWithName("Authorization").description("회원 AccessToken")
+                        ),
+                        requestFields(
+                                fieldWithPath("profileName").description("프로필 파일 이름").attributes(key("constraints").value("Not Null"))
+                        ),
+                        responseFields(
+                                fieldWithPath("profile").type(JsonFieldType.STRING).description("프로필"),
+                                fieldWithPath("response.message").type(JsonFieldType.STRING).description("API 응답 메시지")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경 시 회원 이메일 찾기 및 이메일 전송(정상)")
+    public void testFindMemberEmailAndTransportEmailSuccess() throws Exception {
+        String email = "kkk@naver.com";
+        String password = "salmusa444";
+        String nickname = "thisIsNickname";
+
+        memberRepository.save(Member.builder()
+                .email(email)
+                .password(bCryptPasswordEncoder.encode(password))
+                .nickname(nickname)
+                .role(Role.MEMBER)
+                .genderFm('F')
+                .age(30)
+                .name("name")
+                .profile("profile")
+                .snsId("snsId")
+                .snsType("snsType")
+                .build());
+
+        MemberFindPasswordRequestDto memberFindPasswordRequestDto = new MemberFindPasswordRequestDto(email);
+
+        mvc.perform(post("/api/member/password")
+                        .content(objectMapper.writeValueAsString(memberFindPasswordRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // 응답 status를 ok로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestFields(
+                                fieldWithPath("email").description("이메일").attributes(key("constraints").value("이메일 제약조건"))
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경 시 회원 이메일 찾기(없는 이메일)")
+    public void testFindMemberEmailFailure() throws Exception {
+        String email = "kkk@naver.com";
+        String password = "salmusa444";
+        String nickname = "thisIsNickname";
+
+        memberRepository.save(Member.builder()
+                .email(email)
+                .password(bCryptPasswordEncoder.encode(password))
+                .nickname(nickname)
+                .role(Role.MEMBER)
+                .genderFm('F')
+                .age(30)
+                .name("name")
+                .profile("profile")
+                .snsId("snsId")
+                .snsType("snsType")
+                .build());
+
+        MemberFindPasswordRequestDto memberFindPasswordRequestDto = new MemberFindPasswordRequestDto("notExistEmail");
+
+        mvc.perform(post("/api/member/password")
+                        .content(objectMapper.writeValueAsString(memberFindPasswordRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest()) // 응답 status를 BadRequest로 테스트
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestFields(
+                                fieldWithPath("email").description("이메일").attributes(key("constraints").value("이메일 제약조건"))
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("API 응답 메시지")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("비밀번호 확인 인증코드 검증 테스트")
+    public void testCheckAuthTokenSuccess() throws Exception {
+        String email = "wow@naver.com";
+        String code = "1222";
+        redisTemplate.opsForValue().set(RedisKey.EMAIL_AUTH_TOKEN_PREFIX + email, code, Duration.ofMinutes(3));
+
+        DummyEmailCheckRequestDto dummyEmailCheckRequestDto = new DummyEmailCheckRequestDto(email, code);
+        mvc.perform(post("/api/email/auth/check")
+                        .content(objectMapper.writeValueAsString(dummyEmailCheckRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestFields(
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("이메일").attributes(key("constraints").value("이메일 제약조건")),
+                                fieldWithPath("token").type(JsonFieldType.STRING).description("인증 번호").attributes(key("constraints").value("빈 문자열이 아닌가?"))
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경 테스트(정상)")
+    public void testModifyPasswordSuccess() throws Exception {
+        String email = "wow@naver.com";
+        String nickname = "thisIsNickname";
+        String password = "salmusa444";
+
+        memberRepository.save(Member.builder()
+                .email(email)
+                .password(bCryptPasswordEncoder.encode(password))
+                .nickname(nickname)
+                .role(Role.MEMBER)
+                .genderFm('F')
+                .age(30)
+                .name("name")
+                .profile("profile")
+                .snsId("snsId")
+                .snsType("snsType")
+                .build());
+
+        String newPassWord = "salmusa333";
+        String passwordConfirm = "salmusa333";
+
+        MemberUpdatePasswordRequestDto memberUpdatePasswordRequestDto = new MemberUpdatePasswordRequestDto(
+                email, newPassWord, passwordConfirm);
+        mvc.perform(put("/api/member/password")
+                        .content(objectMapper.writeValueAsString(memberUpdatePasswordRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestFields(
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("이메일").attributes(key("constraints").value("이메일 제약조건")),
+                                fieldWithPath("newPassword").type(JsonFieldType.STRING).description("새 비밀번호").attributes(key("constraints").value("비밀번호 제약조건")),
+                                fieldWithPath("passwordConfirm").type(JsonFieldType.STRING).description("비밀번호 확인").attributes(key("constraints").value("비밀번호 제약조건"))
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경 테스트(없는 회원)")
+    public void testWhenNotExistMember_ThenModifyPasswordFailure() throws Exception {
+        String email = "wow@naver.com";
+        String newPassWord = "salmusa444";
+        String passwordConfirm = "salmusa444";
+
+        MemberUpdatePasswordRequestDto memberUpdatePasswordRequestDto = new MemberUpdatePasswordRequestDto(
+                email, newPassWord, passwordConfirm);
+
+        mvc.perform(put("/api/member/password")
+                        .content(objectMapper.writeValueAsString(memberUpdatePasswordRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(status().isNotFound())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestFields(
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("이메일").attributes(key("constraints").value("이메일 제약조건")),
+                                fieldWithPath("newPassword").type(JsonFieldType.STRING).description("새 비밀번호").attributes(key("constraints").value("비밀번호 제약조건")),
+                                fieldWithPath("passwordConfirm").type(JsonFieldType.STRING).description("비밀번호 확인").attributes(key("constraints").value("비밀번호 제약조건"))
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 코드")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경 테스트(서로 다른 패스워드)")
+    public void testWhenIncorrectPassword_ThenModifyPasswordFailure() throws Exception {
+        String email = "wow@naver.com";
+        String password = "salmusa444";
+        String nickname = "thisIsNickname";
+
+        memberRepository.save(Member.builder()
+                .email(email)
+                .password(bCryptPasswordEncoder.encode(password))
+                .nickname(nickname)
+                .role(Role.MEMBER)
+                .genderFm('F')
+                .age(30)
+                .name("name")
+                .profile("profile")
+                .snsId("snsId")
+                .snsType("snsType")
+                .build());
+
+        String newPassWord = "salmusa442";
+        String passwordConfirm = "salmusa443";
+
+        MemberUpdatePasswordRequestDto memberUpdatePasswordRequestDto = new MemberUpdatePasswordRequestDto(
+                email, newPassWord, passwordConfirm);
+        mvc.perform(put("/api/member/password")
+                        .content(objectMapper.writeValueAsString(memberUpdatePasswordRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(status().isBadRequest())
+                .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
+                        requestFields(
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("이메일").attributes(key("constraints").value("이메일 제약조건")),
+                                fieldWithPath("newPassword").type(JsonFieldType.STRING).description("새 비밀번호").attributes(key("constraints").value("비밀번호 제약조건")),
+                                fieldWithPath("passwordConfirm").type(JsonFieldType.STRING).description("비밀번호 확인").attributes(key("constraints").value("비밀번호 제약조건"))
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.NUMBER).description("응답 코드")
+                        )
+                ));
+    }
 }

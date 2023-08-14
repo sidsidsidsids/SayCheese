@@ -17,9 +17,11 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class MemberJoinRequestDto {
 
-//    @Email(message="이메일 형식이 아닙니다.")
+    @Email(regexp = "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$", message ="이메일 양식이 맞지 않습니다")
+    @NotBlank(message = "이메일을 입력해주세요")
     private String email;
-//    @Pattern(regexp = "/^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/", message="비밀번호를 특수문자 포함 8자 이상으로 입력해주세요.")
+    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?])(?=.*\\d).{8,}$",
+            message = "비밀번호를 영문자, 특수문자, 숫자를 포함한 8자 이상으로 입력해주세요.")
     private String password;
     private String nickname;
     private Character genderFm;

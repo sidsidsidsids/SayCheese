@@ -135,7 +135,6 @@ public class EmailIntegrationTest {
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지")
                         )
                 ));
-
     }
     @Test
     @DisplayName("토큰 인증 테스트(잘못된 값이 들어올 시)")
