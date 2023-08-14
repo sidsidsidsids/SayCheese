@@ -1,5 +1,6 @@
 package com.reminiscence.email.controller;
 
+import com.reminiscence.email.EmailType;
 import com.reminiscence.email.dto.EmailCheckRequestDto;
 import com.reminiscence.email.dto.EmailRequestDto;
 import com.reminiscence.email.service.EmailService;
@@ -23,7 +24,7 @@ public class EmailController {
 
     @PostMapping("")
     public ResponseEntity<Response> sendAuthToken(@Valid @RequestBody EmailRequestDto emailRequestDto){
-        emailService.storeAuthToken(emailRequestDto);
+        emailService.storeAuthToken(emailRequestDto, EmailType.JOIN);
         return new ResponseEntity<>(Response.of(EmailResponseMessage.EMAIL_SEND_SUCCESS),HttpStatus.OK);
     }
 

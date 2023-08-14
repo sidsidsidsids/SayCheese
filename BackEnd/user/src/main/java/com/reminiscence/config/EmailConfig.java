@@ -13,7 +13,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.util.Properties;
 
 @Configuration
-@Profile("!local")
+@Profile("prod")
 @RequiredArgsConstructor
 public class EmailConfig {
 
