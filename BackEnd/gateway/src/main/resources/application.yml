@@ -18,10 +18,16 @@ spring:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user/**
+            - Path=/member/**
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/user/(?<segment>.*), /$\{segment}
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/email/**
+          filters:
+            - RemoveRequestHeader=Cookie
 
         - id: article-service
           uri: lb://ARTICLE-SERVICE
@@ -29,7 +35,34 @@ spring:
             - Path=/article/**
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/article/(?<segment>.*), /$\{segment}
+
+        - id: article-service
+          uri: lb://ARTICLE-SERVICE
+          predicates:
+            - Path=/image/**
+          filters:
+            - RemoveRequestHeader=Cookie
+
+        - id: article-service
+          uri: lb://ARTICLE-SERVICE
+          predicates:
+            - Path=/amazon/**
+          filters:
+            - RemoveRequestHeader=Cookie
+
+        - id: article-service
+          uri: lb://ARTICLE-SERVICE
+          predicates:
+            - Path=/faq/**
+          filters:
+            - RemoveRequestHeader=Cookie
+
+        - id: article-service
+          uri: lb://ARTICLE-SERVICE
+          predicates:
+            - Path=/frame/**
+          filters:
+            - RemoveRequestHeader=Cookie
 
         - id: room-service
           uri: lb://ROOM-SERVICE
@@ -37,8 +70,13 @@ spring:
             - Path=/room/**
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/room/(?<segment>.*), /$\{segment}
 
+        - id: room-service
+          uri: lb://ROOM-SERVICE
+          predicates:
+            - Path=/participant/**
+          filters:
+            - RemoveRequestHeader=Cookie
 
 
 
