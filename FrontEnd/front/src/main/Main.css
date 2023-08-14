@@ -1,4 +1,4 @@
-#main-wrapper {
+#mainWrapper {
   margin-top: 20px;
   display: flex;
   flex-direction: column;
@@ -13,12 +13,12 @@
   margin: 20px auto 0 auto;
 }
 
-#main-wrapper {
+#mainWrapper {
   position: relative;
 }
 /* 부스 선반 부스 */
 
-#main-booth {
+#mainBooth {
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -42,7 +42,7 @@
   filter: brightness(2);
 }
 
-#main-menu {
+#mainMenu {
   position: relative;
 }
 
@@ -63,13 +63,13 @@
     transform: rotate(0deg);
   }
 }
-#main-menu #login {
+#mainMenu #login {
   position: absolute;
   width: 120px;
   left: 15px;
   top: -100px;
 }
-#main-menu #login:hover {
+#mainMenu #login:hover {
   animation: shake 1s ease;
 }
 #photo {
@@ -129,33 +129,33 @@
   height: 300px;
   position: absolute;
   top: 180px !important;
-  left: 188px;
+  left: 187.4px;
 }
 
 .curtains > img {
   height: 400px;
-  width: 46px;
+  width: 46.5px;
 }
 
 #left {
   position: relative;
 }
 
-#main-booth {
+#mainBooth {
   height: 100%;
   position: relative;
 }
 
-.curtain-pipe {
+.curtainPipe {
   position: absolute;
   left: 188px;
   top: 190px;
 }
 
 #right .right {
-  left: 82px;
+  left: 80.3px;
 }
-.create-room {
+.createRoom {
   position: absolute;
   font-size: 80px;
   text-align: center;
@@ -165,6 +165,7 @@
   height: 400px;
   width: 230px;
   z-index: 100;
+  cursor: pointer;
 }
 /* 왼쪽커튼 애니메이션 */
 .curtains:hover .curtain.left1 {
@@ -231,10 +232,9 @@
   font-size: 30px;
   left: 60px;
   color: white;
-  text-shadow: 0 0 7px #fff, 0 0 10px #fff;
 }
 
-.curtains:hover .leftglow {
+.curtains:hover .leftGlow {
   -webkit-animation: flicker1 1s ease-in-out infinite alternate;
   -moz-animation: flicker1 1s ease-in-out infinite alternate;
   animation: flicker1 1s ease-in-out infinite alternate;
@@ -261,7 +261,7 @@
   }
 }
 
-.curtains:hover .rightglow {
+.curtains:hover .rightGlow {
   -webkit-animation: flicker2 1s ease-in-out infinite alternate;
   -moz-animation: flicker2 1s ease-in-out infinite alternate;
   animation: flicker2 1s ease-in-out infinite alternate;
@@ -296,7 +296,7 @@
   font-style: normal;
 }
 
-.left-poster {
+.leftPoster {
   position: absolute;
   top: 225px;
   left: 65px;
@@ -305,7 +305,7 @@
   font-family: Cafe24Supermagic;
 }
 
-.right-poster {
+.rightPoster {
   position: absolute;
   top: 225px;
   right: 70px;

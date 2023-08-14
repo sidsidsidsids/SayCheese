@@ -25,7 +25,6 @@ import w_Frame from "./assets/window_shape.png";
 
 import "./Main.css";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getUserInfo } from "../redux/features/login/loginSlice";
 
@@ -72,25 +71,25 @@ function Main() {
   };
 
   return (
-    <div id="main-wrapper">
-      <img id="sign" src={sign} alt="sign"></img>
-      <div id="main-booth">
+    <div id="mainWrapper">
+      <img id="sign" src={sign} alt="sign" />
+      <div id="mainBooth">
         <div id="left">
-          <div className="left-poster">
+          <div className="leftPoster">
             게임촬영
             <br />
             일반촬영
             <br />
             0원
           </div>
-          <img className="sticker2" src={l_Frame} alt="l_Frame"></img>
-          <img className="sticker1" src={l_Frame} alt="l_Frame"></img>
-          <img id="leftBooth" src={leftBooth} alt="left-booth"></img>
-          <img src={cs} className="curtain-pipe" alt="curtain pipe"></img>
+          <img className="sticker2" src={l_Frame} alt="l_Frame" />
+          <img className="sticker1" src={l_Frame} alt="l_Frame" />
+          <img id="leftBooth" src={leftBooth} alt="left-booth" />
+          <img src={cs} className="curtainPipe" alt="curtain pipe" />
           <div className="curtains">
-            <div className="glow leftglow">ON AIR</div>
+            <div className="glow leftGlow">ON AIR</div>
             <div
-              className="create-room"
+              className="createRoom"
               onClick={() => {
                 setCreateModalOpen(true);
                 console.log("방생성", createModalOpen);
@@ -105,7 +104,7 @@ function Main() {
             <img src={cy1} className="curtain left1" alt="curtain1 left1"></img>
           </div>
         </div>
-        <div id="main-menu">
+        <div id="mainMenu">
           <img id="shelf" src={shelf} alt="shelf"></img>
           <Link to={loginLink}>
             {/* 로그인 되어있다면 마이페이지 안 되어 있다면 로그인 페이지로 이동 */}
@@ -127,7 +126,7 @@ function Main() {
         </div>
         <div id="right">
           <img id="rightBooth" src={rightBooth} alt="right-booth"></img>
-          <div className="right-poster">
+          <div className="rightPoster">
             1 + 1
             <br />
             영구소장
@@ -139,13 +138,13 @@ function Main() {
           <img className="sticker5" src={w_Frame} alt="w_Frame"></img>
           <img
             src={cs}
-            className="curtain-pipe right"
+            className="curtainPipe right"
             alt="curtain pipe right"
           ></img>
           <div className="curtains right">
-            <div className="glow rightglow">ON AIR</div>
+            <div className="glow rightGlow">ON AIR</div>
             <div
-              className="create-room"
+              className="createRoom"
               onClick={() => {
                 setJoinModalOpen(true);
                 console.log("방입장", joinModalOpen);
