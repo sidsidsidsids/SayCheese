@@ -42,8 +42,13 @@ public class ParticipantServiceImpl implements ParticipantService{
         room.orElseThrow(()->
                 new RoomException(RoomExceptionMessage.NOT_FOUND_ROOM));
 
+        Participant owner = participantRepository.findByOwnerYAndRoomId(room.get().getId()).orElse(null);
+        char ownerYn = 'Y';
+        if(owner != null){
+            ownerYn = 'N';
+        }
         Participant participant = Participant.builder()
-                .ownerYn(requestDto.getOwnerYn())
+                .ownerYn(ownerYn)
                 .member(member)
                 .room(room.get())
                 .connectionYn('Y')
@@ -77,6 +82,7 @@ public class ParticipantServiceImpl implements ParticipantService{
             Member member,
             String roomCode,
             ParticipantUpdateStreamIdRequestDto requestDto) {
+        System.out.println(requestDto.getStreamId());
         Optional<Room> room = roomRepository.findByRoomCode(roomCode);
         room.orElseThrow(()->
                 new RoomException(RoomExceptionMessage.NOT_FOUND_SESSION));
@@ -90,12 +96,12 @@ public class ParticipantServiceImpl implements ParticipantService{
     }
     @Transactional
     @Override
-    public void updateParticipantConnectionFail(String nickname, String roomCode) {
+    public void updateParticipantConnectionFail(String streamId, String roomCode) {
         Optional<Room> room = roomRepository.findByRoomCode(roomCode);
         room.orElseThrow(()->
                 new RoomException(RoomExceptionMessage.NOT_FOUND_ROOM));
 
-        Optional<Participant> participant = participantRepository.findByNicknameAndRoomId(nickname, room.get().getId());
+        Optional<Participant> participant = participantRepository.findByStreamIdAndRoomId(streamId, room.get().getId());
         participant.orElseThrow(()->
                 new ParticipantException(ParticipantExceptionMessage.NOT_FOUND_PARTICIPANT));
 

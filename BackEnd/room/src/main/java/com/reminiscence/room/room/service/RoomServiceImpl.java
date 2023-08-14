@@ -9,6 +9,8 @@ import com.reminiscence.room.room.dto.RoomInfoResponseDto;
 import com.reminiscence.room.room.dto.WriteRoomRequestDto;
 import com.reminiscence.room.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
