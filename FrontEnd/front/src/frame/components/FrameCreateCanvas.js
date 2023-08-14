@@ -17,6 +17,7 @@ STEP 3. 글자를 스티커처럼 붙여서 꾸밉니다
 STEP 4. 포스트하거나 로컬에 저장합니다
 */
 
+// Canvas에 사용될 tool 함수들 //
 // STEP 1-1. 이미지 배경 만들기 함수입니다
 const makeBackground = (bgImg, width, height, bgColor, canvas) => {
   return new Promise((resolve, reject) => {
@@ -373,8 +374,7 @@ function handleUpload(canvas, frameInfo, frameSpecification) {
   }
 }
 
-/////////////////////// Canvas ///////////////////////////
-// Canvas
+// Canvas //
 const CanvasArea = () => {
   const canvasRef = useRef(null);
   const [canvasInstance, setCanvasInstance] = useState(null);
@@ -400,41 +400,44 @@ const CanvasArea = () => {
   const [history, setHistory] = useState([]);
   const [redoHistory, setRedoHistory] = useState([]);
   const undo = () => {
-    console.log("undo");
-    if (canvasInstance._objects.length > 4) {
-      //
-      const removedObject = canvasInstance._objects.pop();
-      setHistory([...history, removedObject]); // 1. stack에 마지막에 추가한다
-      setRedoHistory([...redoHistory, removedObject]); // 1. stack에 마지막에 추가한다
-      console.log("redo1", [...redoHistory, removedObject], removedObject);
-      canvasInstance.renderAll();
+    // undo는 history stack을 이용하여 합니다
+    if (!bgImg) {
+      // 사용자  배경 이미지가 없다면
+      if (canvasInstance._objects.length > 4) {
+        // 기본 생성되는 색 배경(1) + 투명 4칸(4) = 5번의 동작 이후의 변화만 redo undo 할 수 있도록 5번 이후의 기록만 사용합니다
+        const removedObject = canvasInstance._objects.pop(); // removedObject는 undo 하는 바로 최근의 활동입니다
+        setRedoHistory([...redoHistory, removedObject]); // redo stack 마지막에 removedObject를 추가합니다
+        canvasInstance.renderAll();
+      }
+    } else {
+      // 사용자 배경 이미지가 있다면
+      if (canvasInstance._objects.length > 9) {
+        // 색 배경(1) + 투명 4칸(4) + 이미지 배경(1) + 투명 4칸(4) = 9이후의 변화만 redo undo 할 수 있도록 10번 이후의 기록만 사용합니다
+        const removedObject = canvasInstance._objects.pop(); // removedObject는 undo 하는 바로 최근의 활동입니다
+        setRedoHistory([...redoHistory, removedObject]); // redo stack 마지막에 removedObject를 추가합니다
+        canvasInstance.renderAll();
+      }
     }
   };
 
   const redo = () => {
-    console.log("redo");
     if (redoHistory.length > 0) {
       setIsRedoing(true);
-      console.log("redo2", [...redoHistory]);
       const lastObject = redoHistory.pop(); // RedoHistory 마지막 값을 가져와 다시 실행합니다.
-      console.log("redo3", [...redoHistory]);
       canvasInstance.add(lastObject);
       canvasInstance.renderAll();
     }
   };
 
   const handleObjectAdded = () => {
-    console.log("handleObjectAdded");
     if (!isRedoing) {
       setHistory([]);
     }
-    console.log("");
     setIsRedoing(false);
   };
   const makeHistoryEmpty = () => {
-    console.log("1111111111111111111111111", history);
     setHistory([]);
-    console.log("2222222222222222222222", history);
+    setRedoHistory([]);
   };
   useEffect(() => {
     // useEffect를 사용하여 캔버스를 초기화하고 사다리형과 창문형에 맞게 투명한 블록들을 추가합니다. height와 width의 변화에 따라 캔버스의 크기를 조정합니다.
@@ -443,9 +446,9 @@ const CanvasArea = () => {
       width: width,
       hoverCursor: "pointer",
     });
-    makeHistoryEmpty();
     // useEffect를 사용하여 캔버스를 초기화하고 사다리형과 창문형에 맞게 투명한 블록들을 추가합니다. height와 width의 변화에 따라 캔버스의 크기를 조정합니다.
     //위의 코드는 리렌더링을 일으키지 않도록 이펙트 내에 두어야 합니다. 안 그러면 too many re redner 에러가 납니다
+    makeHistoryEmpty(); // 캔버스 재생성 될 때마다 history 기억을 비운다
 
     // 컬러 백그라운드 만들기
     if (newCanvas && bgColor) {
@@ -483,15 +486,13 @@ const CanvasArea = () => {
   useEffect(() => {
     if (canvasInstance) {
       canvasInstance.on("object:added", () => {
-        console.log("add");
         handleObjectAdded();
       });
       canvasInstance.on("object:modified", () => {
-        console.log("modified");
         handleObjectAdded();
       });
     }
-  }, [canvasInstance]); // 히스토리 기억을 위해 캔버스가 바뀔때마다 HISTORY STACK에 추가합니다
+  }, [canvasInstance]); // 캔버스가 바뀔때마다 HISTORY STACK에 추가합니다
 
   useEffect(() => {
     if (canvasInstance) {
