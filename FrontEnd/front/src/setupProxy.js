@@ -15,7 +15,7 @@ module.exports = function (app) {
   );
   app.use(
     createProxyMiddleware("/api/image", {
-      target: "https://c0d8-175-197-19-209.ngrok-free.app",
+      target: "https://1c33-211-192-210-169.ngrok-free.app",
       changeOrigin: true,
     })
   );

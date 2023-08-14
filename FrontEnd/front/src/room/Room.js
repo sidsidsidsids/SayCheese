@@ -15,23 +15,23 @@ import ChatComponent from "./ChatComponent";
 import Timer from "./Timer";
 import sampleImage from "./assets/sample.jpg";
 import logo from "./assets/favicon.ico";
-import yeah from "./assets/yeah.jpg"
+import yeah from "./assets/yeah.jpg";
 
 const APPLICATION_SERVER_SECRET = "my_secret";
-let chatData;
-let sessionStreamId;
-let sessionConnectId;
-let joinUsers;
-let locationX;
-let locationY;
-let resultSrc;
-let tempSrc;
-let normalCnt = 0;
-let randomTags
-let randomTag
-let tagResult = [];
+let chatData; // 채팅창에 보낼 데이터
+let sessionStreamId; // 세션 스트림 ID 저장할 변수
+let sessionConnectId; // 새션 연결 ID 저장할 변수
+let joinUsers; // 참가자 저장 변수
+let locationX; // 사진 위치 할당 변수
+let locationY; // 사진 위치 할당 변수
+let resultSrc; // 결과 이미지 URL 저장 변수
+let tempSrc; // 중간 이미지 URL 저장 변수
+let normalCnt = 0; // 일반 모드 촬영 횟수 저장 변수
+let randomTags; // 무작위 태그 리스트들 저장 변수
+let randomTag; // 무작위 태그 추출하여 저장할 변수
+let tagResult = []; // 태그 결과물 저장 변수
 let frameSearchInput = "";
-let roomImageID
+let roomImageID;
 // const accessToken = localStorage.getItem("accessToken");
 const Room = () => {
   const params = useParams();
@@ -50,6 +50,16 @@ const Room = () => {
   const [isHost, setHost] = useState(false);
   const [frameSortType, setFrameSortType] = useState("hot");
   // const [frameList, setFrameList] = useState([]);
+  const imageList = [
+    { id: 0, alt: "sampleImage", src: sampleImage },
+    { id: 1, alt: "fs", src: yeah },
+    { id: 2, alt: "seampleImage", src: sampleImage },
+    { id: 3, alt: "wfs", src: yeah },
+    { id: 4, alt: "satmpleImage", src: sampleImage },
+    { id: 5, alt: "fsg", src: yeah },
+    { id: 6, alt: "saampleImage", src: sampleImage },
+    { id: 7, alt: "f7s", src: yeah },
+  ];
   const [frameList, setFrameList] = useState([
     {
       id: 0,
@@ -133,9 +143,9 @@ const Room = () => {
   useEffect(() => {
     if (publisher !== undefined) {
       const userStreamIds = joinUsers.map((user) => user.stream.streamId);
-      const userStreamId = userStreamIds[0]
-      userStream(mySessionId, userStreamId)
-    }  
+      const userStreamId = userStreamIds[0];
+      userStream(mySessionId, userStreamId);
+    }
   }, [publisher]);
 
   useEffect(() => {
@@ -165,8 +175,7 @@ const Room = () => {
   // }, [isHost]);
 
   useEffect(() => {
-    getFrames(frameSortType, frameSearch)
-    
+    getFrames(frameSortType, frameSearch);
   }, [frameSortType]);
 
   const onbeforeunload = (event) => {
@@ -212,6 +221,11 @@ const Room = () => {
       normalMode();
     });
 
+    mySession.on("sendConcept", (event) => {
+      console.log(event);
+      randomTag = event.data;
+    });
+
     mySession.on("selectFrame", (event) => {
       console.log(event);
       // setSelectFrame(event.data);
@@ -239,15 +253,15 @@ const Room = () => {
           // 방에 유저 정보 보낼 곳
           userJoin(mySessionId);
           if (isHost) {
-            console.log("방장")
+            console.log("방장");
             getRoomInfo(mySessionId);
             hostPost(mySessionId);
           }
           // 카메라 선택 옵션 넣을 때 사용됨
           const devices = await OV.getDevices();
           setPublisher(publisher);
-          console.log(publisher)
-          
+          console.log(publisher);
+
           // userStream(mySessionId, sessionStreamId);
           sessionConnectId = publisher.session.connection.connectionId;
           sessionStreamId = publisher.stream.streamId;
@@ -354,7 +368,8 @@ const Room = () => {
   };
   // Frame Carousel
   const carouselSettings = {
-    arrow: true,
+    dots: false,
+    arrows: true,
     infinite: true,
     draggable: false,
     speed: 350,
@@ -472,7 +487,7 @@ const Room = () => {
   const userStream = async (sessionId, streamId) => {
     console.log("USERSTREAM");
     try {
-      console.log(streamId)
+      console.log(streamId);
       const request = await axios.put(
         "/api/participant/" + sessionId + "/streamId",
         {
@@ -663,16 +678,19 @@ const Room = () => {
       else {
         console.log(`${count} times left`);
         // 페이즈에 들어서며 일어날 일 (캠 메인에 띄우기/주제 출력)
-        const tagIdx = 4 - count
-        const tagExtract = (index) => {
-          if (index >= 0 && index < 4) {
-            return randomTags[index].tag;
-          } else {
-            return 'Invalid index';
-          }
-        };
-        randomTag = tagExtract(tagIdx)
-        tagResult.push(randomTag)
+        if (isHost) {
+          const tagIdx = 4 - count;
+          const tagExtract = (index) => {
+            if (index >= 0 && index < 4) {
+              return randomTags[index].tag;
+            } else {
+              return "Invalid index";
+            }
+          };
+          randomTag = tagExtract(tagIdx);
+          tagResult.push(randomTag);
+          handleSendConcept(mySessionId);
+        }
         Users.forEach((user) => {
           console.log(user.stream.streamId, targetUsers[count]);
           if (
@@ -801,6 +819,33 @@ const Room = () => {
       console.error("Error checking session:", error);
     }
   };
+  // 방 유저 전체 게임모드 돌입
+  const handleSendConcept = async (sessionId) => {
+    try {
+      const request = await axios.post(
+        "/openvidu/api/signal",
+        {
+          session: sessionId,
+          to: [],
+          type: "sendConcept",
+          data: randomTag,
+        },
+        {
+          headers: {
+            Authorization: `Basic ${btoa(
+              `OPENVIDUAPP:${APPLICATION_SERVER_SECRET}`
+            )}`,
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,POST",
+          },
+        }
+      );
+      console.log(request);
+    } catch (error) {
+      console.error("Error checking session:", error);
+    }
+  };
   // 방 유저 전체 일반모드 돌입
   const handleStartNormalMode = async (sessionId) => {
     try {
@@ -828,22 +873,26 @@ const Room = () => {
       console.error("Error checking session:", error);
     }
   };
-  const getRandomTags = async () => {
+  const getRandomTags = () => {
     try {
-      await axios
-        .post("/api/image/random/tag", {}, {
-          headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
-          },
-        })
+      axios
+        .post(
+          "/api/image/random/tag",
+          {},
+          {
+            headers: {
+              Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+            },
+          }
+        )
         .then((response) => {
           console.log("대답:", response);
-          randomTags = response.data
+          randomTags = response.data;
         });
-      } catch (error) {
-        console.log(error);
-      }
-    };
+    } catch (error) {
+      console.log(error);
+    }
+  };
   // 결과창에서 DB에 이미지 저장
   const sendImageData = async (resultURL, sessionId) => {
     console.log("SEND");
@@ -896,13 +945,13 @@ const Room = () => {
               .post(
                 "/api/image",
                 {
-                  // imageName: getFileName,
-                  imageName: "test.jpg",
+                  imageName: getFileName,
+                  // imageName: "test.jpg",
                   fileType: "image",
-                  // tags: tagResult,
-                  tags: ["1", "2", "3", "4"],
-                  // roomCode: mySessionId
-                  roomCode: "sessionB"
+                  tags: tagResult,
+                  // tags: ["1", "2", "3", "4"],
+                  roomCode: mySessionId,
+                  // roomCode: "sessionB",
                 },
                 {
                   headers: {
@@ -910,10 +959,11 @@ const Room = () => {
                     "Content-Type": "application/json;charset=UTF-8",
                   },
                 }
-              ).then((response) => {
-                console.log(response)
-                roomImageID = response.data.imageId
-              })
+              )
+              .then((response) => {
+                console.log(response);
+                roomImageID = response.data.imageId;
+              });
           });
         });
     } catch (error) {
@@ -1026,6 +1076,7 @@ const Room = () => {
           <div className="room-top">
             {/* <RoomHeader status={roomStatus} /> */}
             <div className="room-header">
+              <img src={logo} alt="LOGO" />
               <div>
                 <p>컨셉 : {randomTag}</p>
               </div>
@@ -1109,8 +1160,10 @@ const Room = () => {
               onButton2={() => {
                 if (selectedMode === "game") {
                   getRandomTags();
-                  handleStartGameMode(mySessionId);
-                  console.log("TAGTAGTAGTAG");
+                  setTimeout(() => {
+                    handleStartGameMode(mySessionId);
+                    console.log("TAGTAGTAGTAG");
+                  }, 1000);
                 } else {
                   if (selectedMode === "normal") {
                     handleStartNormalMode(mySessionId);
@@ -1157,23 +1210,23 @@ const Room = () => {
           </div>
           <div className="room-bot">
             <div className="video-container">
-              {frameList && (  
+              {imageList && (
                 <Slider {...carouselSettings}>
-                  {frameList.map((item) => (
+                  {imageList.map((item) => (
                     // <div key={item.id}>
-                      <img
-                        key={item.id}
-                        src={item.frameLink}
-                        alt={item.subject}
-                        // style={{
-                        //   width: "200px",
-                        //   height: "100px",
-                        //   borderRadius: "4px",
-                        //   cursor: "pointer",
-                        // }}
-                        onClick={() => 
-                          handleSelectFrame(item.frameLink)}
-                      />
+                    <img
+                      key={item.id}
+                      src={item.src}
+                      alt={item.alt}
+                      // alt={item.subject}
+                      // style={{
+                      //   width: "200px",
+                      //   height: "100px",
+                      //   borderRadius: "4px",
+                      //   cursor: "pointer",
+                      // }}
+                      onClick={() => handleSelectFrame(item.frameLink)}
+                    />
                     // </div>
                   ))}
                 </Slider>
@@ -1191,49 +1244,49 @@ const Room = () => {
                   }}
                   // onChange={handleSearchTextChange}
                   onKeyDown={(event) => {
-                    if (event.key === "Enter"){
-                      getFrames(frameSortType, frameSearch)
+                    if (event.key === "Enter") {
+                      getFrames(frameSortType, frameSearch);
                     }
                   }}
                   maxLength={10}
                 />
               </div>
-            <div className="frame-type-radio">
-            {/* Frame type selection */}
-            <form>
-            <label>
-              <input
-                type="radio"
-                name="frameType"
-                value="hot"
-                checked={frameSortType==="hot"}
-                onChange={() => setFrameSortType("hot")}
-              />
-              인기
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="frameType"
-                value="recent"
-                checked={frameSortType==="recent"}
-                onChange={() => setFrameSortType("recent")}
-              />
-              최신
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="frameType"
-                value="random"
-                checked={frameSortType==="random"}
-                onChange={() => setFrameSortType("random")}
-              />
-              무작위
-            </label>
-            {/* Add more type options as needed */}
-            </form>
-          </div>
+              <div className="frame-type-radio">
+                {/* Frame type selection */}
+                <form>
+                  <label>
+                    <input
+                      type="radio"
+                      name="frameType"
+                      value="hot"
+                      checked={frameSortType === "hot"}
+                      onChange={() => setFrameSortType("hot")}
+                    />
+                    인기
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="frameType"
+                      value="recent"
+                      checked={frameSortType === "recent"}
+                      onChange={() => setFrameSortType("recent")}
+                    />
+                    최신
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="frameType"
+                      value="random"
+                      checked={frameSortType === "random"}
+                      onChange={() => setFrameSortType("random")}
+                    />
+                    무작위
+                  </label>
+                  {/* Add more type options as needed */}
+                </form>
+              </div>
             </div>
           </div>
         </div>
