@@ -55,4 +55,14 @@
 .BtnSort {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+.PwFindBtn {
+  color: darkgray;
+}
+
+.PwFindBtn:hover {
+  color: black;
+  cursor: pointer;
 }

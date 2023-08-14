@@ -81,7 +81,7 @@ function PhotoModal() {
     const accessToken = localStorage.getItem("accessToken");
 
     axios
-      .post(`/api/article/lover/${modalContent.articleId}`, {
+      .post(`/api/article/lover/image/${modalContent.articleId}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `${accessToken}`,
@@ -161,53 +161,53 @@ function PhotoModal() {
   return (
     <div>
       <div className="modalBackdrop">
-        {isPhotoDelModalOpen ? (
-          // 삭제 버튼 눌렀을 경우
-          <div className="DeletePhotoModal">
-            <div className="DeleteQuestion">
-              <h1>어떤 삭제를 하시겠습니까?</h1>
-            </div>
-            <div className="SelectDelete">
-              <input
-                type="radio"
-                id="onlyArticle"
-                name="deleteType"
-                value="onlyArticle"
-                onChange={(event) => setDeleteType(event.target.value)}
-              />
-              <label for="onlyArticle">게시글만</label>
-              <input
-                type="radio"
-                id="withPhoto"
-                name="deleteType"
-                value="withPhoto"
-                onChange={(event) => setDeleteType(event.target.value)}
-              />
-              <label for="withPhoto">네컷사진도</label>
-            </div>
-            <div className="DeleteBtnSort">
-              <Button
-                text={"이전으로"}
-                onClick={() => {
-                  setIsPhotoDelModalOpen(false);
-                }}
-              />
-              <Button
-                text={"확인"}
-                onClick={() => {
-                  document.body.style.overflow = "auto";
-                  dispatch(closeModal());
-                  handlePhotoDelete();
-                }}
-              />
-            </div>
-          </div>
-        ) : (
-          // 삭제 버튼 안 눌렀을 경우
-          <div className="modal">
-            {loading ? (
-              <div>loading..</div>
-            ) : (
+        <div className="modal">
+          {loading ? (
+            <div>loading..</div>
+          ) : (
+            <div>
+              {isPhotoDelModalOpen ? (
+                // 삭제 버튼 눌렀을 경우
+                <div className="DeletePhotoModal">
+                  <div className="DeleteQuestion">
+                    <h1>어떤 삭제를 하시겠습니까?</h1>
+                  </div>
+                  <div className="SelectDelete">
+                    <input
+                      type="radio"
+                      id="onlyArticle"
+                      name="deleteType"
+                      value="onlyArticle"
+                      onChange={(event) => setDeleteType(event.target.value)}
+                    />
+                    <label for="onlyArticle">게시글만</label>
+                    <input
+                      type="radio"
+                      id="withPhoto"
+                      name="deleteType"
+                      value="withPhoto"
+                      onChange={(event) => setDeleteType(event.target.value)}
+                    />
+                    <label for="withPhoto">네컷사진도</label>
+                  </div>
+                  <div className="DeleteBtnSort">
+                    <Button
+                      text={"닫기"}
+                      onClick={() => {
+                        setIsPhotoDelModalOpen(false);
+                      }}
+                    />
+                    <Button
+                      text={"확인"}
+                      onClick={() => {
+                        document.body.style.overflow = "auto";
+                        dispatch(closeModal());
+                        handlePhotoDelete();
+                      }}
+                    />
+                  </div>
+                </div>
+              ) : null}
               <div>
                 <img
                   src={imageData.imgLink}
@@ -245,7 +245,10 @@ function PhotoModal() {
                     </div>
                   </div>
                   <div
-                    style={{ display: "flex", justifyContent: "space-between" }}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
                   >
                     <div className="PhotoTagsSort">
                       {imageData &&
@@ -258,7 +261,7 @@ function PhotoModal() {
                         ))}
                       {/* 이미지 데이터에 tags가 존재할 경우 tags 보여주는 코드 */}
                     </div>
-                    {userInfo.email === authorEmail ? (
+                    {imageData.isMine === 1 ? (
                       <Button
                         className="DeleteBtn"
                         text={"삭제"}
@@ -282,9 +285,9 @@ function PhotoModal() {
                   X
                 </button>
               </div>
-            )}
-          </div>
-        )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

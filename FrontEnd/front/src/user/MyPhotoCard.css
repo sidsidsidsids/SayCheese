@@ -32,3 +32,9 @@
 .MyHeart.Full {
   background-position: right;
 }
+
+.MyPhotoCardImg {
+  width: 160px;
+  height: 160px;
+  object-fit: contain;
+}
