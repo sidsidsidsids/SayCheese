@@ -38,6 +38,7 @@ const Room = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { userInfo } = useSelector((store) => store.login);
+  const { roomInfo } = useSelector((store) => store.room);
   // openvidu 관련
   const [mySessionId, setMySessionId] = useState(params.id);
   const [myUserName, setMyUserName] = useState(userInfo.nickname);
@@ -64,9 +65,6 @@ const Room = () => {
     [150, -120],
     [-150, -120],
   ]);
-  // // gameMode 관련
-  // const [randomTags, setRandomTags] = useState(undefined);
-  // const [randomTag, setRandomTag] = useState("");
 
   useEffect(() => {}, []);
   useEffect(() => {
@@ -318,6 +316,32 @@ const Room = () => {
       }
     );
     return response.data.token;
+  };
+  const sendRoomData = async () => {
+    try {
+      await axios
+        .post(
+          "/api/room",
+          {
+            password: roomInfo.password,
+            maxCount: roomInfo.maxCount,
+            mode: roomInfo.mode,
+            roomCode: roomInfo.roomCode,
+            specification: roomInfo.specification,
+          },
+          {
+            headers: {
+              Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+              "Content-Type": "application/json;charset=UTF-8",
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response);
+        });
+    } catch (error) {
+      console.log(error);
+    }
   };
   // Frame Carousel
   const carouselSettings = {
@@ -1159,6 +1183,7 @@ const Room = () => {
                 console.log("pub: ", publisher);
                 console.log("sub: ", subscribers);
                 console.log("session: ", session);
+                console.log("roomInfo: ", roomInfo)
                 console.log("connecionId: ", sessionConnectId);
                 console.log("streamId: ", sessionStreamId);
                 console.log("frames: ", frameList);
@@ -1193,25 +1218,6 @@ const Room = () => {
             <div className="slide-container">
               {frameList && (
                 <Slider {...carouselSettings}>
-                  {/* {imageList.map((item) => ( */}
-                  {/* <div className="slide"> */}
-                  {/* <div key={item.id}> */}
-                  {/* <img */}
-                  {/* key={item.id} */}
-                  {/* src={item.src} */}
-                  {/* alt={item.alt} */}
-                  {/* // alt={item.subject} */}
-                  {/* style={{ */}
-                  {/* width: "200px", */}
-                  {/* height: "125px", */}
-                  {/* borderRadius: "4px", */}
-                  {/* cursor: "pointer", */}
-                  {/* }} */}
-                  {/* onClick={() => handleSelectFrame(mySessionId, item.id)} */}
-                  {/* /> */}
-                  {/* </div> */}
-                  {/* </div> */}
-                  {/* ))} */}
                   {frameList.map((item) => (
                     <div className="slide">
                       {/* <div key={item.id}> */}
