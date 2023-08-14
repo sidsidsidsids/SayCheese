@@ -60,56 +60,57 @@ const Room = () => {
     { id: 6, alt: "saampleImage", src: sampleImage },
     { id: 7, alt: "f7s", src: yeah },
   ];
-  const [frameList, setFrameList] = useState([
-    {
-      id: 0,
-      name: "snoopy",
-      frameLink: { yeah },
-      author: "sk",
-      loverCnt: 10,
-      createDate: "2023-07-25T16:00:48",
-      loverYn: 1,
-    },
-    {
-      id: 1,
-      name: "snoopy2",
-      frameLink: { yeah },
-      author: "sk",
-      loverCnt: 12,
-      createDate: "2023-07-25T16:00:48",
-      loverYn: 1,
-    },
-    {
-      id: 2,
-      name: "snoopy3",
-      frameLink: { yeah },
-      author: "sk",
-      loverCnt: 20,
-      createDate: "2023-07-25T16:00:48",
-      loverYn: 0,
-    },
-    {
-      id: 3,
-      name: "snoopy4",
-      frameLink: { yeah },
-      author: "sk",
-      loverCnt: 100,
-      createDate: "2023-07-25T16:00:48",
-      loverYn: 0,
-    },
-    {
-      id: 4,
-      name: "snoopy5",
-      frameLink: { yeah },
-      author: "sk",
-      loverCnt: 99,
-      createDate: "2023-07-25T16:00:48",
-      loverYn: 1,
-    },
-  ]);
+  // const [frameList, setFrameList] = useState([
+  //   {
+  //     id: 0,
+  //     name: "snoopy",
+  //     frameLink: { yeah },
+  //     author: "sk",
+  //     loverCnt: 10,
+  //     createDate: "2023-07-25T16:00:48",
+  //     loverYn: 1,
+  //   },
+  //   {
+  //     id: 1,
+  //     name: "snoopy2",
+  //     frameLink: { yeah },
+  //     author: "sk",
+  //     loverCnt: 12,
+  //     createDate: "2023-07-25T16:00:48",
+  //     loverYn: 1,
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "snoopy3",
+  //     frameLink: { yeah },
+  //     author: "sk",
+  //     loverCnt: 20,
+  //     createDate: "2023-07-25T16:00:48",
+  //     loverYn: 0,
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "snoopy4",
+  //     frameLink: { yeah },
+  //     author: "sk",
+  //     loverCnt: 100,
+  //     createDate: "2023-07-25T16:00:48",
+  //     loverYn: 0,
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "snoopy5",
+  //     frameLink: { yeah },
+  //     author: "sk",
+  //     loverCnt: 99,
+  //     createDate: "2023-07-25T16:00:48",
+  //     loverYn: 1,
+  //   },
+  // ]);
+  const [frameList, setFrameList] = useState([]);
   const [frameSearch, setFrameSearch] = useState("");
   const [selectFrame, setSelectFrame] = useState(`url('${sampleImage}')`);
-  const [selectedMode, setSelectedMode] = useState("game");
+  const [selectedMode, setSelectedMode] = useState("normal");
   const [selectedSpec, setSelectedSpec] = useState(undefined);
   const [roomStatus, setRoomStatus] = useState(0);
   const [Minutes, setMinutes] = useState(0);
@@ -228,7 +229,7 @@ const Room = () => {
 
     mySession.on("selectFrame", (event) => {
       console.log(event);
-      // setSelectFrame(event.data);
+      changeFrame(event.data);
     });
 
     getToken().then((token) => {
@@ -371,14 +372,15 @@ const Room = () => {
     dots: false,
     arrows: true,
     infinite: true,
-    draggable: false,
-    speed: 350,
-    slidesToShow: 2,
-    slidesToScroll: 1,
+    draggable: true,
+    speed: 500,
+    slidesToShow: 4,
+    slidesToScroll: 4,
     initialSlide: 0,
+    variableWidth: true,
   };
   // selectFrame Signal
-  const handleSelectFrame = async (sessionId, frameURL) => {
+  const handleSelectFrame = async (sessionId, frameId) => {
     try {
       const request = await axios.post(
         "/openvidu/api/signal",
@@ -386,7 +388,7 @@ const Room = () => {
           session: sessionId,
           to: [],
           type: "selectFrame",
-          data: frameURL,
+          data: `${frameId}`,
         },
         {
           headers: {
@@ -401,6 +403,27 @@ const Room = () => {
       );
       console.log(request);
     } catch (error) {}
+  };
+
+  const changeFrame = (frameId) => {
+    // console.log(frameId);
+    // setSelectFrame(`url('${imageList[frameId].src})`);
+    axios
+      .get(
+        "/api/article/frame/" + `${frameId}`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+            Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjIifQ.OUP4gSxVM-CV0JeNYLxTtbwY9B0YGuS1PYjss9X0y5a9Q61g7Gjb43RsTVTK7L-EVhPvHS-DuUBN9Chy2SLgVg`,
+            "ngrok-skip-browser-warning": "69420",
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        setSelectFrame(`url('${response.frameLink})`);
+      });
   };
   // 방 정보 조회
   const getRoomInfo = async (sessionId) => {
@@ -593,7 +616,7 @@ const Room = () => {
         )
         .then((response) => {
           console.log(response);
-          // setFrameList(response.data.frameArticleVoList);
+          setFrameList(response.data.frameArticleVoList);
         });
     } catch (error) {}
   };
@@ -1209,25 +1232,48 @@ const Room = () => {
             {chatData && <ChatComponent user={chatData} myName={myUserName} />}
           </div>
           <div className="room-bot">
-            <div className="video-container">
+            <div className="slide-container">
               {imageList && (
                 <Slider {...carouselSettings}>
-                  {imageList.map((item) => (
-                    // <div key={item.id}>
-                    <img
-                      key={item.id}
-                      src={item.src}
-                      alt={item.alt}
-                      // alt={item.subject}
-                      // style={{
-                      //   width: "200px",
-                      //   height: "100px",
-                      //   borderRadius: "4px",
-                      //   cursor: "pointer",
-                      // }}
-                      onClick={() => handleSelectFrame(item.frameLink)}
-                    />
-                    // </div>
+                  {/* {imageList.map((item) => ( */}
+                  {/* <div className="slide"> */}
+                  {/* <div key={item.id}> */}
+                  {/* <img */}
+                  {/* key={item.id} */}
+                  {/* src={item.src} */}
+                  {/* alt={item.alt} */}
+                  {/* // alt={item.subject} */}
+                  {/* style={{ */}
+                  {/* width: "200px", */}
+                  {/* height: "125px", */}
+                  {/* borderRadius: "4px", */}
+                  {/* cursor: "pointer", */}
+                  {/* }} */}
+                  {/* onClick={() => handleSelectFrame(mySessionId, item.id)} */}
+                  {/* /> */}
+                  {/* </div> */}
+                  {/* </div> */}
+                  {/* ))} */}
+                  {frameList.map((item) => (
+                    <div className="slide">
+                      {/* <div key={item.id}> */}
+                      <img
+                        key={item.articleId}
+                        src={item.frameLink}
+                        alt={item.author}
+                        // alt={item.subject}
+                        style={{
+                          width: "200px",
+                          height: "125px",
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() =>
+                          handleSelectFrame(mySessionId, item.articleId)
+                        }
+                      />
+                      {/* </div> */}
+                    </div>
                   ))}
                 </Slider>
               )}
