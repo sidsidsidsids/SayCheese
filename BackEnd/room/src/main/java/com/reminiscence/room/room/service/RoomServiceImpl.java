@@ -9,9 +9,6 @@ import com.reminiscence.room.room.dto.RoomInfoResponseDto;
 import com.reminiscence.room.room.dto.WriteRoomRequestDto;
 import com.reminiscence.room.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -25,10 +22,8 @@ import java.util.Optional;
 public class RoomServiceImpl implements RoomService{
     private final RoomRepository roomRepository;
     private final ParticipantRepository participantRepository;
-    @Value("${spring.data.openvidu-url}")
-    private String BASE_URL;
-    @Value("${spring.data.openvidu-secret}")
-    private String SECRET;
+    private final WebClient webClient;
+
     @Override
     public void writeRoom(WriteRoomRequestDto requestDto) {
         roomRepository.save(requestDto.toEntity());
@@ -55,8 +50,9 @@ public class RoomServiceImpl implements RoomService{
 
     @Override
     public void checkRoomPassword(String roomCode, String password) {
-        WebClient build = WebClientBuild();
-        checkSession(roomCode, build);
+        if(!checkSession(roomCode)){
+            throw new RoomException(RoomExceptionMessage.NOT_FOUND_SESSION);
+        };
         Optional<Room> room = roomRepository.findByRoomCode(roomCode);
         room.orElseThrow(() -> new RoomException(RoomExceptionMessage.NOT_FOUND_ROOM));
         if(!room.get().getPassword().equals(password)){
@@ -90,23 +86,16 @@ public class RoomServiceImpl implements RoomService{
         roomRepository.delete(room.get());
     }
 
-    private void checkSession(String roomCode, WebClient build) {
+    public boolean checkSession(String roomCode) {
         try{
-            build.get()
+            webClient.get()
                     .uri("openvidu/api/sessions/" + roomCode)
                     .retrieve()
                     .bodyToMono(Map.class)
                     .block();
+            return true;
         }catch (Exception e){
-            throw new RoomException(RoomExceptionMessage.NOT_FOUND_SESSION);
+            return false;
         }
-    }
-
-    public WebClient WebClientBuild(){
-        return WebClient.builder()
-                .baseUrl(BASE_URL)
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                .defaultHeader(HttpHeaders.AUTHORIZATION, "Basic " + SECRET)
-                .build();
     }
 }

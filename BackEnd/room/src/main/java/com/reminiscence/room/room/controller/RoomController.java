@@ -2,8 +2,6 @@ package com.reminiscence.room.room.controller;
 
 import com.reminiscence.room.config.auth.UserDetail;
 import com.reminiscence.room.domain.Role;
-import com.reminiscence.room.exception.customexception.RoomException;
-import com.reminiscence.room.exception.message.RoomExceptionMessage;
 import com.reminiscence.room.message.Response;
 import com.reminiscence.room.message.custom_message.RoomMessage;
 import com.reminiscence.room.participant.service.ParticipantService;
@@ -15,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 
 @RestController
