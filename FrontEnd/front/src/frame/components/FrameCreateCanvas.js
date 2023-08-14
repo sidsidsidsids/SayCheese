@@ -7,6 +7,7 @@ import axios from "axios";
 import { ResetSignal } from "../../redux/features/frame/frameSlice";
 // CSS
 import "../css/FrameCreateCanvas.css";
+import { unstable_HistoryRouter } from "react-router-dom";
 
 /*
 프레임을 만들기 위해서는
@@ -221,7 +222,6 @@ const addCircleBlocks = (canvas, height, width) => {
 
 // STEP 2. 이미지로 프레임을 꾸미기 함수입니다
 const DecorateObjects = (objects, canvas) => {
-  console.log(objects);
   if (objects && canvas) {
     canvas.renderOnAddRemove = false; // 추가된 객체가 자동으로 렌더링되지 않도록 설정합니다.
     const object = objects;
@@ -270,7 +270,6 @@ const addDrawing = (canvas, brush, drawingMode) => {
       const freebrush = new fabric.PencilBrush(canvas);
 
       if (canvas.freeDrawingBrush) {
-        console.log(brush.brushColor);
         freebrush.color = brush.brushColor;
         freebrush.width = brush.brushValue;
         freebrush.shadow = new fabric.Shadow({
@@ -399,30 +398,44 @@ const CanvasArea = () => {
 
   const [isRedoing, setIsRedoing] = useState(false);
   const [history, setHistory] = useState([]);
-
+  const [redoHistory, setRedoHistory] = useState([]);
   const undo = () => {
-    if (canvasInstance._objects.length > 0) {
+    console.log("undo");
+    if (canvasInstance._objects.length > 4) {
+      //
       const removedObject = canvasInstance._objects.pop();
-      setHistory([...history, removedObject]);
+      setHistory([...history, removedObject]); // 1. stack에 마지막에 추가한다
+      setRedoHistory([...redoHistory, removedObject]); // 1. stack에 마지막에 추가한다
+      console.log("redo1", [...redoHistory, removedObject], removedObject);
       canvasInstance.renderAll();
     }
   };
 
   const redo = () => {
-    if (history.length > 0) {
+    console.log("redo");
+    if (redoHistory.length > 0) {
       setIsRedoing(true);
-      const lastObject = history.pop();
+      console.log("redo2", [...redoHistory]);
+      const lastObject = redoHistory.pop(); // RedoHistory 마지막 값을 가져와 다시 실행합니다.
+      console.log("redo3", [...redoHistory]);
       canvasInstance.add(lastObject);
+      canvasInstance.renderAll();
     }
   };
 
   const handleObjectAdded = () => {
+    console.log("handleObjectAdded");
     if (!isRedoing) {
       setHistory([]);
     }
+    console.log("");
     setIsRedoing(false);
   };
-
+  const makeHistoryEmpty = () => {
+    console.log("1111111111111111111111111", history);
+    setHistory([]);
+    console.log("2222222222222222222222", history);
+  };
   useEffect(() => {
     // useEffect를 사용하여 캔버스를 초기화하고 사다리형과 창문형에 맞게 투명한 블록들을 추가합니다. height와 width의 변화에 따라 캔버스의 크기를 조정합니다.
     const newCanvas = new fabric.Canvas(canvasRef.current, {
@@ -430,34 +443,30 @@ const CanvasArea = () => {
       width: width,
       hoverCursor: "pointer",
     });
+    makeHistoryEmpty();
     // useEffect를 사용하여 캔버스를 초기화하고 사다리형과 창문형에 맞게 투명한 블록들을 추가합니다. height와 width의 변화에 따라 캔버스의 크기를 조정합니다.
     //위의 코드는 리렌더링을 일으키지 않도록 이펙트 내에 두어야 합니다. 안 그러면 too many re redner 에러가 납니다
 
     // 컬러 백그라운드 만들기
-    if (bgColor) {
+    if (newCanvas && bgColor) {
       newCanvas.backgroundColor = bgColor;
       addPlainBlocks(newCanvas, height, width);
     }
-
     // 이미지 있으면 이미지 백그라운드 만들기
-    if (bgImg) {
+    if (newCanvas && bgImg) {
       // bgImg가 유효한 이미지 URL일 때만 실행
       makeBackground(bgImg, width, height, bgColor, newCanvas)
         .then((bg) => {
           newCanvas.add(bg);
           addPlainBlocks(newCanvas, height, width);
+          setHistory([]);
         })
         .catch((error) => {
           console.error(error);
         });
     }
 
-    // 객체 추가 또는 수정 시 상태 저장
-
-    // canvasInstance.on("object:modified", handleObjectAdded);
-
     setCanvasInstance(newCanvas);
-    // 캔버스 객체 초기화
 
     return () => {
       // `newCanvas`가 유효한지 확인하고
@@ -466,10 +475,23 @@ const CanvasArea = () => {
       }
       if (width > height) {
         setFrameSpecification("horizontal");
-        console.log(frameSpecification);
       }
     };
   }, [width, height, bgColor, bgImg]); // width, height, bg 바뀔 때마다 리렌더
+
+  // 객체 추가 또는 수정 시 상태 저장
+  useEffect(() => {
+    if (canvasInstance) {
+      canvasInstance.on("object:added", () => {
+        console.log("add");
+        handleObjectAdded();
+      });
+      canvasInstance.on("object:modified", () => {
+        console.log("modified");
+        handleObjectAdded();
+      });
+    }
+  }, [canvasInstance]); // 히스토리 기억을 위해 캔버스가 바뀔때마다 HISTORY STACK에 추가합니다
 
   useEffect(() => {
     if (canvasInstance) {
@@ -546,8 +568,8 @@ const CanvasArea = () => {
           id="canvas"
         />
       </div>
-      <button onClick={undo}>Undo</button>
-      <button onClick={redo}>Redo</button>
+      <button onClick={() => undo()}>Undo</button>
+      <button onClick={() => redo()}>Redo</button>
     </>
   );
 };
