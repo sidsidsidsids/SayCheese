@@ -18,63 +18,63 @@ spring:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/member/**
+            - Path=/api/member/**
           filters:
             - RemoveRequestHeader=Cookie
 
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/email/**
+            - Path=/api/email/**
           filters:
             - RemoveRequestHeader=Cookie
 
         - id: article-service
           uri: lb://ARTICLE-SERVICE
           predicates:
-            - Path=/article/**
+            - Path=/api/article/**
           filters:
             - RemoveRequestHeader=Cookie
 
         - id: article-service
           uri: lb://ARTICLE-SERVICE
           predicates:
-            - Path=/image/**
+            - Path=/api/image/**
           filters:
             - RemoveRequestHeader=Cookie
 
         - id: article-service
           uri: lb://ARTICLE-SERVICE
           predicates:
-            - Path=/amazon/**
+            - Path=/api/amazon/**
           filters:
             - RemoveRequestHeader=Cookie
 
         - id: article-service
           uri: lb://ARTICLE-SERVICE
           predicates:
-            - Path=/faq/**
+            - Path=/api/faq/**
           filters:
             - RemoveRequestHeader=Cookie
 
         - id: article-service
           uri: lb://ARTICLE-SERVICE
           predicates:
-            - Path=/frame/**
+            - Path=/api/frame/**
           filters:
             - RemoveRequestHeader=Cookie
 
         - id: room-service
           uri: lb://ROOM-SERVICE
           predicates:
-            - Path=/room/**
+            - Path=/api/room/**
           filters:
             - RemoveRequestHeader=Cookie
 
         - id: room-service
           uri: lb://ROOM-SERVICE
           predicates:
-            - Path=/participant/**
+            - Path=/api/participant/**
           filters:
             - RemoveRequestHeader=Cookie
 
