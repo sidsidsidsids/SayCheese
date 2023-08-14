@@ -23,4 +23,6 @@ input:focus {
   font-size: 36px;
   margin-top: 3px;
   margin-bottom: 15px;
+
+  font-weight: 500 !important;
 }

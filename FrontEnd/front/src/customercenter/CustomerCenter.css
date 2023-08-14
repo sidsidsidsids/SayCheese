@@ -12,3 +12,8 @@
   -webkit-user-select: none;
   user-select: none;
 }
+
+h1,
+h3 {
+  font-weight: 500 !important;
+}

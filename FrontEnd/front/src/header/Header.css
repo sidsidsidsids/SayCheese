@@ -1,0 +1,59 @@
+.Header {
+  margin: 20px 40px;
+  font-size: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.HeaderSort {
+  display: flex;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.DropDownMenu a {
+  color: black;
+}
+
+.DropDownSubMenu {
+  height: 0;
+  overflow: hidden;
+  transition: height 0.5s;
+}
+
+.DropDownMenu > li:hover {
+  transition-duration: 0.4s;
+}
+
+.MyPageHover:hover .DropDownSubMenu {
+  height: 45px;
+}
+
+.DropDownSubMenuTwo {
+  height: 0;
+  overflow: hidden;
+  transition: height 0.5s;
+}
+
+.DropDownSubMenuTwo > li:hover {
+  transition-duration: 0.4s;
+}
+
+.MyPageHover:hover .DropDownSubMenuTwo {
+  height: 20px;
+}
+
+.HoverEffect {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  color: black;
+  transition: color 0.3s;
+}
+
+.HoverEffect:hover {
+  color: #ea5455;
+}

@@ -11,3 +11,24 @@
   padding: 0;
   margin: auto;
 }
+
+.MyPhotoDeleteBtn {
+  color: darkgray;
+}
+
+.MyPhotoDeleteBtn:hover {
+  cursor: pointer;
+  color: black;
+}
+
+.MyHeart {
+  background: url("/src/frame/assets/likes.png") no-repeat;
+  background-position: left;
+  background-size: 2900%;
+  height: 60px;
+  width: 60px;
+}
+
+.MyHeart.Full {
+  background-position: right;
+}
