@@ -90,9 +90,8 @@ public class ParticipantIntegrationTest {
     @Test
     @DisplayName("참가자 생성 테스트(정상)")
     public void writeParticipantSuccessTest() throws Exception{
-        DummyWriteParticipantRequestDto.Builder builder = new DummyWriteParticipantRequestDto.Builder();
-        DummyWriteParticipantRequestDto requestDto = builder.roomCode("sessionA")
-                .ownerYn('N')
+        DummyWriteParticipantRequestDto requestDto = DummyWriteParticipantRequestDto.builder()
+                .roomCode("sessionA")
                 .build();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+ guestToken);
@@ -106,18 +105,15 @@ public class ParticipantIntegrationTest {
                                 headerWithName("Authorization").description("로그인 성공한 토큰 ")
                         ),
                         requestFields(
-                                fieldWithPath("roomCode").description("방 코드").attributes(key("constraints").value("Not Null")),
-                                fieldWithPath("ownerYn").description("방장 여부").attributes(key("constraints").value("Y, N 둘 중 하나"))
+                                fieldWithPath("roomCode").description("방 코드").attributes(key("constraints").value("Not Null"))
                         )
                 ));
     }
     @Test
     @DisplayName("존재하지 않는 방 참가자 생성 테스트(비정상)")
     public void writeInvalidRoomParticipantFailTest() throws Exception{
-        DummyWriteParticipantRequestDto.Builder builder = new DummyWriteParticipantRequestDto.Builder();
         DummyWriteParticipantRequestDto requestDto =
-                builder.roomCode("testRoom")
-                .ownerYn('N')
+                DummyWriteParticipantRequestDto.builder().roomCode("testRoom")
                 .build();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+ guestToken);
