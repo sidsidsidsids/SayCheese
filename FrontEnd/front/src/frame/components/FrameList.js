@@ -38,15 +38,18 @@ export default function FrameList({ searchWord }) {
     }
   }
   function handlePageChange(pageNumber) {
-    console.log(`active page is ${pageNumber}`);
+    console.log(`click. active page is ${pageNumber}`);
     setActivePage(pageNumber);
-    console.log(`/api/article/frame/list/recent?curPage=${activePage}`);
   }
 
   function fetchRecetAll() {
+    console.log(
+      "fetch",
+      `/api/article/frame/list/recent?curPage=${activePage}`
+    );
     const accessToken = localStorage.getItem("accessToken");
     axios
-      .get(`/api/article/frame/list/recent?curPage=${activePage}`, {
+      .get(`/api/article/frame/list/recent?page=${activePage}`, {
         headers: {
           "Content-Type": "application/json",
           "ngrok-skip-browser-warning": "69420",
@@ -55,7 +58,7 @@ export default function FrameList({ searchWord }) {
       })
       .then((res) => {
         setFrameList(res.data.frameArticleVoList);
-        console.log("이러한 데이터를 받아옴", res.data.frameArticleVoList);
+        console.log("444이러한 데이터를 받아옴", res.data);
         setPage(res.data.pageNavigator);
       })
       .catch((err) => {
@@ -64,10 +67,11 @@ export default function FrameList({ searchWord }) {
   }
 
   function fetchRecentSearch() {
+    console.log("2");
     const accessToken = localStorage.getItem("accessToken");
     axios
       .get(
-        `/api/article/frame/list/recent?searchWord=${searchWord}&curPage=${activePage}`,
+        `/api/article/frame/list/recent?searchWord=${searchWord}&page=${activePage}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -77,6 +81,7 @@ export default function FrameList({ searchWord }) {
         }
       )
       .then((res) => {
+        console.log(3);
         console.log("검색 데이터를 페치해왔습니다", res);
         console.log(
           `/api/article/frame/list/recent?searchWord=${searchWord}&curPage=${activePage}`
@@ -133,15 +138,3 @@ export default function FrameList({ searchWord }) {
     </div>
   );
 }
-
-// //   // 이제 서버로부터 프레임 상태를 가져옵니다.
-//   // Access the client
-//   const queryClient = useQueryClient();
-//   // Queries
-//   // isLoading, isError, error, data는 useQuery에 내장되어 있는 기본 프로퍼티이다.
-//   // 구조분해{}를 통해 값을 가져온다
-//   function fetchGet() = async() => {
-//     const response = await( awit fetch())
-
-//   }
-//   const { isLoading, isError, error, data } = useQuery("frames", fetchGet());
