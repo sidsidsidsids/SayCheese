@@ -183,6 +183,7 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    @Transactional
     @Override
     public MemberProfileResponseDto saveProfile(MemberDetail memberDetail, MemberProfileSaveRequestDto requestDto) {
         Member member = memberRepository.findById(memberDetail.getMember().getId()).orElseThrow(() -> new MemberException(MemberExceptionMessage.DATA_NOT_FOUND));
@@ -191,7 +192,7 @@ public class MemberServiceImpl implements MemberService {
                 .append(BUCKET_NAME)
                 .append(".s3.")
                 .append(BUCKET_REGION)
-                .append("./amazonaws.com/")
+                .append(".amazonaws.com/")
                 .append("profile")
                 .append("/")
                 .append(requestDto.getProfileName());
