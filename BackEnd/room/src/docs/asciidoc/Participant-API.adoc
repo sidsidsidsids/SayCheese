@@ -15,7 +15,7 @@ operation::ParticipantIntegrationTest/updateOwnerParticipantSuccessTest[snippets
 === 참여자 스트림 ID 변경 테스트(정상) API
 operation::ParticipantIntegrationTest/updateStreamIdParticipantSuccessTest[snippets='http-request,request-headers,request-fields,http-response']
 
-=== 참여자 ConnectionYn 변경 테스트(정상) API
+=== 참여자 ConnectionN 변경 테스트(정상) API
 operation::ParticipantIntegrationTest/updateConnectionYnParticipantSuccessTest[snippets='http-request,request-headers,request-fields,http-response']
 
 [[참가자-삭제-API]]
