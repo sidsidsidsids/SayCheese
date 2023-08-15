@@ -1517,6 +1517,7 @@ public class MemberIntegrationTest {
                                 fieldWithPath("response.message").type(JsonFieldType.STRING).description("API 응답 메시지")
                         )
                 ));
+
     }
 
     @Test

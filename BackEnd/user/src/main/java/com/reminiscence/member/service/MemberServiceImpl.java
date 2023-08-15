@@ -144,8 +144,6 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findById(memberId).orElse(null);
         if (member != null)
 //        member.modifyDelYn('Y');
-//        memberRepository.save(member);
-
             memberRepository.delete(member);
     }
 
@@ -185,6 +183,7 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    @Transactional
     @Override
     public MemberProfileResponseDto saveProfile(MemberDetail memberDetail, MemberProfileSaveRequestDto requestDto) {
         Member member = memberRepository.findById(memberDetail.getMember().getId()).orElseThrow(() -> new MemberException(MemberExceptionMessage.DATA_NOT_FOUND));
@@ -193,12 +192,11 @@ public class MemberServiceImpl implements MemberService {
                 .append(BUCKET_NAME)
                 .append(".s3.")
                 .append(BUCKET_REGION)
-                .append("./amazonaws.com/")
+                .append(".amazonaws.com/")
                 .append("profile")
                 .append("/")
                 .append(requestDto.getProfileName());
         member.modifyProfile(profileLink.toString());
-        memberRepository.save(member);
         return new MemberProfileResponseDto(member.getProfile(), Response.of(MemberResponseMessage.MEMBER_PROFILE_MODIFY_SUCCESS));
     }
 }
