@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8080
 spring:
   sql:
     init:
@@ -39,3 +39,20 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
+#social:
+#  client:
+#    google:
+#      rest-api-key:
+#      secret-key:
+#      redirect-uri:
+#      grant_type:
+#    kakao:
+#      rest-api-key:
+#      secret-key:
+#      redirect-uri:
+#      grant_type:
+#    naver:
+#      rest-api-key:
+#      secret-key:
+#      redirect-uri:
+#      grant_type:

@@ -1,7 +1,5 @@
 package com.reminiscence.room.participant;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reminiscence.room.domain.Member;
 import com.reminiscence.room.filter.JwtUtil;

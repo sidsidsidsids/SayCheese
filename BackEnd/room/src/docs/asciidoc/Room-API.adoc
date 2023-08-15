@@ -7,6 +7,20 @@ operation::RoomIntegrationTest/readRoomInfoSuccessTest[snippets='http-request,re
 
 
 [[방-확인-API]]
+=== 방 연결 확인 테스트(정상, 회원) API
+operation::RoomIntegrationTest/checkRoomConnectionMemberSuccessTest[snippets='http-request,request-headers,http-response']
+
+=== 방 연결 확인 테스트(비정상, 회원) API
+operation::RoomIntegrationTest/checkRoomConnectionMemberFailTest[snippets='http-request,request-headers,http-response']
+
+=== 방 연결 확인 테스트(정상, AccessToken 있는 비회원) API
+operation::RoomIntegrationTest/checkRoomConnectionGuestSuccessTest[snippets='http-request,request-headers,http-response']
+
+=== 방 연결 확인 테스트(정상, AccessToken 없는 비회원) API
+operation::RoomIntegrationTest/checkRoomConnectionNonAccessGuestSuccessTest[snippets='http-request,http-response']
+
+=== 방 연결 확인 테스트(비정상, AccessToken 있는 비회원) API
+operation::RoomIntegrationTest/checkRoomConnectionGuestSuccessTest[snippets='http-request,request-headers,http-response']
 
 === 방 비밀번호 확인 테스트(정상) API
 operation::RoomIntegrationTest/checkRoomPasswordSuccessTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']
@@ -23,8 +37,9 @@ operation::RoomIntegrationTest/checkRoomNotCodePasswordFailTest[snippets='http-r
 operation::RoomIntegrationTest/createRoomSuccessTest[snippets='http-request,request-headers,request-fields,http-response']
 
 [[방-정보변경-API]]
+=== 방 시작여부 변경 테스트(정상) API
 operation::RoomIntegrationTest/updateRoomStartYnSuccessTest[snippets='http-request,request-headers,path-parameters,http-response']
 
 [[방-삭제-API]]
 === 방 삭제(정상) API
-operation::RoomIntegrationTest/deleteRoomSuccessTest[snippets='http-request,request-headers,request-fields,http-response']
+operation::RoomIntegrationTest/deleteRoomSuccessTest[snippets='http-request,request-headers,http-response']

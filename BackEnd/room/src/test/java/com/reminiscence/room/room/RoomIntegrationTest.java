@@ -8,12 +8,14 @@ import com.reminiscence.room.filter.JwtUtil;
 import com.reminiscence.room.member.repository.MemberRepository;
 import com.reminiscence.room.room.dto.DummyRoomCheckRequestDto;
 import com.reminiscence.room.room.dto.DummyRoomCreateRequestDto;
+import com.reminiscence.room.room.service.RoomServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -31,6 +33,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -52,6 +56,9 @@ public class RoomIntegrationTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @SpyBean
+    private RoomServiceImpl roomService;
+
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -64,6 +71,8 @@ public class RoomIntegrationTest {
     String connectionGuestToken;
     String memberToken;
     String notConnectionMemberToken;
+
+
     @BeforeEach
     public void init(RestDocumentationContextProvider restDocumentation) throws SQLException {
         mvc= MockMvcBuilders.webAppContextSetup(applicationContext)
@@ -94,6 +103,7 @@ public class RoomIntegrationTest {
     @Test
     @DisplayName("방 정보 조회 테스트(정상)")
     public void readRoomInfoSuccessTest() throws Exception {
+
         String roomCode = "sessionA";
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+ guestToken);
@@ -185,6 +195,7 @@ public class RoomIntegrationTest {
     @DisplayName("방 비밀번호 확인 테스트(정상)")
     public void checkRoomPasswordSuccessTest() throws Exception{
         String roomCode = "sessionA";
+        when(roomService.checkSession(any())).thenReturn(true);
         DummyRoomCheckRequestDto.Builder builder = new DummyRoomCheckRequestDto.Builder();
         DummyRoomCheckRequestDto requestDto = builder.password("1234").build();
         HttpHeaders headers = new HttpHeaders();
