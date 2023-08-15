@@ -144,8 +144,6 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findById(memberId).orElse(null);
         if (member != null)
 //        member.modifyDelYn('Y');
-//        memberRepository.save(member);
-
             memberRepository.delete(member);
     }
 
@@ -198,7 +196,6 @@ public class MemberServiceImpl implements MemberService {
                 .append("/")
                 .append(requestDto.getProfileName());
         member.modifyProfile(profileLink.toString());
-        memberRepository.save(member);
         return new MemberProfileResponseDto(member.getProfile(), Response.of(MemberResponseMessage.MEMBER_PROFILE_MODIFY_SUCCESS));
     }
 }
