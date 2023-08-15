@@ -10,6 +10,7 @@ import com.reminiscence.room.exception.message.RoomExceptionMessage;
 import com.reminiscence.room.participant.dto.ParticipantRoomUserResponseDto;
 import com.reminiscence.room.participant.dto.ParticipantUpdateStreamIdRequestDto;
 import com.reminiscence.room.participant.dto.ParticipantWriteRequestDto;
+import com.reminiscence.room.participant.dto.RoomRandomParticipantResponseDto;
 import com.reminiscence.room.participant.repository.ParticipantRepository;
 import com.reminiscence.room.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,45 @@ public class ParticipantServiceImpl implements ParticipantService{
                 new RoomException(RoomExceptionMessage.NOT_FOUND_ROOM));
         List<ParticipantRoomUserResponseDto> participants = participantRepository.findUserByRoomID(room.get().getId()).orElse(null);
         return participants;
+    }
+
+    @Override
+    public List<RoomRandomParticipantResponseDto> getRandomParticipant(String roomCode) {
+        Optional<Room> room = roomRepository.findByRoomCode(roomCode);
+        room.orElseThrow(()->
+                new RoomException(RoomExceptionMessage.NOT_FOUND_ROOM));
+
+        Optional<List<RoomRandomParticipantResponseDto>> randomParticipant = participantRepository.findByRandomParticipant(room.get().getId());
+        randomParticipant.orElseThrow(()->
+                new ParticipantException(ParticipantExceptionMessage.NOT_FOUND_PARTICIPANT));
+        int size = randomParticipant.get().size();
+
+        if(size== 1){
+            for(int i=0;i<3;i++){
+                randomParticipant.get().add(randomParticipant.get().get(0));
+            }
+        }else if(size < 4){
+            boolean[] check = new boolean[size];
+            int count = size;
+            while(true){
+                if(count == 4){
+                    break;
+                }
+                int random = (int) ((Math.random() * (size) + 1)) - 1;
+                if(check[random]) {
+                    continue;
+                }else{
+                    check[random] = true;
+                    randomParticipant.get().add(randomParticipant.get().get(random));
+                }
+                count++;
+            }
+        }
+        for(int i=0;i<4;i++){
+            System.out.println(randomParticipant.get().get(i).getStreamId());
+        }
+
+        return randomParticipant.get();
     }
 
     @Override

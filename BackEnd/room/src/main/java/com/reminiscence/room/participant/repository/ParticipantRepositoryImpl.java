@@ -1,13 +1,16 @@
 package com.reminiscence.room.participant.repository;
 
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.reminiscence.room.domain.Participant;
 import com.reminiscence.room.domain.QMember;
 import com.reminiscence.room.domain.QParticipant;
 import com.reminiscence.room.domain.Role;
 import com.reminiscence.room.participant.dto.ParticipantRoomUserResponseDto;
+import com.reminiscence.room.participant.dto.RoomRandomParticipantResponseDto;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -28,6 +31,17 @@ public class ParticipantRepositoryImpl implements ParticipantRepositoryCustom{
                 .from(QParticipant.participant)
                 .join(QParticipant.participant.member, QMember.member)
                 .where(eqRoomId(roomId), eqMemberId(), eqConnection())
+                .fetch());
+    }
+
+    @Override
+    public Optional<List<RoomRandomParticipantResponseDto>> findByRandomParticipant(Long roomId) {
+        return Optional.ofNullable(queryFactory
+                .select(Projections.constructor(RoomRandomParticipantResponseDto.class,
+                        QParticipant.participant.streamId.as("streamId")))
+                .from(QParticipant.participant)
+                .where(eqRoomId(roomId),eqConnection())
+                .orderBy(random())
                 .fetch());
     }
 
@@ -92,5 +106,8 @@ public class ParticipantRepositoryImpl implements ParticipantRepositoryCustom{
     }
     private BooleanExpression eqOwner(){
         return QParticipant.participant.ownerYn.eq('Y');
+    }
+    private OrderSpecifier<Double> random() {
+        return Expressions.numberTemplate(Double.class, "function('rand')").asc();
     }
 }

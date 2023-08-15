@@ -36,6 +36,14 @@ public class ParticipantController {
         return new ResponseEntity(roomUserParticipant, HttpStatus.OK);
     }
 
+    @GetMapping("random/{roomCode}")
+    public ResponseEntity<List<RoomRandomParticipantResponseDto>> readRandomParticipant(
+            @PathVariable("roomCode") String roomCode){
+        List<RoomRandomParticipantResponseDto> responseDto = participantService.getRandomParticipant(roomCode);
+        return new ResponseEntity(responseDto, HttpStatus.OK);
+
+    }
+
     /**
      * 회원 추가 API
      * @param
