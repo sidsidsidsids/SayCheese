@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { setRoom } from "../redux/features/room/roomSlice";
 import { getUserInfo } from "../redux/features/login/loginSlice";
 import { OpenVidu } from "openvidu-browser";
 import html2canvas from "html2canvas";
@@ -15,7 +16,7 @@ import TargetVideoComponent from "./TargetVideoComponent";
 import ChatComponent from "./ChatComponent";
 import Timer from "./Timer";
 import sampleImage from "./assets/sample.jpg";
-import logo from "./assets/favicon.ico";
+import logo from "./assets/cheese.png";
 
 const APPLICATION_SERVER_SECRET = "my_secret";
 let chatData; // 채팅창에 보낼 데이터
@@ -36,6 +37,8 @@ let frameSearchInput = "";
 let roomImageID;
 let horizontalLeftLoc = [32, 261, 32, 261]
 let horizontalTopLoc = [29, 29, 205, 205]
+let verticalLeftLoc = [19, 19, 19, 19]
+let verticalTopLoc = [19, 139, 259, 379]
 // const accessToken = localStorage.getItem("accessToken");
 const Room = () => {
   const params = useParams();
@@ -58,8 +61,8 @@ const Room = () => {
   const [frameSearch, setFrameSearch] = useState("");
   const [selectFrame, setSelectFrame] = useState(`url('${sampleImage}')`);
   // const [selectedMode, setSelectedMode] = useState(roomInfo.mode);
-  // const [selectedMode, setSelectedMode] = useState("game");
-  const [selectedMode, setSelectedMode] = useState("normal");
+  const [selectedMode, setSelectedMode] = useState("game");
+  // const [selectedMode, setSelectedMode] = useState("normal");
   // const [selectedSpec, setSelectedSpec] = useState(roomInfo.specification);
   const [selectedSpec, setSelectedSpec] = useState(undefined);
   const [roomStatus, setRoomStatus] = useState(0);
@@ -122,7 +125,9 @@ const Room = () => {
   }, [isHost]);
 
   useEffect(() => {
-    getFrames(frameSortType, frameSearch);
+    if (roomInfo) {
+      getFrames(frameSortType, frameSearch, roomInfo.specification);
+    }
   }, [frameSortType]);
 
   const onbeforeunload = (event) => {
@@ -145,6 +150,9 @@ const Room = () => {
     mySession.on("streamCreated", (event) => {
       const subscriber = mySession.subscribe(event.stream, undefined);
       setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
+      if (isHost) {
+        spreadRoomInfo()
+      }
     });
 
     mySession.on("streamDestroyed", (event) => {
@@ -191,10 +199,14 @@ const Room = () => {
       }, 100);
     });
 
-    // mySession.on("sendConcept", (event) => {
-    //   console.log(event);
-    //   randomTag = event.data;
-    // });
+    mySession.on("roomInfo", (event) => {
+      if (!roomInfo) {
+        dispatch(setRoom({
+          mode: event.data.mode,
+          specification: event.data.specification
+        }))
+      }
+    });
 
     mySession.on("randomTags", (event) => {
       randomTags = event.data;
@@ -228,7 +240,7 @@ const Room = () => {
           const publisher = await OV.initPublisherAsync(undefined, {
             audioSource: undefined,
             videoSource: undefined,
-            publishAudio: true,
+            publishAudio: false,
             publishVideo: true,
             resolution: "320x240",
             frameRate: 30,
@@ -244,7 +256,7 @@ const Room = () => {
           
           sessionConnectId = publisher.session.connection.connectionId;
           setTimeout(() => {
-            if (isHost) {
+            if (roomInfo) {
               sendRoomInfo()
             }
           }, 1000)
@@ -273,7 +285,6 @@ const Room = () => {
   };
 
   const leaveSession = () => {
-    userDisconnection(mySessionId, myUserName);
     if (session) {
       session.disconnect();
     }
@@ -585,6 +596,25 @@ const Room = () => {
       console.log(error);
     }
   };
+  // 방 정보 전파
+  const spreadRoomInfo = (sessionId) => {
+    try {
+      axios.post(
+        "/openvidu/api/signal",
+        {
+          session: sessionId,
+          to: [],
+          type: "roomInfo",
+          data: {
+            mode: roomInfo.mode,
+            specification: roomInfo.specification
+          }
+        }
+      )
+    } catch (error) {
+      console.log(error)
+    }
+  }
   // 새 방장 갱신
   const updateHost = async (sessionId) => {
     console.log("UPDATEHOST");
@@ -638,11 +668,11 @@ const Room = () => {
     }
   };
   // 프레임 목록 가져오기
-  const getFrames = async (sortType, searchInput) => {
+  const getFrames = async (sortType, searchInput, specific) => {
     try {
       await axios
         .get(
-          "/api/article/frame/list/" + sortType + `?searchWord=${searchInput}`,
+          "/api/article/frame/list/" + sortType + `?searchWord=${searchInput}` + `&frameSpec=${specific}`,
           {
             headers: {
               "Content-Type": `application/json;charset=UTF-8`,
@@ -690,8 +720,6 @@ const Room = () => {
       );
       // 캔버스의 데이터 URL을 얻어 이미지로 사용할 수 있습니다.
       const dataURL = canvas.toDataURL("image/png");
-      // normal Mode용 temp data;
-      // tempSrc = dataURL;
       range.style.backgroundImage = `url(${dataURL})`;
       // 이미지를 다른 요소에 적용하려면 아래와 같이 설정합니다.
       // const image = new Image();
@@ -741,9 +769,7 @@ const Room = () => {
       targetUsers.push(...targetUsers, ...targetUsers, ...targetUsers);
     }
 
-    // 방장은 주제 받아오기
     // 유저 정보
-    // const Users = [publisher, ...subscribers];
     const Users = joinUsers;
     // gameMode 로직
     const gamePhase = (count) => {
@@ -777,17 +803,6 @@ const Room = () => {
             setMainStreamManager(user);
           }
         });
-        // // 캠 위치 설정
-        // if (count % 2 === 0) {
-        //   locationX = 150;
-        // } else {
-        //   locationX = -150;
-        // }
-        // if (count > 2) {
-        //   locationY = -120;
-        // } else {
-        //   locationY = 120;
-        // }
         // 초기 시간 설정 (setTimeout 맨 마지막 값과 동일시)
         // randomtag = randomtags[count-1].tag
         setMinutes(0);
@@ -795,13 +810,13 @@ const Room = () => {
         setTimeout(() => {
           // 3000ms 후에 일어날 일 (사진 찍기/주제 변경/유저 변경)
           setMinutes(0);
-          setSeconds(0);
+          setSeconds(3);
           setTimeout(() => {
             // 2000ms 후에 일어날 일(중간 텀), 이 이후 다시 else문
             handleCapture(horizontalLeftLoc[gameCnt], horizontalTopLoc[gameCnt]);
             setMainStreamManager(undefined);
             setMinutes(0);
-            setSeconds(1);
+            setSeconds(2);
             gameCnt = gameCnt + 1
             gamePhase(count - 1);
           }, 3000);
@@ -1188,7 +1203,7 @@ const Room = () => {
           <div className="room-top">
             {/* <RoomHeader status={roomStatus} /> */}
             <div className="room-header">
-              <img src={logo} alt="LOGO" />
+              <img id="logo" src={logo} alt="LOGO" />
               <br />
               <div>
                 <p>방이 5분 후 종료됩니다</p>
@@ -1252,7 +1267,7 @@ const Room = () => {
           <div className="room-top">
             {/* <RoomHeader status={roomStatus} /> */}
             <div className="room-header">
-              <img src={logo} alt="LOGO" />
+              <img id="logo" src={logo} alt="LOGO" />
               <div>
                 <p>컨셉 : {randomTag}</p>
               </div>
@@ -1328,7 +1343,7 @@ const Room = () => {
           <div className="room-top">
             {/* <RoomHeader status={roomStatus} /> */}
             <div className="room-header">
-              <img src={logo} alt="LOGO" />
+              <img id="logo" src={logo} alt="LOGO" />
               <p>대기중</p>
             </div>
             <RoomButtons

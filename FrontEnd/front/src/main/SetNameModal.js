@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { notUserNickname } from "../redux/features/login/loginSlice";
-
+import axios from "axios";
 import "./SetNameModal.css";
 import ModalButtons from "./ModalButtons";
 
@@ -17,10 +17,43 @@ function SetNameModal({ open, close }) {
   }
   const handleConfirm = () => {
     console.log(inputNickname);
-    dispatch(notUserNickname(inputNickname));
-    close();
+    nicknameCheck(inputNickname)
     console.log(userInfo);
   };
+  const nicknameCheck = (nickname) => {
+    try {
+      axios.get(
+        "/api/member/" + nickname,
+        {
+          headers:{
+            "Content=Type": "application/json",
+            // Authorization: `${accessToken}`,
+            // Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2ZmU3MGMwNy0xYzA1LTQxOTMtYjQ5NC1iZDc2ZDE5ZTFlM2YiLCJleHAiOjE2OTE5MzM3NjksImlhdCI6MTY5MTg0NzM2OSwibWVtYmVySWQiOiI3In0.o0jLjMTwRkFNVtXim2Iq2frfLp_IM90RUDFGZAneEylPIA4knzPYM3qw-5Z3eWOnTtEPd37OT8bYoU29QoIpDQ`,
+          }
+        }
+        ).then((response) => {
+          console.log(response)
+          axios.get(
+            "/api/guest?nickname=" + response.data.nickname,
+            {
+              headers:{
+                "Content=Type": "application/json",
+                // Authorization: `${accessToken}`,
+                // Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2ZmU3MGMwNy0xYzA1LTQxOTMtYjQ5NC1iZDc2ZDE5ZTFlM2YiLCJleHAiOjE2OTE5MzM3NjksImlhdCI6MTY5MTg0NzM2OSwibWVtYmVySWQiOiI3In0.o0jLjMTwRkFNVtXim2Iq2frfLp_IM90RUDFGZAneEylPIA4knzPYM3qw-5Z3eWOnTtEPd37OT8bYoU29QoIpDQ`,
+              }
+            }
+          )
+        }).then((response) => {
+          console.log(response)
+          const accessToken = response.headers["authorization"];
+          localStorage.setItem('accessToken', accessToken);
+          dispatch(notUserNickname(nickname));
+          close();
+        })  
+    } catch (error) {
+      console.error(error)
+    }
+  }
   return (
     <div className="set-name-modal">
       <div className="set-name-modal-content">
