@@ -87,7 +87,7 @@ public class FrameArticleServiceImpl implements FrameArticleService {
         if (page <= 0) {
             page = 1;
         }
-        Pageable pageable = PageRequest.of(page - 1, Pagination.DEFAULT_FRAME_PER_PAGE_SIZE, Sort.Direction.DESC, "createdDate");
+        Pageable pageable = PageRequest.of(page - 1, Pagination.DEFAULT_MY_FRAME_PER_PAGE_SIZE, Sort.Direction.DESC, "createdDate");
 
         Page<FrameArticleVo> frameArticlePageList = frameArticleRepository.findMyFrameArticles(pageable, userDetail.getMember().getId(), searchWord, frameSpec);
 

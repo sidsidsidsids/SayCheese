@@ -105,6 +105,7 @@ public class FrameArticleIntegrationTest {
                 .build();
         HttpHeaders headers=new HttpHeaders();
         headers.add("Authorization","Bearer "+memberToken);
+        System.out.println(memberToken);
         mvc.perform(post("/api/article/frame")
                         .headers(headers)
                         .content(objectMapper.writeValueAsString(dummyFrameArticleRequestDto))
@@ -129,7 +130,7 @@ public class FrameArticleIntegrationTest {
     @Test
     @DisplayName("프레임 저장 테스트(비로그인 시도 시)")
     public void writeFrameArticleNotAuthFailTest() throws Exception{
-        DummyFrameArticleRequestDto dummyFrameArticleRequestDto=DummyFrameArticleRequestDto.builder()
+        DummyFrameArticleRequestDto dummyFrameArticleRequestDto= DummyFrameArticleRequestDto.builder()
                 .name("test2")
                 .subject("test2")
                 .fileType("image")

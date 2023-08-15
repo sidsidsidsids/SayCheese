@@ -231,7 +231,7 @@ public class FrameArticleJpaTest {
         assertEquals(1, frameArticleListResponseDto.getPageNavigator().getCurPage());
         assertEquals(2, frameArticleListResponseDto.getPageNavigator().getTotalPages());
         assertEquals(12, frameArticleListResponseDto.getPageNavigator().getTotalDataCount());
-        assertEquals("link22", frameArticleListResponseDto.getFrameArticleVoList().get(0).getFrameLink());
+        assertEquals("https://png.pngtree.com/png-vector/20210324/ourmid/pngtree-picture-frame-png-image_3135232.jpg", frameArticleListResponseDto.getFrameArticleVoList().get(0).getFrameLink());
         assertEquals(1, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverCnt());
         assertEquals("se6817", frameArticleListResponseDto.getFrameArticleVoList().get(0).getAuthor());
         assertEquals(1L, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverYn());
@@ -258,7 +258,7 @@ public class FrameArticleJpaTest {
         assertEquals(1, frameArticleListResponseDto.getPageNavigator().getCurPage());
         assertEquals(2, frameArticleListResponseDto.getPageNavigator().getTotalPages());
         assertEquals(12, frameArticleListResponseDto.getPageNavigator().getTotalDataCount());
-        assertEquals("link22", frameArticleListResponseDto.getFrameArticleVoList().get(0).getFrameLink());
+        assertEquals("https://png.pngtree.com/png-vector/20210324/ourmid/pngtree-picture-frame-png-image_3135232.jpg", frameArticleListResponseDto.getFrameArticleVoList().get(0).getFrameLink());
         assertEquals(1, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverCnt());
         assertEquals("se6817", frameArticleListResponseDto.getFrameArticleVoList().get(0).getAuthor());
         assertEquals(0L, frameArticleListResponseDto.getFrameArticleVoList().get(0).getLoverYn());
