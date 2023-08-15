@@ -55,7 +55,7 @@ public class RoomServiceImpl implements RoomService{
         if(!checkSession(roomCode)){
             throw new RoomException(RoomExceptionMessage.NOT_FOUND_SESSION);
         };
-        Optional<Room> room = roomRepository.findByRoomCode(roomCode);
+        Optional<Room> room = roomRepository.findByRoomCodeAndStartN(roomCode);
         room.orElseThrow(() -> new RoomException(RoomExceptionMessage.NOT_FOUND_ROOM));
         if(!room.get().getPassword().equals(password)){
             throw new RoomException(RoomExceptionMessage.NOT_MATCH_PASSWORD);

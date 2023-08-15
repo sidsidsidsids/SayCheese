@@ -1,8 +1,10 @@
 package com.reminiscence.room.room.repository;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.reminiscence.room.domain.QRoom;
+import com.reminiscence.room.domain.Room;
 import com.reminiscence.room.room.dto.RoomInfoResponseDto;
 
 import javax.persistence.EntityManager;
@@ -21,7 +23,22 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
                         QRoom.room.mode.as("mode")
                         ))
                 .from(QRoom.room)
-                .where(QRoom.room.roomCode.eq(roomCode))
+                .where(roomCodeEq(roomCode))
                 .fetchFirst());
+    }
+
+    @Override
+    public Optional<Room> findByRoomCodeAndStartN(String roomCode) {
+        return Optional.ofNullable(queryFactory
+                .select(QRoom.room)
+                .from(QRoom.room)
+                .where(roomCodeEq(roomCode), startNEq())
+                .fetchFirst());
+    }
+    private BooleanExpression roomCodeEq(String roomCode){
+        return QRoom.room.roomCode.eq(roomCode);
+    }
+    private BooleanExpression startNEq(){
+        return QRoom.room.startYn.eq('N');
     }
 }
