@@ -22,38 +22,28 @@
   }
   
   /* 모달의 타이틀 스타일 */
-  .set-name-modal h2 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 20px;
-  }
-  
+
   /* 입력 필드 스타일 */
-  .set-name-modal input {
-    width: 50%;
-    padding: 10px;
-    margin-right: 10px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    margin-bottom: 10px;
+  .set-name-modal-content #nickname {
+  padding: 10px;
+  border: 1px solid black;
   }
   
   /* 버튼 스타일 */
-  .set-name-modal button {
-    padding: 10px 15px;
-    margin-right: 10px;
-    cursor: pointer;
-    border: 1px solid gray;
-    border-radius: 3px;
-  }
-  
-  .set-name-modal button:last-child {
-    margin-right: 0;
-  }
+
+.set-name-modal-content #goLogin {
+
+}
+
   .set-name-modal p {
     margin: 10px;
     font-size: 16px;
     display: flex;
     align-items: center;
   }
+
+  .set-name-modal-content btn {
+    margin: 20px auto;
+  }
+
   
