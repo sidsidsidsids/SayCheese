@@ -127,8 +127,7 @@ public class ParticipantIntegrationTest {
                                 headerWithName("Authorization").description("로그인 성공한 토큰 ")
                         ),
                         requestFields(
-                                fieldWithPath("roomCode").description("방 코드").attributes(key("constraints").value("Not Null")),
-                                fieldWithPath("ownerYn").description("방장 여부").attributes(key("constraints").value("Y, N 둘 중 하나"))
+                                fieldWithPath("roomCode").description("방 코드").attributes(key("constraints").value("Not Null"))
                         )
                 ));
     }
@@ -175,11 +174,11 @@ public class ParticipantIntegrationTest {
                         )));
     }
     @Test
-    @DisplayName("참여자 ConnectionYn 변경 테스트(정상)")
+    @DisplayName("참여자 ConnectionN 변경 테스트(정상)")
     public void updateConnectionYnParticipantSuccessTest() throws Exception {
         String roomCode = "sessionA";
         DummyUpdateConnectionYnParticipantRequestDto requestDto = DummyUpdateConnectionYnParticipantRequestDto.builder()
-                .nickname("se6817")
+                .streamId("asdfasdfa")
                 .build();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+ memberToken);
@@ -196,7 +195,7 @@ public class ParticipantIntegrationTest {
                                 parameterWithName("roomCode").description("방 코드")
                         )
                         ,requestFields(
-                                fieldWithPath("nickname").description("닉네임").attributes(key("constraints").value("Not Null"))
+                                fieldWithPath("streamId").description("스트림 아이디").attributes(key("constraints").value("Not Null"))
                         )));
     }
     @Test

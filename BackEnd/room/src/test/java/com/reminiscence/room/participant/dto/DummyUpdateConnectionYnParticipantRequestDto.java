@@ -5,10 +5,10 @@ import lombok.Getter;
 
 @Getter
 public class DummyUpdateConnectionYnParticipantRequestDto {
-    private String nickname;
+    private String streamId;
 
     @Builder
-    public DummyUpdateConnectionYnParticipantRequestDto(String nickname) {
-        this.nickname = nickname;
+    public DummyUpdateConnectionYnParticipantRequestDto(String streamId) {
+        this.streamId = streamId;
     }
 }
