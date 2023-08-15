@@ -65,7 +65,7 @@ function RoomCreateModal({ open, close }) {
           handleConfirm();
         })
         .catch(() => {
-          alert("이미 접속 중 입니다");
+          alert("올바르지 않은 방입니다");
         });
     } catch (error) {
       alert("비정상적 접근");
@@ -113,28 +113,28 @@ function RoomCreateModal({ open, close }) {
         <div className="finish-create-modal-content">
           <h2>방 생성</h2>
           <div className="room-code">
-            <p>
-              <b>방 코드: </b>
-              <input
-                className={roomCode}
-                value={roomCode ? roomCode : "Sample Room Code"}
-                readOnly
-              />
-            </p>
+          <span>방 코드</span>
+            <input
+              id="createdCode"
+              className={roomCode}
+              value={roomCode ? roomCode : "Sample Room Code"}
+              readOnly
+            />
+
           </div>
           <div className="room-invite">
-            <p>
-              <b>방 초대 링크: </b>
-              <input
-                className={roomInvite}
-                value={
-                  roomInvite
-                    ? roomInvite
-                    : "www.sample.com/sample123/?sample456?/sample789?"
-                }
-                readOnly
-              />
-            </p>
+          <span>방 초대 링크</span>
+            <input
+              className={roomInvite}
+              value={
+                roomInvite
+                  ? roomInvite
+                  : "www.sample.com/sample123/?sample456?/sample789?"
+              }
+              id="inviteLink"
+              readOnly
+            />
+
           </div>
           <ModalButtons
             onConfirm={() => {
@@ -152,6 +152,7 @@ function RoomCreateModal({ open, close }) {
             <p>
               <label>
                 <input
+                id="gameMode"
                   type="radio"
                   checked={isModeActive}
                   onChange={() => setIsModeActive(!isModeActive)}
@@ -160,6 +161,7 @@ function RoomCreateModal({ open, close }) {
               </label>
               <label>
                 <input
+                id="normalMode"
                   type="radio"
                   checked={!isModeActive}
                   onChange={() => setIsModeActive(!isModeActive)}

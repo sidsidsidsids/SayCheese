@@ -3,14 +3,20 @@ import "./ModalButtons.css";
 
 const ModalButtons = ({ onConfirm, onClose }) => {
   return (
-    <>
-      <button className="modal-button" onClick={onConfirm}>
+    <div className="twoButtonAlign">
+    <button className="modal-button btn" onClick={onConfirm}>
+
         확인
       </button>
-      <button className="modal-button" onClick={onClose}>
+      <button
+        className="modal-button btn
+      "
+        onClick={onClose}
+      >
+
         나가기
       </button>
-    </>
+      </div>
   );
 };
 

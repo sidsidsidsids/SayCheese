@@ -78,7 +78,7 @@ function RoomJoinModal({ open, close }) {
       <div className="room-join-modal-content">
         <h2>방 입장</h2>
         <p>
-          방 코드:
+          방 코드
           <input
             type="text"
             placeholder="방 코드를 입력해주세요"
@@ -87,10 +87,11 @@ function RoomJoinModal({ open, close }) {
               setInputRoomCode(event.target.value);
             }}
             maxLength={10}
+            id="roomCode"
           />
         </p>
         <p>
-          방 비밀번호:
+          방 비밀번호
           <input
             type="text"
             placeholder="비밀번호를 입력해주세요"
@@ -99,6 +100,7 @@ function RoomJoinModal({ open, close }) {
               setInputRoomPassword(event.target.value);
             }}
             maxLength={10}
+            id="roomPW"
           />
         </p>
         <ModalButtons

@@ -25,19 +25,22 @@ function SetNameModal({ open, close }) {
     <div className="set-name-modal">
       <div className="set-name-modal-content">
         <h2>현재 비로그인 상태입니다</h2>
-        <p>
-          <button
-            onClick={() => {
-              navigate(`/user/login`);
-              close();
-            }}
-          >
-            로그인 하러가기
-          </button>
-        </p>
-        <p>닉네임 설정하고 계속하기</p>
+        <button
+          onClick={() => {
+            navigate(`/user/login`);
+            close();
+          }}
+          id="goLogin"
+          className="btn"
+        >
+          로그인 하러가기
+        </button>
+
+        <div>닉네임 설정하고 계속하기</div>
+
         <input
           type="text"
+          id="nickname"
           placeholder="닉네임을 입력해주세요"
           value={inputNickname}
           onChange={(event) => {
@@ -45,7 +48,6 @@ function SetNameModal({ open, close }) {
           }}
           maxLength={10}
         />
-        <br />
         <ModalButtons onConfirm={handleConfirm} onClose={close} />
       </div>
     </div>
