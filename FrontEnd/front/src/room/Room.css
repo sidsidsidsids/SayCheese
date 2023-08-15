@@ -44,7 +44,12 @@
   font-weight: bold;
   /* border: 1px dashed black; */
   /* width: 80%; */
-  flex: 1 1 80%;
+  flex: 1 1 80%;}
+#video-frame  {
+  width: 589.6px;
+  height: 400.6px;
+  position: relative;
+  background-color: #9795f0;
 }
 .video-container {
   display: flex;

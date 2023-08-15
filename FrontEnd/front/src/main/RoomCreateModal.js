@@ -104,6 +104,7 @@ function RoomCreateModal({ open, close }) {
       roomCode: roomCode,
       specification: selectedFrame,
     }))
+    navigate(`/room/${roomCode}`)
   };
 
   return (

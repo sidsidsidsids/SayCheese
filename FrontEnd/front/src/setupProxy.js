@@ -15,7 +15,7 @@ module.exports = function (app) {
   // );
   app.use(
     createProxyMiddleware("/api/room", {
-      target: "https://1c33-211-192-210-169.ngrok-free.app",
+      target: "https://b7ac-1-220-115-162.ngrok-free.app",
       changeOrigin: true,
     })
   );
@@ -33,13 +33,13 @@ module.exports = function (app) {
   );
   app.use(
     createProxyMiddleware("/api/article", {
-      target: "https://b149-1-238-96-220.ngrok-free.app/",
+      target: "https://b7ac-1-220-115-162.ngrok-free.app",
       changeOrigin: true,
     })
   );
   app.use(
     createProxyMiddleware("/api", {
-      target: "https://1c33-211-192-210-169.ngrok-free.app",
+      target: "https://b7ac-1-220-115-162.ngrok-free.app",
       changeOrigin: true,
     })
   );

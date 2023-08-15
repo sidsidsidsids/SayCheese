@@ -15,7 +15,8 @@ export default function OpenViduVideoComponent({
 
   return (
     <video
-      style={{ top: `${locationY}px`, left: `${locationX}px` }}
+      style={{ position:"absolute", top: `${locationY}px`, left: `${locationX}px`,
+    width: "217.5px", height: "165.5px" }}
       autoPlay={true}
       ref={videoRef}
     />

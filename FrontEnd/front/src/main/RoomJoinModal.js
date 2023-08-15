@@ -66,7 +66,7 @@ function RoomJoinModal({ open, close }) {
           close();
         })
         .catch(() => {
-          alert("입력값을 확인해주세요");
+          alert("입장할 수 없는 방입니다");
         });
     } catch (error) {
       console.log(error);
