@@ -36,6 +36,14 @@ public class ParticipantController {
         return new ResponseEntity(roomUserParticipant, HttpStatus.OK);
     }
 
+    @GetMapping("random/{roomCode}")
+    public ResponseEntity<List<RoomRandomParticipantResponseDto>> readRandomParticipant(
+            @PathVariable("roomCode") String roomCode){
+        List<RoomRandomParticipantResponseDto> responseDto = participantService.getRandomParticipant(roomCode);
+        return new ResponseEntity(responseDto, HttpStatus.OK);
+
+    }
+
     /**
      * 회원 추가 API
      * @param
@@ -107,7 +115,7 @@ public class ParticipantController {
             @PathVariable("roomCode") String roomCode,
             @RequestBody @Valid ParticipantUpdateConnectionRequestDto requestDto
     ){
-        participantService.updateParticipantConnectionFail(requestDto.getNickname(), roomCode);
+        participantService.updateParticipantConnectionFail(requestDto.getStreamId(), roomCode);
         return new ResponseEntity(Response.of(ParticipantMessage.PARTICIPANT_CHANGE_CONNECTION_SUCCESS),HttpStatus.OK);
     }
     /**
