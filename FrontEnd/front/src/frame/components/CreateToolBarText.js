@@ -11,7 +11,7 @@ import "../css/CreateToolBarText.css";
 
 export default function Text() {
   const [customText, setCustomText] = useState("");
-  const [customTextColor, setCustomTextColor] = useState("white");
+  const [customTextColor, setCustomTextColor] = useState("#ffffff");
   const [customTextSize, setCustomTextSize] = useState("20");
   const [customTextFont, setCustomTextFont] = useState("Roboto");
   const textRef = useRef();
