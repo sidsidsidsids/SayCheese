@@ -60,8 +60,6 @@ public class RoomController {
      * @pathVariable
      * roomCode : 방 코드
      * @param
-     * userDetail : JWT 토큰으로 인증된 사용자 정보
-     * @param
      * requestDto : 방 정보
      *             password : 방 비밀번호
      * @return
@@ -69,19 +67,11 @@ public class RoomController {
      *          existParticipantYn : 참여자 기존 참가자 여부
      */
     @PostMapping("/check/{roomCode}")
-    public ResponseEntity<RoomCheckResponseDto> checkRoomPassword(
+    public ResponseEntity<Response> checkRoomPassword(
             @PathVariable String roomCode,
-            @RequestBody @Valid RoomCheckRequestDto requestDto,
-            @AuthenticationPrincipal UserDetail userDetail) {
+            @RequestBody @Valid RoomCheckRequestDto requestDto) {
         roomService.checkRoomPassword(roomCode, requestDto.getPassword());
-        if(userDetail == null){
-            return new ResponseEntity(new RoomCheckResponseDto('N'), HttpStatus.OK);
-        }else{
-            if(userDetail.getMember().getRole() == Role.GUEST){
-                participantService.updateParticipantConnectionSuccess(userDetail.getMember().getId(),roomCode);
-            }
-            return new ResponseEntity(new RoomCheckResponseDto('Y'), HttpStatus.OK);
-        }
+        return new ResponseEntity(Response.of(RoomMessage.ROOM_CHECK_SUCCESS), HttpStatus.OK);
     }
     /**
      * 방 생성 API
