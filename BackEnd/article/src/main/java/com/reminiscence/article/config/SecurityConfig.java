@@ -58,6 +58,8 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests().antMatchers(HttpMethod.DELETE,"/api/article/image/**").hasAnyRole(Role.ADMIN.name(), Role.MEMBER.name())
                 .and()
+                .authorizeRequests().antMatchers("/api/article/random/tag").permitAll()
+                .and()
                 .authorizeRequests().antMatchers("/api/image/**").hasAnyRole(Role.ADMIN.name(), Role.MEMBER.name())
                 .and()
                 .authorizeRequests().antMatchers("/api/article/lover/**").hasAnyRole(Role.ADMIN.name(), Role.MEMBER.name())
