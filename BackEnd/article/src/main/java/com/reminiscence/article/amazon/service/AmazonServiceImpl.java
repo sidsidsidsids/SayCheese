@@ -25,7 +25,7 @@ public class AmazonServiceImpl implements AmazonService {
 
     @Override
     public PreSignedResponseDto getPreSignedUrl(String prefix, String fileName) {
-        String oneFileName = onlyOneFileName(fileName);
+        String oneFileName = onlyOneFileName();
         if (!prefix.equals("")) {
 
             fileName = prefix + "/" + oneFileName;
@@ -55,8 +55,8 @@ public class AmazonServiceImpl implements AmazonService {
         expiration.setTime(expTimeMillis);
         return expiration;
     }
-    private String onlyOneFileName(String filename){
-        return UUID.randomUUID().toString()+filename;
+    private String onlyOneFileName(){
+        return UUID.randomUUID().toString();
     }
 
 }
