@@ -17,7 +17,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.UUID;
 
 @Configuration
 @RequiredArgsConstructor
@@ -35,6 +34,7 @@ public class ScheduiedConfig {
     public void scheduledBatch(){
         DateTimeFormatter dateTimeFormatter=DateTimeFormatter.ofPattern("yyyyMMdd");
         String date=dateTimeFormatter.format(LocalDateTime.now());
+
         JobParameters jobParameters = new JobParametersBuilder()
                 .addString("requestDate", date)
                 .toJobParameters();

@@ -42,8 +42,14 @@ public class BatchConfig {
     }
 
     @Bean
-    public JobRepository jobRepository(DataSource dataSource,PlatformTransactionManager transactionManager)
+    public JobRepository jobRepository(PlatformTransactionManager transactionManager)
             throws Exception {
+        HikariConfig config =new HikariConfig();
+        config.setJdbcUrl(env.getProperty("batch.jdbc.url"));
+        config.setDriverClassName(env.getProperty("batch.jdbc.driver"));
+        config.setUsername(env.getProperty("batch.jdbc.username"));
+        config.setPassword(env.getProperty("batch.jdbc.password"));
+        DataSource dataSource=new HikariDataSource(config);
         JobRepositoryFactoryBean factory = new JobRepositoryFactoryBean();
         factory.setTablePrefix("BATCH_");
         factory.setDataSource(dataSource);

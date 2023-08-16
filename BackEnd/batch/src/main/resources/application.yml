@@ -1,13 +1,10 @@
 spring:
-  config:
-    import: 'optional:configserver:/'
-
   port: 8600
   datasource:
-    username: root
-    password: qwe1234jkl7896
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://i9a401.p.ssafy.io:3307/200ok
+    username: test
+    password: test
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/tuto
   jpa:
     hibernate:
       ddl-auto: none
@@ -20,22 +17,21 @@ spring:
       enabled: false
     jdbc:
       initialize-schema: never
-      table-prefix: BATCH_
+      table-prefix: batch_
   main:
     allow-bean-definition-overriding: true
-  cloud:
-    config:
-      enabled: false
-cloud:
-  aws:
-    s3:
-      bucket: '200oks3bucket'
-    credentials:
-      instance-profile: false
-      access-key: 'AKIA3EISLCMY36Q4S7OW'
-      secret-key: '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'
-    region:
-      auto: false
-      static: 'ap-northeast-2'
-    stack:
-      auto: false
+
+batch:
+  jdbc:
+    driver: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/tuto
+    user: test
+    password: test
+  database:
+    incrementer:
+      class: org.springframework.jdbc.support.incrementer.MySQLMaxValueIncrementer
+  data:
+    source:
+      init: false
+  table:
+    prefix: BATCH_
