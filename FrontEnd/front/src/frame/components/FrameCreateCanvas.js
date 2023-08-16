@@ -171,7 +171,7 @@ const addCircleBlocks = (canvas, height, width) => {
       top: top,
       // scaleX: width,
       // scaleY: height,
-      rx: width / 2.3, // x축 반지름 (가로 길이의 절반)
+      rx: width / 2.42, // x축 반지름 (가로 길이의 절반)
       ry: height / 10.6, // y축 반지름 (세로 길이의 절반)
       radius: 70,
       fill: "#7767AC",
@@ -190,7 +190,7 @@ const addCircleBlocks = (canvas, height, width) => {
       // scaleX: width,
       // scaleY: height,
       rx: 111, // x축 반지름 (가로 길이의 절반)
-      ry: 84, // y축 반지름 (세로 길이의 절반)
+      ry: 81, // y축 반지름 (세로 길이의 절반)
       radius: 70,
       fill: "#7767AC",
       lockMovementX: true, // 움직이지 않도록 합니다
@@ -204,7 +204,7 @@ const addCircleBlocks = (canvas, height, width) => {
     if (height > width) {
       // 사다리형
       for (let i = 0; i < 4; i++) {
-        canvas.add(VerticalCircleBlock(13, 19 + i * 120));
+        canvas.add(VerticalCircleBlock(17, 19 + i * 120));
       }
     } else {
       // 창문형
@@ -214,6 +214,72 @@ const addCircleBlocks = (canvas, height, width) => {
             30 + (i % 2) * 229,
             29 + Math.floor(i / 2) * 176
           )
+        );
+      }
+    }
+  }
+};
+
+// 하트모양 투명칸 만드는 함수 입니다
+const addHeartBlocks = (canvas, height, width) => {
+  // 원형 네모칸 만드는 함수입니다
+
+  const VerticalHeartBlock = (left, top) => {
+    let heartPath = new fabric.Path(
+      "M352.92,80C288,80,256,144,256,144s-32-64-96.92-64C106.32,80,64.54,124.14,64,176.81c-1.1,109.33,86.73,187.08,183,252.42a16,16,0,0,0,18,0c96.26-65.34,184.09-143.09,183-252.42C447.46,124.14,405.68,80,352.92,80Z"
+    );
+
+    const scaleWidth = 170 / heartPath.width;
+    const scaleHeight = 111 / heartPath.height;
+    heartPath.set({
+      left: left,
+      top: top,
+      scaleX: scaleWidth,
+      scaleY: scaleHeight,
+      fill: "#7767AC",
+      lockMovementX: true, // 움직이지 않도록 합니다
+      lockMovementY: true,
+      lockRotation: true,
+      selectable: false, // 마우스 선택 불가능
+      globalCompositeOperation: "destination-out", // 이 도형이 겹쳐지는 부분은 사라집니다
+    });
+    return heartPath;
+  };
+
+  // 창문형 프레임 투명한 네모칸 만드는 함수입니다 (width, height) = 217, 165
+  const HorizontalHeartBlock = (left, top) => {
+    let heartPath = new fabric.Path(
+      "M352.92,80C288,80,256,144,256,144s-32-64-96.92-64C106.32,80,64.54,124.14,64,176.81c-1.1,109.33,86.73,187.08,183,252.42a16,16,0,0,0,18,0c96.26-65.34,184.09-143.09,183-252.42C447.46,124.14,405.68,80,352.92,80Z"
+    );
+
+    const scaleWidth = 217 / heartPath.width;
+    const scaleHeight = 165 / heartPath.height;
+    heartPath.set({
+      left: left,
+      top: top,
+      scaleX: scaleWidth,
+      scaleY: scaleHeight,
+      fill: "#7767AC",
+      lockMovementX: true, // 움직이지 않도록 합니다
+      lockMovementY: true,
+      lockRotation: true,
+      selectable: false, // 마우스 선택 불가능
+      globalCompositeOperation: "destination-out", // 이 도형이 겹쳐지는 부분은 사라집니다
+    });
+    return heartPath;
+  };
+
+  if (canvas) {
+    if (height > width) {
+      // 사다리형
+      for (let i = 0; i < 4; i++) {
+        canvas.add(VerticalHeartBlock(19, 20 + i * 120));
+      }
+    } else {
+      // 창문형
+      for (let i = 0; i < 4; i++) {
+        canvas.add(
+          HorizontalHeartBlock(30 + (i % 2) * 229, 29 + Math.floor(i / 2) * 176)
         );
       }
     }
@@ -401,6 +467,7 @@ const CanvasArea = () => {
     width,
     height,
     bgColor,
+    block,
     bgImg,
     objects,
     text,
@@ -413,7 +480,9 @@ const CanvasArea = () => {
   } = useSelector((store) => store.frame); // store에서 canvas에 사용할 재료들을 가져옴
   let frameSpecification = ""; // DOM을 조작해야하는 데이터가 아니라면 일반 변수로 사용하는 것이 관리하기 낫다
   let blockSpecification = "Plain"; // 투명한 칸이 어떠한 모양인지 담고있는 변수입니다 종류는 Plain, SmoothPlain, Circle
-
+  if (block) {
+    blockSpecification = block;
+  }
   const [isRedoing, setIsRedoing] = useState(false);
   const [history, setHistory] = useState([]);
   const [redoHistory, setRedoHistory] = useState([]);
@@ -480,7 +549,16 @@ const CanvasArea = () => {
     // 컬러 백그라운드 만들기
     if (newCanvas && bgColor) {
       newCanvas.backgroundColor = bgColor;
-      addPlainBlocks(newCanvas, height, width);
+      if (block === "Heart") {
+        addHeartBlocks(newCanvas, height, width);
+      } else if (block === "SmoothPlain") {
+        addSmoothPlainBlocks(newCanvas, height, width);
+      } else if (block === "Circle") {
+        addCircleBlocks(newCanvas, height, width);
+      } else {
+        addPlainBlocks(newCanvas, height, width);
+      }
+
       handleSpecification().then(() => {
         console.log(width, frameSpecification);
       });
@@ -511,7 +589,7 @@ const CanvasArea = () => {
         newCanvas.dispose();
       }
     };
-  }, [width, height, bgColor, bgImg]); // width, height, bg 바뀔 때마다 리렌더
+  }, [width, height, bgColor, bgImg, block]); // width, height, bg 바뀔 때마다 리렌더
 
   // 객체 추가 또는 수정 시 상태 저장
   useEffect(() => {

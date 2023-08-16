@@ -1,7 +1,8 @@
 // 프레임 생성할 때 프레임의 규격을 정하는 툴바의 디테일 컴포넌트입니다.
 import React from "react";
+import { BsFillSuitHeartFill } from "react-icons/bs/";
 import { useDispatch } from "react-redux";
-import { Resize } from "../../redux/features/frame/frameSlice";
+import { Resize, ReBlock } from "../../redux/features/frame/frameSlice";
 import verticalFrame from "../assets/사다리형.png";
 import horizontalFrame from "../assets/창문형.png";
 
@@ -29,7 +30,6 @@ export default function Standard() {
         src={verticalFrame}
         alt="사다리형 프레임"
       />
-
       <img
         width="90px"
         onClick={handleHorizontalResize}
@@ -37,7 +37,25 @@ export default function Standard() {
         src={horizontalFrame}
         alt="창문형 프레임"
       />
-
+      <label className="labelForBlockChoice">
+        사진 영역 모양을 선택할 수 있어요
+      </label>
+      <div className="blockChoice">
+        {/* 도형을 클릭하면 리덕스 스테이트 어떤 도형인지 입력되고 캔버스는 그 도형에 맞는 투명칸을 만듭니다 */}
+        <div className="rect" onClick={() => dispatch(ReBlock("Plain"))}></div>
+        <div
+          className="smoothRect"
+          onClick={() => dispatch(ReBlock("SmoothPlain"))}
+        ></div>
+        <div
+          className="circle"
+          onClick={() => dispatch(ReBlock("Circle"))}
+        ></div>
+        <BsFillSuitHeartFill
+          className="heart"
+          onClick={() => dispatch(ReBlock("Heart"))}
+        />
+      </div>
       {/* 다른 툴바 버튼들 */}
     </div>
   );
