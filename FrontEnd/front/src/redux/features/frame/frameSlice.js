@@ -25,6 +25,20 @@ const frameSlice = createSlice({
   initialState,
   // 리듀서 맵
   reducers: {
+    ResetAll: (state) => {
+      state.height = 589.6;
+      state.width = 207.8;
+      state.bgColor = "#000000";
+      state.bgImg = false;
+      state.objects = false;
+      state.text = false;
+      state.brush = false;
+      state.drawingMode = false;
+      state.deleteSignal = 0;
+      state.downloadSignal = 0;
+      state.frameInfo = false;
+      state.postSignal = 0;
+    },
     // 프레임 규격
     Resize: (state, action) => {
       state.drawingMode = false;
@@ -90,6 +104,7 @@ const frameSlice = createSlice({
 });
 
 export const {
+  ResetAll,
   Resize,
   Repaint,
   RemoveBgImg,
