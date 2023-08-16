@@ -48,7 +48,7 @@ export default function Frame() {
           <button
             key={index}
             // 현재 선택된 탭인 경우에는 focused 클래스를 추가하여 배경색을 하얀색으로 변경합니다.
-            className={`FrameButton ${focusedItem === item ? "focused" : ""}`}
+            className={`frameButton ${focusedItem === item ? "focused" : ""}`}
           >
             <Link
               key={index}
