@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
 
@@ -83,8 +84,11 @@ public class RoomJpaTest {
     @DisplayName("방 생성 테스트")
     public void createRoomTest(){
         // given
+        String password = "1234";
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(password);
         Room room = Room.builder()
-                .password("1234")
+                .password(encodedPassword)
                 .roomCode("tussle")
                 .mode(Mode.GAME)
                 .maxCount(4)
