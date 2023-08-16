@@ -1,16 +1,16 @@
 // 로고와 nav bar를 만들 페이지 입니다.
-import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+// third party
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+// local
 import {
-  getUserInfo,
   loginSuccess,
-  logintemporary,
   logoutSuccess,
 } from "../redux/features/login/loginSlice";
 import "./Header.css";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import logo from "./assets/sign.png";
 
 function Header() {
   const { isLogin, userInfo } = useSelector((store) => store.login);
@@ -27,14 +27,6 @@ function Header() {
     }
   }, []);
 
-  function temporary() {
-    localStorage.setItem(
-      "accessToken",
-      "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A"
-    );
-    dispatch(logintemporary("se6816@naver.com"));
-  }
-
   function handleLogout() {
     const accessToken = localStorage.getItem("accessToken");
     axios
@@ -47,7 +39,7 @@ function Header() {
       })
       .then(() => {
         alert("로그아웃 되었습니다.");
-        movePage("/");
+        movePage("/main");
         dispatch(logoutSuccess());
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
@@ -63,12 +55,12 @@ function Header() {
     <div className="Header">
       <ul>
         <li>
-          <Link to="/">
-            <p>Nav bar</p>
+          <Link to="/main">
+            <img src={logo} className="SayCheeseLogo" alt="Say Cheese" />
           </Link>
         </li>
       </ul>
-      <button onClick={temporary}>액세스</button>
+
       <div className="HeaderSort">
         <ul>
           <li>
@@ -112,7 +104,7 @@ function Header() {
         ) : (
           <ul className="DropDownMenu">
             <li className="MyPageHover">
-              <Link to="/user/login" className="HoverEffect">
+              <Link to="/user/login" className="HoverEffect LoginLink">
                 로그인
               </Link>
               <ul className="DropDownSubMenuTwo">

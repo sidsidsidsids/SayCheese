@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import RoomCreateModal from "./RoomCreateModal";
 import RoomJoinModal from "./RoomJoinModal";
 import SetNameModal from "./SetNameModal";
+import Loading from "../Loading";
 import leftBooth from "./assets/booth(left).png";
 import rightBooth from "./assets/booth(right).png";
 import sign from "./assets/sign.png";

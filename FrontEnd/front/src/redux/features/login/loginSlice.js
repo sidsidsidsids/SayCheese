@@ -1,8 +1,5 @@
 // login 상태 관련  redux tookit 모듈 파일
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { combineReducers } from "redux";
-import { persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage"; // 로컬스토리지 사용
 import axios from "axios";
 
 // 초기 상태 정의
@@ -11,12 +8,12 @@ const initialState = {
   userInfo: {},
 };
 
-//임시로 사용할 함수
-export const logintemporary = createAsyncThunk(
-  "login/logintemporary",
-  async (email) => {
+// 비회원 방 입장 시 닉네임 받기
+export const notUserNickname = createAsyncThunk(
+  "login/notUserNickname",
+  async (nickname) => {
     const userInfo = {
-      email: email,
+      nickname: nickname,
     };
     return userInfo;
   }
@@ -110,8 +107,7 @@ const loginSlice = createSlice({
       .addCase(refreshToken.fulfilled, (state, action) => {
         state.isLogin = true;
       })
-      // 나중에 삭제
-      .addCase(logintemporary.fulfilled, (state, action) => {
+      .addCase(notUserNickname.fulfilled, (state, action) => {
         state.userInfo = action.payload;
       });
   },

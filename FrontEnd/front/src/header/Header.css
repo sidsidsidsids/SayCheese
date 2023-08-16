@@ -1,8 +1,15 @@
 .Header {
-  margin: 20px 40px;
+  margin: 10px 40px;
+  padding: 0;
   font-size: 20px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+.SayCheeseLogo {
+  margin: 0;
+  width: 160px;
 }
 
 .HeaderSort {
@@ -21,29 +28,43 @@ a {
 .DropDownSubMenu {
   height: 0;
   overflow: hidden;
-  transition: height 0.5s;
 }
 
 .DropDownMenu > li:hover {
   transition-duration: 0.4s;
 }
 
+.MyPageHover {
+  position: relative;
+}
+
 .MyPageHover:hover .DropDownSubMenu {
   height: 45px;
+  position: absolute;
+  transition: height 0.5s;
 }
 
 .DropDownSubMenuTwo {
   height: 0;
   overflow: hidden;
-  transition: height 0.5s;
 }
 
 .DropDownSubMenuTwo > li:hover {
   transition-duration: 0.4s;
 }
 
+.MyPageHover:hover .LoginLink {
+  margin: auto 8px;
+}
+
 .MyPageHover:hover .DropDownSubMenuTwo {
   height: 20px;
+  position: absolute;
+  transition: height 0.5s;
+}
+
+.DropDownMenu p {
+  width: 89.25px !important;
 }
 
 .HoverEffect {

@@ -1,5 +1,7 @@
-import axios from "axios";
 import { useEffect } from "react";
+// third party
+import axios from "axios";
+// local
 import Button from "../Button";
 
 function DeleteMyFrameModal({
@@ -17,6 +19,7 @@ function DeleteMyFrameModal({
     modalbg.style.top = currentTop; // Set the top CSS property of the element
   }, []);
 
+  // 프레임 삭제 axios
   function handleDeleteMyFrame() {
     const accessToken = localStorage.getItem("accessToken");
     axios

@@ -1,13 +1,16 @@
+import { useEffect, useState } from "react";
+// third party
 import { useSelector } from "react-redux";
-import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-
+// local
 import "./Photo.css";
 import PhotoCategory from "./PhotoCategory";
 import PhotoSlider from "./PhotoSlider";
 import PhotoModal from "./PhotoModal";
 
 function Photo() {
+  // 스토어에서 모달이 열려있는지 확인하는 isOpen을 가져옴
+  const { isOpen } = useSelector((store) => store.modal);
   const [photoListLike, setPhotoListLike] = useState([]); // 좋아요 순 이미지
   const [photoListRecent, setPhotoListRecent] = useState([]); // 최신 순 이미지
   const [photoListRandom, setPhotoListRandom] = useState([]); // 이미지 랜덤으로
@@ -59,9 +62,6 @@ function Photo() {
       console.log(error);
     }
   }
-
-  // 스토어에서 모달이 열려있는지 확인하는 isOpen을 가져옴
-  const { isOpen } = useSelector((store) => store.modal);
 
   return (
     <div className="PhotoBox">

@@ -1,11 +1,10 @@
 import React from "react";
-
+// 슬라이더
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
+// local
 import "./PhotoSlider.css";
-
 import PhotoCard from "./PhotoCard";
 
 function PhotoSlider({ photoList }) {
@@ -17,7 +16,7 @@ function PhotoSlider({ photoList }) {
     speed: 500, // 슬라이드 전환 속도 (ms)
     slidesToShow: 3, // 보여줄 슬라이드 수
     slidesToScroll: 3, // 스크롤시 이동할 슬라이드 수
-    initialSlide: 0,
+    initialSlide: 0, // 시작 페이지
     responsive: [
       {
         breakpoint: 1300,
