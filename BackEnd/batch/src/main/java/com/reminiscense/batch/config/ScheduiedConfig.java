@@ -29,8 +29,7 @@ public class ScheduiedConfig {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
 
-//    @Scheduled(cron ="0 0 1 * * *")
-    @Scheduled(cron ="0 * * * * *")
+    @Scheduled(cron ="0 0 1 * * *")
     public void scheduledBatch(){
         DateTimeFormatter dateTimeFormatter=DateTimeFormatter.ofPattern("yyyyMMdd");
         String date=dateTimeFormatter.format(LocalDateTime.now());
