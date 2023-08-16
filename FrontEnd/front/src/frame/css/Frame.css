@@ -11,10 +11,10 @@
   position: relative;
 }
 
-.frame .FrameButton {
+.frame .frameButton {
   font-family: Black Han Sans;
-  font-size: 36px;
-  width: 300px;
+  font-size: 22px;
+  width: 200px;
   height: 80px;
   vertical-align: text-bottom;
   border: #d9d9d9 1px solid;
@@ -28,21 +28,21 @@
   border: white 1px solid;
   background-color: white;
   transition: background-color 0.1s, transform 0.3s;
-  transform: translateX(14.5px) scale(1.1, 1.1);
+  transform: translateX(10.5px) scale(1.1, 1.1);
   z-index: 10;
 }
-
+1492 926
 @media (min-width: 1032px) and (max-width: 1382px) {
   /* 브라우저 사이즈 이상 이하일때*/
   .frame .frameTap {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .frame .focused {
     border: white 1px solid;
     background-color: white;
     transition: background-color 0.1s, transform 0.3s;
-    transform: translateX(15px) scale(1.1, 1.1);
+    transform: translateX(18px) scale(1.1, 1.1);
     z-index: 10;
   }
 }
@@ -57,7 +57,7 @@
     z-index: 10;
   }
 
-  .frame .FrameButton {
+  .frame .frameButton {
     font-size: 25px;
   }
 }
@@ -72,7 +72,7 @@
     z-index: 10;
   }
 
-  .frame .FrameButton {
+  .frame .frameButton {
     font-size: 20px;
   }
 }
@@ -114,7 +114,7 @@
 @media (max-width: 600px) {
   .frameSpace {
     border-radius: 0 0 30px 30px;
-    font-size: 20px;
+    font-size: 18px;
   }
 }
 
