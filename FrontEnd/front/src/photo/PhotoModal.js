@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import "./PhotoModal.css";
-import { useDispatch, useSelector } from "react-redux";
-import { closeModal } from "../redux/features/modal/modalSlice";
+// third party
 import axios from "axios";
-import Button from "../Button";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+// local
+import "./PhotoModal.css";
+import { closeModal } from "../redux/features/modal/modalSlice";
+import Button from "../Button";
 
 function PhotoModal() {
   // 모달에 표시할 내용이 없으면 에러가 나지않게 로딩 상태를 표시
@@ -15,16 +17,14 @@ function PhotoModal() {
   const { isOpen } = useSelector((store) => store.modal);
   const { modalContent } = useSelector((state) => state.modal);
 
-  const { userInfo } = useSelector((store) => store.login);
   const [imageData, setImageData] = useState([]);
-  const dispatch = useDispatch();
-  const movePage = useNavigate();
   // 좋아요 체크 되어있으면 like:1 안 했으면 :0
   const [like, setLike] = useState(imageData.loverYn);
   const [authorEmail, setAuthorEmail] = useState(""); // 작성자 이메일
-
   const [isPhotoDelModalOpen, setIsPhotoDelModalOpen] = useState(false);
   const [deleteType, setDeleteType] = useState(""); // 삭제 타입
+
+  const dispatch = useDispatch();
 
   const handleDeleteModalOpen = () => {
     setIsPhotoDelModalOpen(true);
@@ -53,7 +53,7 @@ function PhotoModal() {
 
   useEffect(() => {
     getImageData();
-  }, [like]);
+  }, [like]); // 좋아요 체크 여부 변하면 axios get 다시 한다
 
   // 모달에 해당 이미지 데이터를 axios get 방식으로 가져오는 함수
   async function getImageData() {
@@ -114,9 +114,10 @@ function PhotoModal() {
       });
   }
 
+  // 이미지 삭제
   async function handlePhotoDelete() {
     const accessToken = localStorage.getItem("accessToken");
-
+    // 게시글만 삭제하기
     if (deleteType === "onlyArticle") {
       axios
         .delete("/api/article/image", {
@@ -128,13 +129,14 @@ function PhotoModal() {
         })
         .then((response) => {
           alert("게시글이 정상적으로 삭제되었습니다.");
-          window.location.reload();
+          window.location.reload(); // 해당 페이지로 리다이렉트
         })
         .catch((error) => {
           alert(
             "오류로 인해 게시글을 삭제할 수 없습니다.\n다시 시도해주시길 바랍니다."
           );
         });
+      // 이미지도 같이 삭제하기
     } else if (deleteType === "withPhoto") {
       axios
         .delete("/api/article/image/all", {
@@ -146,13 +148,14 @@ function PhotoModal() {
         })
         .then((response) => {
           alert("게시글과 네컷사진이 정상적으로 삭제되었습니다.");
-          window.location.reload();
+          window.location.reload(); // 해당 페이지로 리다이렉트
         })
         .catch((error) => {
           alert(
             "오류로 인해 삭제를 진행할 수 없습니다.\n다시 시도해주시길 바랍니다."
           );
         });
+      // 삭제방식을 선택하지 않았을 경우
     } else {
       return alert("원하는 삭제 방식을 선택 후 진행해주시길 바랍니다.");
     }

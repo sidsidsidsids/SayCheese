@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import "./Notice.css";
+// third party
 import { useParams } from "react-router-dom";
 import axios from "axios";
+// local
+import "./Notice.css";
 import NoticeDetail from "./NoticeDetail";
 
 function Notice() {
-  const { id } = useParams();
+  const { id } = useParams(); // 글 세부 정보 가져오기 위해 파라미터 값을 id로
   const [article, setArticle] = useState({});
 
   useEffect(() => {

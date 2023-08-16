@@ -32,13 +32,28 @@ export default function Saving() {
       <div>
         <form>
           <label htmlFor="userId">이메일</label>
-          <input id="userId" type="text" onChange={setEmail}></input>
+          <input
+            id="userId"
+            type="email"
+            value={email}
+            onChange={(event) => {
+              setEmail(event.target.value);
+            }}
+          ></input>
           <label htmlFor="userPW">비밀번호</label>
-          <input id="userPw" type="password" onChange={setPassword}></input>
+          <input
+            id="userPw"
+            type="password"
+            value={password}
+            onChange={(event) => {
+              setPassword(event.target.value);
+            }}
+          ></input>
           <button
+            type="button"
             className="btn alignCenter"
-            onClick={() => {
-              handleLogin();
+            onClick={(e) => {
+              handleLogin(e);
             }}
           >
             로그인하기
@@ -110,14 +125,16 @@ export default function Saving() {
   // 로그인 처리 함수 for  stage1
   function handleLogin(event) {
     event.preventDefault();
-
+    console.log(email, password);
     let data = {
-      email,
-      password,
+      email: email,
+      password: password,
     };
 
+    console.log(data);
+
     axios
-      .post("/api/login", JSON.stringify(data), {
+      .post("/api/login", data, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -137,6 +154,7 @@ export default function Saving() {
           setCallbackOK(true);
           dispatch(loginSuccess());
           dispatch(getUserInfo());
+          setUploadStage(2);
         }
       })
       .catch((error) => {

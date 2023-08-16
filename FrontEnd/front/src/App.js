@@ -1,4 +1,3 @@
-import { useContext, useEffect, useState } from "react";
 // third party
 import { Outlet } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -9,6 +8,7 @@ import Header from "./header/Header";
 import "./App.css";
 
 import { getUserInfo } from "./redux/features/login/loginSlice";
+import Loading from "./Loading";
 
 function App() {
   const dispatch = useDispatch();
@@ -33,7 +33,6 @@ function App() {
           </QueryClientProvider>
         </div>
       </AuthProvider>
-      <p>app.js</p>
     </div>
   );
 }

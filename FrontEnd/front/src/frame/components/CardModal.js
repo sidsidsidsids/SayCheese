@@ -5,6 +5,7 @@ import axios from "axios";
 // local
 import { closeModal } from "../../redux/features/modal/modalSlice";
 import "../css/CardModal.css";
+import logo from "../assets/SayCheeseLogo.png";
 
 export default function CardModal() {
   const [loading, setLoading] = useState(false); // 모달에 표시할 내용이 없으면 에러가 나지않게 로딩 상태를 표시
@@ -87,7 +88,7 @@ export default function CardModal() {
       // 로그인 한 사람만
       if (like) {
         console.log("좋아요 취소 요청");
-        handleLikePlus();
+        handleLikeMinus();
       } else if (!like) {
         console.log("좋아요 요청");
         handleLikePlus();
@@ -153,9 +154,27 @@ export default function CardModal() {
             <>
               {isFrameAccessControlModalOpen ? ( // 전체공개 여부를 수정하고 싶을때
                 // 공개 여부 수정 모달 컨텐츠
-                <div className="DeletePhotoModal">
-                  <div className="DeleteQuestion">
-                    <h1>공개 여부를 수정 하시겠습니까?</h1>
+                <div className="DeleteMyPhotoModal">
+                  <div
+                    style={{
+                      marginTop: "50px",
+                      marginLeft: "50px",
+                      marginBottom: "20px",
+                      textAlign: "left",
+                    }}
+                  >
+                    <h1 style={{ margin: "0", fontSize: "32px" }}>비공개로</h1>
+                    <h1 style={{ margin: "0", fontSize: "32px" }}>
+                      수정하시겠습니까?
+                    </h1>
+                  </div>
+                  <div className="DeleteGuide">
+                    <p style={{ fontSize: "18px" }}>
+                      비공개된 프레임의 공개 여부 수정은
+                    </p>
+                    <p style={{ fontSize: "18px" }}>
+                      마이페이지에서 변경 가능합니다.
+                    </p>
                   </div>
 
                   <div className="DeleteBtnSort">
@@ -181,11 +200,15 @@ export default function CardModal() {
                 </div>
               ) : isFrameDeleteModalOpen ? ( // 삭제 버튼 눌렀을때
                 // 경우 삭제 모달 컨텐츠
-                <div className="DeletePhotoModal">
+                <div className="DeleteMyPhotoModal">
                   <div className="DeleteQuestion">
-                    <h1>삭제를 하시겠습니까?</h1>
+                    <h1 style={{ fontSize: "32px" }}>정말 삭제하시겠습니까?</h1>
                   </div>
-
+                  <p className="DeleteGuide" style={{ fontSize: "18px" }}>
+                    삭제하시는 경우, 복구는 불가능합니다.
+                  </p>
+                  <br className="stop-dragging" />
+                  <br className="stop-dragging" />
                   <div className="DeleteBtnSort">
                     <button
                       className="whtbtn"
@@ -209,47 +232,83 @@ export default function CardModal() {
                 </div>
               ) : null}
               {/* 프레임 상세보기 모달 컨텐츠 */}
-              <div className="modal-name">{modalContent.name}</div>
-              <div className="modal-author">작성자 : {modalContent.author}</div>
-              <img src={modalContent.frameLink} alt="프레임 이미지" />
+              <h2 style={{ fontWeight: "500", margin: "20px 0" }}>
+                {modalContent.subject}
+              </h2>
+              <img
+                src={modalContent.frameLink}
+                alt="프레임 이미지"
+                width="330px"
+                height="330px"
+                style={{ objectFit: "contain" }}
+              />
+              <hr className="ModalLine" />
+              <div className="ModalContent">
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <img
+                      src={userInfo.profile ? userInfo.profile : logo}
+                      alt="프로필 이미지"
+                      className="FrameAuthorProfile"
+                    />
+                    <div>{modalContent.author}</div>
+                  </div>
 
-              <div className="heart-btn" onClick={(event) => clickLike(event)}>
-                <div className="heart-content">
-                  <span
-                    className={
-                      like === 1
-                        ? "heart full"
-                        : like === true
-                        ? "heart-active heart"
-                        : "heart"
-                    }
-                  ></span>
-                  <span className="numb">{likeCount}</span>
+                  <div>
+                    {new Date(modalContent.createdDate).toLocaleString(
+                      "ko-KR",
+                      {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                      }
+                    )}
+                  </div>
                 </div>
-              </div>
-              <div className="frameTags">
-                {modalContent.isPublic === true ? "전체 공개" : "비공개"}
-              </div>
-              {modalContent.isMine ? ( // 자신이 작성한 프레임 글이라면 삭제버튼과 공개여부 수정 버튼이 보입니다
-                <div className="alignTwoButtons">
-                  <button
-                    className="btn"
-                    onClick={() => {
-                      setIsFrameDeleteModalOpen(true);
-                    }}
-                  >
-                    삭제하기
-                  </button>
-                  <button
-                    className="btn"
-                    onClick={() => {
-                      setIsFrameAccessControlModalOpen(true);
-                    }}
-                  >
-                    공개 수정하기
-                  </button>
+                <div
+                  className="heart-btn"
+                  onClick={(event) => clickLike(event)}
+                >
+                  <div className="heart-content">
+                    <span
+                      className={
+                        like === 1
+                          ? "heart full"
+                          : like === true
+                          ? "heart-active heart"
+                          : "heart"
+                      }
+                    ></span>
+                    <span className="numb">{likeCount}</span>
+                  </div>
                 </div>
-              ) : null}
+                {modalContent.isMine ? ( // 자신이 작성한 프레임 글이라면 삭제버튼과 공개여부 수정 버튼이 보입니다
+                  <div className="alignFrameTwoButtons">
+                    <button
+                      className="btn"
+                      onClick={() => {
+                        setIsFrameDeleteModalOpen(true);
+                      }}
+                    >
+                      삭제하기
+                    </button>
+                    <button
+                      className="btn"
+                      onClick={() => {
+                        setIsFrameAccessControlModalOpen(true);
+                      }}
+                    >
+                      공개 수정하기
+                    </button>
+                  </div>
+                ) : null}
+              </div>
+
               <button
                 className="modalClose"
                 onClick={() => {

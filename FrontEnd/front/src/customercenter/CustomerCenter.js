@@ -1,6 +1,5 @@
 import CenterMenu from "./CenterMenu";
 import CenterMain from "./CenterMain";
-
 import "./CustomerCenter.css";
 
 function Customercenter() {

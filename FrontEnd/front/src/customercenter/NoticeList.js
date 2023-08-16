@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
+// third party
+import { Link } from "react-router-dom";
+import axios from "axios";
+// local
 import "./NoticeList.css";
 import Paging from "./Paging";
-import axios from "axios";
-import { Link } from "react-router-dom";
 
 function NoticeList() {
   const [notices, setNotices] = useState([]); // 나타낼 공지사항
@@ -12,7 +14,7 @@ function NoticeList() {
 
   useEffect(() => {
     getNoticeList();
-  }, [currentPage]);
+  }, [currentPage]); // 현재 페이지가 바뀔 때마다 공지사항 목록 다시 불러오기
 
   async function getNoticeList() {
     try {

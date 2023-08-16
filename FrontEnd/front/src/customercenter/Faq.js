@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import FaqAccordion from "./FaqAccordion";
+// third party
 import axios from "axios";
+// local
+import FaqAccordion from "./FaqAccordion";
 
 function Faq() {
-  const [faqs, setFaqs] = useState([]);
+  const [faqs, setFaqs] = useState([]); // FAQ
 
   useEffect(() => {
     getFaq();
@@ -19,7 +21,6 @@ function Faq() {
         },
       });
       setFaqs(response.data.faqVoList);
-      console.log(response.data.faqVoList);
     } catch (error) {
       console.log(error);
     }
