@@ -11,6 +11,7 @@ import com.reminiscence.room.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -26,8 +27,14 @@ public class RoomServiceImpl implements RoomService{
     private final ParticipantRepository participantRepository;
     private final WebClient webClient;
 
+    private final PasswordEncoder passwordEncoder;
+
+
     @Override
+    @Transactional
     public void writeRoom(WriteRoomRequestDto requestDto) {
+        String encryptedPassword = passwordEncoder.encode(requestDto.getPassword());
+        requestDto.encryptPassword(encryptedPassword);
         roomRepository.save(requestDto.toEntity());
     }
 
@@ -57,12 +64,11 @@ public class RoomServiceImpl implements RoomService{
         };
         Optional<Room> room = roomRepository.findByRoomCodeAndStartN(roomCode);
         room.orElseThrow(() -> new RoomException(RoomExceptionMessage.NOT_FOUND_ROOM));
-        if(!room.get().getPassword().equals(password)){
+        if(!passwordEncoder.matches(password, room.get().getPassword())){
             throw new RoomException(RoomExceptionMessage.NOT_MATCH_PASSWORD);
         }
         Long participantCount =
                 participantRepository.countByRoomId(room.get().getId());
-
         if(participantCount > room.get().getMaxCount()){
             throw new RoomException(RoomExceptionMessage.ROOM_IS_FULL);
         }

@@ -14,7 +14,7 @@ insert into member(email,password,nickname,role) values
 -- Test Room Data
 insert into room(password, max_count, specification, mode, end_date, room_code, start_yn) values
 ('1234', '4', 'HORIZONTAL', 'GAME',now(), 'sessionA', 'N'),
-('1235', '3', 'VERTICAL', 'NORMAL',now(), 'sessionB', 'N'),
+('$2a$10$E0xuL8jyXur7FaQ0XanxXuqhNmuCv6wSEWVVL4ym7oEl7JkBbwhRu', '3', 'VERTICAL', 'NORMAL',now(), 'sessionB', 'N'),
 ('1236', '2', 'HORIZONTAL', 'GAME',now(), 'sessionC', 'N'),
 ('1237', '1', 'VERTICAL', 'NORMAL',now(), 'sessionD', 'N');
 

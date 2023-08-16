@@ -22,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -99,6 +100,7 @@ public class RoomIntegrationTest {
         memberToken = jwtUtil.generateToken(member.getEmail(), ACCESS_TOKEN_EXPIRATION_TIME, memberClaims);
         notConnectionMemberToken = jwtUtil.generateToken(member.getEmail(), ACCESS_TOKEN_EXPIRATION_TIME, notConnectionMemberClaims);
     }
+
 
     @Test
     @DisplayName("방 정보 조회 테스트(정상)")
@@ -194,10 +196,13 @@ public class RoomIntegrationTest {
     @Test
     @DisplayName("방 비밀번호 확인 테스트(정상)")
     public void checkRoomPasswordSuccessTest() throws Exception{
-        String roomCode = "sessionA";
+        String roomCode = "sessionB";
+        String password = "1235";
         when(roomService.checkSession(any())).thenReturn(true);
-        DummyRoomCheckRequestDto.Builder builder = new DummyRoomCheckRequestDto.Builder();
-        DummyRoomCheckRequestDto requestDto = builder.password("1234").build();
+        DummyRoomCheckRequestDto requestDto = DummyRoomCheckRequestDto
+                .builder()
+                .password(password)
+                .build();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+ guestToken);
         mvc.perform(post("/api/room/check/{roomCode}", roomCode)
@@ -215,9 +220,6 @@ public class RoomIntegrationTest {
                         requestFields(
                                 fieldWithPath("password").description("방 비밀번호").attributes(key("constraints").value("Not Null"))
                         )
-                        ,responseFields(
-                                fieldWithPath("existParticipantYn").description("기존 참여자 여부, Y : 기존 참여자, N : 새로운 참가자.")
-                        )
                 ));
 
     }
@@ -225,8 +227,10 @@ public class RoomIntegrationTest {
     @DisplayName("방 비밀번호 틀렸을 때 테스트(비정상)")
     public void checkRoomNotEqPasswordFailTest() throws Exception{
         String roomCode = "sessionA";
-        DummyRoomCheckRequestDto.Builder builder = new DummyRoomCheckRequestDto.Builder();
-        DummyRoomCheckRequestDto requestDto = builder.password("21234123").build();
+        DummyRoomCheckRequestDto requestDto = DummyRoomCheckRequestDto
+                .builder()
+                .password("21234123")
+                .build();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+ guestToken);
         mvc.perform(post("/api/room/check/{roomCode}", roomCode)
@@ -251,8 +255,10 @@ public class RoomIntegrationTest {
     @DisplayName("잘못된 방 코드 접근 테스트(비정상)")
     public void checkRoomNotCodePasswordFailTest() throws Exception{
         String roomCode = "tussle";
-        DummyRoomCheckRequestDto.Builder builder = new DummyRoomCheckRequestDto.Builder();
-        DummyRoomCheckRequestDto requestDto = builder.password("1234").build();
+        DummyRoomCheckRequestDto requestDto = DummyRoomCheckRequestDto
+                .builder()
+                .password("1234")
+                .build();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+ guestToken);
         mvc.perform(post("/api/room/check/{roomCode}", roomCode)
