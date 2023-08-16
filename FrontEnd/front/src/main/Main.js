@@ -26,7 +26,6 @@ import w_Frame from "./assets/window_shape.png";
 
 import "./Main.css";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getUserInfo } from "../redux/features/login/loginSlice";
 
@@ -35,12 +34,19 @@ function Main() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [joinModalOpen, setJoinModalOpen] = useState(false);
   const [nameModalOpen, setNameModalOpen] = useState(false);
-  const { userInfo } = useSelector((store) => store.login);
+  const [loginLink, setLoginLink] = useState("/user/login");
+  const { isLogin, userInfo } = useSelector((store) => store.login);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getUserInfo());
     able = checkAvailable();
+
+    if (isLogin) {
+      // 로그인 되어있으면 마이페이지로 링크 연결합니다
+      setLoginLink(`/user/mypage/${userInfo.email}`);
+    }
   }, []);
 
   const checkAvailable = async () => {
@@ -65,37 +71,26 @@ function Main() {
     }
   };
 
-  const defaultOptions = {
-    reverse: false, // reverse the tilt direction
-    max: 35, // max tilt rotation (degrees)
-    perspective: 1000, // Transform perspective, the lower the more extreme the tilt gets.
-    speed: 1000, // Speed of the enter/exit transition
-    transition: true, // Set a transition on enter/exit.
-    axis: null, // What axis should be disabled. Can be X or Y.
-    reset: true, // If the tilt effect has to be reset on exit.
-    easing: "cubic-bezier(.03,.98,.52,.99)", // Easing on enter/exit.
-  };
-
   return (
-    <div id="main-wrapper">
-      <img id="sign" src={sign} alt="sign"></img>
-      <div id="main-booth">
+    <div id="mainWrapper">
+      <img id="sign" src={sign} alt="sign" />
+      <div id="mainBooth">
         <div id="left">
-          <div className="left-poster">
+          <div className="leftPoster">
             게임촬영
             <br />
             일반촬영
             <br />
             0원
           </div>
-          <img className="sticker2" src={l_Frame} alt="l_Frame"></img>
-          <img className="sticker1" src={l_Frame} alt="l_Frame"></img>
-          <img id="leftBooth" src={leftBooth} alt="left-booth"></img>
-          <img src={cs} className="curtain-pipe" alt="curtain pipe"></img>
+          <img className="sticker2" src={l_Frame} alt="l_Frame" />
+          <img className="sticker1" src={l_Frame} alt="l_Frame" />
+          <img id="leftBooth" src={leftBooth} alt="left-booth" />
+          <img src={cs} className="curtainPipe" alt="curtain pipe" />
           <div className="curtains">
-            <div className="glow leftglow">ON AIR</div>
+            <div className="glow leftGlow">ON AIR</div>
             <div
-              className="create-room"
+              className="createRoom"
               onClick={() => {
                 setCreateModalOpen(true);
                 console.log("방생성", createModalOpen);
@@ -110,9 +105,10 @@ function Main() {
             <img src={cy1} className="curtain left1" alt="curtain1 left1"></img>
           </div>
         </div>
-        <div id="main-menu">
+        <div id="mainMenu">
           <img id="shelf" src={shelf} alt="shelf"></img>
-          <Link to="/user/login">
+          <Link to={loginLink}>
+            {/* 로그인 되어있다면 마이페이지 안 되어 있다면 로그인 페이지로 이동 */}
             <img id="login" src={login} alt="login"></img>
           </Link>
           <Link to="/photo">
@@ -131,7 +127,7 @@ function Main() {
         </div>
         <div id="right">
           <img id="rightBooth" src={rightBooth} alt="right-booth"></img>
-          <div className="right-poster">
+          <div className="rightPoster">
             1 + 1
             <br />
             영구소장
@@ -143,13 +139,13 @@ function Main() {
           <img className="sticker5" src={w_Frame} alt="w_Frame"></img>
           <img
             src={cs}
-            className="curtain-pipe right"
+            className="curtainPipe right"
             alt="curtain pipe right"
           ></img>
           <div className="curtains right">
-            <div className="glow rightglow">ON AIR</div>
+            <div className="glow rightGlow">ON AIR</div>
             <div
-              className="create-room"
+              className="createRoom"
               onClick={() => {
                 setJoinModalOpen(true);
                 console.log("방입장", joinModalOpen);

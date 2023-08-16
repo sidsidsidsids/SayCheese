@@ -1,22 +1,22 @@
-div.frameSearfch > form {
+.frameSearfch > form {
   display: flex;
   flex-direction: row;
 }
 
-div.frameSearch > form > button {
+.frameSearch > form > button {
   border: none;
   background: transparent;
   /* background-color: blue; */
   height: 30px;
 }
 
-div.frameSearch > form > button > img {
+.frameSearch > form > button > img {
   height: 20px;
   vertical-align: baseline;
   object-fit: cover;
 }
 
-div.frameSearch > form > input {
+.frameSearch > form > input {
   box-sizing: border-box;
   font-family: Black Han Sans;
   border-radius: 0;

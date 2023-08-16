@@ -1,369 +1,355 @@
-#main-wrapper{
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    justify-content:flex-end;
-    height: 100vh;
+#mainWrapper {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: flex-end;
+  height: 100vh;
+  gap: 10px;
 }
 
-#sign{
-    width: 1000px;
-    margin: 70px auto;
+#sign {
+  width: 900px;
+  margin: 20px auto 0 auto;
 }
 
-
-#main-wrapper {
-    position: relative;
+#mainWrapper {
+  position: relative;
 }
 /* 부스 선반 부스 */
 
+#mainBooth {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+#leftBooth {
+  margin: 20px 0;
+}
 
-#main-booth {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+#rightBooth {
+  margin: 20px 0;
 }
-#leftBooth{
-    margin: 20px 0;
-}
-
-#rightBooth{
-    margin: 20px 0;
-}
-#left, #right {
-    position: relative;
+#left,
+#right {
+  position: relative;
 }
 
 /* 선반 */
 #shelf {
-    width: 300px;
-    height:  370px;
-    filter: brightness(2);
-    
+  width: 300px;
+  height: 370px;
+  filter: brightness(2);
 }
 
-#main-menu {
-    position: relative;
+#mainMenu {
+  position: relative;
 }
 
 @keyframes shake {
-    0% {
-      transform: rotate(0deg)
-      }
-    25% {
-        transform: rotate(-5deg);
-      }
-    50% {
-        transform: rotate(5deg);
-      }
-    75% {
-        transform: rotate(-5deg);
-      }
-    100% {
-        transform: rotate(0deg);
-      }
+  0% {
+    transform: rotate(0deg);
   }
-#main-menu #login {
-    position: absolute;
-    width: 120px;
-    left: 15px;
-    top: -100px;
+  25% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+  75% {
+    transform: rotate(-5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
 }
-#main-menu #login:hover {
-    animation: shake 1s ease;
+#mainMenu #login {
+  position: absolute;
+  width: 120px;
+  left: 15px;
+  top: -100px;
+}
+#mainMenu #login:hover {
+  animation: shake 1s ease;
 }
 #photo {
-    position: absolute;
-    width: 120px;
-    left: 150px;
-    top: -100px;
+  position: absolute;
+  width: 120px;
+  left: 150px;
+  top: -100px;
 }
 #photo:hover {
-    animation: shake 1s ease;
+  animation: shake 1s ease;
 }
 #frame {
-    position: absolute;
-    width:75px;
-    left: 40px;
-    top: 34px;
+  position: absolute;
+  width: 75px;
+  left: 40px;
+  top: 34px;
 }
 
 #frame:hover {
-    animation: shake 1s ease;
+  animation: shake 1s ease;
 }
 #notice {
-    position: absolute;
-    width:75px;
-    left: 170px;
-    top: 40px;
+  position: absolute;
+  width: 75px;
+  left: 170px;
+  top: 40px;
 }
 
 #notice:hover {
-    animation: shake 1s ease;
+  animation: shake 1s ease;
 }
 #hat {
-    position: absolute;
-    width:125px;
-    left: 12px;
-    top: 130px;
+  position: absolute;
+  width: 125px;
+  left: 12px;
+  top: 130px;
 }
 #witch {
-    position: absolute;
-    width:125px;
-    left: 155px;
-    top: 150px;
+  position: absolute;
+  width: 125px;
+  left: 155px;
+  top: 150px;
 }
 #rabbit {
-    position: absolute;
-    width:172px;
-    left: -8px;
-    top: 250px;
+  position: absolute;
+  width: 172px;
+  left: -8px;
+  top: 250px;
 }
 #fox1 {
-    position: absolute;
-    width:105px;
-    left: 165px;
-    top: 253px;
+  position: absolute;
+  width: 105px;
+  left: 165px;
+  top: 253px;
 }
-.curtains{
-    height: 300px;
-    position: absolute;
-    top: 180px !important;
-    left: 188px ;
-}
-
-.curtains > img{
-    height: 400px;
-    width: 46px;
+.curtains {
+  height: 300px;
+  position: absolute;
+  top: 180px !important;
+  left: 187.4px;
 }
 
-#left{
-    position: relative;
+.curtains > img {
+  height: 400px;
+  width: 46.5px;
 }
 
-#main-booth{
-    height: 100%;
-    position: relative;
-    
+#left {
+  position: relative;
 }
 
-.curtain-pipe{
-    position: absolute;
-    left: 188px;
-    top: 190px;
+#mainBooth {
+  height: 100%;
+  position: relative;
+}
+
+.curtainPipe {
+  position: absolute;
+  left: 188px;
+  top: 190px;
 }
 
 #right .right {
-    left: 82px;
+  left: 80.3px;
 }
-.create-room{
-    position: absolute;
-    font-size: 80px;
-    text-align: center;
-    vertical-align: middle;
-    line-height: 400px;
-    box-sizing: border-box;
-    height:400px;
-    width: 230px;
-    z-index: 100;
+.createRoom {
+  position: absolute;
+  font-size: 80px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 400px;
+  box-sizing: border-box;
+  height: 400px;
+  width: 230px;
+  z-index: 100;
+  cursor: pointer;
 }
 /* 왼쪽커튼 애니메이션 */
-.curtains:hover .curtain.left1
-{
-    transition: transform 0.5s ease-in-out;
-    transform: translateX(-400%);
-
+.curtains:hover .curtain.left1 {
+  transition: transform 0.5s ease-in-out;
+  transform: translateX(-400%);
 }
 
-.curtains:hover .curtain.left2{
-    transition: transform 0.5s ease-in-out;
-    transform: translateX(-300%);
-
+.curtains:hover .curtain.left2 {
+  transition: transform 0.5s ease-in-out;
+  transform: translateX(-300%);
 }
 
 .curtains:hover .curtain.left3 {
-    transition: transform 0.5s ease-in-out;
-    transform: translateX(-200%); 
+  transition: transform 0.5s ease-in-out;
+  transform: translateX(-200%);
 }
 
-.curtains:hover .curtain.left4{
-    transition: transform 0.5s ease-in-out;
-    transform: translateX(-100%); 
+.curtains:hover .curtain.left4 {
+  transition: transform 0.5s ease-in-out;
+  transform: translateX(-100%);
 }
 
 /* 오른쪽 커튼 애니메이션 */
-.curtains:hover .curtain.right1{
-    transition: transform 0.5s ease-in-out;
-    transform: translateX(400%);
-    z-index: 1;
+.curtains:hover .curtain.right1 {
+  transition: transform 0.5s ease-in-out;
+  transform: translateX(400%);
+  z-index: 1;
 }
 
-.curtains:hover .curtain.right2{
-    transition: transform 0.5s ease-in-out;
-    transform: translateX(300%);
-
+.curtains:hover .curtain.right2 {
+  transition: transform 0.5s ease-in-out;
+  transform: translateX(300%);
 }
 
 .curtains:hover .curtain.right3 {
-    transition: transform 0.5s ease-in-out;
-    transform: translateX(200%); 
+  transition: transform 0.5s ease-in-out;
+  transform: translateX(200%);
 }
 
-.curtains:hover .curtain.right4{
-    transition: transform 0.5s ease-in-out;
-    transform: translateX(100%); 
+.curtains:hover .curtain.right4 {
+  transition: transform 0.5s ease-in-out;
+  transform: translateX(100%);
 }
-
-
 
 .curtains .left5 {
-    animation-delay: -0.1s;
-
+  animation-delay: -0.1s;
 }
 .curtains .left4 {
-    animation-delay: -0.2s;
+  animation-delay: -0.2s;
 }
 .curtains .left3 {
-    animation-delay: -0.3s;
+  animation-delay: -0.3s;
 }
 .curtains .left2 {
-    animation-delay: -0.4s;
-
+  animation-delay: -0.4s;
 }
 .curtains .left1 {
-    animation-delay: -0.5s;
+  animation-delay: -0.5s;
 }
 
 .glow {
-position: absolute;
-top: -130px;
-font-size: 30px;
-left: 60px;
-color: white;
-text-shadow:
-    0 0 7px #fff,
-    0 0 10px #fff,
-} 
-
-.curtains:hover .leftglow{
-    -webkit-animation: flicker1 1s ease-in-out infinite alternate;
-    -moz-animation: flicker1 1s ease-in-out infinite alternate;
-    animation: flicker1 1s ease-in-out infinite alternate;
+  position: absolute;
+  top: -130px;
+  font-size: 30px;
+  left: 60px;
+  color: white;
 }
 
-
+.curtains:hover .leftGlow {
+  -webkit-animation: flicker1 1s ease-in-out infinite alternate;
+  -moz-animation: flicker1 1s ease-in-out infinite alternate;
+  animation: flicker1 1s ease-in-out infinite alternate;
+}
 
 @keyframes flicker1 {
-    
-    0%, 18%, 22%, 25%, 53%, 57%, 100% {
-  
-        text-shadow:
-        0 0 4px #fff,
-        0 0 11px #fff,
-        0 0 19px #fff,
-        0 0 40px rgb(255, 223, 94),
-        0 0 80px rgb(255, 223, 94),
-        0 0 90px rgb(255, 223, 94),
-        0 0 100px rgb(255, 223, 94),
-        0 0 150px rgb(255, 223, 94);
-    
-    }
-    
-    20%, 24%, 55% {        
-        text-shadow: none;
-    }    
+  0%,
+  18%,
+  22%,
+  25%,
+  53%,
+  57%,
+  100% {
+    text-shadow: 0 0 4px #fff, 0 0 11px #fff, 0 0 19px #fff,
+      0 0 40px rgb(255, 223, 94), 0 0 80px rgb(255, 223, 94),
+      0 0 90px rgb(255, 223, 94), 0 0 100px rgb(255, 223, 94),
+      0 0 150px rgb(255, 223, 94);
   }
 
-.curtains:hover .rightglow{
-    -webkit-animation: flicker2 1s ease-in-out infinite alternate;
-    -moz-animation: flicker2 1s ease-in-out infinite alternate;
-    animation: flicker2 1s ease-in-out infinite alternate;
+  20%,
+  24%,
+  55% {
+    text-shadow: none;
+  }
+}
+
+.curtains:hover .rightGlow {
+  -webkit-animation: flicker2 1s ease-in-out infinite alternate;
+  -moz-animation: flicker2 1s ease-in-out infinite alternate;
+  animation: flicker2 1s ease-in-out infinite alternate;
 }
 
 @keyframes flicker2 {
-    
-    0%, 18%, 22%, 25%, 53%, 57%, 100% {
-  
-        text-shadow:
-        0 0 4px #fff,
-        0 0 11px #fff,
-        0 0 19px #fff,
-        0 0 40px rgb(98, 255, 106),
-        0 0 80px rgb(98, 255, 106),
-        0 0 90px rgb(98, 255, 106),
-        0 0 100px rgb(98, 255, 106),
-        0 0 150px rgb(98, 255, 106);
-    
-    }
-    
-    20%, 24%, 55% {        
-        text-shadow: none;
-    }    
+  0%,
+  18%,
+  22%,
+  25%,
+  53%,
+  57%,
+  100% {
+    text-shadow: 0 0 4px #fff, 0 0 11px #fff, 0 0 19px #fff,
+      0 0 40px rgb(98, 255, 106), 0 0 80px rgb(98, 255, 106),
+      0 0 90px rgb(98, 255, 106), 0 0 100px rgb(98, 255, 106),
+      0 0 150px rgb(98, 255, 106);
   }
 
-
-  @font-face {
-    font-family: 'Cafe24Supermagic';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-2@1.0/Cafe24Supermagic-Bold-v1.0.woff2') format('woff2');
-    font-weight: 700;
-    font-style: normal;
+  20%,
+  24%,
+  55% {
+    text-shadow: none;
+  }
 }
 
-  .left-poster{
-    position: absolute;
-    top: 225px;
-    left: 65px;
-    font-size: 20px;
-    line-height: 30px;
-    font-family: Cafe24Supermagic;
-  }
+@font-face {
+  font-family: "Cafe24Supermagic";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-2@1.0/Cafe24Supermagic-Bold-v1.0.woff2")
+    format("woff2");
+  font-weight: 700;
+  font-style: normal;
+}
 
-  .right-poster{
-    position: absolute;
-    top: 225px;
-    right: 70px;
-    font-size: 20px;
-    line-height: 30px;
-    font-family: Cafe24Supermagic;
-  }
+.leftPoster {
+  position: absolute;
+  top: 225px;
+  left: 65px;
+  font-size: 20px;
+  line-height: 30px;
+  font-family: Cafe24Supermagic;
+}
 
-  .sticker1{
-    position: absolute;
-    width: 25px;
-    top: 400px;
-    left: 100px;
-    transform: rotate(10deg);
-  }
+.rightPoster {
+  position: absolute;
+  top: 225px;
+  right: 70px;
+  font-size: 20px;
+  line-height: 30px;
+  font-family: Cafe24Supermagic;
+}
 
-  .sticker2{
-    position: absolute;
-    width: 25px;
-    top: 420px;
-    left: 120px;
-    transform: rotate(-10deg);
-  }
+.sticker1 {
+  position: absolute;
+  width: 25px;
+  top: 400px;
+  left: 100px;
+  transform: rotate(10deg);
+}
 
+.sticker2 {
+  position: absolute;
+  width: 25px;
+  top: 420px;
+  left: 120px;
+  transform: rotate(-10deg);
+}
 
-  .sticker3{
-    position: absolute;
-    width: 25px;
-    top: 420px;
-    right: 110px;
-    transform: rotate(-10deg);
-  }
+.sticker3 {
+  position: absolute;
+  width: 25px;
+  top: 420px;
+  right: 110px;
+  transform: rotate(-10deg);
+}
 
-  .sticker4{
-    position: absolute;
-    width: 25px;
-    top: 440px;
-    right: 130px;
-    transform: rotate(10deg);
-  }
+.sticker4 {
+  position: absolute;
+  width: 25px;
+  top: 440px;
+  right: 130px;
+  transform: rotate(10deg);
+}
 
-  .sticker5{
-    position: absolute;
-    width: 60px;
-    top: 400px;
-    right: 40px;
-    transform: rotate(10deg);
-  }
+.sticker5 {
+  position: absolute;
+  width: 60px;
+  top: 400px;
+  right: 40px;
+  transform: rotate(10deg);
+}
