@@ -38,7 +38,8 @@ let randomTag; // 무작위 태그 추출하여 저장할 변수
 let tagResult = []; // 태그 결과물 저장 변수
 let frameSearchInput = "";
 let roomImageID; // 최종 결과물 ID 저장 변수
-let chosenUrl;
+let chosenUrl; // 프레임 url
+let orders;
 let horizontalLeftLoc = [32, 261, 32, 261];
 let horizontalTopLoc = [29, 29, 205, 205];
 let verticalLeftLoc = [19, 19, 19, 19];
@@ -65,8 +66,8 @@ const Room = () => {
   // let selectedMode = roomInfo ? roomInfo.mode : undefined;
   let selectedMode = roomInfo ? roomInfo.mode : "game";
   // let selectedMode = "game";
-  let selectedSpec = roomInfo ? roomInfo.specification : "horizontal";
-  // let selectedSpec = "horizontal";
+  // let selectedSpec = roomInfo ? roomInfo.specification : "horizontal";
+  let selectedSpec = "horizontal";
   if (selectedSpec) {
     selectedSpec = selectedSpec.toUpperCase();
     console.log(selectedSpec);
@@ -87,39 +88,32 @@ const Room = () => {
   const [frameSortType, setFrameSortType] = useState("hot");
   const [frameList, setFrameList] = useState([]);
   const [frameSearch, setFrameSearch] = useState("");
-  // const [selectFrame, setSelectFrame] = useState(`url('${sampleImage}')`);
+  const [Spec, setSpec] = useState("")
   const [selectFrame, setSelectFrame] = useState(`url('${horTest}')`);
-  // const [selectedMode, setSelectedMode] = useState({roomInfo ? roomInfo.mode : undefined});
-  // const [selectedMode, setSelectedMode] = useState("game");
-  // const [selectedMode, setSelectedMode] = useState("normal");
-  // const [selectedSpec, setSelectedSpec] = useState(roomInfo.specification);
-  // const [selectedSpec, setSelectedSpec] = useState(undefined);
   const [roomStatus, setRoomStatus] = useState(0);
   const [Minutes, setMinutes] = useState(0);
   const [Seconds, setSeconds] = useState(0);
-  // normalMode 관련
-  const [orders, setOrders] = useState([]);
 
-  useEffect(() => {}, []);
   useEffect(() => {
     window.addEventListener("beforeunload", onbeforeunload);
     if (roomInfo) {
-      // sendRoomInfo();
-    }
+      sendRoomInfo();
+      setHost(true);
+    } 
     joinSession();
     if (params.id[0])
-      return () => {
-        window.removeEventListener("beforeunload", onbeforeunload);
-      };
-  }, [params.id]);
+    return () => {
+  window.removeEventListener("beforeunload", onbeforeunload);
+};
+}, [params.id]);
 
   useEffect(() => {
     joinUsers = [publisher, ...subscribers];
-    if (roomInfo) {
-      spreadRoomInfo(mySessionId);
+    if (!roomInfo) {
+      // getRoomInfo();
     }
   }, [publisher, subscribers]);
-
+  
   // useEffect(() => {
   //   if (publisher !== undefined) {
   //     const userStreamIds = joinUsers.map((user) => user.stream.streamId);
@@ -127,7 +121,7 @@ const Room = () => {
   //     userStream(mySessionId, userStreamId);
   //   }
   // }, [publisher]);
-
+  
   useEffect(() => {
     if (roomStatus === 2) {
       if (isHost) {
@@ -199,6 +193,36 @@ const Room = () => {
 
     mySession.on("startGameMode", (event) => {
       console.log(event);
+      // if (chosenUrl) {
+      //   axios
+      //     .get(
+      //       chosenUrl,
+      //       {
+      //         responseType: "arraybuffer",
+      //       },
+      //       {
+      //         headers: {
+      //           "Access-Control-Allow-Origin": "*",
+      //           "Access-Control-Allow-Methods": "GET,POST",
+      //         },
+      //       }
+      //     )
+      //     .then((response) => {
+      //       console.log(response);
+      //       // setSelectFrame(response.data);
+      //       const b64 = arrayBufferToBase64(response.data);
+      //       console.log(b64);
+      //       const image = new Image();
+      //       image.src = "data:image/png;base64," + b64;
+      //       // document.body.appendChild(image);
+      //       // setSelectFrame(`url(${response.data})`);
+      //       setSelectFrame(`url(${image.src})`);
+      //     })
+      //     .catch((error) => {
+      //       console.log(error);
+      //     });
+
+      // }
       gameMode();
     });
 
@@ -224,16 +248,13 @@ const Room = () => {
       }, 100);
     });
 
-    mySession.on("roomInfo", (event) => {
-      if (!roomInfo) {
-        selectedMode = event.data.mode;
-        selectedSpec = event.data.specification;
-      }
-    });
-
     mySession.on("randomTags", (event) => {
       randomTags = event.data;
     });
+
+    mySession.on("randomOrder", (event) => {
+      orders = event.data
+    })
 
     mySession.on("selectFrame", (event) => {
       console.log(event);
@@ -245,11 +266,6 @@ const Room = () => {
       setSelectFrame(`url(${event.data})`);
       chosenUrl = event.data;
     });
-
-    // const sessionExist = sessionCheck(mySessionId)
-    // if (!sessionExist) {
-    //   sendRoomInfo()
-    // }
 
     getToken().then((token) => {
       mySession
@@ -276,24 +292,21 @@ const Room = () => {
           console.log(publisher);
 
           sessionConnectId = publisher.session.connection.connectionId;
-          setTimeout(() => {
-            if (roomInfo) {
-              // sendRoomInfo();
-            }
-          }, 1000);
           userJoin(mySessionId);
           setTimeout(() => {
             // 방에 유저 정보 보낼 곳
             sessionStreamId = publisher.stream.streamId;
             // if (isHost) {
-            //   console.log("방장");
-            //   getRoomInfo(mySessionId);
-            //   hostPost(mySessionId);
-            // }
-            userStream(mySessionId, sessionStreamId);
-          }, 1500);
-
-          setTimeout(() => {}, 1000);
+              //   console.log("방장");
+              //   getRoomInfo(mySessionId);
+              //   hostPost(mySessionId);
+              // }
+              userStream(mySessionId, sessionStreamId);
+            }, 500);
+            
+          setTimeout(() => {
+            getRoomInfo();
+          }, 800);
         })
         .catch((error) => {
           console.log(
@@ -303,6 +316,9 @@ const Room = () => {
           );
         });
     });
+
+    
+
   };
 
   const leaveSession = () => {
@@ -325,7 +341,6 @@ const Room = () => {
         return createToken(mySessionId);
       } else {
         console.log("방장으로");
-        setHost(true);
         return createSession(mySessionId).then((session) =>
           createToken(session.sessionId)
         );
@@ -395,9 +410,9 @@ const Room = () => {
     );
     return response.data.token;
   };
-  const sendRoomInfo = async () => {
+  const sendRoomInfo = () => {
     try {
-      await axios
+      axios
         .post(
           "/api/room",
           {
@@ -461,23 +476,6 @@ const Room = () => {
     } catch (error) {}
   };
 
-  const changeFrame = (frameId) => {
-    // console.log(frameId);
-    // setSelectFrame(`url('${imageList[frameId].src})`);
-    axios
-      .get(`/api/article/frame/${frameId}`, {
-        headers: {
-          "Content-Type": "application/json;charset=UTF-8",
-          // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjIifQ.OUP4gSxVM-CV0JeNYLxTtbwY9B0YGuS1PYjss9X0y5a9Q61g7Gjb43RsTVTK7L-EVhPvHS-DuUBN9Chy2SLgVg`,
-          Authorization: `${accessToken}`,
-          "ngrok-skip-browser-warning": "69420",
-        },
-      })
-      .then((response) => {
-        console.log(response);
-        setSelectFrame(`url(${response.data.frameLink})`);
-      });
-  };
   // 방 정보 조회
   const getRoomInfo = async () => {
     try {
@@ -492,8 +490,9 @@ const Room = () => {
         .then((response) => {
           console.log("ROOMINFO");
           console.log(response);
-          // setSelectedMode(response.data.)
-          // setSelectedSpec(response.data.)
+          selectedMode = response.data.mode
+          selectedSpec = response.data.specification.toUpperCase()
+          setSpec(response.data.specification.toUpperCase())
         });
     } catch (error) {
       console.log(error);
@@ -701,7 +700,6 @@ const Room = () => {
   const handleCapture = (locationX, locationY) => {
     // 비디오 요소 가져오기
     let video = document.querySelector("video");
-
     // 비디오 일시 중지 (의도하지 않은 결과물 가운데 출력 막기)
     if (video) {
       video.pause();
@@ -715,9 +713,9 @@ const Room = () => {
       allowTaint: true,
       useCORS: true,
     }).then((canvas) => {
+      let ctx = canvas.getContext("2d");
+      // 캔버스에 비디오를 그립니다.
       if (selectedSpec === "VERTICAL") {
-        let ctx = canvas.getContext("2d");
-        // 캔버스에 비디오를 그립니다.
         ctx.drawImage(
           video,
           // 0, // 비디오를 캔버스의 어떤 X 위치에 그릴지
@@ -726,12 +724,10 @@ const Room = () => {
           // 165.5, // 비디오의 원래 height
           320 + locationX, // 캔버스에 그릴 때 시작점 x 위치
           134.5 + locationY, // 캔버스에 그릴 때 시작점 y 위치
-          217.5, // 캔버스에 그릴 비디오의 width
-          165.5 // 캔버스에 그릴 비디오의 height
+          170, // 캔버스에 그릴 비디오의 width
+          114 // 캔버스에 그릴 비디오의 height
         );
       } else {
-        let ctx = canvas.getContext("2d");
-        // 캔버스에 비디오를 그립니다.
         ctx.drawImage(
           video,
           // 0, // 비디오를 캔버스의 어떤 X 위치에 그릴지
@@ -821,12 +817,12 @@ const Room = () => {
           randomTag = randomTags[4 - count];
           tagResult.push(randomTag);
         }
+        console.log(orders)
         Users.forEach((user) => {
-          console.log(user.stream.streamId, targetUsers[count]);
           if (
             user &&
             user.stream &&
-            user.stream.streamId === targetUsers[count - 1]
+            user.stream.streamId === orders[count - 1].streamId
           ) {
             // 해당 유저를 MainPublisher로 설정합니다.
             setMainStreamManager(user);
@@ -842,10 +838,17 @@ const Room = () => {
           setSeconds(3);
           setTimeout(() => {
             // 2000ms 후에 일어날 일(중간 텀), 이 이후 다시 else문
-            handleCapture(
-              horizontalLeftLoc[gameCnt],
-              horizontalTopLoc[gameCnt]
-            );
+            if (selectedSpec === "HORIZONTAL") {
+              handleCapture(
+                horizontalLeftLoc[gameCnt],
+                horizontalTopLoc[gameCnt]
+              );
+            } else {
+              handleCapture(
+                verticalLeftLoc[gameCnt],
+                verticalTopLoc[gameCnt]
+              );
+            }
             setMainStreamManager(undefined);
             setMinutes(0);
             setSeconds(2);
@@ -863,17 +866,17 @@ const Room = () => {
     setRoomStatus(1);
     // 유저 순서 설정(without RoomServer ver)
     // 순서 설정 기능 구현 후 userStreamIds ~ targetUsers 부분 삭제할 것
-    const userStreamIds = joinUsers.map((user) => user.stream.streamId);
-    const targetUsers = [...userStreamIds];
-    if (targetUsers.length === 3) {
-      targetUsers.push(targetUsers[0]);
-    } else if (targetUsers.length === 2) {
-      targetUsers.push(...targetUsers);
-    } else if (targetUsers.length === 1) {
-      targetUsers.push(...targetUsers, ...targetUsers, ...targetUsers);
-    }
-    setOrders(targetUsers);
-    console.log(orders, targetUsers);
+    // const userStreamIds = joinUsers.map((user) => user.stream.streamId);
+    // const targetUsers = [...userStreamIds];
+    // if (targetUsers.length === 3) {
+    //   targetUsers.push(targetUsers[0]);
+    // } else if (targetUsers.length === 2) {
+    //   targetUsers.push(...targetUsers);
+    // } else if (targetUsers.length === 1) {
+    //   targetUsers.push(...targetUsers, ...targetUsers, ...targetUsers);
+    // }
+    // setOrders(targetUsers);
+    // console.log(orders, targetUsers);
   };
   // 일반모드 (display)
   const handleNormalPhase = (count) => {
@@ -888,11 +891,16 @@ const Room = () => {
       setRoomStatus(2);
       return;
     } else {
-      locationX = horizontalLeftLoc[count];
-      locationY = horizontalTopLoc[count];
+      if (selectedSpec === "HORIZONTAL") {
+        locationX = horizontalLeftLoc[count];
+        locationY = horizontalTopLoc[count];
+      } else {
+        locationX = verticalLeftLoc[count];
+        locationY = verticalTopLoc[count];
+      }
       joinUsers.forEach((user) => {
-        console.log(user.stream.streamId, orders[count]);
-        if (user && user.stream && user.stream.streamId === orders[count]) {
+        console.log(user.stream.streamId, orders[count].streamId);
+        if (user && user.stream && user.stream.streamId === orders[count].streamId) {
           // 해당 유저를 MainPublisher로 설정합니다.
           setMainStreamManager(user);
         } else {
@@ -905,7 +913,11 @@ const Room = () => {
   };
   // 일반모드 (capture)
   const nextNormalPhase = (count) => {
-    handleCapture(horizontalLeftLoc[count], horizontalTopLoc[count]);
+    if (selectedSpec === "HORIZONTAL") {
+      handleCapture(horizontalLeftLoc[count], horizontalTopLoc[count]);     
+    } else {
+      handleCapture(verticalLeftLoc[count], verticalTopLoc[count]);
+    }
     normalCnt = count + 1;
     setMainStreamManager(undefined);
   };
@@ -1044,6 +1056,32 @@ const Room = () => {
       console.log(request);
     } catch (error) {}
   };
+  const sendOrders = () => {
+    try {
+      const request = axios.post(
+        "/openvidu/api/signal",
+        {
+          session: mySessionId,
+          to: [],
+          type: "randomOrder",
+          data: orders,
+        },
+        {
+          headers: {
+            Authorization: `Basic ${btoa(
+              `OPENVIDUAPP:${APPLICATION_SERVER_SECRET}`
+            )}`,
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,POST",
+          },
+        }
+      );
+      console.log(request);
+    } catch (error) {
+      console.log(error)
+    }
+  };
   const getRandomTags = () => {
     try {
       axios
@@ -1104,6 +1142,9 @@ const Room = () => {
         })
         .then((response) => {
           console.log(response);
+          orders = response.data
+          sendOrders()
+          // setOrders([response.data])
         });
     } catch (error) {
       console.log(error);
@@ -1288,18 +1329,34 @@ const Room = () => {
           </div>
           <div className="room-mid">
             <div className="room-main">
-              <div
-                id="video-frame"
-                style={{
-                  width: videoFrameWidth,
-                  height: videoFrameHeight,
-                  backgroundColor: "black",
-                  backgroundImage: selectFrame,
-                  backgroundSize: "contain",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
-                }}
-              ></div>
+              {Spec === "HORIZONTAL" && (
+                <div
+                  id="video-frame"
+                  style={{
+                    width: "589.6px",
+                    height: "400.6px",
+                    backgroundColor: "black",
+                    backgroundImage: selectFrame,
+                    backgroundSize: "contain",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                  }}
+                ></div>
+              )}
+              {Spec === "VERTICAL" && (
+                <div
+                  id="video-frame"
+                  style={{
+                    width: "207.8px",
+                    height: "589.6px",
+                    backgroundColor: "black",
+                    backgroundImage: selectFrame,
+                    backgroundSize: "contain",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                  }}
+                ></div>
+              )}
             </div>
             {chatData && <ChatComponent user={chatData} />}
           </div>
@@ -1348,42 +1405,79 @@ const Room = () => {
               buttonName2="촬영하기"
               buttonName3="다시 찍기"
               option1={true}
-              option2={selectedMode === "game" || !isHost}
-              option3={normalCnt === 0 || !isHost}
+              option2={!isHost || selectedMode === "game"}
+              option3={!isHost || normalCnt === 0 }
             />
           </div>
           <div className="room-mid">
             {/* <RoomPhoto /> */}
             <div className="room-main">
-              <div
+              {Spec === "HORIZONTAL" && (
+                <div
                 id="video-frame"
                 style={{
-                  width: videoFrameWidth,
-                  height: videoFrameHeight,
+                  width: "589.6px",
+                  height: "400.6px",
                   backgroundColor: "black",
                   backgroundImage: selectFrame,
                   backgroundSize: "contain",
                   backgroundRepeat: "no-repeat",
                   backgroundPosition: "center",
                 }}
-              >
-                {mainStreamManager && selectedMode === "game" && (
+                >
+                {mainStreamManager && selectedMode === "game" && 
+                (
                   <TargetVideoComponent
                     streamManager={mainStreamManager}
-                    selectedSpec={selectedSpec}
+                    selectedSpec={Spec}
                     locationX={horizontalLeftLoc[gameCnt]}
                     locationY={horizontalTopLoc[gameCnt]}
                   />
                 )}
-                {mainStreamManager && selectedMode === "normal" && (
+                {mainStreamManager && selectedMode === "normal" &&  
+                (
                   <TargetVideoComponent
                     streamManager={mainStreamManager}
-                    selectedSpec={selectedSpec}
+                    selectedSpec={Spec}
                     locationX={horizontalLeftLoc[normalCnt]}
                     locationY={horizontalTopLoc[normalCnt]}
                   />
                 )}
               </div>
+              )}
+              {Spec === "VERTICAL" && (
+                <div
+                id="video-frame"
+                style={{
+                  width: "207.8px",
+                  height: "589.6px",
+                  backgroundColor: "black",
+                  backgroundImage: selectFrame,
+                  backgroundSize: "contain",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "center",
+                }}
+                >
+                {mainStreamManager && selectedMode === "game" && 
+                (
+                  <TargetVideoComponent
+                    streamManager={mainStreamManager}
+                    selectedSpec={Spec}
+                    locationX={verticalLeftLoc[gameCnt]}
+                    locationY={verticalTopLoc[gameCnt]}
+                  />
+                )}
+                {mainStreamManager && selectedMode === "normal" &&  
+                (
+                  <TargetVideoComponent
+                    streamManager={mainStreamManager}
+                    selectedSpec={Spec}
+                    locationX={verticalLeftLoc[normalCnt]}
+                    locationY={verticalTopLoc[normalCnt]}
+                  />
+                )}
+              </div>
+              )}
             </div>
             {chatData && <ChatComponent user={chatData} myName={myUserName} />}
           </div>
@@ -1441,14 +1535,17 @@ const Room = () => {
               onButton2={() => {
                 startRoom(mySessionId);
                 if (selectedMode === "game") {
-                  getRandomTags();
+                  // getRandomTags();
                   getRandomOrder(mySessionId);
                   setTimeout(() => {
                     handleStartGameMode(mySessionId);
                   }, 100);
                 } else {
                   if (selectedMode === "normal") {
-                    handleStartNormalMode(mySessionId);
+                    getRandomOrder(mySessionId)
+                    setTimeout(() => {
+                      handleStartNormalMode(mySessionId);
+                    }, 100);
                   } else {
                   }
                 }
@@ -1505,11 +1602,12 @@ const Room = () => {
           </div>
           <div className="room-mid">
             <div className="room-main">
+            {Spec === "HORIZONTAL" && (
               <div
                 id="video-frame"
                 style={{
-                  width: videoFrameWidth,
-                  height: videoFrameHeight,
+                  width: "589.6px",
+                  height: "400.6px",
                   backgroundColor: "black",
                   backgroundImage: selectFrame,
                   backgroundSize: "contain",
@@ -1521,7 +1619,7 @@ const Room = () => {
                   streamManager={publisher}
                   locationX={horizontalLeftLoc[0]}
                   locationY={horizontalTopLoc[0]}
-                  selectedSpec={selectedSpec}
+                  selectedSpec={Spec}
                 />
                 {subscribers.map((sub, i) => (
                   <div key={i} className="stream-container col-md-6 col-xs-6">
@@ -1529,11 +1627,43 @@ const Room = () => {
                       streamManager={sub}
                       locationX={horizontalLeftLoc[i + 1]}
                       locationY={horizontalTopLoc[i + 1]}
-                      selectedSpec={selectedSpec}
+                      selectedSpec={Spec}
                     />
                   </div>
-                ))}
-              </div>
+                  ))}
+                  </div>
+            )} 
+            {Spec === "VERTICAL" && (       
+              <div
+                id="video-frame"
+                style={{
+                  width: "207.8px",
+                  height: "589.6px",
+                  backgroundColor: "black",
+                  backgroundImage: selectFrame,
+                  backgroundSize: "contain",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "center",
+                }}
+              >
+                <UserVideoComponent
+                  streamManager={publisher}
+                  locationX={verticalLeftLoc[0]}
+                  locationY={verticalTopLoc[0]}
+                  selectedSpec={Spec}
+                />
+                {subscribers.map((sub, i) => (
+                  <div key={i} className="stream-container col-md-6 col-xs-6">
+                    <UserVideoComponent
+                      streamManager={sub}
+                      locationX={verticalLeftLoc[i + 1]}
+                      locationY={verticalTopLoc[i + 1]}
+                      selectedSpec={Spec}
+                    />
+                  </div>
+                  ))}
+                  </div>
+                  )}
             </div>
             {chatData && <ChatComponent user={chatData} myName={myUserName} />}
           </div>
@@ -1556,7 +1686,11 @@ const Room = () => {
                           cursor: "pointer",
                         }}
                         onClick={() =>
-                          handleSelectFrame(mySessionId, item.frameLink)
+                          {
+                            if (isHost) {
+                            handleSelectFrame(mySessionId, item.frameLink)
+                            }
+                          }
                         }
                       />
                       {/* </div> */}
