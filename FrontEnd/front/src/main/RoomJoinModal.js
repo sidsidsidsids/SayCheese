@@ -4,6 +4,8 @@ import axios from "axios";
 import "./RoomJoinModal.css";
 import ModalButtons from "./ModalButtons";
 
+const accessToken = localStorage.getItem("accessToken");
+
 function RoomJoinModal({ open, close }) {
   const navigate = useNavigate();
 
@@ -29,7 +31,8 @@ function RoomJoinModal({ open, close }) {
           {},
           {
             headers: {
-              Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+              // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+              Authorization: accessToken,
             },
           }
         )
@@ -56,7 +59,8 @@ function RoomJoinModal({ open, close }) {
           },
           {
             headers: {
-              Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+              // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+              Authorization: `${accessToken}`,
               "Content-Type": "application/json;charset=UTF-8",
             },
           }

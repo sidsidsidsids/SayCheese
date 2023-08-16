@@ -7,6 +7,7 @@ import "./RoomCreateModal.css";
 import ModalButtons from "./ModalButtons";
 import l_Frame from "./assets/ladder_shape.svg";
 import w_Frame from "./assets/window_shape.png";
+const accessToken = localStorage.getItem("accessToken");
 
 function RoomCreateModal({ open, close }) {
   const dispatch = useDispatch();
@@ -57,7 +58,8 @@ function RoomCreateModal({ open, close }) {
           {},
           {
             headers: {
-              Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+              // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+              Authorization: `${accessToken}`,
             },
           }
         )
@@ -93,18 +95,20 @@ function RoomCreateModal({ open, close }) {
       selectedMode = "normal";
     }
     if (isWindowFrame === true) {
-      selectedFrame = "horizontal";
+      selectedFrame = "HORIZONTAL";
     } else {
-      selectedFrame = "vertical";
+      selectedFrame = "VERTICAL";
     }
-    dispatch(setRoom({
-      password: roomPassword,
-      maxCount: roomLimit,
-      mode: selectedMode,
-      roomCode: roomCode,
-      specification: selectedFrame,
-    }))
-    navigate(`/room/${roomCode}`)
+    dispatch(
+      setRoom({
+        password: roomPassword,
+        maxCount: roomLimit,
+        mode: selectedMode,
+        roomCode: roomCode,
+        specification: selectedFrame,
+      })
+    );
+    navigate(`/room/${roomCode}`);
   };
 
   return (
@@ -113,17 +117,16 @@ function RoomCreateModal({ open, close }) {
         <div className="finish-create-modal-content">
           <h2>방 생성</h2>
           <div className="room-code">
-          <span>방 코드</span>
+            <span>방 코드</span>
             <input
               id="createdCode"
               className={roomCode}
               value={roomCode ? roomCode : "Sample Room Code"}
               readOnly
             />
-
           </div>
           <div className="room-invite">
-          <span>방 초대 링크</span>
+            <span>방 초대 링크</span>
             <input
               className={roomInvite}
               value={
@@ -134,7 +137,6 @@ function RoomCreateModal({ open, close }) {
               id="inviteLink"
               readOnly
             />
-
           </div>
           <ModalButtons
             onConfirm={() => {
@@ -152,7 +154,7 @@ function RoomCreateModal({ open, close }) {
             <p>
               <label>
                 <input
-                id="gameMode"
+                  id="gameMode"
                   type="radio"
                   checked={isModeActive}
                   onChange={() => setIsModeActive(!isModeActive)}
@@ -161,7 +163,7 @@ function RoomCreateModal({ open, close }) {
               </label>
               <label>
                 <input
-                id="normalMode"
+                  id="normalMode"
                   type="radio"
                   checked={!isModeActive}
                   onChange={() => setIsModeActive(!isModeActive)}
