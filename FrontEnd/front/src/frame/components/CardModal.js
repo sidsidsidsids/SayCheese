@@ -250,7 +250,7 @@ export default function CardModal() {
                 >
                   <div style={{ display: "flex", justifyContent: "center" }}>
                     <img
-                      src={userInfo.profile ? userInfo.profile : logo}
+                      src={userInfo?.profile ? userInfo.profile : logo}
                       alt="프로필 이미지"
                       className="FrameAuthorProfile"
                     />
