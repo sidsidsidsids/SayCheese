@@ -25,7 +25,7 @@ import static com.reminiscence.filter.JwtProperties.*;
 
 @RestController
 @Slf4j
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
