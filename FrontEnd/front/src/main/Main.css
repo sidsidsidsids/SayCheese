@@ -140,7 +140,7 @@
   height: calc(300px * 0.78s);
   position: absolute;
   top: calc(180px * 0.78) !important;
-  left: calc(187.4px * 0.78);
+  left: calc(186px * 0.78);
 }
 
 .curtains > img {
@@ -321,7 +321,7 @@
 .rightPoster {
   position: absolute;
   top: 170px;
-  right: 50px;
+  right: 48px;
   font-size: 20px;
   line-height: 30px;
   text-align: center;
@@ -347,7 +347,7 @@
 .sticker3 {
   position: absolute;
   width: 25px;
-  top: calc(420px * 0.78);
+  top: calc(440px * 0.78);
   right: 80px;
   transform: rotate(-10deg);
 }
@@ -355,7 +355,7 @@
 .sticker4 {
   position: absolute;
   width: 25px;
-  top: calc(440px * 0.78);
+  top: calc(460px * 0.78);
   right: 100px;
   transform: rotate(10deg);
 }
@@ -363,7 +363,8 @@
 .sticker5 {
   position: absolute;
   width: 60px;
-  top: calc(400px * 0.78);
-  right: 40px;
+  top: calc(380px * 0.78);
+  right: 30px;
   transform: rotate(10deg);
 }
+
