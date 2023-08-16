@@ -33,4 +33,7 @@ public class WriteRoomRequestDto {
                 .endDate(LocalDateTime.now().plusMinutes(30))
                 .build();
     }
+    public void encryptPassword(String encryptPassword){
+        this.password = encryptPassword;
+    }
 }
