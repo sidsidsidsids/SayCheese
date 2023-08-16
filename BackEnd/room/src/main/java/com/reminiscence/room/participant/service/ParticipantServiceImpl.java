@@ -75,7 +75,7 @@ public class ParticipantServiceImpl implements ParticipantService{
 
         return randomParticipant.get();
     }
-
+    @Transactional
     @Override
     public void writeParticipant(ParticipantWriteRequestDto requestDto, Member member) {
         Optional<Room> room = roomRepository.findByRoomCode(requestDto.getRoomCode());
@@ -122,7 +122,6 @@ public class ParticipantServiceImpl implements ParticipantService{
             Member member,
             String roomCode,
             ParticipantUpdateStreamIdRequestDto requestDto) {
-        System.out.println(requestDto.getStreamId());
         Optional<Room> room = roomRepository.findByRoomCode(roomCode);
         room.orElseThrow(()->
                 new RoomException(RoomExceptionMessage.NOT_FOUND_SESSION));
@@ -133,6 +132,7 @@ public class ParticipantServiceImpl implements ParticipantService{
                 new ParticipantException(ParticipantExceptionMessage.NOT_FOUND_PARTICIPANT));
 
         participant.get().updateStreamId(requestDto.getStreamId());
+        participant.get().updateConnectionYn('Y');
     }
     @Transactional
     @Override
@@ -161,7 +161,7 @@ public class ParticipantServiceImpl implements ParticipantService{
 
         participant.get().updateConnectionYn('Y');
     }
-
+    @Transactional
     @Override
     public void deleteParticipant(Long memberId, String roomCode) {
         Optional<Room> room = roomRepository.findByRoomCode(roomCode);
@@ -175,6 +175,7 @@ public class ParticipantServiceImpl implements ParticipantService{
         participantRepository.delete(participant.get());
     }
 
+    @Transactional
     @Override
     public void deleteAllParticipant(String roomCode) {
         Optional<Room> room = roomRepository.findByRoomCode(roomCode);
