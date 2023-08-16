@@ -150,7 +150,7 @@ public class ImageIntegrationTest {
     public void readRandomTagSuccessTest() throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+ memberToken);
-        mvc.perform(post("/api/image/random/tag")
+        mvc.perform(get("/api/image/random/tag")
                         .headers(headers))
                 .andExpect(status().isOk())
                 .andDo(MockMvcRestDocumentation.document("{ClassName}/{methodName}",
