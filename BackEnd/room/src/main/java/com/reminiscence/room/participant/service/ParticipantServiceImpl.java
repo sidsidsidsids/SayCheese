@@ -10,6 +10,7 @@ import com.reminiscence.room.exception.message.RoomExceptionMessage;
 import com.reminiscence.room.participant.dto.ParticipantRoomUserResponseDto;
 import com.reminiscence.room.participant.dto.ParticipantUpdateStreamIdRequestDto;
 import com.reminiscence.room.participant.dto.ParticipantWriteRequestDto;
+import com.reminiscence.room.participant.dto.RoomRandomParticipantResponseDto;
 import com.reminiscence.room.participant.repository.ParticipantRepository;
 import com.reminiscence.room.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,13 +38,57 @@ public class ParticipantServiceImpl implements ParticipantService{
     }
 
     @Override
+    public List<RoomRandomParticipantResponseDto> getRandomParticipant(String roomCode) {
+        Optional<Room> room = roomRepository.findByRoomCode(roomCode);
+        room.orElseThrow(()->
+                new RoomException(RoomExceptionMessage.NOT_FOUND_ROOM));
+
+        Optional<List<RoomRandomParticipantResponseDto>> randomParticipant = participantRepository.findByRandomParticipant(room.get().getId());
+        randomParticipant.orElseThrow(()->
+                new ParticipantException(ParticipantExceptionMessage.NOT_FOUND_PARTICIPANT));
+        int size = randomParticipant.get().size();
+
+        if(size== 1){
+            for(int i=0;i<3;i++){
+                randomParticipant.get().add(randomParticipant.get().get(0));
+            }
+        }else if(size < 4){
+            boolean[] check = new boolean[size];
+            int count = size;
+            while(true){
+                if(count == 4){
+                    break;
+                }
+                int random = (int) ((Math.random() * (size) + 1)) - 1;
+                if(check[random]) {
+                    continue;
+                }else{
+                    check[random] = true;
+                    randomParticipant.get().add(randomParticipant.get().get(random));
+                }
+                count++;
+            }
+        }
+        for(int i=0;i<4;i++){
+            System.out.println(randomParticipant.get().get(i).getStreamId());
+        }
+
+        return randomParticipant.get();
+    }
+
+    @Override
     public void writeParticipant(ParticipantWriteRequestDto requestDto, Member member) {
         Optional<Room> room = roomRepository.findByRoomCode(requestDto.getRoomCode());
         room.orElseThrow(()->
                 new RoomException(RoomExceptionMessage.NOT_FOUND_ROOM));
 
+        Participant owner = participantRepository.findByOwnerYAndRoomId(room.get().getId()).orElse(null);
+        char ownerYn = 'Y';
+        if(owner != null){
+            ownerYn = 'N';
+        }
         Participant participant = Participant.builder()
-                .ownerYn(requestDto.getOwnerYn())
+                .ownerYn(ownerYn)
                 .member(member)
                 .room(room.get())
                 .connectionYn('Y')
@@ -77,6 +122,7 @@ public class ParticipantServiceImpl implements ParticipantService{
             Member member,
             String roomCode,
             ParticipantUpdateStreamIdRequestDto requestDto) {
+        System.out.println(requestDto.getStreamId());
         Optional<Room> room = roomRepository.findByRoomCode(roomCode);
         room.orElseThrow(()->
                 new RoomException(RoomExceptionMessage.NOT_FOUND_SESSION));
@@ -90,12 +136,12 @@ public class ParticipantServiceImpl implements ParticipantService{
     }
     @Transactional
     @Override
-    public void updateParticipantConnectionFail(String nickname, String roomCode) {
+    public void updateParticipantConnectionFail(String streamId, String roomCode) {
         Optional<Room> room = roomRepository.findByRoomCode(roomCode);
         room.orElseThrow(()->
                 new RoomException(RoomExceptionMessage.NOT_FOUND_ROOM));
 
-        Optional<Participant> participant = participantRepository.findByNicknameAndRoomId(nickname, room.get().getId());
+        Optional<Participant> participant = participantRepository.findByStreamIdAndRoomId(streamId, room.get().getId());
         participant.orElseThrow(()->
                 new ParticipantException(ParticipantExceptionMessage.NOT_FOUND_PARTICIPANT));
 

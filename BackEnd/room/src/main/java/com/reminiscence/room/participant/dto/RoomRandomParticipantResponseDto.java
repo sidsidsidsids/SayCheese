@@ -4,11 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class DummyUpdateConnectionYnParticipantRequestDto {
+public class RoomRandomParticipantResponseDto {
     private String streamId;
 
     @Builder
-    public DummyUpdateConnectionYnParticipantRequestDto(String streamId) {
+    public RoomRandomParticipantResponseDto(String streamId) {
         this.streamId = streamId;
     }
 }

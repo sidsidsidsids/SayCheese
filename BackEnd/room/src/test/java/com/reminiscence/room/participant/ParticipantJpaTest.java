@@ -5,6 +5,7 @@ import com.reminiscence.room.domain.Participant;
 import com.reminiscence.room.domain.Room;
 import com.reminiscence.room.member.repository.MemberRepository;
 import com.reminiscence.room.participant.dto.ParticipantRoomUserResponseDto;
+import com.reminiscence.room.participant.dto.RoomRandomParticipantResponseDto;
 import com.reminiscence.room.participant.repository.ParticipantRepository;
 import com.reminiscence.room.room.repository.RoomRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -75,6 +76,23 @@ public class ParticipantJpaTest {
         assertEquals(roomCode, findParticipant.getRoom().getRoomCode());
         assertEquals(participant.getOwnerYn(), findParticipant.getOwnerYn());
     }
+
+    @Test
+    @DisplayName("방 랜덤 스트림 ID 조회 테스트")
+    public void RoomRandomParticipantStreamIdTest(){
+        //given
+        String roomCode = "sessionB";
+        //when
+        Room room = roomRepository.findByRoomCode(roomCode).orElse(null);
+        assertNotNull(room);
+
+        List<RoomRandomParticipantResponseDto> participants = participantRepository.findByRandomParticipant(room.getId()).orElse(null);
+
+        //then
+        assertNotNull(participants);
+        assertEquals(1, participants.size());
+    }
+
     @Test
     @DisplayName("방장 변경 테스트")
     public void updateRoomOwnerTest(){
