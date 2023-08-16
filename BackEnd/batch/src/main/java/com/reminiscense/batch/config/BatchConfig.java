@@ -4,6 +4,7 @@ import com.reminiscense.batch.service.FrameService;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.dialect.Database;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.core.launch.JobLauncher;
@@ -14,6 +15,7 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
 import org.springframework.batch.core.step.tasklet.MethodInvokingTaskletAdapter;
+import org.springframework.batch.support.DatabaseType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -52,7 +54,8 @@ public class BatchConfig {
         factory.setTablePrefix("batch_");
         factory.setDataSource(dataSource);
         factory.setTransactionManager(transactionManager);
-        factory.setDatabaseType("MySQL"); // Set your database type (HSQL, MySQL, etc.)
+        factory.setDatabaseType(DatabaseType.MYSQL.getProductName()); // Set your database type (HSQL, MySQL, etc.)
+
         return factory.getObject();
     }
 

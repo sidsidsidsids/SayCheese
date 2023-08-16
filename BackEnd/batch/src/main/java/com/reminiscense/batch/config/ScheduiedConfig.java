@@ -2,6 +2,7 @@ package com.reminiscense.batch.config;
 
 import com.reminiscense.batch.service.FrameService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -19,6 +20,7 @@ import java.time.format.DateTimeFormatter;
 
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class ScheduiedConfig {
     public static String JOB_NAME="REMOVE_FRAME";
 
@@ -27,7 +29,8 @@ public class ScheduiedConfig {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
 
-    @Scheduled(cron ="0 0 1 * * *")
+//    @Scheduled(cron ="0 0 1 * * *")
+    @Scheduled(cron ="0 * * * * *")
     public void scheduledBatch(){
         DateTimeFormatter dateTimeFormatter=DateTimeFormatter.ofPattern("yyyyMMdd");
         String date=dateTimeFormatter.format(LocalDateTime.now());
@@ -35,6 +38,7 @@ public class ScheduiedConfig {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addString("requestDate", date)
                 .toJobParameters();
+        log.info("날짜 : {}",date);
         try {
             jobLauncher.run(removeFrameJob(), jobParameters);
         } catch (Exception e) {
