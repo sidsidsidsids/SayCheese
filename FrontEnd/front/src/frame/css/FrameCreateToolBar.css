@@ -14,6 +14,7 @@ body {
   display: grid;
   grid-template-columns: 0.5fr 1fr; /* 의도치 않은 <canvasarear/>가 자동으로 생겨서 정렬을 망치기 때문에 0fr이 필요함  */
   position: relative;
+  padding-bottom:20px;
 }
 
 /* ---------------- 툴탭 ---------------- */

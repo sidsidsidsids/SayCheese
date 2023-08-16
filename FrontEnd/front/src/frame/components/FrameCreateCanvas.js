@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { fabric } from "fabric";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
+import { LuRotateCcw, LuRotateCw } from "react-icons/lu";
 import { ResetSignal } from "../../redux/features/frame/frameSlice";
 // CSS
 import "../css/FrameCreateCanvas.css";
@@ -315,6 +316,7 @@ const DecorateObjects = (objects, canvas) => {
         scaleY: scaleY,
       });
       canvas.add(Img);
+      console.log(Img);
       canvas.renderAll(); // 객체가 추가된 후 수동으로 렌더링합니다.
     });
   }
@@ -324,7 +326,7 @@ const DecorateObjects = (objects, canvas) => {
 // 프레임 꾸미기 제거 함수입니다.
 const UndecorateObjects = (canvas) => {
   if (canvas) {
-    let activeObjects = canvas.getActiveObjects(); // 다중 선택 삭제를 위해 getActiveObject()가 아닌 getActiveObjects()로 수정
+    let activeObjects = canvas.getActiveObject(); // 다중 선택 삭제를 위해 getActiveObject()가 아닌 getActiveObjects()로 수정
     if (activeObjects) {
       activeObjects.forEach(function (object) {
         canvas.remove(object);
@@ -343,6 +345,106 @@ const DecorateText = (text, canvas) => {
         fill: text.customTextColor,
       })
     );
+  }
+};
+
+const RemoveWhiteBackground = async (canvas) => {
+  const imageObject = canvas.getActiveObject();
+
+  if (imageObject && imageObject.isType("image")) {
+    var canvasElement = canvas.getElement();
+    var context = canvasElement.getContext("2d");
+
+    var imageData = context.getImageData(
+      0,
+      0,
+      canvasElement.width,
+      canvasElement.height
+    );
+    var data = imageData.data;
+
+    var transparentColor = [255, 255, 255, 255]; // RGBA white color
+
+    context.clearRect(0, 0, canvasElement.width, canvasElement.height); // Clear canvas
+    context.putImageData(imageData, 0, 0);
+    canvas.renderAll();
+
+    const imageDataObject = imageObject;
+    var pix = imageDataObject.data;
+    var newColor = { r: 0, g: 0, b: 0, a: 0 };
+    console.log(imageDataObject);
+    for (let i = 0; i < imageDataObject.data.length; i += 4) {
+      const r = pix[i];
+      const g = pix[i + 1];
+      const b = pix[i + 2];
+
+      // if(!r || !g || !b){
+      //   return
+      // }
+
+      // if(r != null && r>248) {
+      //   pix[i] = newColor.r;
+      // }
+      // if(g != null && g>248) {
+      //   pix[i + 1] = newColor.r;
+      // }
+      // if(b != null && b>248) {
+      //   pix[i + 2] = newColor.r;
+      // }
+
+      if (r == 255 && g == 255 && b == 255) {
+        pix[i] = newColor.r;
+        pix[i + 1] = newColor.g;
+        pix[i + 3] = newColor.a;
+      }
+      if (r == 254 && g == 254 && b == 254) {
+        pix[i] = newColor.r;
+        pix[i + 1] = newColor.g;
+        pix[i + 3] = newColor.a;
+      }
+      if (r == 253 && g == 253 && b == 253) {
+        pix[i] = newColor.r;
+        pix[i + 1] = newColor.g;
+        pix[i + 3] = newColor.a;
+      }
+      if (r == 252 && g == 252 && b == 252) {
+        pix[i] = newColor.r;
+        pix[i + 1] = newColor.g;
+        pix[i + 3] = newColor.a;
+      }
+      if (r == 251 && g == 251 && b == 251) {
+        pix[i] = newColor.r;
+        pix[i + 1] = newColor.g;
+        pix[i + 3] = newColor.a;
+      }
+      if (r == 250 && g == 250 && b == 250) {
+        pix[i] = newColor.r;
+        pix[i + 1] = newColor.g;
+        pix[i + 3] = newColor.a;
+      }
+      if (r == 249 && g == 249 && b == 249) {
+        pix[i] = newColor.r;
+        pix[i + 1] = newColor.g;
+        pix[i + 3] = newColor.a;
+      }
+      if (r == 252 && g == 250 && b == 250) {
+        pix[i] = newColor.r;
+        pix[i + 1] = newColor.g;
+        pix[i + 3] = newColor.a;
+      }
+      if (r == 250 && g == 250 && b == 252) {
+        pix[i] = newColor.r;
+        pix[i + 1] = newColor.g;
+        pix[i + 3] = newColor.a;
+      }
+      if (r == 248 && g == 248 && b == 251) {
+        pix[i] = newColor.r;
+        pix[i + 1] = newColor.g;
+        pix[i + 3] = newColor.a;
+      }
+    }
+
+    context.putImageData(imageDataObject, 0, 0);
   }
 };
 
@@ -678,7 +780,7 @@ const CanvasArea = () => {
   }, [postSignal, frameSpecification]);
 
   return (
-    <>
+    <div>
       <div className="canvasBackground">
         <canvas
           ref={canvasRef}
@@ -687,9 +789,15 @@ const CanvasArea = () => {
           id="canvas"
         />
       </div>
-      <button onClick={() => undo()}>Undo</button>
-      <button onClick={() => redo()}>Redo</button>
-    </>
+      <div
+        id="redoUndo"
+        // className="twoButtonAlign"
+      >
+        <LuRotateCcw onClick={() => undo()} />
+        <LuRotateCw onClick={() => redo()} />
+      </div>
+      {/* <button onClick={() => RemoveWhiteBackground(canvasInstance)} /> */}
+    </div>
   );
 };
 

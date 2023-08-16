@@ -38,7 +38,7 @@ export default function Standard() {
         alt="창문형 프레임"
       />
       <label className="labelForBlockChoice">
-        사진 영역 모양을 선택할 수 있어요
+        사진 모양을 선택할 수 있어요
       </label>
       <div className="blockChoice">
         {/* 도형을 클릭하면 리덕스 스테이트 어떤 도형인지 입력되고 캔버스는 그 도형에 맞는 투명칸을 만듭니다 */}
