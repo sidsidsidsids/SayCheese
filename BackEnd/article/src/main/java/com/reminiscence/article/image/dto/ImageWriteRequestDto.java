@@ -18,7 +18,6 @@ public class ImageWriteRequestDto {
     private String imageName;
 
     @NotNull(message = "태그를 입력해주세요.")
-    @NotEmpty(message = "태그를 입력해주세요.")
     private List<Long> tags;
 
     @NotBlank(message = "방 코드를 입력해주세요.")
