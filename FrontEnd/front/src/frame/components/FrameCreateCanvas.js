@@ -7,7 +7,6 @@ import axios from "axios";
 import { ResetSignal } from "../../redux/features/frame/frameSlice";
 // CSS
 import "../css/FrameCreateCanvas.css";
-import { unstable_HistoryRouter } from "react-router-dom";
 
 /*
 프레임을 만들기 위해서는
@@ -227,8 +226,27 @@ const DecorateObjects = (objects, canvas) => {
     canvas.renderOnAddRemove = false; // 추가된 객체가 자동으로 렌더링되지 않도록 설정합니다.
     const object = objects;
     fabric.Image.fromURL(object, function (Img) {
+      // 캔버스 크기에 적절하게 이미지 오브젝트를 로드하기 위해 필요한 과정 입니다
+      // 이미지 비율을 구해서 캔버스 비율과 비교하여 scale을 조정할 것 입니다
+      const imgAspectRatio = Img.width / Img.height;
+
+      // canvas의 가로 세로 비율
+      const canvasAspectRatio = canvas.width / canvas.height;
+      let scaleX, scaleY;
+
+      if (imgAspectRatio > canvasAspectRatio) {
+        // 이미지의 가로 비율이 더 큰 경우
+        scaleX = canvas.width / Img.width;
+        scaleY = canvas.width / Img.width;
+      } else {
+        // 이미지의 세로 비율이 더 큰 경우
+        scaleX = canvas.height / Img.height;
+        scaleY = canvas.height / Img.height;
+      }
+
       Img.set({
-        scaleToHeight: 1,
+        scaleX: scaleX,
+        scaleY: scaleY,
       });
       canvas.add(Img);
       canvas.renderAll(); // 객체가 추가된 후 수동으로 렌더링합니다.
@@ -379,7 +397,6 @@ const CanvasArea = () => {
   const canvasRef = useRef(null);
   const [canvasInstance, setCanvasInstance] = useState(null);
   const dispatch = useDispatch();
-  let frameSpecification = ""; // DOM을 조작해야하는 데이터가 아니라면 일반 변수로 사용하는 것이 관리하기 낫다
   const {
     width,
     height,
@@ -394,6 +411,8 @@ const CanvasArea = () => {
     frameInfo,
     postSignal,
   } = useSelector((store) => store.frame); // store에서 canvas에 사용할 재료들을 가져옴
+  let frameSpecification = ""; // DOM을 조작해야하는 데이터가 아니라면 일반 변수로 사용하는 것이 관리하기 낫다
+  let blockSpecification = "Plain"; // 투명한 칸이 어떠한 모양인지 담고있는 변수입니다 종류는 Plain, SmoothPlain, Circle
 
   const [isRedoing, setIsRedoing] = useState(false);
   const [history, setHistory] = useState([]);
