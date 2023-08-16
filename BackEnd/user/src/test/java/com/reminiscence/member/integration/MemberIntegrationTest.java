@@ -1097,7 +1097,7 @@ public class MemberIntegrationTest {
         headers.set(JwtProperties.HEADER_STRING, refreshToken);
         System.out.println(refreshToken);
 
-        mvc.perform(post("/api/refresh")
+        mvc.perform(post("/api/auth/refresh")
                         .headers(headers)
                         .content(objectMapper.writeValueAsString(memberLoginRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -1172,7 +1172,7 @@ public class MemberIntegrationTest {
         String expiredRefreshToken = jwtTokenProvider.generateToken(username, 0, claim);
         headers.set(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + expiredRefreshToken);
 
-        mvc.perform(post("/api/refresh")
+        mvc.perform(post("/api/auth/refresh")
                         .headers(headers)
                         .content(objectMapper.writeValueAsString(memberLoginRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -1309,7 +1309,7 @@ public class MemberIntegrationTest {
 
         headers.set(JwtProperties.HEADER_STRING, refreshToken);
 
-        mvc.perform(post("/api/refresh")
+        mvc.perform(post("/api/auth/refresh")
                         .headers(headers)
                         .content(objectMapper.writeValueAsString(memberLoginRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -1330,7 +1330,7 @@ public class MemberIntegrationTest {
     public void testGuestTokenIssue() throws Exception {
         String nickname = "thisIsNickname";
 
-        mvc.perform(get("/api/guest")
+        mvc.perform(get("/api/auth/guest")
                         .param("nickname", nickname)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) // 응답 status를 ok로 테스트
@@ -1350,7 +1350,7 @@ public class MemberIntegrationTest {
     public void testGuestTokenForbiddenAccessFailure() throws Exception {
         String nickname = "thisIsNickname";
 
-        MvcResult result = mvc.perform(get("/api/guest")
+        MvcResult result = mvc.perform(get("/api/auth/guest")
                         .param("nickname", nickname)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) // 응답 status를 ok로 테스트
@@ -1383,7 +1383,7 @@ public class MemberIntegrationTest {
     public void testGetGuestNickName() throws Exception {
         String nickname = "thisIsNickname";
 
-        MvcResult result = mvc.perform(get("/api/guest")
+        MvcResult result = mvc.perform(get("/api/auth/guest")
                         .param("nickname", nickname)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) // 응답 status를 ok로 테스트
