@@ -109,13 +109,13 @@ export default function FrameList({ searchWord }) {
           <FrameCard
             key={item.articleId}
             articleId={item.articleId}
-            name={item.subject}
+            subject={item.subject}
             imageLink={item.frameLink}
             loverCnt={item.loverCnt}
             author={item.author}
             loverYn={item.loverYn}
             isPublic={item.isPublic}
-            createDate={item.createdDate}
+            createdDate={item.createdDate}
             // 모달 띄울때 사용하려고 전체 데이터 전달
             payload={item}
           />

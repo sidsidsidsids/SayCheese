@@ -9,11 +9,11 @@ import axios from "axios";
 import Swal from "sweetalert2";
 // FrameCard 컴포넌트: 프레임을 한개씩 담을 카드 컴포넌트입니다
 export default function FrameCard({
-  name,
+  subject,
   imageLink,
   loverCnt,
   author,
-  createDate,
+  createdDate,
   loverYn,
   payload,
   isPublic,
@@ -21,47 +21,6 @@ export default function FrameCard({
   const dispatch = useDispatch();
   const [like, setLike] = useState(loverYn); // 좋아요 체크 되어있으면 like:1 안 했으면 :0
   const accessToken = localStorage.getItem("accessToken");
-
-  function clickLike(event) {
-    event.stopPropagation();
-    setLike(!like);
-    // api 추가해야함
-  }
-  // 좋아요 함수 로직 //
-  // 좋아요
-  async function handleLikePlus() {
-    axios
-      .post(`/api/article/lover/frame/${payload.articleId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${accessToken}`,
-        },
-      })
-      .then((response) => {
-        setLike(true);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-
-  // 좋아요 취소
-  async function handleLikeMinus() {
-    console.log("안좋아요", like);
-    axios
-      .delete(`/api/article/lover/${payload.articleId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${accessToken}`,
-        },
-      })
-      .then((response) => {
-        setLike(false);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
 
   // 좋아요 함수 로직 //
   // 좋아요
@@ -145,13 +104,15 @@ export default function FrameCard({
         dispatch(openModal(payload));
       }}
     >
-      {name}
       <img
         className="cardImg"
-        width="100px"
+        width="150px"
+        height="150px"
+        style={{ objectFit: "contain" }}
         src={imageLink}
         alt="프레임 이미지"
       />
+      {subject}
       <div className="heart-btn" onClick={(event) => clickLike(event)}>
         <div className="content">
           <span

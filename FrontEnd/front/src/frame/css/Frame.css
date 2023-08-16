@@ -3,7 +3,7 @@
 }
 
 /* 프레임 탭 */
-.frameTap {
+.frame .frameTap {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -11,7 +11,7 @@
   position: relative;
 }
 
-.FrameButton {
+.frame .FrameButton {
   font-family: Black Han Sans;
   font-size: 36px;
   width: 300px;
@@ -24,22 +24,21 @@
   padding: 20px;
 }
 
-.focused {
+.frame .focused {
   border: white 1px solid;
   background-color: white;
   transition: background-color 0.1s, transform 0.3s;
   transform: translateX(14.5px) scale(1.1, 1.1);
-
   z-index: 10;
 }
 
 @media (min-width: 1032px) and (max-width: 1382px) {
   /* 브라우저 사이즈 이상 이하일때*/
-  .frameTap {
+  .frame .frameTap {
     font-size: 20px;
   }
 
-  .focused {
+  .frame .focused {
     border: white 1px solid;
     background-color: white;
     transition: background-color 0.1s, transform 0.3s;
@@ -50,7 +49,7 @@
 
 @media (min-width: 702px) and (max-width: 1032px) {
   /* 브라우저 사이즈 이상 이하일때*/
-  .focused {
+  .frame .focused {
     border: white 1px solid;
     background-color: white;
     transition: background-color 0.1s, transform 0.3s;
@@ -58,14 +57,14 @@
     z-index: 10;
   }
 
-  .FrameButton {
+  .frame .FrameButton {
     font-size: 25px;
   }
 }
 
 @media (max-width: 701px) {
   /* 브라우저 사이즈 이상 이하일때*/
-  .focused {
+  .frame .focused {
     border: white 1px solid;
     background-color: white;
     transition: background-color 0.3s, transform 0.3s;
@@ -73,7 +72,7 @@
     z-index: 10;
   }
 
-  .FrameButton {
+  .frame .FrameButton {
     font-size: 20px;
   }
 }

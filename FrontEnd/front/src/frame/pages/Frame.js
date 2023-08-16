@@ -1,15 +1,9 @@
 // 프레임 메인 페이지입니다.
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 // third party
 import { Link, useLocation } from "react-router-dom";
-import axios from "axios";
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+import { useDispatch } from "react-redux";
+import { ResetAll } from "../../redux/features/frame/frameSlice";
 // components
 import FrameSearch from "../components/FrameSearch"; // for 프레임 검색
 import FrameList from "../components/FrameList"; // for 프레임 구경하기
@@ -33,9 +27,17 @@ export default function Frame() {
   // 활성화된 탭을 위한 data 입니다
   const location = useLocation().pathname;
   const focusedItem = tabItems.find((item) => item.router === location);
+  const dispatch = useDispatch();
+
   if (focusedItem === false) {
     return focusedItem === tabItems[0];
   }
+  // 구경하기로 오면 프레임 커스텀 데이터 리셋하기
+
+  if (focusedItem) {
+    dispatch(ResetAll());
+  }
+
   return (
     <div className="frame">
       <div className="responsiveFrameTab">

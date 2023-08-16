@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import RoomCreateModal from "./RoomCreateModal";
 import RoomJoinModal from "./RoomJoinModal";
 import SetNameModal from "./SetNameModal";
+import Loading from "../Loading";
 import leftBooth from "./assets/booth(left).png";
 import rightBooth from "./assets/booth(right).png";
 import sign from "./assets/sign.png";
@@ -42,7 +43,7 @@ function Main() {
     dispatch(getUserInfo());
     able = checkAvailable();
 
-    if (isLogin) {
+    if (userInfo) {
       // 로그인 되어있으면 마이페이지로 링크 연결합니다
       setLoginLink(`/user/mypage/${userInfo.email}`);
     }

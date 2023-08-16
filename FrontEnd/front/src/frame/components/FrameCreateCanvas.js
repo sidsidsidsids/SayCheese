@@ -378,9 +378,8 @@ function handleUpload(canvas, frameInfo, frameSpecification) {
 const CanvasArea = () => {
   const canvasRef = useRef(null);
   const [canvasInstance, setCanvasInstance] = useState(null);
-  const [frameSpecification, setFrameSpecification] = useState("vertical");
   const dispatch = useDispatch();
-  // store에서 canvas에 사용할 재료들을 가져옴
+  let frameSpecification = ""; // DOM을 조작해야하는 데이터가 아니라면 일반 변수로 사용하는 것이 관리하기 낫다
   const {
     width,
     height,
@@ -394,7 +393,7 @@ const CanvasArea = () => {
     downloadSignal,
     frameInfo,
     postSignal,
-  } = useSelector((store) => store.frame);
+  } = useSelector((store) => store.frame); // store에서 canvas에 사용할 재료들을 가져옴
 
   const [isRedoing, setIsRedoing] = useState(false);
   const [history, setHistory] = useState([]);
@@ -429,6 +428,14 @@ const CanvasArea = () => {
     }
   };
 
+  async function handleSpecification() {
+    if (width > height) {
+      frameSpecification = "horizontal";
+    } else {
+      frameSpecification = "vertical";
+    }
+  }
+
   const handleObjectAdded = () => {
     if (!isRedoing) {
       setHistory([]);
@@ -439,6 +446,7 @@ const CanvasArea = () => {
     setHistory([]);
     setRedoHistory([]);
   };
+
   useEffect(() => {
     // useEffect를 사용하여 캔버스를 초기화하고 사다리형과 창문형에 맞게 투명한 블록들을 추가합니다. height와 width의 변화에 따라 캔버스의 크기를 조정합니다.
     const newCanvas = new fabric.Canvas(canvasRef.current, {
@@ -454,6 +462,9 @@ const CanvasArea = () => {
     if (newCanvas && bgColor) {
       newCanvas.backgroundColor = bgColor;
       addPlainBlocks(newCanvas, height, width);
+      handleSpecification().then(() => {
+        console.log(width, frameSpecification);
+      });
     }
     // 이미지 있으면 이미지 백그라운드 만들기
     if (newCanvas && bgImg) {
@@ -463,6 +474,9 @@ const CanvasArea = () => {
           newCanvas.add(bg);
           addPlainBlocks(newCanvas, height, width);
           setHistory([]);
+          handleSpecification().then(() => {
+            console.log(width, frameSpecification);
+          });
         })
         .catch((error) => {
           console.error(error);
@@ -471,13 +485,11 @@ const CanvasArea = () => {
 
     setCanvasInstance(newCanvas);
 
+    handleSpecification();
     return () => {
       // `newCanvas`가 유효한지 확인하고
       if (newCanvas) {
         newCanvas.dispose();
-      }
-      if (width > height) {
-        setFrameSpecification("horizontal");
       }
     };
   }, [width, height, bgColor, bgImg]); // width, height, bg 바뀔 때마다 리렌더
@@ -552,13 +564,22 @@ const CanvasArea = () => {
   // 업로드 요청이 들어오면 handleUpload(canvasInstance)를 실행합니다
   useEffect(() => {
     async function upload() {
+      console.log(
+        "업로드 함수에서",
+        canvasInstance,
+        frameInfo,
+        frameSpecification
+      );
       handleUpload(canvasInstance, frameInfo, frameSpecification);
       return "success";
     }
     if (postSignal && canvasInstance) {
-      upload().then(() => dispatch(ResetSignal("postSignal")));
+      handleSpecification() // 프레임규격을 검사하고 나서
+        .then(() => upload()) // 업로드 하고
+        .then(() => dispatch(ResetSignal("postSignal"))); // 업로드 요청 시그널 다시 0으로 리셋합니다
     }
-  }, [postSignal]);
+  }, [postSignal, frameSpecification]);
+
   return (
     <>
       <div className="canvasBackground">
