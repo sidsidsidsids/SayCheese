@@ -21,23 +21,22 @@ function SetNameModal({ open, close }) {
     console.log(userInfo);
   };
   const nicknameCheck = (nickname) => {
-    try {
-      axios
-        .get("/api/guest?nickname=" + nickname, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          console.log(response);
-          const accessToken = response.headers["authorization"];
-          localStorage.setItem("accessToken", accessToken);
-          dispatch(notUserNickname(nickname));
-          close();
-        });
-    } catch (error) {
-      console.error(error);
-    }
+    axios
+      .get(`/api/auth/guest?nickname=${nickname}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        const accessToken = response.headers["authorization"];
+        localStorage.setItem("accessToken", accessToken);
+        dispatch(notUserNickname(nickname));
+        close();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   return (
     <div className="set-name-modal">

@@ -5,10 +5,7 @@ import axios from "axios";
 // local
 import { closeModal } from "../../redux/features/modal/modalSlice";
 import "../css/CardModal.css";
-<<<<<<< HEAD
-=======
 import logo from "../assets/SayCheeseLogo.png";
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 
 export default function CardModal() {
   const [loading, setLoading] = useState(false); // 모달에 표시할 내용이 없으면 에러가 나지않게 로딩 상태를 표시
@@ -91,11 +88,7 @@ export default function CardModal() {
       // 로그인 한 사람만
       if (like) {
         console.log("좋아요 취소 요청");
-<<<<<<< HEAD
-        handleLikePlus();
-=======
         handleLikeMinus();
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
       } else if (!like) {
         console.log("좋아요 요청");
         handleLikePlus();
@@ -161,11 +154,6 @@ export default function CardModal() {
             <>
               {isFrameAccessControlModalOpen ? ( // 전체공개 여부를 수정하고 싶을때
                 // 공개 여부 수정 모달 컨텐츠
-<<<<<<< HEAD
-                <div className="DeletePhotoModal">
-                  <div className="DeleteQuestion">
-                    <h1>공개 여부를 수정 하시겠습니까?</h1>
-=======
                 <div className="DeleteMyPhotoModal">
                   <div
                     style={{
@@ -187,7 +175,6 @@ export default function CardModal() {
                     <p style={{ fontSize: "18px" }}>
                       마이페이지에서 변경 가능합니다.
                     </p>
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
                   </div>
 
                   <div className="DeleteBtnSort">
@@ -210,56 +197,6 @@ export default function CardModal() {
                       확인
                     </button>
                   </div>
-<<<<<<< HEAD
-                </div>
-              ) : isFrameDeleteModalOpen ? ( // 삭제 버튼 눌렀을때
-                // 경우 삭제 모달 컨텐츠
-                <div className="DeletePhotoModal">
-                  <div className="DeleteQuestion">
-                    <h1>삭제를 하시겠습니까?</h1>
-                  </div>
-
-                  <div className="DeleteBtnSort">
-                    <button
-                      className="whtbtn"
-                      onClick={() => {
-                        setIsFrameDeleteModalOpen(false);
-                      }}
-                    >
-                      이전으로
-                    </button>
-                    <button
-                      className="btn"
-                      onClick={() => {
-                        document.body.style.overflow = "auto";
-                        dispatch(closeModal());
-                        handleFrameDelete();
-                      }}
-                    >
-                      확인
-                    </button>
-                  </div>
-                </div>
-              ) : null}
-              {/* 프레임 상세보기 모달 컨텐츠 */}
-              <div className="modal-name">{modalContent.name}</div>
-              <div className="modal-author">작성자 : {modalContent.author}</div>
-              <img src={modalContent.frameLink} alt="프레임 이미지" />
-
-              <div className="heart-btn" onClick={(event) => clickLike(event)}>
-                <div className="heart-content">
-                  <span
-                    className={
-                      like === 1
-                        ? "heart full"
-                        : like === true
-                        ? "heart-active heart"
-                        : "heart"
-                    }
-                  ></span>
-                  <span className="numb">{likeCount}</span>
-=======
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
                 </div>
               ) : isFrameDeleteModalOpen ? ( // 삭제 버튼 눌렀을때
                 // 경우 삭제 모달 컨텐츠

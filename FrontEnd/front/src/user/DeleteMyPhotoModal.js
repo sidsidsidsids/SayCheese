@@ -1,15 +1,9 @@
 import { useEffect } from "react";
-<<<<<<< HEAD
-import "./DeleteMyPhotoModal.css";
-import Button from "../Button";
-import axios from "axios";
-=======
 // third party
 import axios from "axios";
 // local
 import "./DeleteMyPhotoModal.css";
 import Button from "../Button";
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 
 function DeleteMyPhotoModal({
   close,
@@ -26,10 +20,7 @@ function DeleteMyPhotoModal({
     modalbg.style.top = currentTop; // Set the top CSS property of the element
   }, []);
 
-<<<<<<< HEAD
-=======
   // 이미지 삭제 axios
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
   function handleDeleteMyPhoto() {
     console.log(imageId);
     const accessToken = localStorage.getItem("accessToken");

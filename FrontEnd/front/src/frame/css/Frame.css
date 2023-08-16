@@ -29,28 +29,16 @@
   background-color: white;
   transition: background-color 0.1s, transform 0.3s;
   transform: translateX(14.5px) scale(1.1, 1.1);
-<<<<<<< HEAD
-
-=======
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
   z-index: 10;
 }
 
 @media (min-width: 1032px) and (max-width: 1382px) {
   /* 브라우저 사이즈 이상 이하일때*/
-<<<<<<< HEAD
-  .frameTap {
-    font-size: 20px;
-  }
-
-  .focused {
-=======
   .frame .frameTap {
     font-size: 20px;
   }
 
   .frame .focused {
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
     border: white 1px solid;
     background-color: white;
     transition: background-color 0.1s, transform 0.3s;
@@ -61,11 +49,7 @@
 
 @media (min-width: 702px) and (max-width: 1032px) {
   /* 브라우저 사이즈 이상 이하일때*/
-<<<<<<< HEAD
-  .focused {
-=======
   .frame .focused {
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
     border: white 1px solid;
     background-color: white;
     transition: background-color 0.1s, transform 0.3s;
@@ -73,22 +57,14 @@
     z-index: 10;
   }
 
-<<<<<<< HEAD
-  .FrameButton {
-=======
   .frame .FrameButton {
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
     font-size: 25px;
   }
 }
 
 @media (max-width: 701px) {
   /* 브라우저 사이즈 이상 이하일때*/
-<<<<<<< HEAD
-  .focused {
-=======
   .frame .focused {
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
     border: white 1px solid;
     background-color: white;
     transition: background-color 0.3s, transform 0.3s;
@@ -96,11 +72,7 @@
     z-index: 10;
   }
 
-<<<<<<< HEAD
-  .FrameButton {
-=======
   .frame .FrameButton {
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
     font-size: 20px;
   }
 }

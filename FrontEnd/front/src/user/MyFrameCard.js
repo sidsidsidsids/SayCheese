@@ -68,11 +68,7 @@ function MyFrameCard({
           </div>
           <img
             width="150px"
-<<<<<<< HEAD
-            height="130px"
-=======
             height="150px"
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
             style={{ objectFit: "contain" }}
             src={frameLink}
             alt="프레임 이미지"

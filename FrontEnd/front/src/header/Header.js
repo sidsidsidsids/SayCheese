@@ -11,12 +11,7 @@ import {
   logoutSuccess,
 } from "../redux/features/login/loginSlice";
 import "./Header.css";
-<<<<<<< HEAD
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-=======
 import logo from "./assets/sign.png";
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 
 function Header() {
   const { isLogin, userInfo } = useSelector((store) => store.login);
@@ -32,17 +27,6 @@ function Header() {
       dispatch(logoutSuccess());
     }
   }, []);
-<<<<<<< HEAD
-
-  function temporary() {
-    localStorage.setItem(
-      "accessToken",
-      "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A"
-    );
-    dispatch(logintemporary("se6816@naver.com"));
-  }
-=======
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 
   function handleLogout() {
     const accessToken = localStorage.getItem("accessToken");
@@ -56,11 +40,7 @@ function Header() {
       })
       .then(() => {
         alert("로그아웃 되었습니다.");
-<<<<<<< HEAD
-        movePage("/");
-=======
         movePage("/main");
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
         dispatch(logoutSuccess());
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
@@ -76,21 +56,12 @@ function Header() {
     <div className="Header">
       <ul>
         <li>
-<<<<<<< HEAD
-          <Link to="/">
-            <p>Nav bar</p>
-          </Link>
-        </li>
-      </ul>
-      <button onClick={temporary}>액세스</button>
-=======
           <Link to="/main">
             <img src={logo} className="SayCheeseLogo" alt="Say Cheese" />
           </Link>
         </li>
       </ul>
 
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
       <div className="HeaderSort">
         <ul>
           <li>
@@ -134,11 +105,7 @@ function Header() {
         ) : (
           <ul className="DropDownMenu">
             <li className="MyPageHover">
-<<<<<<< HEAD
-              <Link to="/user/login" className="HoverEffect">
-=======
               <Link to="/user/login" className="HoverEffect LoginLink">
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
                 로그인
               </Link>
               <ul className="DropDownSubMenuTwo">

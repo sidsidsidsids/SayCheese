@@ -16,11 +16,7 @@
   object-fit: cover;
 }
 
-<<<<<<< HEAD
-div.frameSearch > form > input {
-=======
 .frameSearch > form > input {
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
   box-sizing: border-box;
   font-family: Black Han Sans;
   border-radius: 0;

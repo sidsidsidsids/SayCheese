@@ -7,10 +7,7 @@ import "./RoomCreateModal.css";
 import ModalButtons from "./ModalButtons";
 import l_Frame from "./assets/ladder_shape.svg";
 import w_Frame from "./assets/window_shape.png";
-<<<<<<< HEAD
 const accessToken = localStorage.getItem("accessToken");
-=======
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 
 function RoomCreateModal({ open, close }) {
   const dispatch = useDispatch();
@@ -69,14 +66,16 @@ function RoomCreateModal({ open, close }) {
         .then(() => {
           handleConfirm();
         })
-        .catch(() => {
-          alert("올바르지 않은 방입니다");
+        .catch((error) => {
+          alert(error.response.data.message);
+          console.log(error);
         });
     } catch (error) {
       alert("비정상적 접근");
       console.log(error);
     }
   };
+
   // 방 초대링크
   let roomInvite;
   // open이 아닐 때 출력 x
@@ -98,9 +97,9 @@ function RoomCreateModal({ open, close }) {
       selectedMode = "normal";
     }
     if (isWindowFrame === true) {
-      selectedFrame = "HORIZONTAL";
+      selectedFrame = "horizontal";
     } else {
-      selectedFrame = "VERTICAL";
+      selectedFrame = "vertical";
     }
     dispatch(
       setRoom({
@@ -111,7 +110,33 @@ function RoomCreateModal({ open, close }) {
         specification: selectedFrame,
       })
     );
+    // try {
+    //   axios
+    //     .post(
+    //       "/api/room",
+    //       {
+    //         password: roomPassword,
+    //         maxCount: roomLimit,
+    //         mode: selectedMode,
+    //         roomCode: roomCode,
+    //         // specification: selectedFrame,
+    //         specification: "horizontal",
+    //       },
+    //       {
+    //         headers: {
+    //           // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+    //           Authorization: `${accessToken}`,
+    //           "Content-Type": "application/json;charset=UTF-8",
+    //         },
+    //       }
+    //     )
+    //     .then((response) => {
+    //       console.log(response);
     navigate(`/room/${roomCode}`);
+    // });
+    // } catch (error) {
+    // console.log(error);
+    // }
   };
 
   return (

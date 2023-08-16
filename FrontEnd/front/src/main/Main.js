@@ -46,7 +46,7 @@ function Main() {
     dispatch(getUserInfo());
     // able = checkAvailable();
 
-    if (isLogin) {
+    if (userInfo) {
       // 로그인 되어있으면 마이페이지로 링크 연결합니다
       setLoginLink(`/user/mypage/${userInfo.email}`);
     }

@@ -11,7 +11,6 @@ const initialState = {
   userInfo: {},
 };
 
-<<<<<<< HEAD
 //임시로 사용할 함수
 export const logintemporary = createAsyncThunk(
   "login/logintemporary",
@@ -23,9 +22,6 @@ export const logintemporary = createAsyncThunk(
   }
 );
 
-=======
-// 비회원 방 입장 시 닉네임 받기
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 export const notUserNickname = createAsyncThunk(
   "login/notUserNickname",
   async (nickname) => {
@@ -35,10 +31,6 @@ export const notUserNickname = createAsyncThunk(
     return userInfo;
   }
 );
-<<<<<<< HEAD
-=======
-
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 // 비동기 액션 생성자
 export const getUserInfo = createAsyncThunk("login/getUserInfo", async () => {
   try {
@@ -127,13 +119,10 @@ const loginSlice = createSlice({
       .addCase(refreshToken.fulfilled, (state, action) => {
         state.isLogin = true;
       })
-<<<<<<< HEAD
       // 나중에 삭제
       .addCase(logintemporary.fulfilled, (state, action) => {
         state.userInfo = action.payload;
       })
-=======
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
       .addCase(notUserNickname.fulfilled, (state, action) => {
         state.userInfo = action.payload;
       });

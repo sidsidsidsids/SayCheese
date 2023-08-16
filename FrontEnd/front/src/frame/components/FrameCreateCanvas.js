@@ -223,10 +223,6 @@ const addCircleBlocks = (canvas, height, width) => {
 
 // STEP 2. 이미지로 프레임을 꾸미기 함수입니다
 const DecorateObjects = (objects, canvas) => {
-<<<<<<< HEAD
-  console.log(objects);
-=======
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
   if (objects && canvas) {
     canvas.renderOnAddRemove = false; // 추가된 객체가 자동으로 렌더링되지 않도록 설정합니다.
     const object = objects;
@@ -378,12 +374,7 @@ function handleUpload(canvas, frameInfo, frameSpecification) {
   }
 }
 
-<<<<<<< HEAD
-/////////////////////// Canvas ///////////////////////////
-// Canvas
-=======
 // Canvas //
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 const CanvasArea = () => {
   const canvasRef = useRef(null);
   const [canvasInstance, setCanvasInstance] = useState(null);
@@ -407,14 +398,6 @@ const CanvasArea = () => {
 
   const [isRedoing, setIsRedoing] = useState(false);
   const [history, setHistory] = useState([]);
-<<<<<<< HEAD
-
-  const undo = () => {
-    if (canvasInstance._objects.length > 0) {
-      const removedObject = canvasInstance._objects.pop();
-      setHistory([...history, removedObject]);
-      canvasInstance.renderAll();
-=======
   const [redoHistory, setRedoHistory] = useState([]);
   const undo = () => {
     // undo는 history stack을 이용하여 합니다
@@ -434,23 +417,15 @@ const CanvasArea = () => {
         setRedoHistory([...redoHistory, removedObject]); // redo stack 마지막에 removedObject를 추가합니다
         canvasInstance.renderAll();
       }
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
     }
   };
 
   const redo = () => {
-<<<<<<< HEAD
-    if (history.length > 0) {
-      setIsRedoing(true);
-      const lastObject = history.pop();
-      canvasInstance.add(lastObject);
-=======
     if (redoHistory.length > 0) {
       setIsRedoing(true);
       const lastObject = redoHistory.pop(); // RedoHistory 마지막 값을 가져와 다시 실행합니다.
       canvasInstance.add(lastObject);
       canvasInstance.renderAll();
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
     }
   };
 
@@ -460,14 +435,10 @@ const CanvasArea = () => {
     }
     setIsRedoing(false);
   };
-<<<<<<< HEAD
-
-=======
   const makeHistoryEmpty = () => {
     setHistory([]);
     setRedoHistory([]);
   };
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
   useEffect(() => {
     // useEffect를 사용하여 캔버스를 초기화하고 사다리형과 창문형에 맞게 투명한 블록들을 추가합니다. height와 width의 변화에 따라 캔버스의 크기를 조정합니다.
     const newCanvas = new fabric.Canvas(canvasRef.current, {
@@ -477,10 +448,7 @@ const CanvasArea = () => {
     });
     // useEffect를 사용하여 캔버스를 초기화하고 사다리형과 창문형에 맞게 투명한 블록들을 추가합니다. height와 width의 변화에 따라 캔버스의 크기를 조정합니다.
     //위의 코드는 리렌더링을 일으키지 않도록 이펙트 내에 두어야 합니다. 안 그러면 too many re redner 에러가 납니다
-<<<<<<< HEAD
-=======
     makeHistoryEmpty(); // 캔버스 재생성 될 때마다 history 기억을 비운다
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 
     // 컬러 백그라운드 만들기
     if (newCanvas && bgColor) {
@@ -515,10 +483,6 @@ const CanvasArea = () => {
       }
       if (width > height) {
         setFrameSpecification("horizontal");
-<<<<<<< HEAD
-        console.log(frameSpecification);
-=======
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
       }
     };
   }, [width, height, bgColor, bgImg]); // width, height, bg 바뀔 때마다 리렌더
@@ -610,13 +574,8 @@ const CanvasArea = () => {
           id="canvas"
         />
       </div>
-<<<<<<< HEAD
-      <button onClick={undo}>Undo</button>
-      <button onClick={redo}>Redo</button>
-=======
       <button onClick={() => undo()}>Undo</button>
       <button onClick={() => redo()}>Redo</button>
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
     </>
   );
 };

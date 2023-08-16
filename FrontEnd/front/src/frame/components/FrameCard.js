@@ -221,10 +221,7 @@ export default function FrameCard({
         src={imageLink}
         alt="프레임 이미지"
       />
-<<<<<<< HEAD
-=======
       {subject}
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
       <div className="heart-btn" onClick={(event) => clickLike(event)}>
         <div className="content">
           <span

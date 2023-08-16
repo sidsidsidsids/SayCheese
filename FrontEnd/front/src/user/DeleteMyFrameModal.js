@@ -1,12 +1,7 @@
-<<<<<<< HEAD
-import axios from "axios";
-import { useEffect } from "react";
-=======
 import { useEffect } from "react";
 // third party
 import axios from "axios";
 // local
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 import Button from "../Button";
 
 function DeleteMyFrameModal({
@@ -24,10 +19,7 @@ function DeleteMyFrameModal({
     modalbg.style.top = currentTop; // Set the top CSS property of the element
   }, []);
 
-<<<<<<< HEAD
-=======
   // 프레임 삭제 axios
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
   function handleDeleteMyFrame() {
     const accessToken = localStorage.getItem("accessToken");
     axios

@@ -75,19 +75,8 @@
   width: 150px;
   height: 150px;
   object-fit: cover;
-<<<<<<< HEAD
-  border-radius: 20px;
-}
-
-.ProfileImgBasis {
-  width: 150px;
-  height: 150px;
-  border-radius: 20px;
-  background-color: #d9d9d9;
-=======
   border-radius: 30px;
   border: 1px solid #d9d9d9;
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 }
 
 .profileInput {

@@ -6,11 +6,8 @@ import MyInfoModify from "./MyInfoModify";
 import { useNavigate } from "react-router-dom";
 import Button from "../Button";
 import axios from "axios";
-<<<<<<< HEAD
-=======
 import { getUserInfo } from "../redux/features/login/loginSlice";
 import logo from "./assets/SayCheeseLogo.png";
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 
 function MyPageModal({ profileChanged, setProfileChanged }) {
   const [loading] = useState(false);
@@ -23,11 +20,7 @@ function MyPageModal({ profileChanged, setProfileChanged }) {
 
   const [isProfileModifyModalOpen, setIsProfileModifyModalOpen] =
     useState(false);
-<<<<<<< HEAD
-  const [imgFile, setImgFile] = useState();
-=======
   const [imgFile, setImgFile] = useState(userInfo.profile);
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 
   const handleProfileModifyModalOpen = () => {
     setIsProfileModifyModalOpen(true);
@@ -59,12 +52,6 @@ function MyPageModal({ profileChanged, setProfileChanged }) {
     modalbg.style.top = currentTop; // Set the top CSS property of the element
   }, []);
 
-<<<<<<< HEAD
-  async function ProfileChange(imgFile) {
-    const accessToken = localStorage.getItem("accessToken");
-    let fileName = `profile_${crypto.getRandomValues(new Uint32Array(1))}.jpg`;
-
-=======
   useEffect(() => {
     dispatch(getUserInfo());
     console.log(userInfo.profile);
@@ -78,17 +65,12 @@ function MyPageModal({ profileChanged, setProfileChanged }) {
     const accessToken = localStorage.getItem("accessToken");
     let fileName = `profile_${crypto.getRandomValues(new Uint32Array(1))}.jpg`;
     console.log("파일이름만듦 ", fileName);
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
     axios
       .post(
         "/api/amazon/presigned",
         {
           fileName: fileName,
-<<<<<<< HEAD
-          fileType: "image",
-=======
           fileType: "profile",
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
         },
         {
           headers: {
@@ -98,25 +80,6 @@ function MyPageModal({ profileChanged, setProfileChanged }) {
         }
       )
       .then(function (response) {
-<<<<<<< HEAD
-        const binaryImageData = atob(imgFile.split(",")[1]);
-        const arrayBufferData = new Uint8Array(binaryImageData.length);
-        for (let i = 1; i < binaryImageData.length; i++) {
-          arrayBufferData[i] = binaryImageData.charCodeAt(i);
-        }
-        const blob = new Blob([arrayBufferData], { type: "image/jpg" });
-        const imageFile = new File([blob], fileName, {
-          type: "image/jpg",
-        });
-        // presigned URL에 파일 전송
-        fetch(response.data.preSignUrl, {
-          method: "PUT",
-          headers: {
-            "Content-Type": " image/jpg",
-          },
-          body: imageFile,
-        }).then(function (response) {});
-=======
         console.log("프리사인", response.data.preSignUrl);
         const getFileName = response.data.fileName;
         // fileName = response.data.fileName;
@@ -163,7 +126,6 @@ function MyPageModal({ profileChanged, setProfileChanged }) {
         alert(
           "오류로 인해 프로필 사진 수정이 불가능합니다.\n다시 시도해주시길 바랍니다."
         );
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
       });
   }
 
@@ -195,15 +157,11 @@ function MyPageModal({ profileChanged, setProfileChanged }) {
                           alt="프로필 사진 미리보기"
                         />
                       ) : (
-<<<<<<< HEAD
-                        <div className="ProfileImgBasis"></div>
-=======
                         <img
                           className="ProfileImgBefore"
                           src={logo}
                           alt="프로필 사진 미리보기"
                         />
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
                       )}
                     </div>
                     <div
@@ -219,14 +177,10 @@ function MyPageModal({ profileChanged, setProfileChanged }) {
                           id="profileImage"
                           accept="image/*"
                           ref={imgRef}
-<<<<<<< HEAD
-                          onChange={() => saveImgFile()}
-=======
                           onChange={(event) => {
                             saveImgFile();
                             console.log(event.target.value);
                           }}
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
                           className="profileInput"
                         />
                         <label for="profileImage" className="ProfileLabel">
@@ -255,10 +209,7 @@ function MyPageModal({ profileChanged, setProfileChanged }) {
                       text={"수정"}
                       onClick={() => {
                         setIsProfileModifyModalOpen(false);
-<<<<<<< HEAD
-=======
                         ProfileChange(imgFile);
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
                       }}
                     />
                   </div>
@@ -271,11 +222,6 @@ function MyPageModal({ profileChanged, setProfileChanged }) {
                   onClick={handleProfileModifyModalOpen}
                 >
                   {userInfo.profile ? (
-<<<<<<< HEAD
-                    <div>내 사진</div>
-                  ) : (
-                    <div className="MyProfileNull"></div>
-=======
                     <div>
                       <img
                         className="MyProfileCard"
@@ -291,7 +237,6 @@ function MyPageModal({ profileChanged, setProfileChanged }) {
                         alt="프로필 이미지"
                       />
                     </div>
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
                   )}
                 </div>
 

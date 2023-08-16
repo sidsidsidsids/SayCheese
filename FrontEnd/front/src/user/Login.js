@@ -1,12 +1,4 @@
 import React, { useEffect, useState } from "react";
-<<<<<<< HEAD
-import "./Login.css";
-import Button from "../Button";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-
-import { useSelector, useDispatch } from "react-redux";
-=======
 // third party
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -14,39 +6,22 @@ import axios from "axios";
 // local
 import "./Login.css";
 import Button from "../Button";
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 import { getUserInfo, loginSuccess } from "../redux/features/login/loginSlice";
 import PwFindModal from "./PwFindModal";
 
 function Login() {
-<<<<<<< HEAD
-=======
   const [activeIndex, setActiveIndex] = useState(null);
 
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
   const [email, setEmail] = useState(""); // 이메일
   const [password, setPassword] = useState(""); // 비밀번호
 
   const [callbackOK, setCallbackOK] = useState(false);
-<<<<<<< HEAD
-  const [isPwFindModalOpen, setIsPwFindModalOpen] = useState(false);
-
-  const movePage = useNavigate();
-  const { isLogin } = useSelector((store) => store.login); // 로그인 여부
-
-  const dispatch = useDispatch();
-
-  const moveSignUpPage = () => {
-    movePage("/user/signup"); // 회원가입 페이지로 이동
-  };
-=======
   const [isPwFindModalOpen, setIsPwFindModalOpen] = useState(false); // 비밀번호 잊어버렸을 때 모달
 
   const { isLogin } = useSelector((store) => store.login); // 로그인 여부
 
   const movePage = useNavigate();
   const dispatch = useDispatch();
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 
   const moveSignUpPage = () => {
     movePage("/user/signup"); // 회원가입 페이지로 이동
@@ -62,10 +37,7 @@ function Login() {
     setActiveIndex(null);
   };
 
-<<<<<<< HEAD
-=======
   // 비밀번호 잊어버렸을 때 모달 열기 - true일 경우 모달 open
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
   const handlePwFineModalOpen = () => {
     setIsPwFindModalOpen(true);
   };

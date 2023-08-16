@@ -29,10 +29,7 @@ import MyPageFrame from "./user/MyPageFrame";
 import { Provider } from "react-redux"; // React 앱에 Redux 스토어를 연결하기 위한 Provider
 import store from "./redux/store";
 import axios from "axios";
-<<<<<<< HEAD
-=======
 import Loading from "./Loading";
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 
 const router = createBrowserRouter([
   {
@@ -131,14 +128,8 @@ export let persistor = persistStore(store);
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
-<<<<<<< HEAD
     {/* <PersistGate loading={null} persistor={persistor}> */}
-      <RouterProvider router={router} />
+    <RouterProvider router={router} />
     {/* </PersistGate> */}
-=======
-    <PersistGate loading={<Loading />} persistor={persistor}>
-      <RouterProvider router={router} />
-    </PersistGate>
->>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
   </Provider>
 );
