@@ -649,16 +649,18 @@ const CanvasArea = () => {
     makeHistoryEmpty(); // 캔버스 재생성 될 때마다 history 기억을 비운다
 
     // 컬러 백그라운드 만들기
-    if (newCanvas && bgColor) {
+    if (newCanvas && bgColor && !bgImg) {
       newCanvas.backgroundColor = bgColor;
-      if (block === "Heart") {
-        addHeartBlocks(newCanvas, height, width);
-      } else if (block === "SmoothPlain") {
-        addSmoothPlainBlocks(newCanvas, height, width);
-      } else if (block === "Circle") {
-        addCircleBlocks(newCanvas, height, width);
-      } else {
-        addPlainBlocks(newCanvas, height, width);
+      if (newCanvas.backgroundColor) {
+        if (block === "Heart") {
+          addHeartBlocks(newCanvas, height, width);
+        } else if (block === "SmoothPlain") {
+          addSmoothPlainBlocks(newCanvas, height, width);
+        } else if (block === "Circle") {
+          addCircleBlocks(newCanvas, height, width);
+        } else {
+          addPlainBlocks(newCanvas, height, width);
+        }
       }
 
       handleSpecification().then(() => {
@@ -671,11 +673,24 @@ const CanvasArea = () => {
       makeBackground(bgImg, width, height, bgColor, newCanvas)
         .then((bg) => {
           newCanvas.add(bg);
-          addPlainBlocks(newCanvas, height, width);
           setHistory([]);
           handleSpecification().then(() => {
             console.log(width, frameSpecification);
           });
+        })
+        .then(() => {
+          // 빈 캔버스에 투명칸을 만들수 없다는 에러를 해결하기 위해 조건문으로 작성
+          if (newCanvas._objects.length > 1) {
+            if (block === "Heart") {
+              addHeartBlocks(newCanvas, height, width);
+            } else if (block === "SmoothPlain") {
+              addSmoothPlainBlocks(newCanvas, height, width);
+            } else if (block === "Circle") {
+              addCircleBlocks(newCanvas, height, width);
+            } else {
+              addPlainBlocks(newCanvas, height, width);
+            }
+          }
         })
         .catch((error) => {
           console.error(error);
