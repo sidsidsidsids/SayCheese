@@ -7,7 +7,10 @@ import "./RoomCreateModal.css";
 import ModalButtons from "./ModalButtons";
 import l_Frame from "./assets/ladder_shape.svg";
 import w_Frame from "./assets/window_shape.png";
+<<<<<<< HEAD
 const accessToken = localStorage.getItem("accessToken");
+=======
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 
 function RoomCreateModal({ open, close }) {
   const dispatch = useDispatch();

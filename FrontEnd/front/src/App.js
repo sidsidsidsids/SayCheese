@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 import { useContext, useEffect, useState } from "react";
+=======
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 // third party
 import { Outlet } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -9,6 +12,7 @@ import Header from "./header/Header";
 import "./App.css";
 
 import { getUserInfo } from "./redux/features/login/loginSlice";
+import Loading from "./Loading";
 
 function App() {
   const dispatch = useDispatch();
@@ -33,7 +37,10 @@ function App() {
           </QueryClientProvider>
         </div>
       </AuthProvider>
+<<<<<<< HEAD
       <p>app.js</p>
+=======
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
     </div>
   );
 }

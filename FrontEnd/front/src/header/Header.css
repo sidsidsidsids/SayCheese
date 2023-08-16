@@ -1,10 +1,26 @@
 .Header {
+<<<<<<< HEAD
   margin: 20px 40px;
   font-size: 20px;
   display: flex;
   justify-content: space-between;
 }
 
+=======
+  margin: 10px 40px;
+  padding: 0;
+  font-size: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.SayCheeseLogo {
+  margin: 0;
+  width: 160px;
+}
+
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 .HeaderSort {
   display: flex;
 }
@@ -21,29 +37,55 @@ a {
 .DropDownSubMenu {
   height: 0;
   overflow: hidden;
-  transition: height 0.5s;
 }
 
 .DropDownMenu > li:hover {
   transition-duration: 0.4s;
 }
 
+.MyPageHover {
+  position: relative;
+}
+
 .MyPageHover:hover .DropDownSubMenu {
   height: 45px;
+<<<<<<< HEAD
+=======
+  position: absolute;
+  transition: height 0.5s;
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 }
 
 .DropDownSubMenuTwo {
   height: 0;
   overflow: hidden;
+<<<<<<< HEAD
   transition: height 0.5s;
+=======
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 }
 
 .DropDownSubMenuTwo > li:hover {
   transition-duration: 0.4s;
 }
 
+<<<<<<< HEAD
 .MyPageHover:hover .DropDownSubMenuTwo {
   height: 20px;
+=======
+.MyPageHover:hover .LoginLink {
+  margin: auto 8px;
+}
+
+.MyPageHover:hover .DropDownSubMenuTwo {
+  height: 20px;
+  position: absolute;
+  transition: height 0.5s;
+}
+
+.DropDownMenu p {
+  width: 89.25px !important;
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 }
 
 .HoverEffect {

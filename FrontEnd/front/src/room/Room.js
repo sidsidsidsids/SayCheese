@@ -1419,8 +1419,7 @@ const Room = () => {
                 console.log("frames: ", frameList);
                 // getRandomOrder(mySessionId);
                 console.log(chosenUrl);
-                const textUrl = toString(chosenUrl);
-                console.log(textUrl);
+                const textUrl = chosenUrl;
                 axios
                   .get(
                     // "https://200oks3bucket.s3.ap-northeast-2.amazonaws.com/image/boj-og.png",

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import RoomCreateModal from "./RoomCreateModal";
 import RoomJoinModal from "./RoomJoinModal";
 import SetNameModal from "./SetNameModal";
+import Loading from "../Loading";
 import leftBooth from "./assets/booth(left).png";
 import rightBooth from "./assets/booth(right).png";
 import sign from "./assets/sign.png";
@@ -29,19 +30,26 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getUserInfo } from "../redux/features/login/loginSlice";
 
-// let able;
+let able;
 function Main() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [joinModalOpen, setJoinModalOpen] = useState(false);
   const [nameModalOpen, setNameModalOpen] = useState(false);
   const [toCreate, setToCreate] = useState(false);
   const [toJoin, setToJoin] = useState(false);
-  const { userInfo } = useSelector((store) => store.login);
+  const { userInfo, isLogin } = useSelector((store) => store.login);
+  const [loginLink, setLoginLink] = useState("/user/login");
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getUserInfo());
     // able = checkAvailable();
+
+    if (isLogin) {
+      // 로그인 되어있으면 마이페이지로 링크 연결합니다
+      setLoginLink(`/user/mypage/${userInfo.email}`);
+    }
   }, []);
 
   const defaultOptions = {
@@ -56,25 +64,25 @@ function Main() {
   };
 
   return (
-    <div id="main-wrapper">
-      <img id="sign" src={sign} alt="sign"></img>
-      <div id="main-booth">
+    <div id="mainWrapper">
+      <img id="sign" src={sign} alt="sign" />
+      <div id="mainBooth">
         <div id="left">
-          <div className="left-poster">
+          <div className="leftPoster">
             게임촬영
             <br />
             일반촬영
             <br />
             0원
           </div>
-          <img className="sticker2" src={l_Frame} alt="l_Frame"></img>
-          <img className="sticker1" src={l_Frame} alt="l_Frame"></img>
-          <img id="leftBooth" src={leftBooth} alt="left-booth"></img>
-          <img src={cs} className="curtain-pipe" alt="curtain pipe"></img>
+          <img className="sticker2" src={l_Frame} alt="l_Frame" />
+          <img className="sticker1" src={l_Frame} alt="l_Frame" />
+          <img id="leftBooth" src={leftBooth} alt="left-booth" />
+          <img src={cs} className="curtainPipe" alt="curtain pipe" />
           <div className="curtains">
-            <div className="glow leftglow">ON AIR</div>
+            <div className="glow leftGlow">ON AIR</div>
             <div
-              className="create-room"
+              className="createRoom"
               onClick={() => {
                 if (userInfo) {
                   setCreateModalOpen(true);
@@ -93,9 +101,10 @@ function Main() {
             <img src={cy1} className="curtain left1" alt="curtain1 left1"></img>
           </div>
         </div>
-        <div id="main-menu">
+        <div id="mainMenu">
           <img id="shelf" src={shelf} alt="shelf"></img>
-          <Link to="/user/login">
+          <Link to={loginLink}>
+            {/* 로그인 되어있다면 마이페이지 안 되어 있다면 로그인 페이지로 이동 */}
             <img id="login" src={login} alt="login"></img>
           </Link>
           <Link to="/photo">
@@ -114,7 +123,7 @@ function Main() {
         </div>
         <div id="right">
           <img id="rightBooth" src={rightBooth} alt="right-booth"></img>
-          <div className="right-poster">
+          <div className="rightPoster">
             1 + 1
             <br />
             영구소장
@@ -126,13 +135,13 @@ function Main() {
           <img className="sticker5" src={w_Frame} alt="w_Frame"></img>
           <img
             src={cs}
-            className="curtain-pipe right"
+            className="curtainPipe right"
             alt="curtain pipe right"
           ></img>
           <div className="curtains right">
-            <div className="glow rightglow">ON AIR</div>
+            <div className="glow rightGlow">ON AIR</div>
             <div
-              className="create-room"
+              className="createRoom"
               onClick={() => {
                 if (userInfo) {
                   setJoinModalOpen(true);

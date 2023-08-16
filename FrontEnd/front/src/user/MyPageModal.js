@@ -6,8 +6,13 @@ import MyInfoModify from "./MyInfoModify";
 import { useNavigate } from "react-router-dom";
 import Button from "../Button";
 import axios from "axios";
+<<<<<<< HEAD
+=======
+import { getUserInfo } from "../redux/features/login/loginSlice";
+import logo from "./assets/SayCheeseLogo.png";
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 
-function MyPageModal() {
+function MyPageModal({ profileChanged, setProfileChanged }) {
   const [loading] = useState(false);
 
   const { userInfo } = useSelector((store) => store.login);
@@ -18,7 +23,11 @@ function MyPageModal() {
 
   const [isProfileModifyModalOpen, setIsProfileModifyModalOpen] =
     useState(false);
+<<<<<<< HEAD
   const [imgFile, setImgFile] = useState();
+=======
+  const [imgFile, setImgFile] = useState(userInfo.profile);
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 
   const handleProfileModifyModalOpen = () => {
     setIsProfileModifyModalOpen(true);
@@ -50,16 +59,36 @@ function MyPageModal() {
     modalbg.style.top = currentTop; // Set the top CSS property of the element
   }, []);
 
+<<<<<<< HEAD
   async function ProfileChange(imgFile) {
     const accessToken = localStorage.getItem("accessToken");
     let fileName = `profile_${crypto.getRandomValues(new Uint32Array(1))}.jpg`;
 
+=======
+  useEffect(() => {
+    dispatch(getUserInfo());
+    console.log(userInfo.profile);
+    setProfileChanged(false);
+  }, [profileChanged]);
+
+  async function ProfileChange(imgFile) {
+    let fileInput = document.getElementById("profileImage");
+    let file = fileInput.files[0];
+
+    const accessToken = localStorage.getItem("accessToken");
+    let fileName = `profile_${crypto.getRandomValues(new Uint32Array(1))}.jpg`;
+    console.log("파일이름만듦 ", fileName);
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
     axios
       .post(
         "/api/amazon/presigned",
         {
           fileName: fileName,
+<<<<<<< HEAD
           fileType: "image",
+=======
+          fileType: "profile",
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
         },
         {
           headers: {
@@ -69,6 +98,7 @@ function MyPageModal() {
         }
       )
       .then(function (response) {
+<<<<<<< HEAD
         const binaryImageData = atob(imgFile.split(",")[1]);
         const arrayBufferData = new Uint8Array(binaryImageData.length);
         for (let i = 1; i < binaryImageData.length; i++) {
@@ -86,6 +116,54 @@ function MyPageModal() {
           },
           body: imageFile,
         }).then(function (response) {});
+=======
+        console.log("프리사인", response.data.preSignUrl);
+        const getFileName = response.data.fileName;
+        // fileName = response.data.fileName;
+        // presigned URL에 파일 전송
+        setTimeout(() => {
+          fetch(response.data.preSignUrl, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "image/jpg",
+            },
+            body: file,
+          }).then(function (response) {
+            console.log("파일이름 받아옴 ", getFileName);
+            axios
+              .put(
+                "/api/member/profile",
+                {
+                  profileName: getFileName,
+                },
+                {
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `${accessToken}`,
+                  },
+                }
+              )
+              .then((response) => {
+                console.log("업로드할 사진", response.data.profile);
+                setImgFile(response.data.profile);
+                setProfileChanged(true);
+                alert("프로필 사진이 수정되었습니다.");
+              })
+              .catch((error) => {
+                console.log(error);
+                alert(
+                  "오류로 인해 프로필 사진 수정이 불가능합니다.\n다시 시도해주시길 바랍니다."
+                );
+              });
+          });
+        }, 1000);
+      })
+      .catch((error) => {
+        console.log(error);
+        alert(
+          "오류로 인해 프로필 사진 수정이 불가능합니다.\n다시 시도해주시길 바랍니다."
+        );
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
       });
   }
 
@@ -117,7 +195,15 @@ function MyPageModal() {
                           alt="프로필 사진 미리보기"
                         />
                       ) : (
+<<<<<<< HEAD
                         <div className="ProfileImgBasis"></div>
+=======
+                        <img
+                          className="ProfileImgBefore"
+                          src={logo}
+                          alt="프로필 사진 미리보기"
+                        />
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
                       )}
                     </div>
                     <div
@@ -133,7 +219,14 @@ function MyPageModal() {
                           id="profileImage"
                           accept="image/*"
                           ref={imgRef}
+<<<<<<< HEAD
                           onChange={() => saveImgFile()}
+=======
+                          onChange={(event) => {
+                            saveImgFile();
+                            console.log(event.target.value);
+                          }}
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
                           className="profileInput"
                         />
                         <label for="profileImage" className="ProfileLabel">
@@ -162,6 +255,10 @@ function MyPageModal() {
                       text={"수정"}
                       onClick={() => {
                         setIsProfileModifyModalOpen(false);
+<<<<<<< HEAD
+=======
+                        ProfileChange(imgFile);
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
                       }}
                     />
                   </div>
@@ -174,9 +271,27 @@ function MyPageModal() {
                   onClick={handleProfileModifyModalOpen}
                 >
                   {userInfo.profile ? (
+<<<<<<< HEAD
                     <div>내 사진</div>
                   ) : (
                     <div className="MyProfileNull"></div>
+=======
+                    <div>
+                      <img
+                        className="MyProfileCard"
+                        src={userInfo.profile}
+                        alt="프로필 이미지"
+                      />
+                    </div>
+                  ) : (
+                    <div>
+                      <img
+                        className="MyProfileCard"
+                        src={logo}
+                        alt="프로필 이미지"
+                      />
+                    </div>
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
                   )}
                 </div>
 

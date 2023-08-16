@@ -32,6 +32,7 @@ export default function Saving() {
       <div>
         <form>
           <label htmlFor="userId">이메일</label>
+<<<<<<< HEAD
           <input id="userId" type="text" onChange={setEmail}></input>
           <label htmlFor="userPW">비밀번호</label>
           <input id="userPw" type="password" onChange={setPassword}></input>
@@ -39,6 +40,30 @@ export default function Saving() {
             className="btn alignCenter"
             onClick={() => {
               handleLogin();
+=======
+          <input
+            id="userId"
+            type="email"
+            value={email}
+            onChange={(event) => {
+              setEmail(event.target.value);
+            }}
+          ></input>
+          <label htmlFor="userPW">비밀번호</label>
+          <input
+            id="userPw"
+            type="password"
+            value={password}
+            onChange={(event) => {
+              setPassword(event.target.value);
+            }}
+          ></input>
+          <button
+            type="button"
+            className="btn alignCenter"
+            onClick={(e) => {
+              handleLogin(e);
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
             }}
           >
             로그인하기
@@ -110,6 +135,7 @@ export default function Saving() {
   // 로그인 처리 함수 for  stage1
   function handleLogin(event) {
     event.preventDefault();
+<<<<<<< HEAD
 
     let data = {
       email,
@@ -118,6 +144,18 @@ export default function Saving() {
 
     axios
       .post("/api/login", JSON.stringify(data), {
+=======
+    console.log(email, password);
+    let data = {
+      email: email,
+      password: password,
+    };
+
+    console.log(data);
+
+    axios
+      .post("/api/login", data, {
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
         headers: {
           "Content-Type": "application/json",
         },
@@ -137,6 +175,10 @@ export default function Saving() {
           setCallbackOK(true);
           dispatch(loginSuccess());
           dispatch(getUserInfo());
+<<<<<<< HEAD
+=======
+          setUploadStage(2);
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
         }
       })
       .catch((error) => {

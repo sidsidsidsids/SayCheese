@@ -1,18 +1,34 @@
 import React, { useEffect, useState } from "react";
+<<<<<<< HEAD
 import "./Login.css";
 import Button from "../Button";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import { useSelector, useDispatch } from "react-redux";
+=======
+// third party
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
+// local
+import "./Login.css";
+import Button from "../Button";
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
 import { getUserInfo, loginSuccess } from "../redux/features/login/loginSlice";
 import PwFindModal from "./PwFindModal";
 
 function Login() {
+<<<<<<< HEAD
+=======
+  const [activeIndex, setActiveIndex] = useState(null);
+
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
   const [email, setEmail] = useState(""); // 이메일
   const [password, setPassword] = useState(""); // 비밀번호
 
   const [callbackOK, setCallbackOK] = useState(false);
+<<<<<<< HEAD
   const [isPwFindModalOpen, setIsPwFindModalOpen] = useState(false);
 
   const movePage = useNavigate();
@@ -23,8 +39,18 @@ function Login() {
   const moveSignUpPage = () => {
     movePage("/user/signup"); // 회원가입 페이지로 이동
   };
+=======
+  const [isPwFindModalOpen, setIsPwFindModalOpen] = useState(false); // 비밀번호 잊어버렸을 때 모달
 
-  const [activeIndex, setActiveIndex] = useState(null);
+  const { isLogin } = useSelector((store) => store.login); // 로그인 여부
+
+  const movePage = useNavigate();
+  const dispatch = useDispatch();
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
+
+  const moveSignUpPage = () => {
+    movePage("/user/signup"); // 회원가입 페이지로 이동
+  };
 
   // 각 input 요소에 focus가 있을 때 해당 div의 index를 activeIndex 상태로 설정
   const handleInputFocus = (index) => {
@@ -36,6 +62,10 @@ function Login() {
     setActiveIndex(null);
   };
 
+<<<<<<< HEAD
+=======
+  // 비밀번호 잊어버렸을 때 모달 열기 - true일 경우 모달 open
+>>>>>>> 005bb6db321bd7c9af605eae98202b2907c6a723
   const handlePwFineModalOpen = () => {
     setIsPwFindModalOpen(true);
   };
@@ -48,11 +78,12 @@ function Login() {
 
   useEffect(() => {
     if (isLogin) {
-      // 이미 로그인한 상태일 경우 해당 페이지에 접근하면 "/" 경로로 리다이렉션
-      movePage("/");
+      // 이미 로그인한 상태일 경우 해당 페이지에 접근하면 "/main" 경로로 리다이렉션
+      movePage("/main");
     }
   }, [isLogin, movePage]);
 
+  // 로그인 axios
   function handleClickSubmit(event) {
     event.preventDefault();
 
@@ -82,7 +113,7 @@ function Login() {
           setCallbackOK(true);
           dispatch(loginSuccess());
           dispatch(getUserInfo());
-          movePage("/");
+          movePage("/main");
         }
       })
       .catch((error) => {
