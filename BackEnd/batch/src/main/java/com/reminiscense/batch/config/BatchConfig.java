@@ -51,7 +51,7 @@ public class BatchConfig {
         config.setPassword(env.getProperty("batch.jdbc.password"));
         DataSource dataSource=new HikariDataSource(config);
         JobRepositoryFactoryBean factory = new JobRepositoryFactoryBean();
-        factory.setTablePrefix("batch_");
+        factory.setTablePrefix("BATCH_");
         factory.setDataSource(dataSource);
         factory.setTransactionManager(transactionManager);
         factory.setDatabaseType(DatabaseType.MYSQL.getProductName()); // Set your database type (HSQL, MySQL, etc.)

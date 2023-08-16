@@ -34,4 +34,4 @@ batch:
     source:
       init: false
   table:
-    prefix: batch_
+    prefix: BATCH_
