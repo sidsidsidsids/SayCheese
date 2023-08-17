@@ -78,7 +78,7 @@ function NoticeList() {
       </table>
       <Paging page={currentPage} count={count} setPage={setPage} />
       <div className="NoticeWriteBtnSort">
-        {userInfo.email === "mailto:admin@admin.com" ? (
+        {!userInfo ? null : userInfo.email === "mailto:admin@admin.com" ? (
           <Link className="NoticeWriteBtn" to="/customercenter/notice/write">
             글 작성
           </Link>
