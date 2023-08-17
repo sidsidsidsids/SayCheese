@@ -1,6 +1,8 @@
 server:
 port: 8080
 spring:
+  data:
+    base-url:
   cloud:
     config:
       enabled: false
