@@ -117,7 +117,7 @@ img.standardImg:hover {
 }
 
 .rect {
-  margin-inline-end: 11px;
+  margin-inline-end: 11px !important;
   height: 30px;
   width: 30px;
   border: 3px solid black;
@@ -624,4 +624,8 @@ label[for="private"] {
   position: relative;
   padding-left: 10px;
   top: -6px;
+}
+
+.savingButton {
+  margin-top: 20px;
 }
