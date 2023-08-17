@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import "./RoomJoinModal.css";
 import ModalButtons from "./ModalButtons";
@@ -8,10 +9,14 @@ const accessToken = localStorage.getItem("accessToken");
 
 function RoomJoinModal({ open, close }) {
   const navigate = useNavigate();
+  const { userInfo } = useSelector((store) => store.login);
 
   const [inputRoomCode, setInputRoomCode] = useState("");
   const [inputRoomPassword, setInputRoomPassword] = useState("");
 
+  if (!userInfo) {
+    close();
+  }
   if (!open) {
     return null;
   }
@@ -31,8 +36,7 @@ function RoomJoinModal({ open, close }) {
           {},
           {
             headers: {
-              // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
-              Authorization: accessToken,
+              Authorization: `${localStorage.getItem("accessToken")}`,
             },
           }
         )
@@ -54,13 +58,14 @@ function RoomJoinModal({ open, close }) {
       axios
         .post(
           `/api/room/check/${roomCode}`,
+          // `https://8599-211-192-210-169.ngrok-free.app/api/room/check/${roomCode}`,
           {
             password: roomPassword,
           },
           {
             headers: {
               // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
-              Authorization: `${accessToken}`,
+              Authorization: `${localStorage.getItem("accessToken")}`,
               "Content-Type": "application/json;charset=UTF-8",
             },
           }
@@ -69,7 +74,8 @@ function RoomJoinModal({ open, close }) {
           navigate(`/room/${roomCode}`);
           close();
         })
-        .catch(() => {
+        .catch((error) => {
+          console.log(error);
           alert("입장할 수 없는 방입니다");
         });
     } catch (error) {

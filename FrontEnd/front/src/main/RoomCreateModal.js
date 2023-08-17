@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setRoom } from "../redux/features/room/roomSlice";
 import axios from "axios";
 import "./RoomCreateModal.css";
@@ -16,6 +16,7 @@ function RoomCreateModal({ open, close }) {
   // 모달 설정
   const [isComplete, setIsComplete] = useState(false);
 
+  const { userInfo } = useSelector((store) => store.login);
   // 방 설정들
   // 방 모드
   const [isModeActive, setIsModeActive] = useState(true);
@@ -27,6 +28,10 @@ function RoomCreateModal({ open, close }) {
   const [roomPassword, setRoomPassword] = useState("");
   // 방 코드
   const [roomCode, setRoomCode] = useState("");
+
+  if (!userInfo) {
+    close();
+  }
   async function codeCreation() {
     let isValid = false;
     while (!isValid) {
@@ -40,6 +45,7 @@ function RoomCreateModal({ open, close }) {
         }
       }
     }
+    // setRoomCode("sessionA");
   }
   async function isValidCode(code) {
     try {
@@ -58,8 +64,7 @@ function RoomCreateModal({ open, close }) {
           {},
           {
             headers: {
-              // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
-              Authorization: `${accessToken}`,
+              Authorization: `${localStorage.getItem("accessToken")}`,
             },
           }
         )
@@ -110,28 +115,6 @@ function RoomCreateModal({ open, close }) {
         specification: selectedFrame,
       })
     );
-    // try {
-    //   axios
-    //     .post(
-    //       "/api/room",
-    //       {
-    //         password: roomPassword,
-    //         maxCount: roomLimit,
-    //         mode: selectedMode,
-    //         roomCode: roomCode,
-    //         // specification: selectedFrame,
-    //         specification: "horizontal",
-    //       },
-    //       {
-    //         headers: {
-    //           // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
-    //           Authorization: `${accessToken}`,
-    //           "Content-Type": "application/json;charset=UTF-8",
-    //         },
-    //       }
-    //     )
-    //     .then((response) => {
-    //       console.log(response);
     navigate(`/room/${roomCode}`);
     // });
     // } catch (error) {
@@ -154,14 +137,10 @@ function RoomCreateModal({ open, close }) {
             />
           </div>
           <div className="room-invite">
-            <span>방 초대 링크</span>
+            <span>방 모드</span>
             <input
               className={roomInvite}
-              value={
-                roomInvite
-                  ? roomInvite
-                  : "www.sample.com/sample123/?sample456?/sample789?"
-              }
+              value={isModeActive ? "Game" : "Normal"}
               id="inviteLink"
               readOnly
             />

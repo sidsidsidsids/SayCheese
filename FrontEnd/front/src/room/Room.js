@@ -33,9 +33,9 @@ let tempSrc; // 중간 이미지 URL 저장 변수
 let normalCnt = 0; // 일반 모드 촬영 횟수 저장 변수
 let gameCnt = 0; // 게임 모드 촬영 횟수 저장 변수
 // let randomTags; // 무작위 태그 리스트들 저장 변수
-let randomTags = ["sa", "ds", "cx", "vcx"];
+let randomTags = ["귀엽게", "멋있게", "시크하게", "성숙하게"];
 let randomTag; // 무작위 태그 추출하여 저장할 변수
-let tagResult = []; // 태그 결과물 저장 변수
+let tagResult = ["1", "2", "3", "4"]; // 태그 결과물 저장 변수
 let frameSearchInput = "";
 let roomImageID; // 최종 결과물 ID 저장 변수
 let chosenUrl; // 프레임 url
@@ -61,7 +61,7 @@ const Room = () => {
   const params = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { userInfo } = useSelector((store) => store.login);
+  const { userInfo, isLogin } = useSelector((store) => store.login);
   const { roomInfo } = useSelector((store) => store.room);
   // let selectedMode = roomInfo ? roomInfo.mode : undefined;
   let selectedMode = roomInfo ? roomInfo.mode : "game";
@@ -78,7 +78,6 @@ const Room = () => {
   // openvidu 관련
   const [mySessionId, setMySessionId] = useState(params.id);
   const [myUserName, setMyUserName] = useState(userInfo.nickname);
-  // const [myUserName, setMyUserName] = useState("s");
   const [session, setSession] = useState(undefined);
   const [mainStreamManager, setMainStreamManager] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined);
@@ -88,58 +87,55 @@ const Room = () => {
   const [frameSortType, setFrameSortType] = useState("hot");
   const [frameList, setFrameList] = useState([]);
   const [frameSearch, setFrameSearch] = useState("");
-  const [Spec, setSpec] = useState("")
-  const [selectFrame, setSelectFrame] = useState(`url('${horTest}')`);
+  const [Spec, setSpec] = useState("");
+  const [selectFrame, setSelectFrame] = useState(`url('${logo}')`);
   const [roomStatus, setRoomStatus] = useState(0);
   const [Minutes, setMinutes] = useState(0);
   const [Seconds, setSeconds] = useState(0);
 
   useEffect(() => {
     window.addEventListener("beforeunload", onbeforeunload);
-    if (roomInfo) {
+    console.log(roomInfo);
+    if (roomInfo !== {}) {
       sendRoomInfo();
       setHost(true);
-    } 
+    }
     joinSession();
+    setRoomStatus(0);
     if (params.id[0])
-    return () => {
-  window.removeEventListener("beforeunload", onbeforeunload);
-};
-}, [params.id]);
+      return () => {
+        window.removeEventListener("beforeunload", onbeforeunload);
+      };
+  }, [params.id]);
 
   useEffect(() => {
     joinUsers = [publisher, ...subscribers];
-    if (!roomInfo) {
-      // getRoomInfo();
-    }
   }, [publisher, subscribers]);
-  
-  // useEffect(() => {
-  //   if (publisher !== undefined) {
-  //     const userStreamIds = joinUsers.map((user) => user.stream.streamId);
-  //     const userStreamId = userStreamIds[0];
-  //     userStream(mySessionId, userStreamId);
-  //   }
-  // }, [publisher]);
-  
+
   useEffect(() => {
     if (roomStatus === 2) {
-      if (isHost) {
+      if (isHost && isLogin) {
         sendImageData(resultSrc, mySessionId);
       }
-      setTimeout(async () => {
-        try {
-          // userDelete();
-          // if (isHost) {
-          //   roomDelete(mySessionId);
-          // }
-          navigate("/");
-        } catch (error) {
-          console.log(error);
-        }
-      }, 300000);
     }
   }, [roomStatus]);
+
+  // useEffect(() => {
+  //   if (roomStatus === 2) {
+  //     setTimeout(async () => {
+  //       try {
+  //         // userDelete();
+  //         // if (isHost) {
+  //         //   roomDelete(mySessionId);
+  //         // }
+  //         navigate("/");
+  //         console.log("나가");
+  //       } catch (error) {
+  //         console.log(error);
+  //       }
+  //     }, 300000);
+  //   }
+  // }, [roomStatus]);
 
   useEffect(() => {
     if (isHost && roomStatus === 0 && roomInfo === {}) {
@@ -148,10 +144,8 @@ const Room = () => {
   }, [isHost]);
 
   useEffect(() => {
-    if (roomInfo) {
-      getFrames(frameSortType, frameSearch, selectedSpec);
-    }
-  }, [frameSortType]);
+    getFrames(frameSortType, frameSearch, Spec);
+  }, [frameSortType, Spec]);
 
   const onbeforeunload = (event) => {
     leaveSession();
@@ -253,8 +247,8 @@ const Room = () => {
     });
 
     mySession.on("randomOrder", (event) => {
-      orders = event.data
-    })
+      orders = event.data.split(",");
+    });
 
     mySession.on("selectFrame", (event) => {
       console.log(event);
@@ -267,12 +261,14 @@ const Room = () => {
       chosenUrl = event.data;
     });
 
-    getToken().then((token) => {
-      mySession
+    mySession.on("signal:chat", (event) => {
+      console.log(event);
+    });
+
+    getToken().then(async (token) => {
+      await mySession
         .connect(token)
         .then(async () => {
-          // 채팅창에 보낼 데이터셋
-          chatData = mySession;
           console.log(mySession, mySessionId);
           const publisher = await OV.initPublisherAsync(undefined, {
             audioSource: undefined,
@@ -285,25 +281,31 @@ const Room = () => {
             mirror: false,
           });
           console.log(publisher);
-          mySession.publish(publisher);
+          await mySession.publish(publisher);
           // 카메라 선택 옵션 넣을 때 사용됨
           const devices = await OV.getDevices();
           setPublisher(publisher);
           console.log(publisher);
 
+          // mySession.on("signal:chat", (event) => {
+          //   console.log(event);
+          // });
+          // 채팅창에 보낼 데이터셋
+          chatData = mySession;
+
           sessionConnectId = publisher.session.connection.connectionId;
+          sessionStreamId = publisher.stream.streamId;
           userJoin(mySessionId);
           setTimeout(() => {
             // 방에 유저 정보 보낼 곳
-            sessionStreamId = publisher.stream.streamId;
             // if (isHost) {
-              //   console.log("방장");
-              //   getRoomInfo(mySessionId);
-              //   hostPost(mySessionId);
-              // }
-              userStream(mySessionId, sessionStreamId);
-            }, 500);
-            
+            //   console.log("방장");
+            //   getRoomInfo(mySessionId);
+            //   hostPost(mySessionId);
+            // }
+            userStream(mySessionId);
+          }, 1000);
+
           setTimeout(() => {
             getRoomInfo();
           }, 800);
@@ -316,9 +318,6 @@ const Room = () => {
           );
         });
     });
-
-    
-
   };
 
   const leaveSession = () => {
@@ -424,8 +423,7 @@ const Room = () => {
           },
           {
             headers: {
-              // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
-              Authorization: `${accessToken}`,
+              Authorization: `${localStorage.getItem("accessToken")}`,
               "Content-Type": "application/json;charset=UTF-8",
             },
           }
@@ -482,17 +480,16 @@ const Room = () => {
       await axios
         .get("/api/room" + `?roomCode=${mySessionId}`, {
           headers: {
-            // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
-            Authorization: `${accessToken}`,
+            Authorization: `${localStorage.getItem("accessToken")}`,
             "Content-Type": "application/json;charset=UTF-8",
           },
         })
         .then((response) => {
           console.log("ROOMINFO");
           console.log(response);
-          selectedMode = response.data.mode
-          selectedSpec = response.data.specification.toUpperCase()
-          setSpec(response.data.specification.toUpperCase())
+          selectedMode = response.data.mode;
+          selectedSpec = response.data.specification.toUpperCase();
+          setSpec(response.data.specification.toUpperCase());
         });
     } catch (error) {
       console.log(error);
@@ -509,7 +506,7 @@ const Room = () => {
         },
         {
           headers: {
-            Authorization: `${accessToken}`,
+            Authorization: `${localStorage.getItem("accessToken")}`,
             "Content-Type": "application/json;charset=UTF-8",
           },
         }
@@ -527,8 +524,7 @@ const Room = () => {
         {},
         {
           headers: {
-            // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
-            Authorization: `${accessToken}`,
+            Authorization: `${localStorage.getItem("accessToken")}`,
             "Content-Type": "application/json;charset=UTF-8",
           },
         }
@@ -549,8 +545,7 @@ const Room = () => {
         },
         {
           headers: {
-            // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
-            Authorization: `${accessToken}`,
+            Authorization: `${localStorage.getItem("accessToken")}`,
             "Content-Type": "application/json;charset=UTF-8",
           },
         }
@@ -561,19 +556,18 @@ const Room = () => {
     }
   };
   // 유저의 화상 ID(streamId) 전달
-  const userStream = async (sessionId, streamId) => {
+  const userStream = async (sessionId) => {
     console.log("USERSTREAM");
     try {
-      console.log(streamId);
+      console.log(sessionStreamId);
       const request = await axios.put(
         "/api/participant/" + sessionId + "/streamId",
         {
-          streamId: streamId,
+          streamId: sessionStreamId,
         },
         {
           headers: {
-            // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
-            Authorization: `${accessToken}`,
+            Authorization: `${localStorage.getItem("accessToken")}`,
             "Content-Type": "application/json;charset=UTF-8",
           },
         }
@@ -593,7 +587,6 @@ const Room = () => {
         },
         {
           headers: {
-            // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
             Authorization: `${accessToken}`,
             "Content-Type": "application/json;charset=UTF-8",
           },
@@ -661,8 +654,7 @@ const Room = () => {
         },
         {
           headers: {
-            // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
-            Authorization: `${accessToken}`,
+            Authorization: `${localStorage.getItem("accessToken")}`,
             "Content-Type": "application/json;charset=UTF-8",
           },
         }
@@ -684,9 +676,7 @@ const Room = () => {
           {
             headers: {
               "Content-Type": `application/json;charset=UTF-8`,
-              // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjIifQ.OUP4gSxVM-CV0JeNYLxTtbwY9B0YGuS1PYjss9X0y5a9Q61g7Gjb43RsTVTK7L-EVhPvHS-DuUBN9Chy2SLgVg`,
-              Authorization: `${accessToken}`,
-              "ngrok-skip-browser-warning": "69420",
+              Authorization: `${localStorage.getItem("accessToken")}`,
             },
           }
         )
@@ -722,10 +712,10 @@ const Room = () => {
           // 0, // 비디오를 캔버스의 어떤 y 위치에 그릴지
           // 217.5, // 비디오의 원래 width
           // 165.5, // 비디오의 원래 height
-          320 + locationX, // 캔버스에 그릴 때 시작점 x 위치
-          134.5 + locationY, // 캔버스에 그릴 때 시작점 y 위치
-          170, // 캔버스에 그릴 비디오의 width
-          114 // 캔버스에 그릴 비디오의 height
+          511.3 + locationX, // 캔버스에 그릴 때 시작점 x 위치
+          60 + locationY, // 캔버스에 그릴 때 시작점 y 위치
+          170.3, // 캔버스에 그릴 비디오의 width
+          114.3 // 캔버스에 그릴 비디오의 height
         );
       } else {
         ctx.drawImage(
@@ -763,8 +753,7 @@ const Room = () => {
           { roomCode: sessionId },
           {
             headers: {
-              // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
-              Authorization: `${accessToken}`,
+              Authorization: `${localStorage.getItem("accessToken")}`,
               "Content-Type": "application/json;charset=UTF-8",
             },
           }
@@ -783,15 +772,15 @@ const Room = () => {
     setRoomStatus(1);
     // 유저 순서 설정(without RoomServer ver)
     // 백엔드와 연동 이후 userStreamIds ~ targetUsers 부분 삭제할 것
-    const userStreamIds = joinUsers.map((user) => user.stream.streamId);
-    const targetUsers = [...userStreamIds];
-    if (targetUsers.length === 3) {
-      targetUsers.push(targetUsers[0]);
-    } else if (targetUsers.length === 2) {
-      targetUsers.push(...targetUsers);
-    } else if (targetUsers.length === 1) {
-      targetUsers.push(...targetUsers, ...targetUsers, ...targetUsers);
-    }
+    // const userStreamIds = joinUsers.map((user) => user.stream.streamId);
+    // const targetUsers = [...userStreamIds];
+    // if (targetUsers.length === 3) {
+    //   targetUsers.push(targetUsers[0]);
+    // } else if (targetUsers.length === 2) {
+    //   targetUsers.push(...targetUsers);
+    // } else if (targetUsers.length === 1) {
+    //   targetUsers.push(...targetUsers, ...targetUsers, ...targetUsers);
+    // }
 
     // 유저 정보
     const Users = joinUsers;
@@ -807,22 +796,23 @@ const Room = () => {
         );
         resultSrc = imageURLCleaned;
         console.log("finish");
+        if (isHost === true) {
+          // sendImageData(resultSrc, mySessionId);
+        }
         setRoomStatus(2);
-        return;
       } // 4번 다 돌기 전에는 이를 반복
       else {
         console.log(`${count} times left`);
         // 페이즈에 들어서며 일어날 일 (캠 메인에 띄우기/주제 출력)
         if (randomTags) {
           randomTag = randomTags[4 - count];
-          tagResult.push(randomTag);
         }
-        console.log(orders)
+        console.log(orders);
         Users.forEach((user) => {
           if (
             user &&
             user.stream &&
-            user.stream.streamId === orders[count - 1].streamId
+            user.stream.streamId === orders[count - 1]
           ) {
             // 해당 유저를 MainPublisher로 설정합니다.
             setMainStreamManager(user);
@@ -844,10 +834,7 @@ const Room = () => {
                 horizontalTopLoc[gameCnt]
               );
             } else {
-              handleCapture(
-                verticalLeftLoc[gameCnt],
-                verticalTopLoc[gameCnt]
-              );
+              handleCapture(verticalLeftLoc[gameCnt], verticalTopLoc[gameCnt]);
             }
             setMainStreamManager(undefined);
             setMinutes(0);
@@ -866,15 +853,16 @@ const Room = () => {
     setRoomStatus(1);
     // 유저 순서 설정(without RoomServer ver)
     // 순서 설정 기능 구현 후 userStreamIds ~ targetUsers 부분 삭제할 것
-    // const userStreamIds = joinUsers.map((user) => user.stream.streamId);
-    // const targetUsers = [...userStreamIds];
-    // if (targetUsers.length === 3) {
-    //   targetUsers.push(targetUsers[0]);
-    // } else if (targetUsers.length === 2) {
-    //   targetUsers.push(...targetUsers);
-    // } else if (targetUsers.length === 1) {
-    //   targetUsers.push(...targetUsers, ...targetUsers, ...targetUsers);
-    // }
+    const userStreamIds = joinUsers.map((user) => user.stream.streamId);
+    const targetUsers = [...userStreamIds];
+    if (targetUsers.length === 3) {
+      targetUsers.push(targetUsers[0]);
+    } else if (targetUsers.length === 2) {
+      targetUsers.push(...targetUsers);
+    } else if (targetUsers.length === 1) {
+      targetUsers.push(...targetUsers, ...targetUsers, ...targetUsers);
+    }
+    // orders = targetUsers;
     // setOrders(targetUsers);
     // console.log(orders, targetUsers);
   };
@@ -888,6 +876,7 @@ const Room = () => {
       const imageURLCleaned = imageURL.replace(/url\(['"]?(.*?)['"]?\)/, "$1");
       resultSrc = imageURLCleaned;
       console.log("finish");
+      sendImageData(resultSrc, mySessionId);
       setRoomStatus(2);
       return;
     } else {
@@ -899,8 +888,8 @@ const Room = () => {
         locationY = verticalTopLoc[count];
       }
       joinUsers.forEach((user) => {
-        console.log(user.stream.streamId, orders[count].streamId);
-        if (user && user.stream && user.stream.streamId === orders[count].streamId) {
+        console.log(user.stream.streamId, orders[count]);
+        if (user && user.stream && user.stream.streamId === orders[count]) {
           // 해당 유저를 MainPublisher로 설정합니다.
           setMainStreamManager(user);
         } else {
@@ -914,7 +903,7 @@ const Room = () => {
   // 일반모드 (capture)
   const nextNormalPhase = (count) => {
     if (selectedSpec === "HORIZONTAL") {
-      handleCapture(horizontalLeftLoc[count], horizontalTopLoc[count]);     
+      handleCapture(horizontalLeftLoc[count], horizontalTopLoc[count]);
     } else {
       handleCapture(verticalLeftLoc[count], verticalTopLoc[count]);
     }
@@ -953,33 +942,6 @@ const Room = () => {
       console.error("Error checking session:", error);
     }
   };
-  // 방 유저 전체 게임모드 돌입
-  // const handleSendConcept = async (sessionId) => {
-  //   try {
-  //     const request = await axios.post(
-  //       "/openvidu/api/signal",
-  //       {
-  //         session: sessionId,
-  //         to: [],
-  //         type: "sendConcept",
-  //         data: randomTag,
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Basic ${btoa(
-  //             `OPENVIDUAPP:${APPLICATION_SERVER_SECRET}`
-  //           )}`,
-  //           "Content-Type": "application/json",
-  //           "Access-Control-Allow-Origin": "*",
-  //           "Access-Control-Allow-Methods": "GET,POST",
-  //         },
-  //       }
-  //     );
-  //     console.log(request);
-  //   } catch (error) {
-  //     console.error("Error checking session:", error);
-  //   }
-  // };
   // 방 유저 전체 일반모드 돌입
   const handleStartNormalMode = async (sessionId) => {
     try {
@@ -1057,6 +1019,9 @@ const Room = () => {
     } catch (error) {}
   };
   const sendOrders = () => {
+    const streamIds = orders.map((item) => item.streamId);
+    const resultStreams = streamIds.join(",");
+    console.log(resultStreams);
     try {
       const request = axios.post(
         "/openvidu/api/signal",
@@ -1064,7 +1029,7 @@ const Room = () => {
           session: mySessionId,
           to: [],
           type: "randomOrder",
-          data: orders,
+          data: resultStreams,
         },
         {
           headers: {
@@ -1079,7 +1044,7 @@ const Room = () => {
       );
       console.log(request);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
   const getRandomTags = () => {
@@ -1087,12 +1052,13 @@ const Room = () => {
       axios
         .get("/api/image/random/tag", {
           headers: {
-            Authorization: `${accessToken}`,
-            // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+            Authorization: `${localStorage.getItem("accessToken")}`,
           },
         })
         .then((response) => {
           console.log("대답:", response);
+          // randomTags = response.data;
+          sendTags();
           // axios
           //   .post(
           //     "/openvidu/api/signal",
@@ -1130,20 +1096,50 @@ const Room = () => {
       console.log(error);
     }
   };
+  const sendTags = () => {
+    const tags = randomTags.map((item) => item.tag);
+    const tagOrders = randomTags.map((item) => item.id);
+    tagResult = tagOrders;
+    const resultTags = tags.join(",");
+    console.log("sendthese: ", resultTags);
+    try {
+      const request = axios.post(
+        "/openvidu/api/signal",
+        {
+          session: mySessionId,
+          to: [],
+          type: "randomOrder",
+          data: resultTags,
+        },
+        {
+          headers: {
+            Authorization: `Basic ${btoa(
+              `OPENVIDUAPP:${APPLICATION_SERVER_SECRET}`
+            )}`,
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,POST",
+          },
+        }
+      );
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const getRandomOrder = (sessionId) => {
     try {
       axios
         .get(`/api/participant/random/${sessionId}`, {
           headers: {
-            // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
-            Authorization: `${accessToken}`,
+            Authorization: `${localStorage.getItem("accessToken")}`,
             "Content-Type": "application/json;charset=UTF-8",
           },
         })
         .then((response) => {
           console.log(response);
-          orders = response.data
-          sendOrders()
+          orders = response.data;
+          sendOrders();
           // setOrders([response.data])
         });
     } catch (error) {
@@ -1152,97 +1148,101 @@ const Room = () => {
   };
   // 결과창에서 DB에 이미지 저장
   const sendImageData = async (resultURL, sessionId) => {
-    console.log("SEND");
-    try {
-      await axios
-        .post(
-          "/api/amazon/presigned",
-          {
-            fileName: `${sessionId}.jpg`,
-            fileType: "image",
-          },
-          {
-            headers: {
-              // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
-              Authorization: `${accessToken}`,
-              "Content-Type": "application/json;charset=UTF-8",
+    if (isHost) {
+      console.log("SEND");
+      try {
+        await axios
+          .post(
+            "/api/amazon/presigned",
+            {
+              fileName: `${sessionId}.jpg`,
+              fileType: "image",
             },
-          }
-        )
-        .then(async (response) => {
-          // PRESIGNED URL에 이미지 보내는 코드
-          // 아래 주석 절대 지우지 말기
-          console.log("IMAGE");
-          const binaryImageData = atob(resultURL.split(",")[1]);
-          const arrayBufferData = new Uint8Array(binaryImageData.length);
-          for (let i = 0; i < binaryImageData.length; i++) {
-            arrayBufferData[i] = binaryImageData.charCodeAt(i);
-          }
-          const blob = new Blob([arrayBufferData], { type: "image/jpg" });
-          // Blob 객체에서 File 객체 생성
-          const imageFile = new File([blob], `${sessionId}.jpg`, {
-            type: "image/jpg",
-          });
-          console.log(imageFile);
-          // const image = new Image();
-          // image.src = URL.createObjectURL(imageFile);
-          // document.body.appendChild(image);
-          let getFileName = response.data.fileName;
-          await fetch(response.data.preSignUrl, {
-            method: "PUT",
-            body: imageFile,
-            headers: {
-              // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
-              "Content-Type": "image/jpg",
-            },
-          }).then(async (response) => {
-            console.log("DATA");
-            console.log(response);
-            // fileName, type(image), tags, roomCode to Back(Article)
-            await axios
-              .post(
-                "/api/image",
-                {
-                  imageName: getFileName,
-                  // imageName: "test.jpg",
-                  fileType: "image",
-                  // tags: tagResult,
-                  tags: ["1", "2", "3", "4"],
-                  roomCode: mySessionId,
-                  // roomCode: "sessionB",
-                },
-                {
-                  headers: {
-                    // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
-                    Authorization: `${accessToken}`,
-                    "Content-Type": "application/json;charset=UTF-8",
+            {
+              headers: {
+                Authorization: `${localStorage.getItem("accessToken")}`,
+                "Content-Type": "application/json;charset=UTF-8",
+              },
+            }
+          )
+          .then(async (response) => {
+            // PRESIGNED URL에 이미지 보내는 코드
+            // 아래 주석 절대 지우지 말기
+            console.log("IMAGE");
+            const binaryImageData = atob(resultURL.split(",")[1]);
+            const arrayBufferData = new Uint8Array(binaryImageData.length);
+            for (let i = 0; i < binaryImageData.length; i++) {
+              arrayBufferData[i] = binaryImageData.charCodeAt(i);
+            }
+            const blob = new Blob([arrayBufferData], { type: "image/jpg" });
+            // Blob 객체에서 File 객체 생성
+            const imageFile = new File([blob], `${sessionId}.jpg`, {
+              type: "image/jpg",
+            });
+            console.log(imageFile);
+            // 테스트용
+            // const image = new Image();
+            // image.src = URL.createObjectURL(imageFile);
+            // document.body.appendChild(image);
+            let getFileName = response.data.fileName;
+            await fetch(response.data.preSignUrl, {
+              method: "PUT",
+              body: imageFile,
+              headers: {
+                "Content-Type": "image/jpg",
+              },
+            }).then(async (response) => {
+              console.log("DATA");
+              console.log(response);
+              console.log(getFileName, mySessionId);
+              // fileName, type(image), tags, roomCode to Back(Article)
+              await axios
+                .post(
+                  "/api/image",
+                  // "https://8599-211-192-210-169.ngrok-free.app/api/image",
+                  {
+                    imageName: getFileName,
+                    // imageName: "test.jpg",
+                    fileType: "image",
+                    // tags: tagResult,
+                    // tags: ["1", "2", "3", "4"],
+                    tags: [],
+                    roomCode: mySessionId,
+                    // roomCode: "sessionB",
                   },
-                }
-              )
-              .then((response) => {
-                console.log(response);
-                roomImageID = response.data.imageId;
-              });
+                  {
+                    headers: {
+                      Authorization: `${localStorage.getItem("accessToken")}`,
+                      "Content-Type": "application/json;charset=UTF-8",
+                    },
+                  }
+                )
+                .then((response) => {
+                  console.log(response);
+                  roomImageID = response.data.imageId;
+                  console.log(roomImageID);
+                });
+            });
           });
-        });
-    } catch (error) {
-      alert(error);
-      console.error("Error:", error);
-      return;
+      } catch (error) {
+        alert(error);
+        console.error("Error:", error);
+        return;
+      }
     }
   };
   // 결과창 사진 공유 버튼 눌렀을 때
-  const handleImageUpload = async (imageId) => {
+  const handleImageUpload = async (resultImageId) => {
+    console.log(resultImageId);
     try {
       const request = await axios.post(
         "/api/article/image",
         {
-          imageId: imageId,
+          imageId: resultImageId,
         },
         {
           headers: {
-            // Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjIifQ.OUP4gSxVM-CV0JeNYLxTtbwY9B0YGuS1PYjss9X0y5a9Q61g7Gjb43RsTVTK7L-EVhPvHS-DuUBN9Chy2SLgVg`,
-            Authorization: `${accessToken}`,
+            Authorization: `${localStorage.getItem("accessToken")}`,
             "Content-Type": "application/json;charset=UTF-8",
           },
         }
@@ -1268,7 +1268,7 @@ const Room = () => {
     // 다운로드 링크 클릭 이벤트 트리거
     downloadLink.click();
   };
-
+  // 임시 함수
   function arrayBufferToBase64(buffer) {
     var binary = "";
     var bytes = new Uint8Array(buffer);
@@ -1358,7 +1358,7 @@ const Room = () => {
                 ></div>
               )}
             </div>
-            {chatData && <ChatComponent user={chatData} />}
+            {chatData && <ChatComponent user={chatData} myName={myUserName} />}
           </div>
           <div className="room-bot">
             <div className="video-container">
@@ -1390,7 +1390,7 @@ const Room = () => {
             <div className="room-header">
               <img id="logo" src={logo} alt="LOGO" />
               <div>
-                <p>컨셉 : {randomTag}</p>
+                <p>{randomTag} !</p>
               </div>
             </div>
             <RoomButtons
@@ -1406,7 +1406,7 @@ const Room = () => {
               buttonName3="다시 찍기"
               option1={true}
               option2={!isHost || selectedMode === "game"}
-              option3={!isHost || normalCnt === 0 }
+              option3={!isHost || normalCnt === 0}
             />
           </div>
           <div className="room-mid">
@@ -1414,69 +1414,65 @@ const Room = () => {
             <div className="room-main">
               {Spec === "HORIZONTAL" && (
                 <div
-                id="video-frame"
-                style={{
-                  width: "589.6px",
-                  height: "400.6px",
-                  backgroundColor: "black",
-                  backgroundImage: selectFrame,
-                  backgroundSize: "contain",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
-                }}
+                  id="video-frame"
+                  style={{
+                    width: "589.6px",
+                    height: "400.6px",
+                    backgroundColor: "black",
+                    backgroundImage: selectFrame,
+                    backgroundSize: "contain",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                  }}
                 >
-                {mainStreamManager && selectedMode === "game" && 
-                (
-                  <TargetVideoComponent
-                    streamManager={mainStreamManager}
-                    selectedSpec={Spec}
-                    locationX={horizontalLeftLoc[gameCnt]}
-                    locationY={horizontalTopLoc[gameCnt]}
-                  />
-                )}
-                {mainStreamManager && selectedMode === "normal" &&  
-                (
-                  <TargetVideoComponent
-                    streamManager={mainStreamManager}
-                    selectedSpec={Spec}
-                    locationX={horizontalLeftLoc[normalCnt]}
-                    locationY={horizontalTopLoc[normalCnt]}
-                  />
-                )}
-              </div>
+                  {mainStreamManager && selectedMode === "game" && (
+                    <TargetVideoComponent
+                      streamManager={mainStreamManager}
+                      selectedSpec={Spec}
+                      locationX={horizontalLeftLoc[gameCnt]}
+                      locationY={horizontalTopLoc[gameCnt]}
+                    />
+                  )}
+                  {mainStreamManager && selectedMode === "normal" && (
+                    <TargetVideoComponent
+                      streamManager={mainStreamManager}
+                      selectedSpec={Spec}
+                      locationX={horizontalLeftLoc[normalCnt]}
+                      locationY={horizontalTopLoc[normalCnt]}
+                    />
+                  )}
+                </div>
               )}
               {Spec === "VERTICAL" && (
                 <div
-                id="video-frame"
-                style={{
-                  width: "207.8px",
-                  height: "589.6px",
-                  backgroundColor: "black",
-                  backgroundImage: selectFrame,
-                  backgroundSize: "contain",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
-                }}
+                  id="video-frame"
+                  style={{
+                    width: "207.8px",
+                    height: "589.6px",
+                    backgroundColor: "black",
+                    backgroundImage: selectFrame,
+                    backgroundSize: "contain",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                  }}
                 >
-                {mainStreamManager && selectedMode === "game" && 
-                (
-                  <TargetVideoComponent
-                    streamManager={mainStreamManager}
-                    selectedSpec={Spec}
-                    locationX={verticalLeftLoc[gameCnt]}
-                    locationY={verticalTopLoc[gameCnt]}
-                  />
-                )}
-                {mainStreamManager && selectedMode === "normal" &&  
-                (
-                  <TargetVideoComponent
-                    streamManager={mainStreamManager}
-                    selectedSpec={Spec}
-                    locationX={verticalLeftLoc[normalCnt]}
-                    locationY={verticalTopLoc[normalCnt]}
-                  />
-                )}
-              </div>
+                  {mainStreamManager && selectedMode === "game" && (
+                    <TargetVideoComponent
+                      streamManager={mainStreamManager}
+                      selectedSpec={Spec}
+                      locationX={verticalLeftLoc[gameCnt]}
+                      locationY={verticalTopLoc[gameCnt]}
+                    />
+                  )}
+                  {mainStreamManager && selectedMode === "normal" && (
+                    <TargetVideoComponent
+                      streamManager={mainStreamManager}
+                      selectedSpec={Spec}
+                      locationX={verticalLeftLoc[normalCnt]}
+                      locationY={verticalTopLoc[normalCnt]}
+                    />
+                  )}
+                </div>
               )}
             </div>
             {chatData && <ChatComponent user={chatData} myName={myUserName} />}
@@ -1535,17 +1531,17 @@ const Room = () => {
               onButton2={() => {
                 startRoom(mySessionId);
                 if (selectedMode === "game") {
-                  // getRandomTags();
+                  getRandomTags();
                   getRandomOrder(mySessionId);
                   setTimeout(() => {
                     handleStartGameMode(mySessionId);
-                  }, 100);
+                  }, 500);
                 } else {
                   if (selectedMode === "normal") {
-                    getRandomOrder(mySessionId)
+                    getRandomOrder(mySessionId);
                     setTimeout(() => {
                       handleStartNormalMode(mySessionId);
-                    }, 100);
+                    }, 500);
                   } else {
                   }
                 }
@@ -1562,8 +1558,8 @@ const Room = () => {
                 console.log("frames: ", frameList);
                 console.log("mode: ", selectedMode);
                 console.log("spec: ", selectedSpec);
+                console.log("stat: ", roomStatus);
                 console.log(chosenUrl);
-                // getRandomOrder(mySessionId);
                 // axios
                 //   .get(
                 //     "https://200oks3bucket.s3.ap-northeast-2.amazonaws.com/frame/38a46b4c-f74d-4b9b-bdd4-de6d379c16baSSSS.png",
@@ -1595,75 +1591,75 @@ const Room = () => {
               }}
               buttonName1="나가기"
               buttonName2="시작하기"
-              buttonName3="초대 링크"
+              buttonName3="C"
               option2={!isHost}
-              // option3={!isHost}
+              option3={!isHost}
             />
           </div>
           <div className="room-mid">
             <div className="room-main">
-            {Spec === "HORIZONTAL" && (
-              <div
-                id="video-frame"
-                style={{
-                  width: "589.6px",
-                  height: "400.6px",
-                  backgroundColor: "black",
-                  backgroundImage: selectFrame,
-                  backgroundSize: "contain",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
-                }}
-              >
-                <UserVideoComponent
-                  streamManager={publisher}
-                  locationX={horizontalLeftLoc[0]}
-                  locationY={horizontalTopLoc[0]}
-                  selectedSpec={Spec}
-                />
-                {subscribers.map((sub, i) => (
-                  <div key={i} className="stream-container col-md-6 col-xs-6">
-                    <UserVideoComponent
-                      streamManager={sub}
-                      locationX={horizontalLeftLoc[i + 1]}
-                      locationY={horizontalTopLoc[i + 1]}
-                      selectedSpec={Spec}
-                    />
-                  </div>
+              {Spec === "HORIZONTAL" && (
+                <div
+                  id="video-frame"
+                  style={{
+                    width: "589.6px",
+                    height: "400.6px",
+                    backgroundColor: "black",
+                    backgroundImage: selectFrame,
+                    backgroundSize: "contain",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                  }}
+                >
+                  <UserVideoComponent
+                    streamManager={publisher}
+                    locationX={horizontalLeftLoc[0]}
+                    locationY={horizontalTopLoc[0]}
+                    selectedSpec={Spec}
+                  />
+                  {subscribers.map((sub, i) => (
+                    <div key={i} className="stream-container col-md-6 col-xs-6">
+                      <UserVideoComponent
+                        streamManager={sub}
+                        locationX={horizontalLeftLoc[i + 1]}
+                        locationY={horizontalTopLoc[i + 1]}
+                        selectedSpec={Spec}
+                      />
+                    </div>
                   ))}
-                  </div>
-            )} 
-            {Spec === "VERTICAL" && (       
-              <div
-                id="video-frame"
-                style={{
-                  width: "207.8px",
-                  height: "589.6px",
-                  backgroundColor: "black",
-                  backgroundImage: selectFrame,
-                  backgroundSize: "contain",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
-                }}
-              >
-                <UserVideoComponent
-                  streamManager={publisher}
-                  locationX={verticalLeftLoc[0]}
-                  locationY={verticalTopLoc[0]}
-                  selectedSpec={Spec}
-                />
-                {subscribers.map((sub, i) => (
-                  <div key={i} className="stream-container col-md-6 col-xs-6">
-                    <UserVideoComponent
-                      streamManager={sub}
-                      locationX={verticalLeftLoc[i + 1]}
-                      locationY={verticalTopLoc[i + 1]}
-                      selectedSpec={Spec}
-                    />
-                  </div>
+                </div>
+              )}
+              {Spec === "VERTICAL" && (
+                <div
+                  id="video-frame"
+                  style={{
+                    width: "207.8px",
+                    height: "589.6px",
+                    backgroundColor: "black",
+                    backgroundImage: selectFrame,
+                    backgroundSize: "contain",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                  }}
+                >
+                  <UserVideoComponent
+                    streamManager={publisher}
+                    locationX={verticalLeftLoc[0]}
+                    locationY={verticalTopLoc[0]}
+                    selectedSpec={Spec}
+                  />
+                  {subscribers.map((sub, i) => (
+                    <div key={i} className="stream-container col-md-6 col-xs-6">
+                      <UserVideoComponent
+                        streamManager={sub}
+                        locationX={verticalLeftLoc[i + 1]}
+                        locationY={verticalTopLoc[i + 1]}
+                        selectedSpec={Spec}
+                      />
+                    </div>
                   ))}
-                  </div>
-                  )}
+                </div>
+              )}
             </div>
             {chatData && <ChatComponent user={chatData} myName={myUserName} />}
           </div>
@@ -1678,20 +1674,17 @@ const Room = () => {
                         key={item.articleId}
                         src={item.frameLink}
                         alt={item.author}
-                        // alt={item.subject}
                         style={{
                           width: "200px",
                           height: "125px",
                           borderRadius: "4px",
                           cursor: "pointer",
                         }}
-                        onClick={() =>
-                          {
-                            if (isHost) {
-                            handleSelectFrame(mySessionId, item.frameLink)
-                            }
+                        onClick={() => {
+                          if (isHost) {
+                            handleSelectFrame(mySessionId, item.frameLink);
                           }
-                        }
+                        }}
                       />
                       {/* </div> */}
                     </div>

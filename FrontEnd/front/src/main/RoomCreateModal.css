@@ -34,7 +34,6 @@
   margin-bottom: 10px;
   font-size: 30px;
   font-weight: 200;
-
 }
 
 /* 입력 필드 스타일 */
@@ -68,10 +67,9 @@
 .mode-selection label {
   display: inline;
   margin-right: 20px;
-  margin-bottom :30px;
-  height:20px;
+  margin-bottom: 30px;
+  height: 20px;
   font-size: 20px;
-
 }
 .mode-selection input[type="radio"] {
   border-radius: 50%;
@@ -81,7 +79,6 @@
   height: 20px !important;
   top: 13px;
   border: 1px solid #808080 !important;
-
 }
 .frame-type {
   justify-content: center;
@@ -141,37 +138,35 @@
   font-size: 20px;
 }
 
-.frame-type button{
+.frame-type button {
   margin-left: 50px;
   margin: 0 15px 10px 35px;
 }
 
-.password-settings{
+.password-settings {
   width: inherit;
 }
 
-.password-settings input{
+.password-settings input {
   width: 250px;
   margin: 0 auto;
   border-radius: 10px;
 }
 
-.finish-create-modal-content{
+.finish-create-modal-content {
   width: 100%;
-  
 }
 
-.finish-create-modal-content input{
+.finish-create-modal-content input {
   width: 250px;
   font-size: 20px;
 }
 .room-code,
-.room-invite{
+.room-invite {
   margin: 0 auto;
 }
 #createdCode {
-  margin-left: 40px;
-
+  margin-left: 10px;
 }
 
 #inviteLink {

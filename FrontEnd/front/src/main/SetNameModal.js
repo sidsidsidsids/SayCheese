@@ -31,7 +31,7 @@ function SetNameModal({ open, close }) {
         console.log(response);
         const accessToken = response.headers["authorization"];
         localStorage.setItem("accessToken", accessToken);
-        dispatch(notUserNickname(nickname));
+        dispatch(notUserNickname(`Guest_${nickname}`));
         close();
       })
       .catch((error) => {
