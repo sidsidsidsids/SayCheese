@@ -92,10 +92,10 @@
   font-size: 0;
   /* max-width: 70vw; */
 }
-.slide {
+/* .slide {
   display: block;
   width: 200px;
-}
+} */
 .frame-settings {
   display: inline-block;
   justify-content: center;
@@ -177,7 +177,7 @@ div.forRadio > label {
 
 .slick-slide {
   padding-right: 30px;
-  background: black;
+  /* background: black; */
   margin-top: 10x;
 }
 
