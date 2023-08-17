@@ -154,7 +154,10 @@ export default function Drawing() {
           style={{ width: "129px" }}
           type="button"
           className="whtbtn"
-          onClick={() => dispatch(SwitchDrawingMode())}
+          onClick={(event) => {
+            event.stopPropagation();
+            dispatch(SwitchDrawingMode());
+          }}
         >
           {message}
         </button>
@@ -163,7 +166,10 @@ export default function Drawing() {
           type="button"
           value="삭제하기"
           className="btn aligncenter"
-          onClick={() => dispatch(Undecorate())}
+          onClick={(event) => {
+            event.stopPropagation();
+            dispatch(Undecorate());
+          }}
           data-tooltip-place="top"
           data-tooltip-id="object-menual"
           data-tooltip-content="드로잉을 삭제하기 위해서는 먼저 펜을 비활성화 해주세요. 그리고

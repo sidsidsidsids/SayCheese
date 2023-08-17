@@ -286,11 +286,11 @@ const addHeartBlocks = (canvas, height, width) => {
 };
 
 // STEP 2. 이미지로 프레임을 꾸미기 함수입니다
-const DecorateObjects = (object, canvas) => {
-  if (object && canvas) {
+const DecorateObjects = (objects, canvas) => {
+  if (objects && canvas) {
     canvas.renderOnAddRemove = false; // 추가된 객체가 자동으로 렌더링되지 않도록 설정합니다.
 
-    fabric.Image.fromURL(object, function (Img) {
+    fabric.Image.fromURL(objects, function (Img) {
       // 캔버스 크기에 적절하게 이미지 오브젝트를 로드하기 위해 필요한 과정 입니다
       // 이미지 비율을 구해서 캔버스 비율과 비교하여 scale을 조정할 것 입니다
       const imgAspectRatio = Img.width / Img.height;
@@ -342,105 +342,6 @@ const DecorateText = (text, canvas) => {
         fill: text.customTextColor,
       })
     );
-  }
-};
-
-const RemoveWhiteBackground = async (canvas) => {
-  const imageObject = canvas.getActiveObject();
-
-  if (imageObject && imageObject.isType("image")) {
-    var canvasElement = canvas.getElement();
-    var context = canvasElement.getContext("2d");
-
-    var imageData = context.getImageData(
-      0,
-      0,
-      canvasElement.width,
-      canvasElement.height
-    );
-    var data = imageData.data;
-
-    var transparentColor = [255, 255, 255, 255]; // RGBA white color
-
-    context.clearRect(0, 0, canvasElement.width, canvasElement.height); // Clear canvas
-    context.putImageData(imageData, 0, 0);
-    canvas.renderAll();
-
-    const imageDataObject = imageObject;
-    var pix = imageDataObject.data;
-    var newColor = { r: 0, g: 0, b: 0, a: 0 };
-    for (let i = 0; i < imageDataObject.data.length; i += 4) {
-      const r = pix[i];
-      const g = pix[i + 1];
-      const b = pix[i + 2];
-
-      // if(!r || !g || !b){
-      //   return
-      // }
-
-      // if(r != null && r>248) {
-      //   pix[i] = newColor.r;
-      // }
-      // if(g != null && g>248) {
-      //   pix[i + 1] = newColor.r;
-      // }
-      // if(b != null && b>248) {
-      //   pix[i + 2] = newColor.r;
-      // }
-
-      if (r == 255 && g == 255 && b == 255) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 254 && g == 254 && b == 254) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 253 && g == 253 && b == 253) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 252 && g == 252 && b == 252) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 251 && g == 251 && b == 251) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 250 && g == 250 && b == 250) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 249 && g == 249 && b == 249) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 252 && g == 250 && b == 250) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 250 && g == 250 && b == 252) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 248 && g == 248 && b == 251) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-    }
-
-    context.putImageData(imageDataObject, 0, 0);
   }
 };
 
@@ -558,7 +459,7 @@ const CanvasArea = () => {
     bgColor,
     block,
     bgImg,
-    object,
+    objects,
     text,
     drawingMode,
     brush,
@@ -721,9 +622,9 @@ const CanvasArea = () => {
 
   useEffect(() => {
     if (canvasInstance) {
-      DecorateObjects(object, canvasInstance);
+      DecorateObjects(objects, canvasInstance);
     }
-  }, [object]); // object가 바뀔 때만 리렌더합
+  }, [objects]); // objects가 바뀔 때만 리렌더합
 
   useEffect(() => {
     if (canvasInstance) {
@@ -801,8 +702,18 @@ const CanvasArea = () => {
         id="redoUndo"
         // className="twoButtonAlign"
       >
-        <LuRotateCcw onClick={() => undo()} />
-        <LuRotateCw onClick={() => redo()} />
+        <LuRotateCcw
+          onClick={(event) => {
+            event.stopPropagation();
+            undo();
+          }}
+        />
+        <LuRotateCw
+          onClick={(event) => {
+            event.stopPropagation();
+            redo();
+          }}
+        />
       </div>
       {/* <button onClick={() => RemoveWhiteBackground(canvasInstance)} /> */}
     </div>

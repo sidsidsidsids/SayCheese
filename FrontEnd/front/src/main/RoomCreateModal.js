@@ -7,7 +7,6 @@ import "./RoomCreateModal.css";
 import ModalButtons from "./ModalButtons";
 import l_Frame from "./assets/ladder_shape.svg";
 import w_Frame from "./assets/window_shape.png";
-const accessToken = localStorage.getItem("accessToken");
 
 function RoomCreateModal({ open, close }) {
   const dispatch = useDispatch();
@@ -45,7 +44,6 @@ function RoomCreateModal({ open, close }) {
         }
       }
     }
-    // setRoomCode("sessionA");
   }
   async function isValidCode(code) {
     try {
@@ -87,7 +85,7 @@ function RoomCreateModal({ open, close }) {
   if (!open) {
     return null;
   }
-  // 방 정보 제출
+  // 최종 제출
   const handleConfirm = () => {
     codeCreation();
     setIsComplete(true);
@@ -111,15 +109,12 @@ function RoomCreateModal({ open, close }) {
         password: roomPassword,
         maxCount: roomLimit,
         mode: selectedMode,
+        // roomCode: "sessionC",
         roomCode: roomCode,
         specification: selectedFrame,
       })
     );
     navigate(`/room/${roomCode}`);
-    // });
-    // } catch (error) {
-    // console.log(error);
-    // }
   };
 
   return (
