@@ -14,7 +14,6 @@ export default function TargetVideoComponent({
     // return myName;
   };
 
-  console.log("11111111111", selectedSpec);
 
   return (
     <div>

@@ -13,7 +13,6 @@ export default function UserVideoComponent({
     // return JSON.parse(streamManager.stream.connection.data).clientData;
     // return myName;
   };
-  console.log("11111111111", selectedSpec);
 
   return (
     <div>

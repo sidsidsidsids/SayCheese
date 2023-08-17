@@ -14,8 +14,24 @@ function SetNameModal({ open, close, onConfirm }) {
     return null;
   }
   const handleConfirm = () => {
-    onConfirm(inputNickname);
-    close();
+    nicknameCheck(inputNickname);
+  };
+  const nicknameCheck = (nickname) => {
+    axios
+      .get(`/api/auth/guest?nickname=${nickname}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        const accessToken = response.headers["authorization"];
+        localStorage.setItem("accessToken", accessToken);
+        dispatch(notUserNickname(`Guest_${nickname}`));
+        close();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   return (
     <div className="set-name-modal">
