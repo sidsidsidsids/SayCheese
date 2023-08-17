@@ -326,7 +326,7 @@ const DecorateObjects = (objects, canvas) => {
 // 프레임 꾸미기 제거 함수입니다.
 const UndecorateObjects = (canvas) => {
   if (canvas) {
-    let activeObjects = canvas.getActiveObject(); // 다중 선택 삭제를 위해 getActiveObject()가 아닌 getActiveObjects()로 수정
+    let activeObjects = canvas.getActiveObjects(); // 다중 선택 삭제를 위해 getActiveObject()가 아닌 getActiveObjects()로 수정
     if (activeObjects) {
       activeObjects.forEach(function (object) {
         canvas.remove(object);
