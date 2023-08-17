@@ -104,6 +104,9 @@ dependencies:
   socket.io-client:
     specifier: ^4.7.1
     version: 4.7.1
+  sweetalert2:
+    specifier: ^11.7.23
+    version: 11.7.23
   web-vitals:
     specifier: ^2.1.4
     version: 2.1.4
@@ -10532,6 +10535,10 @@ packages:
       csso: 4.2.0
       picocolors: 1.0.0
       stable: 0.1.8
+    dev: false
+
+  /sweetalert2@11.7.23:
+    resolution: {integrity: sha512-zhc2Jc/coeUFPCM7LyVaUddbSz1Av9/EgQVXxZVPre8cwJrTZXCOEAboCT11StS3vaFTio74cumWustmNzDOEw==}
     dev: false
 
   /symbol-tree@3.2.4:
