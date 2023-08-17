@@ -21,7 +21,6 @@ export default function OpenViduVideoComponent({
   let videoHeight = "114px";
 
   if (selectedSpec) {
-    console.log("OOOOOOOO", selectedSpec);
     videoWidth = videoSizes[selectedSpec].width;
     videoHeight = videoSizes[selectedSpec].height;
   }
@@ -39,6 +38,7 @@ export default function OpenViduVideoComponent({
         left: `${locationX}px`,
         width: videoWidth,
         height: videoHeight,
+        zndex: 1000
       }}
       autoPlay={true}
       ref={videoRef}
