@@ -224,11 +224,6 @@ function PhotoModal() {
                 <div className="ModalContent">
                   <div className="ModalSort">
                     <div style={{ display: "flex", justifyContent: "center" }}>
-                      <img
-                        src={userInfo.profile ? userInfo.profile : logo}
-                        alt="프로필 이미지"
-                        className="FrameAuthorProfile"
-                      />
                       <div>{imageData.author}</div>
                     </div>
 
