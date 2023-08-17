@@ -46,11 +46,9 @@ function RoomCreateModal({ open, close }) {
         }
       }
     }
-    // setRoomCode("sessionA");
   }
   async function isValidCode(code) {
     try {
-      await console.log("이 코드", code, " 중복 체크");
       return true;
     } catch (error) {
       console.log(error);
@@ -114,13 +112,10 @@ function RoomCreateModal({ open, close }) {
         mode: selectedMode,
         roomCode: roomCode,
         specification: selectedFrame,
+        owner: true,
       })
     );
     navigate(`/room/${roomCode}`);
-    // });
-    // } catch (error) {
-    // console.log(error);
-    // }
   };
 
   return (

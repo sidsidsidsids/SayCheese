@@ -93,7 +93,7 @@ const Room = () => {
 
   useEffect(() => {
     window.addEventListener("beforeunload", onbeforeunload);
-    if (roomInfo !== {}) {
+    if (roomInfo.owner === true) {
       sendRoomInfo();
       setHost(true);
     }
@@ -111,7 +111,7 @@ const Room = () => {
 
   useEffect(() => {
     if (roomStatus === 2) {
-      if (roomInfo && isLogin) {
+      if (roomInfo.owner === true && isLogin) {
         sendImageData(resultSrc, mySessionId);
       }
     }
@@ -213,7 +213,10 @@ const Room = () => {
       //     });
 
       // }
-      gameMode();
+      setTimeout(() => {
+        gameMode();
+        
+      }, 1000);
     });
 
     mySession.on("startNormalMode", (event) => {
@@ -580,7 +583,7 @@ const Room = () => {
         },
         {
           headers: {
-            Authorization: `${accessToken}`,
+            Authorization: `${localStorage.getItem("accessToken")}`,
             "Content-Type": "application/json;charset=UTF-8",
           },
         }
@@ -760,6 +763,34 @@ const Room = () => {
   };
   // 게임모드
   const gameMode = () => {
+    axios
+      .get(
+        chosenUrl,
+        {
+          responseType: "arraybuffer",
+        },
+        {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,POST",
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        // setSelectFrame(response.data);
+        const b64 = arrayBufferToBase64(response.data);
+        console.log(b64);
+        const image = new Image();
+        image.src = "data:image/png;base64," + b64;
+        // document.body.appendChild(image);
+        // setSelectFrame(`url(${response.data})`);
+        setSelectFrame(`url(${image.src})`);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
     gameCnt = 0
     console.log("GAMEMODE");
     // 방 상태 설정
@@ -798,13 +829,14 @@ const Room = () => {
         if (randomTags) {
           randomTag = randomTags[4 - count];
         }
-        console.log(orders);
         Users.forEach((user) => {
+          console.log(user, orders);
           if (
             user &&
             user.stream &&
             user.stream.streamId === orders[count - 1]
-          ) {
+          )
+           {
             // 해당 유저를 MainPublisher로 설정합니다.
             setMainStreamManager(user);
           }
@@ -814,9 +846,9 @@ const Room = () => {
         setMinutes(0);
         setSeconds(2);
         setTimeout(() => {
-          // 3000ms 후에 일어날 일 (사진 찍기/주제 변경/유저 변경)
+          // 7000ms 후에 일어날 일 (사진 찍기/주제 변경/유저 변경)
           setMinutes(0);
-          setSeconds(3);
+          setSeconds(7);
           setTimeout(() => {
             // 2000ms 후에 일어날 일(중간 텀), 이 이후 다시 else문
             if (selectedSpec === "HORIZONTAL") {
@@ -832,7 +864,7 @@ const Room = () => {
             setMinutes(0);
             setSeconds(2);
             gamePhase(count - 1);
-          }, 3000);
+          }, 7000);
         }, 2000);
       }
     };

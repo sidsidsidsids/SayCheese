@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setRoom } from "../redux/features/room/roomSlice";
 import axios from "axios";
 import Swal from "sweetalert2"
 import "./RoomJoinModal.css";
@@ -10,6 +11,7 @@ const accessToken = localStorage.getItem("accessToken");
 
 function RoomJoinModal({ open, close }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { userInfo } = useSelector((store) => store.login);
 
   const [inputRoomCode, setInputRoomCode] = useState("");
@@ -72,6 +74,11 @@ function RoomJoinModal({ open, close }) {
           }
         )
         .then(() => {
+          dispatch(
+            setRoom({
+              owner: false,
+            })
+          );
           navigate(`/room/${roomCode}`);
           close();
         })
