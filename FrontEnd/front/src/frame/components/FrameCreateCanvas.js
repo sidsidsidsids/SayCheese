@@ -345,105 +345,6 @@ const DecorateText = (text, canvas) => {
   }
 };
 
-const RemoveWhiteBackground = async (canvas) => {
-  const imageObject = canvas.getActiveObject();
-
-  if (imageObject && imageObject.isType("image")) {
-    var canvasElement = canvas.getElement();
-    var context = canvasElement.getContext("2d");
-
-    var imageData = context.getImageData(
-      0,
-      0,
-      canvasElement.width,
-      canvasElement.height
-    );
-    var data = imageData.data;
-
-    var transparentColor = [255, 255, 255, 255]; // RGBA white color
-
-    context.clearRect(0, 0, canvasElement.width, canvasElement.height); // Clear canvas
-    context.putImageData(imageData, 0, 0);
-    canvas.renderAll();
-
-    const imageDataObject = imageObject;
-    var pix = imageDataObject.data;
-    var newColor = { r: 0, g: 0, b: 0, a: 0 };
-    for (let i = 0; i < imageDataObject.data.length; i += 4) {
-      const r = pix[i];
-      const g = pix[i + 1];
-      const b = pix[i + 2];
-
-      // if(!r || !g || !b){
-      //   return
-      // }
-
-      // if(r != null && r>248) {
-      //   pix[i] = newColor.r;
-      // }
-      // if(g != null && g>248) {
-      //   pix[i + 1] = newColor.r;
-      // }
-      // if(b != null && b>248) {
-      //   pix[i + 2] = newColor.r;
-      // }
-
-      if (r == 255 && g == 255 && b == 255) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 254 && g == 254 && b == 254) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 253 && g == 253 && b == 253) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 252 && g == 252 && b == 252) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 251 && g == 251 && b == 251) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 250 && g == 250 && b == 250) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 249 && g == 249 && b == 249) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 252 && g == 250 && b == 250) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 250 && g == 250 && b == 252) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 248 && g == 248 && b == 251) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-    }
-
-    context.putImageData(imageDataObject, 0, 0);
-  }
-};
-
 // 캔버스 드로잉 함수입니다
 const addDrawing = (canvas, brush, drawingMode) => {
   if (canvas) {
@@ -728,6 +629,7 @@ const CanvasArea = () => {
   useEffect(() => {
     if (canvasInstance) {
       DecorateText(text, canvasInstance);
+      console.log("ddddd");
     }
   }, [text]); // text가 바뀔 때만 리렌더합
 
