@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+// third party
+import axios from "axios";
+// local
 import "./MyPagePhoto.css";
 import MyPhotoNull from "./MyPhotoNull";
-import axios from "axios";
 import MyPhotoCard from "./MyPhotoCard";
 import Paging from "../customercenter/Paging";
 
@@ -14,6 +16,7 @@ function MyPagePhoto() {
   const [myPhotoChange, setMyPhotochange] = useState(false);
 
   useEffect(() => {
+    // 페이지가 바뀌거나 내 이미지 목록에 변경이 생기면 내 사진 목록 다시 가져오기
     getMyPhotos();
     setMyPhotochange(false);
   }, [currentPage, myPhotoChange]);
@@ -92,6 +95,7 @@ function MyPagePhoto() {
     }
   }
 
+  // 내 이미지 목록 axios get 방식으로 가져오기
   async function getMyPhotos() {
     const accessToken = localStorage.getItem("accessToken");
     try {
@@ -103,7 +107,6 @@ function MyPagePhoto() {
         },
       });
       setPhotos(response.data.imageVoList);
-      console.log(response.data.imageVoList);
       setCount(response.data.pageNavigator.totalDataCount);
     } catch (error) {
       console.log(error);

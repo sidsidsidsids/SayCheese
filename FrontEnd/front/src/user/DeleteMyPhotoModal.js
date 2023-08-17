@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 // third party
 import axios from "axios";
+import Swal from "sweetalert2";
 // local
 import "./DeleteMyPhotoModal.css";
 import Button from "../Button";
@@ -22,7 +23,6 @@ function DeleteMyPhotoModal({
 
   // 이미지 삭제 axios
   function handleDeleteMyPhoto() {
-    console.log(imageId);
     const accessToken = localStorage.getItem("accessToken");
     axios
       .delete("/api/image", {
@@ -33,10 +33,10 @@ function DeleteMyPhotoModal({
         },
       })
       .then((response) => {
-        alert("이미지가 정상적으로 삭제되었습니다.");
+        Swal.fire("이미지가 정상적으로 삭제되었습니다.");
       })
       .catch((error) => {
-        alert(
+        Swal.fire(
           "오류로 인해 이미지를 삭제할 수 없습니다.\n다시 시도해주시길 바랍니다."
         );
       });

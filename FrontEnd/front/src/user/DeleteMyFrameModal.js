@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 // third party
 import axios from "axios";
+import Swal from "sweetalert2";
 // local
 import Button from "../Button";
 
@@ -31,10 +32,10 @@ function DeleteMyFrameModal({
         },
       })
       .then((response) => {
-        alert("프레임이 정상적으로 삭제되었습니다.");
+        Swal.fire("프레임이 정상적으로 삭제되었습니다.");
       })
       .catch((error) => {
-        alert(
+        Swal.fire(
           "오류로 인해 프레임을 삭제할 수 없습니다.\n다시 시도해주시길 바랍니다."
         );
       });

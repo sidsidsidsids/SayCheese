@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import Swal from "sweetalert2";
 // local
 import {
   loginSuccess,
@@ -38,14 +39,14 @@ function Header() {
         },
       })
       .then(() => {
-        alert("로그아웃 되었습니다.");
+        Swal.fire("로그아웃 되었습니다.");
         movePage("/main");
         dispatch(logoutSuccess());
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
       })
       .catch((error) => {
-        alert(
+        Swal.fire(
           "오류로 인해 로그아웃이 불가능합니다.\n다시 시도해주시길 바랍니다."
         );
       });

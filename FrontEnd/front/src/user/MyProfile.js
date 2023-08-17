@@ -1,11 +1,14 @@
 import React from "react";
-import "./MyProfile.css";
+// third party
 import { useDispatch } from "react-redux";
+// local
+import "./MyProfile.css";
 import { openModal } from "../redux/features/modal/modalSlice";
 import logo from "./assets/SayCheeseLogo.png";
 
 function MyProfile({ email, nickname, genderFm, age, name, profile, payload }) {
   const dispatch = useDispatch();
+
   return (
     <div>
       <img
