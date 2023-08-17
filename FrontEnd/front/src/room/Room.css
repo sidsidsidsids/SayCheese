@@ -92,10 +92,10 @@
   font-size: 0;
   /* max-width: 70vw; */
 }
-.slide {
+/* .slide {
   display: block;
   width: 200px;
-}
+} */
 .frame-settings {
   display: inline-block;
   justify-content: center;

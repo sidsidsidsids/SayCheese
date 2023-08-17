@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 // third party
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import Swal from "sweetalert2";
 // local
 import { closeModal } from "../../redux/features/modal/modalSlice";
 import "../css/CardModal.css";
@@ -94,7 +95,7 @@ export default function CardModal() {
         handleLikePlus();
       }
     } else {
-      alert("로그인 해주세요");
+      Swal.fire("로그인 해주세요");
     }
   }
   // 프레임 삭제 API
@@ -109,11 +110,11 @@ export default function CardModal() {
           },
         })
         .then((response) => {
-          alert("게시글이 정상적으로 삭제되었습니다.");
+          Swal.fire("게시글이 정상적으로 삭제되었습니다.");
           window.location.reload();
         })
         .catch((error) => {
-          alert(
+          Swal.fire(
             "오류로 인해 게시글을 삭제할 수 없습니다.\n다시 시도해주시길 바랍니다."
           );
         });
@@ -129,7 +130,7 @@ export default function CardModal() {
         },
       })
       .then((response) => {
-        alert(response.message);
+        Swal.fire(response.message);
       })
       .catch((error) => {
         console.log(error);
@@ -238,8 +239,8 @@ export default function CardModal() {
               <img
                 src={modalContent.frameLink}
                 alt="프레임 이미지"
-                width="330px"
-                height="330px"
+                width="300px"
+                height="300px"
                 style={{ objectFit: "contain" }}
               />
               <hr className="ModalLine" />
@@ -286,6 +287,7 @@ export default function CardModal() {
                   <div className="alignFrameTwoButtons">
                     <button
                       className="btn"
+                      style={{ width: "100px" }}
                       onClick={() => {
                         setIsFrameDeleteModalOpen(true);
                       }}
@@ -294,6 +296,7 @@ export default function CardModal() {
                     </button>
                     <button
                       className="btn"
+                      style={{ width: "150px" }}
                       onClick={() => {
                         setIsFrameAccessControlModalOpen(true);
                       }}
