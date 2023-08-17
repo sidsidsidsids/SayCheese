@@ -47,11 +47,11 @@
 }
 #video-frame {
   position: relative;
-  background-color: #9795f0;
   /* z-index: 100; */
 }
 #video-frame-2 {
   position: absolute;
+  z-index: 100000;
 }
 .video-container {
   position: absolute;
