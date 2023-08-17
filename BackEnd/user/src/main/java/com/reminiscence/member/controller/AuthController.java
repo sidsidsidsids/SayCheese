@@ -10,7 +10,6 @@ import com.reminiscence.message.Response;
 import com.reminiscence.message.custom_message.AuthResponseMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -49,7 +48,7 @@ public class AuthController {
             customClaims.put("memberId", String.valueOf(memberDetail.getMember().getId()));
             String newAccessToken = jwtTokenProvider.generateToken(memberDetail.getUsername(), ACCESS_TOKEN_EXPIRATION_TIME, customClaims);
             String newRefreshToken = jwtTokenProvider.generateToken(memberDetail.getUsername(), REFRESH_TOKEN_EXPIRATION_TIME, customClaims);
-            jwtTokenProvider.addHeaderAccessToken(response, newAccessToken);
+            jwtTokenProvider.setHeaderAccessToken(response, newAccessToken);
             jwtTokenProvider.addHeaderRefreshToken(response, newRefreshToken);
             log.debug("token : {}", newAccessToken);
             log.debug("정상적으로 액세스토큰 재발급!!!");
@@ -70,7 +69,7 @@ public class AuthController {
         Map<String, Object> customClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(guest.getId()));
 
         String guestToken = jwtTokenProvider.generateToken(username, GUEST_TOKEN_EXPIRATION_TIME, customClaims);
-        jwtTokenProvider.addHeaderAccessToken(response, guestToken);
+        jwtTokenProvider.setHeaderAccessToken(response, guestToken);
 
         return new ResponseEntity<>(Response.of(AuthResponseMessage.GUEST_TOKEN_ISSUE_SUCCESS), HttpStatus.OK);
     }

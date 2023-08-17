@@ -462,27 +462,33 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect2">
+<h3 id="_회원가입_api비밀번호_제약">회원가입 API(비밀번호 제약)</h3>
+<div class="paragraph">
+<p>operation::MemberIntegrationTest/testJoinMemberFailure_PasswordConstraints[snippets='http-request,request-fields,http-response,response-fields']</p>
+</div>
+</div>
+<div class="sect2">
 <h3 id="중복확인-API">이메일 중복확인 API(정상)</h3>
 <div class="paragraph">
-<p>operation::MemberIntegrationTest/testIdCheckSuccess[snippets='http-request,path-parameters,http-response,response-fields']</p>
+<p>operation::MemberIntegrationTest/testIdCheckSuccess[snippets='http-request,request-fields,http-response,response-fields']</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_이메일_중복확인_api이메일_중복">이메일 중복확인 API(이메일 중복)</h3>
 <div class="paragraph">
-<p>operation::MemberIntegrationTest/testIdCheckFailure[snippets='http-request,path-parameters,http-response,response-fields']</p>
+<p>operation::MemberIntegrationTest/testIdCheckFailure[snippets='http-request,request-fields,http-response,response-fields']</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_닉네임_중복확인_api정상">닉네임 중복확인 API(정상)</h3>
 <div class="paragraph">
-<p>operation::MemberIntegrationTest/testNicknameCheckSuccess[snippets='http-request,path-parameters,http-response,response-fields']</p>
+<p>operation::MemberIntegrationTest/testNicknameCheckSuccess[snippets='http-request,request-fields,http-response,response-fields']</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_닉네임_중복확인_api닉네임_중복">닉네임 중복확인 API(닉네임 중복)</h3>
 <div class="paragraph">
-<p>operation::MemberIntegrationTest/testNicknameCheckFailure[snippets='http-request,path-parameters,http-response,response-fields']</p>
+<p>operation::MemberIntegrationTest/testNicknameCheckFailure[snippets='http-request,request-fields,http-response,response-fields']</p>
 </div>
 </div>
 <div class="sect2">
@@ -510,6 +516,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect2">
+<h3 id="_프로필_수정_api">프로필 수정 API</h3>
+<div class="paragraph">
+<p>operation::MemberIntegrationTest/testSaveMemberProfile[snippets='http-request,request-headers,request-fields,http-response,response-fields']</p>
+</div>
+</div>
+<div class="sect2">
 <h3 id="계정삭제-API">계정삭제 API(정상)</h3>
 <div class="paragraph">
 <p>operation::MemberIntegrationTest/testDeleteMemberSuccess[snippets='http-request,request-headers,http-response,response-fields']</p>
@@ -524,7 +536,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="회원명단불러오기-API">회원명단불러오기 API</h3>
 <div class="paragraph">
-<p>operation::MemberIntegrationTest/testGetMembersList[snippets='http-request,path-parameters,http-response,response-fields']</p>
+<p>operation::MemberIntegrationTest/testGetMembersList[snippets='http-request,request-parameters,http-response,response-fields']</p>
 </div>
 </div>
 <div class="sect2">
@@ -583,7 +595,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 operation::EmailIntegrationTest/checkAuthTokenValidFailTest[snippets='http-request,request-fields,http-response,response-fields']
 === 회원 가입 시 이메일 인증 API(없는 값이 들어왔을 시)
 operation::EmailIntegrationTest/checkAuthTokenNotExistsFailTest[snippets='http-request,request-fields,http-response,response-fields']</p>
-<<<<<<< HEAD
 </div>
 </div>
 <div class="sect2">
@@ -596,8 +607,60 @@ operation::EmailIntegrationTest/checkAuthTokenNotExistsFailTest[snippets='http-r
 <h3 id="_게스트_토큰으로_회원_정보_조회_접근_시_실패">게스트 토큰으로 회원 정보 조회 접근 시 실패</h3>
 <div class="paragraph">
 <p>operation::MemberIntegrationTest/testGuestTokenForbiddenAccessFailure[snippets='http-request,request-headers,http-response']</p>
-=======
->>>>>>> 922a5135552e12a914d4a26c5eb9fb21839c0bba
+</div>
+</div>
+<div class="sect2">
+<h3 id="닉네임-조회-API">회원 닉네임 조회</h3>
+<div class="paragraph">
+<p>operation::MemberIntegrationTest/testGetGuestNickName[snippets='http-request,request-parameters,http-response,response-fields']</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_게스트_닉네임_조회">게스트 닉네임 조회</h3>
+<div class="paragraph">
+<p>operation::MemberIntegrationTest/testGetGuestNickName[snippets='http-request,request-parameters,http-response,response-fields']</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="프로필-수정-API">프로필 수정</h3>
+<div class="paragraph">
+<p>operation::MemberIntegrationTest/testSaveMemberProfile[snippets='http-request,request-headers,request-fields,http-response,response-fields']</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="비밀번호-변경-API">비밀번호 변경 시 회원 이메일 찾기 및 이메일 전송(정상)</h3>
+<div class="paragraph">
+<p>operation::MemberIntegrationTest/testFindMemberEmailAndTransportEmailSuccess[snippets='http-request,request-fields,http-response,response-fields']</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_비밀번호_변경_시_회원_이메일_찾기없는_이메일">비밀번호 변경 시 회원 이메일 찾기(없는 이메일)</h3>
+<div class="paragraph">
+<p>operation::MemberIntegrationTest/testFindMemberEmailFailure[snippets='http-request,request-fields,http-response,response-fields']</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_비밀번호_확인_인증코드_검증_테스트">비밀번호 확인 인증코드 검증 테스트</h3>
+<div class="paragraph">
+<p>operation::MemberIntegrationTest/testCheckAuthTokenSuccess[snippets='http-request,request-fields,http-response,response-fields']</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_비밀번호_변경_테스트정상">비밀번호 변경 테스트(정상)</h3>
+<div class="paragraph">
+<p>operation::MemberIntegrationTest/testModifyPasswordSuccess[snippets='http-request,request-fields,http-response,response-fields']</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_비밀번호_변경_테스트없는_회원">비밀번호 변경 테스트(없는 회원)</h3>
+<div class="paragraph">
+<p>operation::MemberIntegrationTest/testWhenNotExistMember_ThenModifyPasswordFailure[snippets='http-request,request-fields,http-response,response-fields']</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_비밀번호_변경_테스트서로_다른_패스워드">비밀번호 변경 테스트(서로 다른 패스워드)</h3>
+<div class="paragraph">
+<p>operation::MemberIntegrationTest/testWhenNotExistMember_ThenModifyPasswordFailure[snippets='http-request,request-fields,http-response,response-fields']</p>
 </div>
 </div>
 </div>
@@ -606,11 +669,7 @@ operation::EmailIntegrationTest/checkAuthTokenNotExistsFailTest[snippets='http-r
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-<<<<<<< HEAD
-Last updated 2023-08-11 13:53:05 +0900
-=======
-Last updated 2023-08-07 15:22:52 +0900
->>>>>>> 922a5135552e12a914d4a26c5eb9fb21839c0bba
+Last updated 2023-08-17 12:27:50 +0900
 </div>
 </div>
 </body>

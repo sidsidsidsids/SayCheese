@@ -154,9 +154,9 @@ public class MemberServiceImpl implements MemberService {
         while (memberRepository.findByEmail(email) != null) {
             email = UUID.randomUUID().toString();
         }
-        String savedNickname = GUEST_PREFIX + nickname;
+        String savedNickname = GUEST_PREFIX + UUID.randomUUID() + " " + nickname;
         while (memberRepository.findByNickname(savedNickname) != null) {
-            savedNickname = GUEST_PREFIX + nickname;
+            savedNickname = GUEST_PREFIX + UUID.randomUUID() + " " + nickname;
         }
 
         Member member = Member.builder()
@@ -170,17 +170,15 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberNicknameResponseDto getMemberNickName(MemberDetail memberDetail) {
-        Member member = memberRepository.findById(memberDetail.getMember().getId()).orElse(null);
+        Member member = memberDetail.getMember();
         String nickname;
-        if (member == null) {
-            return null;
-        } else if (memberDetail.getMember().getRole() == Role.GUEST) {
-            nickname = member.getNickname().substring(GUEST_PREFIX.length()).trim();
-            return new MemberNicknameResponseDto(nickname);
+        if (memberDetail.getMember().getRole() == Role.GUEST) {
+            String[] nicknameParts = member.getNickname().split(" ");
+            nickname = nicknameParts[nicknameParts.length-1];
         } else {
             nickname = member.getNickname();
-            return new MemberNicknameResponseDto(nickname);
         }
+        return new MemberNicknameResponseDto(nickname);
     }
 
     @Transactional
