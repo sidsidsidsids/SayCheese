@@ -5,8 +5,11 @@ import axios from "axios";
 // local
 import "./NoticeList.css";
 import Paging from "./Paging";
+import { useSelector } from "react-redux";
 
 function NoticeList() {
+  const { userInfo } = useSelector((store) => store.login);
+
   const [notices, setNotices] = useState([]); // 나타낼 공지사항
   const [count, setCount] = useState(0); // 공지사항 총 개수
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
@@ -75,9 +78,11 @@ function NoticeList() {
       </table>
       <Paging page={currentPage} count={count} setPage={setPage} />
       <div className="NoticeWriteBtnSort">
-        <Link className="NoticeWriteBtn" to="/customercenter/notice/write">
-          글 작성
-        </Link>
+        {userInfo.email === "mailto:admin@admin.com" ? (
+          <Link className="NoticeWriteBtn" to="/customercenter/notice/write">
+            글 작성
+          </Link>
+        ) : null}
       </div>
     </div>
   );

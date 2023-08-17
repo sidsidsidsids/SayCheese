@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 // third party
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import Swal from "sweetalert2";
 // local
 import { closeModal } from "../../redux/features/modal/modalSlice";
 import "../css/CardModal.css";
@@ -95,7 +94,7 @@ export default function CardModal() {
         handleLikePlus();
       }
     } else {
-      Swal.fire("로그인 해주세요");
+      alert("로그인 해주세요");
     }
   }
   // 프레임 삭제 API
@@ -110,11 +109,11 @@ export default function CardModal() {
           },
         })
         .then((response) => {
-          Swal.fire("게시글이 정상적으로 삭제되었습니다.");
+          alert("게시글이 정상적으로 삭제되었습니다.");
           window.location.reload();
         })
         .catch((error) => {
-          Swal.fire(
+          alert(
             "오류로 인해 게시글을 삭제할 수 없습니다.\n다시 시도해주시길 바랍니다."
           );
         });
@@ -130,7 +129,7 @@ export default function CardModal() {
         },
       })
       .then((response) => {
-        Swal.fire(response.message);
+        alert(response.message);
       })
       .catch((error) => {
         console.log(error);
@@ -249,11 +248,6 @@ export default function CardModal() {
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >
                   <div style={{ display: "flex", justifyContent: "center" }}>
-                    <img
-                      src={userInfo?.profile ? userInfo.profile : logo}
-                      alt="프로필 이미지"
-                      className="FrameAuthorProfile"
-                    />
                     <div>{modalContent.author}</div>
                   </div>
 
@@ -309,29 +303,7 @@ export default function CardModal() {
                   </div>
                 ) : null}
               </div>
-              <div className="frameTags">
-                {modalContent.isPublic === true ? "전체 공개" : "비공개"}
-              </div>
-              {modalContent.isMine ? ( // 자신이 작성한 프레임 글이라면 삭제버튼과 공개여부 수정 버튼이 보입니다
-                <div className="alignTwoButtons">
-                  <button
-                    className="btn"
-                    onClick={() => {
-                      setIsFrameDeleteModalOpen(true);
-                    }}
-                  >
-                    삭제하기
-                  </button>
-                  <button
-                    className="btn"
-                    onClick={() => {
-                      setIsFrameAccessControlModalOpen(true);
-                    }}
-                  >
-                    공개 수정하기
-                  </button>
-                </div>
-              ) : null}
+
               <button
                 className="modalClose"
                 onClick={() => {
