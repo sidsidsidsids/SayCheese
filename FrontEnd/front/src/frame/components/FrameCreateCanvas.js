@@ -1,12 +1,14 @@
 // 프레임을 만드는 캔버스 영역 컴포넌트입니다.
 import React, { useState, useEffect, useRef } from "react";
 // third party
+import { debounce } from "lodash";
 import { fabric } from "fabric";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
+import Swal from "sweetalert2";
+
 import { LuRotateCcw, LuRotateCw } from "react-icons/lu";
 import { ResetSignal } from "../../redux/features/frame/frameSlice";
-// CSS
 import "../css/FrameCreateCanvas.css";
 
 /*
@@ -45,11 +47,7 @@ const makeBackground = (bgImg, width, height, bgColor, canvas) => {
       ); // CORS 이슈를 처리하기 위한 옵션
     } else {
       // Properly set the background color for canvas when there's no bgImg
-      canvas.setBackgroundColor(bgColor, () => {
-        // (주의)캔버스가 null 이라는 에러가 자주 남
-        // 캔버스 객체가 null인 상태에서 메서드를 호출하는 문제를 방지기 위해
-        if (canvas) canvas.renderAll.bind(canvas);
-      });
+      canvas.backgroundColor = bgColor;
       alert("배경 이미지 다시 선택해서 제출해주세요");
       resolve(null);
     }
@@ -288,10 +286,10 @@ const addHeartBlocks = (canvas, height, width) => {
 };
 
 // STEP 2. 이미지로 프레임을 꾸미기 함수입니다
-const DecorateObjects = (objects, canvas) => {
-  if (objects && canvas) {
+const DecorateObjects = (object, canvas) => {
+  if (object && canvas) {
     canvas.renderOnAddRemove = false; // 추가된 객체가 자동으로 렌더링되지 않도록 설정합니다.
-    const object = objects;
+
     fabric.Image.fromURL(object, function (Img) {
       // 캔버스 크기에 적절하게 이미지 오브젝트를 로드하기 위해 필요한 과정 입니다
       // 이미지 비율을 구해서 캔버스 비율과 비교하여 scale을 조정할 것 입니다
@@ -316,7 +314,6 @@ const DecorateObjects = (objects, canvas) => {
         scaleY: scaleY,
       });
       canvas.add(Img);
-      console.log(Img);
       canvas.renderAll(); // 객체가 추가된 후 수동으로 렌더링합니다.
     });
   }
@@ -372,7 +369,6 @@ const RemoveWhiteBackground = async (canvas) => {
     const imageDataObject = imageObject;
     var pix = imageDataObject.data;
     var newColor = { r: 0, g: 0, b: 0, a: 0 };
-    console.log(imageDataObject);
     for (let i = 0; i < imageDataObject.data.length; i += 4) {
       const r = pix[i];
       const g = pix[i + 1];
@@ -492,7 +488,6 @@ function handleDownload(canvas) {
 function handleUpload(canvas, frameInfo, frameSpecification) {
   let preSignUrl = ""; // 여기서만 사용하니까 LET 가능
   let fileName = "";
-  console.log("업로드 시작");
   const accessToken = localStorage.getItem("accessToken");
   if (accessToken) {
     axios
@@ -531,14 +526,6 @@ function handleUpload(canvas, frameInfo, frameSpecification) {
           },
           body: imageFile,
         }).then(function (response) {
-          console.log("url에 이미지 올렸음");
-          console.log({
-            name: fileName,
-            fileType: "frame",
-            isPublic: !frameInfo.privateCheck,
-            frameSpecification: frameSpecification,
-            subject: frameInfo.frameName,
-          });
           axios.post(
             "/api/article/frame",
             {
@@ -571,7 +558,7 @@ const CanvasArea = () => {
     bgColor,
     block,
     bgImg,
-    objects,
+    object,
     text,
     drawingMode,
     brush,
@@ -648,8 +635,41 @@ const CanvasArea = () => {
     //위의 코드는 리렌더링을 일으키지 않도록 이펙트 내에 두어야 합니다. 안 그러면 too many re redner 에러가 납니다
     makeHistoryEmpty(); // 캔버스 재생성 될 때마다 history 기억을 비운다
 
+    // Create a debounced function to handle canvas updates
+    const debouncedCanvasUpdate = debounce((bgColor) => {
+      // Your canvas update logic here
+      // This function will be called after a short delay when there are no more rapid changes
+
+      if (newCanvas && bgImg) {
+        newCanvas.backgroundColor = bgColor;
+        makeBackground(bgImg, width, height, bgColor, newCanvas)
+          .then((bg) => {
+            newCanvas.add(bg);
+            setHistory([]);
+            handleSpecification();
+          })
+          .then(() => {
+            // 이미지 있으면 이미지 백그라운드 만들기
+            if (newCanvas && bgImg) {
+              // 빈 캔버스에 투명칸을 만들수 없다는 에러를 해결하기 위해 조건문으로 작성
+              if (newCanvas._objects.length > 0) {
+                if (block === "Heart") {
+                  addHeartBlocks(newCanvas, height, width);
+                } else if (block === "SmoothPlain") {
+                  addSmoothPlainBlocks(newCanvas, height, width);
+                } else if (block === "Circle") {
+                  addCircleBlocks(newCanvas, height, width);
+                } else {
+                  addPlainBlocks(newCanvas, height, width);
+                }
+              }
+            }
+          });
+      }
+    }, 300); // Adjust the debounce delay as needed
+
     // 컬러 백그라운드 만들기
-    if (newCanvas && bgColor && !bgImg) {
+    if (newCanvas && bgColor) {
       newCanvas.backgroundColor = bgColor;
       if (newCanvas.backgroundColor) {
         if (block === "Heart") {
@@ -663,39 +683,13 @@ const CanvasArea = () => {
         }
       }
 
-      handleSpecification().then(() => {
-        console.log(width, frameSpecification);
-      });
+      handleSpecification();
     }
-    // 이미지 있으면 이미지 백그라운드 만들기
     if (newCanvas && bgImg) {
-      // bgImg가 유효한 이미지 URL일 때만 실행
-      makeBackground(bgImg, width, height, bgColor, newCanvas)
-        .then((bg) => {
-          newCanvas.add(bg);
-          setHistory([]);
-          handleSpecification().then(() => {
-            console.log(width, frameSpecification);
-          });
-        })
-        .then(() => {
-          // 빈 캔버스에 투명칸을 만들수 없다는 에러를 해결하기 위해 조건문으로 작성
-          if (newCanvas._objects.length > 1) {
-            if (block === "Heart") {
-              addHeartBlocks(newCanvas, height, width);
-            } else if (block === "SmoothPlain") {
-              addSmoothPlainBlocks(newCanvas, height, width);
-            } else if (block === "Circle") {
-              addCircleBlocks(newCanvas, height, width);
-            } else {
-              addPlainBlocks(newCanvas, height, width);
-            }
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+      debouncedCanvasUpdate(bgColor);
     }
+
+    // Swal.fire("천천히 스크롤");
 
     setCanvasInstance(newCanvas);
 
@@ -722,9 +716,9 @@ const CanvasArea = () => {
 
   useEffect(() => {
     if (canvasInstance) {
-      DecorateObjects(objects, canvasInstance);
+      DecorateObjects(object, canvasInstance);
     }
-  }, [objects]); // objects가 바뀔 때만 리렌더합
+  }, [object]); // object가 바뀔 때만 리렌더합
 
   useEffect(() => {
     if (canvasInstance) {
@@ -778,12 +772,6 @@ const CanvasArea = () => {
   // 업로드 요청이 들어오면 handleUpload(canvasInstance)를 실행합니다
   useEffect(() => {
     async function upload() {
-      console.log(
-        "업로드 함수에서",
-        canvasInstance,
-        frameInfo,
-        frameSpecification
-      );
       handleUpload(canvasInstance, frameInfo, frameSpecification);
       return "success";
     }
