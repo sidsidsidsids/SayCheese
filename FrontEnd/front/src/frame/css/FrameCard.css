@@ -1,14 +1,14 @@
 /* 카드 */
 .frameCard {
-  width: 230px;
-  height: 230px;
+  width: 260px;
+  height: 260px;
   border: #d9d9d9 1px solid;
   border-radius: 30px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 0 0 20px 30px;
+  margin: 0 0 20px 10px;
   position: relative;
 }
 
@@ -16,7 +16,8 @@
   .frameSpace div:nth-child(1) {
     margin: 0;
   }
-  .frameSpace div:last-child() {
+  .frameSpace div:last-child(4n) {
+    margin: 0;
   }
 }
 

@@ -27,6 +27,8 @@
 }
 .createWrapper {
   height: inherit;
+  width: inherit;
+  position: relative;
 }
 
 .createCanvas {
