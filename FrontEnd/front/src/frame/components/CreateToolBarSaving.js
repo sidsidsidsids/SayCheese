@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 
 import { useDispatch } from "react-redux";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 import { DoDownload, PostSignal } from "../../redux/features/frame/frameSlice";
 import {
@@ -37,6 +38,7 @@ export default function Saving() {
             type="email"
             value={email}
             onChange={(event) => {
+              event.stopPropagation();
               setEmail(event.target.value);
             }}
           ></input>
@@ -46,14 +48,16 @@ export default function Saving() {
             type="password"
             value={password}
             onChange={(event) => {
+              event.stopPropagation();
               setPassword(event.target.value);
             }}
           ></input>
           <button
             type="button"
             className="btn alignCenter"
-            onClick={(e) => {
-              handleLogin(e);
+            onClick={(event) => {
+              event.stopPropagation();
+              handleLogin(event);
             }}
           >
             로그인하기
@@ -86,8 +90,13 @@ export default function Saving() {
           <label htmlFor="xprivate">혼자만 사용하기</label>
           <button
             type="button"
-            onClick={() => {
-              postFrame();
+            onClick={(event) => {
+              if (frameName.length <= 2) {
+                Swal.fire("프레임 이름은 꼭 3글자 이상이어야 합니다");
+              } // 글자 세글자 이상 아니면  api 리턴 400
+              else {
+                postFrame();
+              }
             }}
             className="whtbtn alignCenter"
           >

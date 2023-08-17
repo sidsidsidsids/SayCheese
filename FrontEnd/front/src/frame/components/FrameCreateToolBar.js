@@ -49,7 +49,8 @@ export default function CreateToolBar() {
           <li
             // 클릭 시 해당 도구를 선택된 도구로 설정합니다.
             key={index}
-            onClick={(e) => {
+            onClick={(event) => {
+              event.stopPropagation();
               setFocusedTool(item.toolBarItem);
             }}
             // 현재 선택된 도구인 경우에는 focusedTool 클래스를 추가하여 배경색을 회색으로 변경합니다.

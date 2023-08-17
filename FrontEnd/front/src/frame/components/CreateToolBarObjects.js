@@ -40,14 +40,20 @@ export default function Objects() {
           type="file"
           accept="image/*"
           ref={imgRef}
-          onChange={addObjects}
+          onChange={(event) => {
+            event.stopPropagation();
+            addObjects();
+          }}
         ></input>
 
         <button
           id="deleteObjects"
           type="button"
           value="삭제하기"
-          onClick={deleteObjects}
+          onClick={(event) => {
+            event.stopPropagation();
+            deleteObjects();
+          }}
           className="btn aligncenter"
           data-tooltip-place="bottom-start"
           data-tooltip-id="object-menual"

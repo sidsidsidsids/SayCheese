@@ -125,7 +125,8 @@ export default function Text() {
       <div className="alignTwoButtons">
         <button
           type="button"
-          onClick={() => {
+          onClick={(event) => {
+            event.stopPropagation();
             dispatch(AddText(payload));
             onRest();
           }}
@@ -134,7 +135,13 @@ export default function Text() {
           추가하기
         </button>
         <br />
-        <button className="btn" onClick={deleteText()}>
+        <button
+          className="btn"
+          onClick={(event) => {
+            event.stopPropagation();
+            deleteText();
+          }}
+        >
           삭제하기
         </button>
       </div>

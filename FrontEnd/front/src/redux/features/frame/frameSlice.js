@@ -8,7 +8,7 @@ const initialState = {
   bgColor: "#000000",
   block: "Plain",
   bgImg: false,
-  object: false,
+  objects: false,
   text: false,
   brush: false,
   drawingMode: false,
@@ -32,7 +32,7 @@ const frameSlice = createSlice({
       state.bgColor = "#000000";
       state.block = "Plain";
       state.bgImg = false;
-      state.object = false;
+      state.objects = false;
       state.text = false;
       state.brush = false;
       state.drawingMode = false;
@@ -69,7 +69,7 @@ const frameSlice = createSlice({
     },
     // 프레임 오브젝트
     Decorate: (state, action) => {
-      state.object = action.payload;
+      state.objects = action.payload;
     },
     Undecorate: (state) => {
       state.deleteSignal = 1;

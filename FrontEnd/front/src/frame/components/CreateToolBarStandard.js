@@ -45,15 +45,24 @@ export default function Standard() {
         <div className="rect" onClick={() => dispatch(ReBlock("Plain"))}></div>
         <div
           className="smoothRect"
-          onClick={() => dispatch(ReBlock("SmoothPlain"))}
+          onClick={(event) => {
+            event.stopPropagation();
+            dispatch(ReBlock("SmoothPlain"));
+          }}
         ></div>
         <div
           className="circle"
-          onClick={() => dispatch(ReBlock("Circle"))}
+          onClick={(event) => {
+            event.stopPropagation();
+            dispatch(ReBlock("Circle"));
+          }}
         ></div>
         <BsFillSuitHeartFill
           className="heart"
-          onClick={() => dispatch(ReBlock("Heart"))}
+          onClick={(event) => {
+            event.stopPropagation();
+            dispatch(ReBlock("Heart"));
+          }}
         />
       </div>
       {/* 다른 툴바 버튼들 */}

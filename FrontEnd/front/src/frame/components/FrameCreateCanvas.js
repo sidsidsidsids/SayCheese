@@ -286,11 +286,11 @@ const addHeartBlocks = (canvas, height, width) => {
 };
 
 // STEP 2. 이미지로 프레임을 꾸미기 함수입니다
-const DecorateObjects = (object, canvas) => {
-  if (object && canvas) {
+const DecorateObjects = (objects, canvas) => {
+  if (objects && canvas) {
     canvas.renderOnAddRemove = false; // 추가된 객체가 자동으로 렌더링되지 않도록 설정합니다.
 
-    fabric.Image.fromURL(object, function (Img) {
+    fabric.Image.fromURL(objects, function (Img) {
       // 캔버스 크기에 적절하게 이미지 오브젝트를 로드하기 위해 필요한 과정 입니다
       // 이미지 비율을 구해서 캔버스 비율과 비교하여 scale을 조정할 것 입니다
       const imgAspectRatio = Img.width / Img.height;
@@ -459,7 +459,7 @@ const CanvasArea = () => {
     bgColor,
     block,
     bgImg,
-    object,
+    objects,
     text,
     drawingMode,
     brush,
@@ -622,14 +622,13 @@ const CanvasArea = () => {
 
   useEffect(() => {
     if (canvasInstance) {
-      DecorateObjects(object, canvasInstance);
+      DecorateObjects(objects, canvasInstance);
     }
-  }, [object]); // object가 바뀔 때만 리렌더합
+  }, [objects]); // objects가 바뀔 때만 리렌더합
 
   useEffect(() => {
     if (canvasInstance) {
       DecorateText(text, canvasInstance);
-      console.log("ddddd");
     }
   }, [text]); // text가 바뀔 때만 리렌더합
 
@@ -703,8 +702,18 @@ const CanvasArea = () => {
         id="redoUndo"
         // className="twoButtonAlign"
       >
-        <LuRotateCcw onClick={() => undo()} />
-        <LuRotateCw onClick={() => redo()} />
+        <LuRotateCcw
+          onClick={(event) => {
+            event.stopPropagation();
+            undo();
+          }}
+        />
+        <LuRotateCw
+          onClick={(event) => {
+            event.stopPropagation();
+            redo();
+          }}
+        />
       </div>
       {/* <button onClick={() => RemoveWhiteBackground(canvasInstance)} /> */}
     </div>

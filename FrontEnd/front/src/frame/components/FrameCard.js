@@ -207,6 +207,7 @@ export default function FrameCard({
     <div
       className="frameCard"
       onClick={(event) => {
+        event.stopPropagation();
         dispatch(openModal(payload));
       }}
     >
@@ -219,7 +220,13 @@ export default function FrameCard({
         alt="프레임 이미지"
       />
       {subject}
-      <div className="heart-btn" onClick={(event) => clickLike(event)}>
+      <div
+        className="heart-btn"
+        onClick={(event) => {
+          event.stopPropagation();
+          clickLike(event);
+        }}
+      >
         <div className="content">
           <span
             className={
