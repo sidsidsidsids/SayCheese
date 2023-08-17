@@ -113,7 +113,7 @@ export default function FrameList({ searchWord }) {
       {page ? (
         <Pagination
           activePage={activePage}
-          itemsCountPerPage={6}
+          itemsCountPerPage={8}
           totalItemsCount={page.totalDataCount}
           pageRangeDisplayed={5}
           onChange={(e) => {
