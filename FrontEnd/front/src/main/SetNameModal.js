@@ -1,21 +1,42 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
+import { notUserNickname } from "../redux/features/login/loginSlice";
+import axios from "axios";
 import "./SetNameModal.css";
 import ModalButtons from "./ModalButtons";
 
-function SetNameModal({ open, close, onConfirm }) {
+function SetNameModal({ open, close }) {
+  const { userInfo } = useSelector((store) => store.login);
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const [inputNickname, setInputNickname] = useState("");
 
   if (!open) {
     return null;
   }
   const handleConfirm = () => {
-    onConfirm(inputNickname);
-    close();
+    console.log(inputNickname);
+    nicknameCheck(inputNickname);
+    console.log(userInfo);
+  };
+  const nicknameCheck = (nickname) => {
+    axios
+      .get(`/api/auth/guest?nickname=${nickname}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        const accessToken = response.headers["authorization"];
+        localStorage.setItem("accessToken", accessToken);
+        dispatch(notUserNickname(`Guest_${nickname}`));
+        close();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   return (
     <div className="set-name-modal">
@@ -33,6 +54,7 @@ function SetNameModal({ open, close, onConfirm }) {
         </button>
 
         <div>닉네임 설정하고 계속하기</div>
+
         <input
           type="text"
           id="nickname"

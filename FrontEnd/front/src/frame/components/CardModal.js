@@ -309,7 +309,29 @@ export default function CardModal() {
                   </div>
                 ) : null}
               </div>
-
+              <div className="frameTags">
+                {modalContent.isPublic === true ? "전체 공개" : "비공개"}
+              </div>
+              {modalContent.isMine ? ( // 자신이 작성한 프레임 글이라면 삭제버튼과 공개여부 수정 버튼이 보입니다
+                <div className="alignTwoButtons">
+                  <button
+                    className="btn"
+                    onClick={() => {
+                      setIsFrameDeleteModalOpen(true);
+                    }}
+                  >
+                    삭제하기
+                  </button>
+                  <button
+                    className="btn"
+                    onClick={() => {
+                      setIsFrameAccessControlModalOpen(true);
+                    }}
+                  >
+                    공개 수정하기
+                  </button>
+                </div>
+              ) : null}
               <button
                 className="modalClose"
                 onClick={() => {

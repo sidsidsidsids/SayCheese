@@ -29,6 +29,9 @@
   font-weight: 500;
 }
 
+.room-join-modal-content {
+  margin: 0 auto;
+}
 /* 입력 필드 스타일 */
 .room-join-modal-content {
   margin: 0 auto;
@@ -43,6 +46,7 @@
   margin-bottom: 10px;
 }
 
+/* 버튼 스타일 */
 .room-join-modal #roomCode {
   margin-left: 37px;
 }
@@ -54,7 +58,6 @@
   align-items: center;
 }
 
-.room-join-modal #roomPW{
+.room-join-modal #roomPW {
   margin-left: 10px;
 }
-

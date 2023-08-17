@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 // local
 import {
   loginSuccess,
+  logintemporary,
   logoutSuccess,
 } from "../redux/features/login/loginSlice";
 import "./Header.css";

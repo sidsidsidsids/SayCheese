@@ -26,6 +26,7 @@ import w_Frame from "./assets/window_shape.png";
 
 import "./Main.css";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getUserInfo } from "../redux/features/login/loginSlice";
 
@@ -34,14 +35,16 @@ function Main() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [joinModalOpen, setJoinModalOpen] = useState(false);
   const [nameModalOpen, setNameModalOpen] = useState(false);
+  const [toCreate, setToCreate] = useState(false);
+  const [toJoin, setToJoin] = useState(false);
+  const { userInfo, isLogin } = useSelector((store) => store.login);
   const [loginLink, setLoginLink] = useState("/user/login");
-  const { isLogin, userInfo } = useSelector((store) => store.login);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getUserInfo());
-    able = checkAvailable();
+    // able = checkAvailable();
 
     if (userInfo) {
       // 로그인 되어있으면 마이페이지로 링크 연결합니다
@@ -49,26 +52,15 @@ function Main() {
     }
   }, []);
 
-  const checkAvailable = async () => {
-    try {
-      const response = await axios.post(
-        "/api/room/check",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
-          },
-        }
-      );
-      if (response.status === 200) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
+  const defaultOptions = {
+    reverse: false, // reverse the tilt direction
+    max: 35, // max tilt rotation (degrees)
+    perspective: 1000, // Transform perspective, the lower the more extreme the tilt gets.
+    speed: 1000, // Speed of the enter/exit transition
+    transition: true, // Set a transition on enter/exit.
+    axis: null, // What axis should be disabled. Can be X or Y.
+    reset: true, // If the tilt effect has to be reset on exit.
+    easing: "cubic-bezier(.03,.98,.52,.99)", // Easing on enter/exit.
   };
 
   return (
@@ -92,8 +84,12 @@ function Main() {
             <div
               className="createRoom"
               onClick={() => {
-                setCreateModalOpen(true);
-                console.log("방생성", createModalOpen);
+                if (userInfo) {
+                  setCreateModalOpen(true);
+                } else {
+                  setNameModalOpen(true);
+                  setToCreate(true);
+                }
               }}
             >
               방 생성
@@ -147,8 +143,12 @@ function Main() {
             <div
               className="createRoom"
               onClick={() => {
-                setJoinModalOpen(true);
-                console.log("방입장", joinModalOpen);
+                if (userInfo) {
+                  setJoinModalOpen(true);
+                } else {
+                  setNameModalOpen(true);
+                  setToJoin(true);
+                }
               }}
             >
               방 입장
@@ -183,10 +183,21 @@ function Main() {
       </div>
       <SetNameModal
         open={nameModalOpen}
-        close={() => setNameModalOpen(false)}
-        onConfirm={(inputNickname) => {
-          // dispatch()
+        close={() => {
+          setNameModalOpen(false);
+          if (toCreate) {
+            setCreateModalOpen(true);
+            setToCreate(false);
+          } else {
+            if (toJoin) {
+              setJoinModalOpen(true);
+              setToJoin(false);
+            }
+          }
         }}
+        // onConfirm={(inputNickname) => {
+        //   dispatch(notUserNickname(inputNickname));
+        // }}
       />
       <RoomCreateModal
         open={createModalOpen}

@@ -130,8 +130,8 @@ export let persistor = persistStore(store);
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
-    <PersistGate loading={<Loading />} persistor={persistor}>
-      <RouterProvider router={router} />
-    </PersistGate>
+    {/* <PersistGate loading={null} persistor={persistor}> */}
+    <RouterProvider router={router} />
+    {/* </PersistGate> */}
   </Provider>
 );

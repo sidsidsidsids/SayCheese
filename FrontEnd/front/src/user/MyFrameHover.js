@@ -34,7 +34,6 @@ function MyFrameHover({
             alt="프레임 이미지"
             className="ModalImg"
           />
-
           <div className="ModalContent">
             <div className="FrameHoverSort">
               <div className="PhotoDate">

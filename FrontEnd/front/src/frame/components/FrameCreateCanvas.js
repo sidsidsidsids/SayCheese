@@ -691,7 +691,12 @@ const CanvasArea = () => {
 
     // Swal.fire("천천히 스크롤");
 
+    // 객체 추가 또는 수정 시 상태 저장
+
+    // canvasInstance.on("object:modified", handleObjectAdded);
+
     setCanvasInstance(newCanvas);
+    // 캔버스 객체 초기화
 
     handleSpecification();
     return () => {
