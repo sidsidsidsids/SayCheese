@@ -144,7 +144,7 @@ public class ImageArticleController {
     public ResponseEntity<Response> writeImageArticle(
             @AuthenticationPrincipal UserDetail userDetail,
             @RequestBody @Valid WriteImageArticleRequestDto requestDto) {
-        imageService.writeImageArticle(userDetail.getMember().getId(), requestDto.getImageId());
+        imageService.writeImageArticle(requestDto.getImageId(), userDetail.getMember().getId());
         return new ResponseEntity<>(Response.of(ImageArticleResponseMessage.IMAGE_ARTICLE_WRITE_SUCCESS), HttpStatus.OK);
     }
 
