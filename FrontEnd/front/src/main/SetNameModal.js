@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { notUserNickname } from "../redux/features/login/loginSlice";
 
 import "./SetNameModal.css";
 import ModalButtons from "./ModalButtons";
 
 function SetNameModal({ open, close, onConfirm }) {
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const [inputNickname, setInputNickname] = useState("");
 
   if (!open) {
