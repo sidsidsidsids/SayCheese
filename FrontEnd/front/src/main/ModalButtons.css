@@ -1,4 +1,4 @@
-.twoButtonAlign{
+.twoButtonAlign {
   display: flex;
 }
 .modal-button {
@@ -15,7 +15,7 @@
   margin: 20px auto;
   display: inline-block;
   color: white;
-  background: #ea5455;;
+  background: #ea5455;
   border: 1px solid black;
   border-radius: 10px;
   transform-style: preserve-3d;
@@ -56,15 +56,15 @@
 }
 
 .btn:active {
-  background:  #ea5455;
+  background: #ea5455;
   transform: translate(0em, 0.75em);
 }
 
 .btn:active::before {
-  box-shadow: 0 0 0 2px  #ea5455, 0 0  #ea5455;
+  box-shadow: 0 0 0 2px #ea5455, 0 0 #ea5455;
   transform: translate3d(0, 0, -1em);
 }
 
 .btn {
-  background-color:  #ea5455;
+  background-color: #ea5455;
 }

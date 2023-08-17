@@ -35,6 +35,7 @@ export default class ChatComponent extends Component {
         nickname: data.nickname,
         message: data.message,
       });
+      console.log(messageList);
       setTimeout(() => {
         // this.props.messageReceived();
       }, 50);

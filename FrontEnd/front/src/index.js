@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+// third party
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { PersistGate } from "redux-persist/integration/react";
@@ -29,6 +30,7 @@ import MyPageFrame from "./user/MyPageFrame";
 import { Provider } from "react-redux"; // React 앱에 Redux 스토어를 연결하기 위한 Provider
 import store from "./redux/store";
 import axios from "axios";
+// local
 import Loading from "./Loading";
 
 const router = createBrowserRouter([
@@ -128,8 +130,8 @@ export let persistor = persistStore(store);
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
-    <PersistGate loading={<Loading />} persistor={persistor}>
-      <RouterProvider router={router} />
-    </PersistGate>
+    {/* <PersistGate loading={null} persistor={persistor}> */}
+    <RouterProvider router={router} />
+    {/* </PersistGate> */}
   </Provider>
 );

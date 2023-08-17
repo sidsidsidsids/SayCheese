@@ -3,10 +3,12 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 // local
 import "./PhotoModal.css";
 import { closeModal } from "../redux/features/modal/modalSlice";
 import Button from "../Button";
+import logo from "../frame/assets/SayCheeseLogo.png";
 
 function PhotoModal() {
   // 모달에 표시할 내용이 없으면 에러가 나지않게 로딩 상태를 표시
@@ -16,6 +18,7 @@ function PhotoModal() {
   // state는 전체 리덕스 스토어를 의미하며, modal 리듀서에서 관리되는 상태 객체 modalContent를 추출합니다.
   const { isOpen } = useSelector((store) => store.modal);
   const { modalContent } = useSelector((state) => state.modal);
+  const { userInfo } = useSelector((store) => store.login);
 
   const [imageData, setImageData] = useState([]);
   // 좋아요 체크 되어있으면 like:1 안 했으면 :0
@@ -128,11 +131,11 @@ function PhotoModal() {
           },
         })
         .then((response) => {
-          alert("게시글이 정상적으로 삭제되었습니다.");
+          Swal.fire("게시글이 정상적으로 삭제되었습니다.");
           window.location.reload(); // 해당 페이지로 리다이렉트
         })
         .catch((error) => {
-          alert(
+          Swal.fire(
             "오류로 인해 게시글을 삭제할 수 없습니다.\n다시 시도해주시길 바랍니다."
           );
         });
@@ -147,17 +150,17 @@ function PhotoModal() {
           },
         })
         .then((response) => {
-          alert("게시글과 네컷사진이 정상적으로 삭제되었습니다.");
+          Swal.fire("게시글과 네컷사진이 정상적으로 삭제되었습니다.");
           window.location.reload(); // 해당 페이지로 리다이렉트
         })
         .catch((error) => {
-          alert(
+          Swal.fire(
             "오류로 인해 삭제를 진행할 수 없습니다.\n다시 시도해주시길 바랍니다."
           );
         });
       // 삭제방식을 선택하지 않았을 경우
     } else {
-      return alert("원하는 삭제 방식을 선택 후 진행해주시길 바랍니다.");
+      return Swal.fire("원하는 삭제 방식을 선택 후 진행해주시길 바랍니다.");
     }
   }
 
@@ -220,7 +223,10 @@ function PhotoModal() {
                 <hr className="ModalLine" />
                 <div className="ModalContent">
                   <div className="ModalSort">
-                    <div>{imageData.author}</div>
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                      <div>{imageData.author}</div>
+                    </div>
+
                     <div>
                       {new Date(imageData.createdDate).toLocaleString("ko-KR", {
                         year: "numeric",

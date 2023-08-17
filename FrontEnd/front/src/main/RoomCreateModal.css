@@ -67,18 +67,13 @@ h2 {
 .mode-selection label {
   display: inline;
   margin-right: 20px;
-  margin-bottom :30px;
-  height:20px;
+  margin-bottom: 30px;
+  height: 20px;
   font-size: 20px;
 }
-.mode-selection input[type="radio"] {
-  border-radius: 50%;
-  margin-right: 15px;
-  margin-top: 10px;
-  width: 20px;
-  height: 20px !important;
-  top: 13px;
-  border: 1px solid #808080 !important;
+.mode-selection input {
+  display: inline; /* 이 부분을 추가하여 라벨을 인라인 요소로 변경 */
+  margin-right: 20px;
 }
 .frame-type {
   justify-content: center;
@@ -110,6 +105,7 @@ h2 {
   display: flex;
   justify-content: center;
   align-items: center;
+  justify-content: center;
 }
 
 .limit-settings input[type="number"] {
@@ -119,60 +115,6 @@ h2 {
   border: 1px solid #ccc;
   border-radius: 3px;
   width: 38px;
-  border-radius: 10px;
-}
-
-.limit-settings button {
-  background-color: grey;
-  font-size: 30px;
-  height: 30px;
-  width: 30px;
-  color: white;
-  border-radius: 50%;
-  padding: 0px;
-  margin-left: 10px;
-}
-
-/* 프레임 규격 설정 */
-.frame-type {
-  font-size: 20px;
-}
-
-.frame-type button{
-  margin-left: 50px;
-  margin: 0 15px 10px 35px;
-}
-
-.password-settings{
-  width: inherit;
-}
-
-.password-settings input{
-  width: 250px;
-  margin: 0 auto;
-  border-radius: 10px;
-}
-
-.finish-create-modal-content{
-  width: 100%;
-  
-}
-
-.finish-create-modal-content input{
-  width: 250px;
-  font-size: 20px;
-}
-.room-code,
-.room-invite{
-  margin: 0 auto;
-}
-#createdCode {
-  margin-left: 40px;
-
-}
-
-#inviteLink {
-  margin-left: 10px;
 }
 
 .finish-create-modal-content p {

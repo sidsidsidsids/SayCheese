@@ -1,22 +1,24 @@
-import "./WithdrawModal.css";
-import { closeModal } from "../redux/features/modal/modalSlice";
 import { useEffect, useState } from "react";
-import Button from "../Button";
+// third party
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
-import { logoutSuccess } from "../redux/features/login/loginSlice";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Swal from "sweetalert2";
+// local
+import "./WithdrawModal.css";
+import Button from "../Button";
+import { logoutSuccess } from "../redux/features/login/loginSlice";
 
 function WithdrawModal({ close }) {
-  const dispatch = useDispatch();
-  const movePage = useNavigate();
-
   const [activeIndex, setActiveIndex] = useState(null);
 
   const { userInfo } = useSelector((store) => store.login);
 
-  const [password, setPassword] = useState("");
-  const [passwordRight, setPasswordRight] = useState(false);
+  const [password, setPassword] = useState(""); // 비밀번호
+  const [passwordRight, setPasswordRight] = useState(false); // 비밀번호 맞게 입력하면 true
+
+  const dispatch = useDispatch();
+  const movePage = useNavigate();
 
   useEffect(() => {
     // 모달 열리면 본문 스크롤 방지
@@ -58,14 +60,13 @@ function WithdrawModal({ close }) {
         console.log(error);
         setPasswordRight(false);
         if (error.response.status === 401) {
-          alert("비밀번호를 다시 확인해주세요.");
+          Swal.fire("비밀번호를 다시 확인해주세요.");
         }
       });
   }
 
   function handleWithdraw() {
     const accessToken = localStorage.getItem("accessToken");
-    console.log(accessToken);
     axios
       .delete("/api/member/delete", {
         headers: {
@@ -77,13 +78,13 @@ function WithdrawModal({ close }) {
         if (response.status === 200) {
           dispatch(logoutSuccess());
           localStorage.clear(); // 로컬스토리지 비우기
-          alert("그동안 이용해주셔서 감사합니다.\n또 만나요!🙋‍♀️");
+          Swal.fire("그동안 이용해주셔서 감사합니다.\n또 만나요!🙋‍♀️");
           movePage("/");
         }
       })
       .catch((error) => {
         if (error.response.status === 401) {
-          alert(
+          Swal.fire(
             "오류로 인해 회원 탈퇴를 진행할 수 없습니다.\n다시 시도해주시길 바랍니다."
           );
         }

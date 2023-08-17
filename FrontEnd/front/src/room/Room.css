@@ -17,21 +17,20 @@
   display: inline-flex;
   width: 100%;
   height: 10vh;
-  box-shadow: 0 0 0 2px lightcoral inset;
   margin: 0;
 }
 .room-mid {
   display: inline-flex;
   width: 100%;
   height: 70vh;
-  box-shadow: 0 0 0 2px lightcoral inset;
+
   margin: 0;
 }
 .room-bot {
   display: inline-flex;
   width: 100%;
   height: 20vh;
-  box-shadow: 0 0 0 2px lightcoral inset;
+  position: relative;
   margin: 0;
 }
 .room-main {
@@ -46,22 +45,20 @@
   /* width: 80%; */
   flex: 1 1 80%;
 }
+#video-frame {
+  position: relative;
+  background-color: #9795f0;
+  /* z-index: 100; */
+}
+#video-frame-2 {
+  position: absolute;
+}
 .video-container {
+  position: absolute;
+  bottom: 0;
   display: flex;
   justify-content: center;
-  align-items: center;
-  margin: 0;
-  border: 0;
-  /* border: 1px dashed black; */
-  /* width: 80%; */
-  flex: 1 1 80%;
-  overflow: hidden;
-  font-size: 0;
-}
-.slide-container {
-  display: inline-block;
-  justify-content: center;
-  align-items: center;
+  align-items: start;
   margin: 0;
   border: 0;
   /* border: 1px dashed black; */
@@ -82,8 +79,23 @@
   flex: 1 1 80%;
   overflow: hidden;
   font-size: 60px;
+  z-index: 100;
 }
-
+.slide-container {
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  border: 0;
+  flex: 1 1 80%;
+  overflow: hidden;
+  font-size: 0;
+  /* max-width: 70vw; */
+}
+.slide {
+  display: block;
+  width: 200px;
+}
 .frame-settings {
   display: inline-block;
   justify-content: center;
@@ -171,4 +183,8 @@ div.forRadio > label {
 
 .slickPrev {
   z-index: 10;
+}
+
+#logo {
+  width: 10%;
 }

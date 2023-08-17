@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import "./MyPageModal.css";
-import { useDispatch, useSelector } from "react-redux";
-import { closeModal } from "../redux/features/modal/modalSlice";
-import MyInfoModify from "./MyInfoModify";
+// third party
 import { useNavigate } from "react-router-dom";
-import Button from "../Button";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import Swal from "sweetalert2";
+// local
+import "./MyPageModal.css";
+import { closeModal } from "../redux/features/modal/modalSlice";
 import { getUserInfo } from "../redux/features/login/loginSlice";
+import Button from "../Button";
 import logo from "./assets/SayCheeseLogo.png";
 
 function MyPageModal({ profileChanged, setProfileChanged }) {
@@ -14,13 +16,13 @@ function MyPageModal({ profileChanged, setProfileChanged }) {
 
   const { userInfo } = useSelector((store) => store.login);
 
+  const [isProfileModifyModalOpen, setIsProfileModifyModalOpen] =
+    useState(false); // 프로필 수정 모달이 열려있는지 변수 선언
+  const [imgFile, setImgFile] = useState(userInfo.profile);
+
   const dispatch = useDispatch();
   const movePage = useNavigate();
   const imgRef = useRef();
-
-  const [isProfileModifyModalOpen, setIsProfileModifyModalOpen] =
-    useState(false);
-  const [imgFile, setImgFile] = useState(userInfo.profile);
 
   const handleProfileModifyModalOpen = () => {
     setIsProfileModifyModalOpen(true);
@@ -34,7 +36,6 @@ function MyPageModal({ profileChanged, setProfileChanged }) {
     reader.onloadend = () => {
       setImgFile(reader.result);
     };
-    console.log(imgFile);
   };
 
   // 파일 인풋 값 초기화
@@ -53,8 +54,8 @@ function MyPageModal({ profileChanged, setProfileChanged }) {
   }, []);
 
   useEffect(() => {
+    // 내 프로필 사진 변경될 때마다 로그인한 회원 정보 다시 가져오기
     dispatch(getUserInfo());
-    console.log(userInfo.profile);
     setProfileChanged(false);
   }, [profileChanged]);
 
@@ -64,7 +65,7 @@ function MyPageModal({ profileChanged, setProfileChanged }) {
 
     const accessToken = localStorage.getItem("accessToken");
     let fileName = `profile_${crypto.getRandomValues(new Uint32Array(1))}.jpg`;
-    console.log("파일이름만듦 ", fileName);
+
     axios
       .post(
         "/api/amazon/presigned",
@@ -80,9 +81,7 @@ function MyPageModal({ profileChanged, setProfileChanged }) {
         }
       )
       .then(function (response) {
-        console.log("프리사인", response.data.preSignUrl);
         const getFileName = response.data.fileName;
-        // fileName = response.data.fileName;
         // presigned URL에 파일 전송
         setTimeout(() => {
           fetch(response.data.preSignUrl, {
@@ -92,7 +91,6 @@ function MyPageModal({ profileChanged, setProfileChanged }) {
             },
             body: file,
           }).then(function (response) {
-            console.log("파일이름 받아옴 ", getFileName);
             axios
               .put(
                 "/api/member/profile",
@@ -107,14 +105,13 @@ function MyPageModal({ profileChanged, setProfileChanged }) {
                 }
               )
               .then((response) => {
-                console.log("업로드할 사진", response.data.profile);
                 setImgFile(response.data.profile);
                 setProfileChanged(true);
-                alert("프로필 사진이 수정되었습니다.");
+                Swal.fire("프로필 사진이 수정되었습니다.");
               })
               .catch((error) => {
                 console.log(error);
-                alert(
+                Swal.fire(
                   "오류로 인해 프로필 사진 수정이 불가능합니다.\n다시 시도해주시길 바랍니다."
                 );
               });
@@ -123,7 +120,7 @@ function MyPageModal({ profileChanged, setProfileChanged }) {
       })
       .catch((error) => {
         console.log(error);
-        alert(
+        Swal.fire(
           "오류로 인해 프로필 사진 수정이 불가능합니다.\n다시 시도해주시길 바랍니다."
         );
       });
@@ -179,7 +176,6 @@ function MyPageModal({ profileChanged, setProfileChanged }) {
                           ref={imgRef}
                           onChange={(event) => {
                             saveImgFile();
-                            console.log(event.target.value);
                           }}
                           className="profileInput"
                         />

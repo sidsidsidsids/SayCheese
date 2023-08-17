@@ -92,6 +92,115 @@ export default function FrameCard({
       Swal.fire("로그인 해주세요");
     }
   }
+  // 좋아요 함수 로직 //
+  // 좋아요
+  async function handleLikePlus() {
+    axios
+      .post(`/api/article/lover/frame/${payload.articleId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${accessToken}`,
+        },
+      })
+      .then((response) => {
+        setLike(true);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  // 좋아요 취소
+  async function handleLikeMinus() {
+    console.log("안좋아요", like);
+    axios
+      .delete(`/api/article/lover/${payload.articleId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${accessToken}`,
+        },
+      })
+      .then((response) => {
+        setLike(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  // 좋아요 함수 로직 //
+  // 좋아요
+  async function handleLikePlus() {
+    console.log(payload.articleId);
+    axios
+      .post(`/api/article/lover/frame/${payload.articleId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${accessToken}`,
+        },
+      })
+      .then((response) => {
+        setLike(true);
+        getLikeData();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  // 좋아요 취소
+  async function handleLikeMinus() {
+    axios
+      .delete(`/api/article/lover/${payload.articleId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${accessToken}`,
+        },
+      })
+      .then((response) => {
+        setLike(false);
+        getLikeData();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  // 모달에 프레임 상세 데이터를 axios get 방식으로 가져오는 함수
+  async function getLikeData() {
+    console.log("like 숫자 받아올거임");
+    try {
+      const response = await axios.get(
+        `/api/article/frame/${payload.articleId}`,
+        // articleId에 해당하는 이미지 데이터 상세 정보 가져오기
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "69420",
+          },
+        }
+      );
+      console.log(response.data.loverCnt);
+      setLike(response.data.loverYn); // like에 좋아요 여부 저장합니다
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // 좋아요
+  function clickLike(event) {
+    event.stopPropagation();
+    // 예외처리 : 로그인 안 한 사람은 안되게 해야함
+    if (accessToken) {
+      // 로그인 한 사람만
+      if (like) {
+        handleLikeMinus();
+      } else if (!like) {
+        handleLikePlus();
+      }
+    } else {
+      alert("로그인 해주세요");
+    }
+  }
 
   return (
     // 카드를 클릭하면 isOpen을 true하기 합니다

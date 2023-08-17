@@ -6,12 +6,15 @@ export default function TargetVideoComponent({
   streamManager,
   locationX,
   locationY,
+  selectedSpec,
 }) {
   const getNicknameTag = () => {
     // Gets the nickName of the user
     // return JSON.parse(streamManager.stream.connection.data).clientData;
     // return myName;
   };
+
+  console.log("11111111111", selectedSpec);
 
   return (
     <div>
@@ -22,6 +25,7 @@ export default function TargetVideoComponent({
         >
           <OpenViduVideoComponent
             streamManager={streamManager}
+            selectedSpec={selectedSpec}
             locationX={locationX}
             locationY={locationY}
           />

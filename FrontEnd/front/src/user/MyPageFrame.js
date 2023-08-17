@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+// third party
+import axios from "axios";
+// local
 import MyFrameCard from "./MyFrameCard";
 import MyPhotoNull from "./MyPhotoNull";
-import axios from "axios";
 import Paging from "../customercenter/Paging";
 
 function MyPageFrame() {
@@ -10,7 +12,7 @@ function MyPageFrame() {
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
   const [postPerPage] = useState(9); // 페이지 당 사진 개수
 
-  const [myFrameChange, setMyFrameChange] = useState(false);
+  const [myFrameChange, setMyFrameChange] = useState(false); // 내 프레임 목록이 변경(삭제)되었는지 여부 - true일 경우 변경됨
 
   useEffect(() => {
     getMyFrames();
@@ -97,6 +99,7 @@ function MyPageFrame() {
     }
   }
 
+  // 내 프레임 목록을 axios get 방식으로 가져오는 함수
   async function getMyFrames() {
     const accessToken = localStorage.getItem("accessToken");
 
