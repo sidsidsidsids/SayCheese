@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
+// third party
+import { useDispatch, useSelector } from "react-redux";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+// local
 import "./MyPage.css";
 import MyProfile from "./MyProfile";
 import MyPhotoCard from "./MyPhotoCard";
 import MyPhotoNull from "./MyPhotoNull";
 import MyPageModal from "./MyPageModal";
-import sampleImg from "./assets/snoopy.png";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom";
 import WithdrawModal from "./WithdrawModal";
-import axios from "axios";
-import { Link } from "react-router-dom";
 import MyFrameCard from "./MyFrameCard";
 import { getUserInfo } from "../redux/features/login/loginSlice";
 
@@ -18,17 +18,18 @@ function MyPage() {
   const { isOpen, modalContent } = useSelector((store) => store.modal);
 
   const { email } = useParams(); // 경로의 email
-  const movePage = useNavigate();
-  const dispatch = useDispatch();
 
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false); // 회원탈퇴 모달 열렸는지 여부 - true일 경우 열려있음
-  const [myPhotoChange, setMyPhotochange] = useState(false);
-  const [myPhotoList, setMyPhotoList] = useState([]);
+  const [myPhotoChange, setMyPhotochange] = useState(false); // 내 사진 목록이 변경(삭제)되었는지 여부 - true일 경우 변경됨
+  const [myPhotoList, setMyPhotoList] = useState([]); // 내 사진 목록
 
-  const [myFrameChange, setMyFrameChange] = useState(false);
-  const [myFrameList, setMyFrameList] = useState([]);
+  const [myFrameChange, setMyFrameChange] = useState(false); // 내 프레임 목록이 변경(삭제)되었는지 여부 - true일 경우 변경됨
+  const [myFrameList, setMyFrameList] = useState([]); // 내 프레임 목록
 
-  const [profileChanged, setProfileChanged] = useState(false);
+  const [profileChanged, setProfileChanged] = useState(false); // 내 프로필 사진이 변경되었는지 여부 - true일 경우 변경됨
+
+  const movePage = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // 로그인 안되어있거나 다른 회원의 주소로 접근할 경우
@@ -38,13 +39,13 @@ function MyPage() {
   }, [isLogin, userInfo, email, movePage]);
 
   useEffect(() => {
+    // 내 사진, 내 프레임 또는 내 프로필이 변경되었을 경우
     getMyPhotoList();
     setMyPhotochange(false);
     getMyFrameList();
     setMyFrameChange(false);
     dispatch(getUserInfo());
     setProfileChanged(false);
-    console.log(userInfo);
   }, [myPhotoChange, myFrameChange, profileChanged]);
 
   const handleWithdrawModalOpen = () => {
@@ -78,16 +79,15 @@ function MyPage() {
         },
       });
       setMyFrameList(response.data.frameArticleVoList);
-      console.log(response.data.frameArticleVoList);
     } catch (error) {
       console.log(error);
     }
   }
 
-  // {!userInfo ? ( movePage("/") ) : ( 여기에 아래 리턴 내용 들어가야 함)
   return (
     <div>
       {!userInfo ? (
+        // 로그인 하지 않은 사용자가 접근하는 경우 main 페이지로 리다이렉트
         movePage("/main")
       ) : (
         <div className="MyPageBox">

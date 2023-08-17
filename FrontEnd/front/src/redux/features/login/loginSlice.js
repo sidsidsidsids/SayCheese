@@ -48,7 +48,6 @@ export const getUserInfo = createAsyncThunk("login/getUserInfo", async () => {
         });
         return response.data;
       } catch (refreshError) {
-        console.log(refreshError);
         throw refreshError;
       }
     }
@@ -64,7 +63,7 @@ export const refreshToken = createAsyncThunk(
     try {
       const localRefreshToken = localStorage.getItem("refreshToken");
       if (refreshToken) {
-        const response = await axios.post("/api/refresh", {
+        const response = await axios.post("/api/auth/refresh", {
           headers: {
             "Content-Type": "application/json",
             Authorization: `${localRefreshToken}`,

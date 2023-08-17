@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
+// third party
+import axios from "axios";
+import Swal from "sweetalert2";
+// local
 import "./PwFindModal.css";
 import Button from "../Button";
-import axios from "axios";
 
 function PwFindModal({ close }) {
-  const [findStep, setFindStep] = useState(1);
+  const [findStep, setFindStep] = useState(1); // 비밀번호 변경 모달 화면 순서
   const [activeIndex, setActiveIndex] = useState(null);
-  const [email, setEmail] = useState("");
-  const [number, setNumber] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordCheck, setPasswordCheck] = useState("");
+  const [email, setEmail] = useState(""); // 회원 이메일
+  const [number, setNumber] = useState(""); // 입력한 이메일 인증번호
+  const [password, setPassword] = useState(""); // 바꿀 비밀번호
+  const [passwordCheck, setPasswordCheck] = useState(""); // 바꿀 비밀번호 확인
   const [passwordMessage, setPasswordMessage] =
     useState("! 비밀번호를 입력해주세요 !"); // 비밀번호 메시지
   const [passwordInputCheck, setPasswordInputCheck] = useState(false); // 비밀번호 잘못 입력했는지 체크
@@ -40,7 +43,6 @@ function PwFindModal({ close }) {
     let data = {
       email: email,
     };
-    console.log(email);
     axios
       .post("/api/member/password", data, {
         headers: {
@@ -53,9 +55,9 @@ function PwFindModal({ close }) {
       .catch((error) => {
         console.log(error);
         if (error.response.status === 400) {
-          alert("이메일을 다시 확인해주세요.");
+          Swal.fire("이메일을 다시 확인해주세요.");
         } else {
-          alert(
+          Swal.fire(
             "오류로 인해 비밀번호 찾기를 진행할 수 없습니다.\n다시 시도해주시길 바랍니다."
           );
         }
@@ -65,7 +67,7 @@ function PwFindModal({ close }) {
   // 인증번호 확인
   async function checkEmailNum() {
     if (number === "") {
-      return alert("인증번호 입력을 부탁드립니다.ㄴ");
+      return Swal.fire("인증번호 입력을 부탁드립니다.ㄴ");
     }
     let data = {
       email: email,
@@ -79,11 +81,11 @@ function PwFindModal({ close }) {
         },
       })
       .then((response) => {
-        alert(response.data.message);
+        Swal.fire(response.data.message);
         setFindStep(3);
       })
       .catch((error) => {
-        alert("잘못 입력하셨습니다.\n인증번호를 다시 확인 부탁드립니다.");
+        Swal.fire("잘못 입력하셨습니다.\n인증번호를 다시 확인 부탁드립니다.");
       });
   }
 
@@ -95,9 +97,9 @@ function PwFindModal({ close }) {
       passwordConfirm: passwordCheck,
     };
     if (password === "" || passwordCheck === "") {
-      return alert("빈 칸을 확인해주세요.");
+      return Swal.fire("빈 칸을 확인해주세요.");
     } else if (!passwordInputCheck) {
-      return alert(
+      return Swal.fire(
         "비밀번호를 다시 확인해주세요.\n비밀번호는 숫자+영문자+특수문자 조합으로 8자리 이상 25자리 이하 입력해야 합니다."
       );
     }
@@ -109,10 +111,10 @@ function PwFindModal({ close }) {
         },
       })
       .then((response) => {
-        alert("비밀번호가 변경됐습니다.\n로그인을 다시 시도해주세요.");
+        Swal.fire("비밀번호가 변경됐습니다.\n로그인을 다시 시도해주세요.");
       })
       .catch((error) => {
-        alert(
+        Swal.fire(
           "오류로 인해 비밀번호 변경이 불가능합니다.\n다시 시도해주시길 바랍니다."
         );
       });

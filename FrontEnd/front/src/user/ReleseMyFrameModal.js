@@ -1,6 +1,9 @@
 import { useEffect } from "react";
-import Button from "../Button";
+// third party
 import axios from "axios";
+import Swal from "sweetalert2";
+// local
+import Button from "../Button";
 
 function ReleseMyFrameModal({ articleId, isPublic, close }) {
   useEffect(() => {
@@ -12,6 +15,7 @@ function ReleseMyFrameModal({ articleId, isPublic, close }) {
     modalbg.style.top = currentTop; // Set the top CSS property of the element
   }, []);
 
+  // 프레임 게시판 공개 여부 수정을 axios put 방식으로 하는 함수
   function handleReleseMyFrame() {
     const accessToken = localStorage.getItem("accessToken");
 
@@ -23,12 +27,12 @@ function ReleseMyFrameModal({ articleId, isPublic, close }) {
         },
       })
       .then((response) => {
-        alert(response.message);
+        Swal.fire(response.message);
         window.location.reload();
       })
       .catch((error) => {
         console.log(error);
-        alert(
+        Swal.fire(
           "오류로 인해 공개 여부를 수정할 수 없습니다.\n다시 시도해주시길 바랍니다."
         );
       });

@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+// local
 import "./MyPhotoHover.css";
-import DeleteMyPhotoModal from "./DeleteMyPhotoModal";
 
 function MyPhotoHover({
   imageId,
