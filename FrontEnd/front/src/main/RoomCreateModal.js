@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setRoom } from "../redux/features/room/roomSlice";
 import axios from "axios";
+import Swal from "sweetalert2"
 import "./RoomCreateModal.css";
 import ModalButtons from "./ModalButtons";
 import l_Frame from "./assets/ladder_shape.svg";
@@ -72,11 +73,11 @@ function RoomCreateModal({ open, close }) {
           handleConfirm();
         })
         .catch((error) => {
-          alert(error.response.data.message);
+          Swal.fire(error.response.data.message);
           console.log(error);
         });
     } catch (error) {
-      alert("비정상적 접근");
+      Swal.fire("비정상적 접근");
       console.log(error);
     }
   };

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import Swal from "sweetalert2"
 import "./RoomJoinModal.css";
 import ModalButtons from "./ModalButtons";
 
@@ -45,10 +46,10 @@ function RoomJoinModal({ open, close }) {
           checkJoinable(inputRoomCode, inputRoomPassword);
         })
         .catch(() => {
-          alert("이미 접속 중 입니다");
+          Swal.fire("이미 접속 중 입니다");
         });
     } catch (error) {
-      alert("비정상적 접근");
+      Swal.fire("비정상적 접근");
       console.log(error);
     }
   };
@@ -76,11 +77,11 @@ function RoomJoinModal({ open, close }) {
         })
         .catch((error) => {
           console.log(error);
-          alert("입장할 수 없는 방입니다");
+          Swal.fire(error.response.data.message);
         });
     } catch (error) {
       console.log(error);
-      alert("정확한 방 코드와 비밀번호를 입력해주세요");
+      Swal.fire("정확한 방 코드와 비밀번호를 입력해주세요");
     }
   };
   return (
