@@ -1,6 +1,5 @@
 package com.reminiscence.article.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,12 +10,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class WebClientConfig {
 
-    @Value("${spring.data.base-url}")
-    private String BASE_URL;
     @Bean
+    @LoadBalanced
     public WebClient webClient() {
         return WebClient.builder()
-                .baseUrl(BASE_URL)
+                .baseUrl("http://room-service")
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
