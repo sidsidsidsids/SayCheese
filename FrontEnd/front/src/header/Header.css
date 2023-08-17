@@ -40,6 +40,7 @@ a {
 
 .MyPageHover:hover .DropDownSubMenu {
   height: 45px;
+  word-wrap: break-all;
   position: absolute;
   transition: height 0.5s;
 }
@@ -65,6 +66,7 @@ a {
 
 .DropDownMenu p {
   width: 89.25px !important;
+  word-break: break-all;
 }
 
 .HoverEffect {
