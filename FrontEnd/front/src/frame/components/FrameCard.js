@@ -6,7 +6,7 @@ import "../css/FrameCard.css";
 import { useDispatch } from "react-redux";
 import { openModal } from "../../redux/features/modal/modalSlice";
 import axios from "axios";
-
+import Swal from "sweetalert2";
 // FrameCard 컴포넌트: 프레임을 한개씩 담을 카드 컴포넌트입니다
 export default function FrameCard({
   subject,
@@ -92,7 +92,7 @@ export default function FrameCard({
         handleLikePlus();
       }
     } else {
-      alert("로그인 해주세요");
+      Swal.fire("로그인 해주세요");
     }
   }
 

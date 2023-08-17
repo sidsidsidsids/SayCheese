@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { fabric } from "fabric";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { LuRotateCcw, LuRotateCw } from "react-icons/lu";
 import { ResetSignal } from "../../redux/features/frame/frameSlice";
 // CSS
 import "../css/FrameCreateCanvas.css";
@@ -50,7 +49,6 @@ const makeBackground = (bgImg, width, height, bgColor, canvas) => {
         // 캔버스 객체가 null인 상태에서 메서드를 호출하는 문제를 방지기 위해
         if (canvas) canvas.renderAll.bind(canvas);
       });
-      alert("배경 이미지 다시 선택해서 제출해주세요");
       resolve(null);
     }
   });
@@ -172,7 +170,7 @@ const addCircleBlocks = (canvas, height, width) => {
       top: top,
       // scaleX: width,
       // scaleY: height,
-      rx: width / 2.42, // x축 반지름 (가로 길이의 절반)
+      rx: width / 2.3, // x축 반지름 (가로 길이의 절반)
       ry: height / 10.6, // y축 반지름 (세로 길이의 절반)
       radius: 70,
       fill: "#7767AC",
@@ -191,7 +189,7 @@ const addCircleBlocks = (canvas, height, width) => {
       // scaleX: width,
       // scaleY: height,
       rx: 111, // x축 반지름 (가로 길이의 절반)
-      ry: 81, // y축 반지름 (세로 길이의 절반)
+      ry: 84, // y축 반지름 (세로 길이의 절반)
       radius: 70,
       fill: "#7767AC",
       lockMovementX: true, // 움직이지 않도록 합니다
@@ -205,7 +203,7 @@ const addCircleBlocks = (canvas, height, width) => {
     if (height > width) {
       // 사다리형
       for (let i = 0; i < 4; i++) {
-        canvas.add(VerticalCircleBlock(17, 19 + i * 120));
+        canvas.add(VerticalCircleBlock(13, 19 + i * 120));
       }
     } else {
       // 창문형
@@ -221,102 +219,34 @@ const addCircleBlocks = (canvas, height, width) => {
   }
 };
 
-// 하트모양 투명칸 만드는 함수 입니다
-const addHeartBlocks = (canvas, height, width) => {
-  // 원형 네모칸 만드는 함수입니다
-
-  const VerticalHeartBlock = (left, top) => {
-    let heartPath = new fabric.Path(
-      "M352.92,80C288,80,256,144,256,144s-32-64-96.92-64C106.32,80,64.54,124.14,64,176.81c-1.1,109.33,86.73,187.08,183,252.42a16,16,0,0,0,18,0c96.26-65.34,184.09-143.09,183-252.42C447.46,124.14,405.68,80,352.92,80Z"
-    );
-
-    const scaleWidth = 170 / heartPath.width;
-    const scaleHeight = 111 / heartPath.height;
-    heartPath.set({
-      left: left,
-      top: top,
-      scaleX: scaleWidth,
-      scaleY: scaleHeight,
-      fill: "#7767AC",
-      lockMovementX: true, // 움직이지 않도록 합니다
-      lockMovementY: true,
-      lockRotation: true,
-      selectable: false, // 마우스 선택 불가능
-      globalCompositeOperation: "destination-out", // 이 도형이 겹쳐지는 부분은 사라집니다
-    });
-    return heartPath;
-  };
-
-  // 창문형 프레임 투명한 네모칸 만드는 함수입니다 (width, height) = 217, 165
-  const HorizontalHeartBlock = (left, top) => {
-    let heartPath = new fabric.Path(
-      "M352.92,80C288,80,256,144,256,144s-32-64-96.92-64C106.32,80,64.54,124.14,64,176.81c-1.1,109.33,86.73,187.08,183,252.42a16,16,0,0,0,18,0c96.26-65.34,184.09-143.09,183-252.42C447.46,124.14,405.68,80,352.92,80Z"
-    );
-
-    const scaleWidth = 217 / heartPath.width;
-    const scaleHeight = 165 / heartPath.height;
-    heartPath.set({
-      left: left,
-      top: top,
-      scaleX: scaleWidth,
-      scaleY: scaleHeight,
-      fill: "#7767AC",
-      lockMovementX: true, // 움직이지 않도록 합니다
-      lockMovementY: true,
-      lockRotation: true,
-      selectable: false, // 마우스 선택 불가능
-      globalCompositeOperation: "destination-out", // 이 도형이 겹쳐지는 부분은 사라집니다
-    });
-    return heartPath;
-  };
-
-  if (canvas) {
-    if (height > width) {
-      // 사다리형
-      for (let i = 0; i < 4; i++) {
-        canvas.add(VerticalHeartBlock(19, 20 + i * 120));
-      }
-    } else {
-      // 창문형
-      for (let i = 0; i < 4; i++) {
-        canvas.add(
-          HorizontalHeartBlock(30 + (i % 2) * 229, 29 + Math.floor(i / 2) * 176)
-        );
-      }
-    }
-  }
-};
-
 // STEP 2. 이미지로 프레임을 꾸미기 함수입니다
 const DecorateObjects = (objects, canvas) => {
   if (objects && canvas) {
     canvas.renderOnAddRemove = false; // 추가된 객체가 자동으로 렌더링되지 않도록 설정합니다.
     const object = objects;
     fabric.Image.fromURL(object, function (Img) {
-      // 캔버스 크기에 적절하게 이미지 오브젝트를 로드하기 위해 필요한 과정 입니다
-      // 이미지 비율을 구해서 캔버스 비율과 비교하여 scale을 조정할 것 입니다
+      // 아래는 큰 첨부 사진을 캔버스에 맞게 조정하기 위한 로직
       const imgAspectRatio = Img.width / Img.height;
-
       // canvas의 가로 세로 비율
       const canvasAspectRatio = canvas.width / canvas.height;
       let scaleX, scaleY;
-
       if (imgAspectRatio > canvasAspectRatio) {
         // 이미지의 가로 비율이 더 큰 경우
         scaleX = canvas.width / Img.width;
-        scaleY = canvas.width / Img.width;
+        scaleY = canvas.width / Img.width; // 가로 비율을 유지하기 위해 같은 값을 사용
       } else {
         // 이미지의 세로 비율이 더 큰 경우
         scaleX = canvas.height / Img.height;
-        scaleY = canvas.height / Img.height;
+        scaleY = canvas.height / Img.height; // 세로 비율을 유지하기 위해 같은 값을 사용
       }
-
       Img.set({
+        // scaleX: canvas.width / Img.width,
         scaleX: scaleX,
         scaleY: scaleY,
+        left: 19,
+        top: 10,
       });
       canvas.add(Img);
-      console.log(Img);
       canvas.renderAll(); // 객체가 추가된 후 수동으로 렌더링합니다.
     });
   }
@@ -326,7 +256,7 @@ const DecorateObjects = (objects, canvas) => {
 // 프레임 꾸미기 제거 함수입니다.
 const UndecorateObjects = (canvas) => {
   if (canvas) {
-    let activeObjects = canvas.getActiveObject(); // 다중 선택 삭제를 위해 getActiveObject()가 아닌 getActiveObjects()로 수정
+    let activeObjects = canvas.getActiveObjects(); // 다중 선택 삭제를 위해 getActiveObject()가 아닌 getActiveObjects()로 수정
     if (activeObjects) {
       activeObjects.forEach(function (object) {
         canvas.remove(object);
@@ -345,106 +275,6 @@ const DecorateText = (text, canvas) => {
         fill: text.customTextColor,
       })
     );
-  }
-};
-
-const RemoveWhiteBackground = async (canvas) => {
-  const imageObject = canvas.getActiveObject();
-
-  if (imageObject && imageObject.isType("image")) {
-    var canvasElement = canvas.getElement();
-    var context = canvasElement.getContext("2d");
-
-    var imageData = context.getImageData(
-      0,
-      0,
-      canvasElement.width,
-      canvasElement.height
-    );
-    var data = imageData.data;
-
-    var transparentColor = [255, 255, 255, 255]; // RGBA white color
-
-    context.clearRect(0, 0, canvasElement.width, canvasElement.height); // Clear canvas
-    context.putImageData(imageData, 0, 0);
-    canvas.renderAll();
-
-    const imageDataObject = imageObject;
-    var pix = imageDataObject.data;
-    var newColor = { r: 0, g: 0, b: 0, a: 0 };
-    console.log(imageDataObject);
-    for (let i = 0; i < imageDataObject.data.length; i += 4) {
-      const r = pix[i];
-      const g = pix[i + 1];
-      const b = pix[i + 2];
-
-      // if(!r || !g || !b){
-      //   return
-      // }
-
-      // if(r != null && r>248) {
-      //   pix[i] = newColor.r;
-      // }
-      // if(g != null && g>248) {
-      //   pix[i + 1] = newColor.r;
-      // }
-      // if(b != null && b>248) {
-      //   pix[i + 2] = newColor.r;
-      // }
-
-      if (r == 255 && g == 255 && b == 255) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 254 && g == 254 && b == 254) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 253 && g == 253 && b == 253) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 252 && g == 252 && b == 252) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 251 && g == 251 && b == 251) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 250 && g == 250 && b == 250) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 249 && g == 249 && b == 249) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 252 && g == 250 && b == 250) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 250 && g == 250 && b == 252) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-      if (r == 248 && g == 248 && b == 251) {
-        pix[i] = newColor.r;
-        pix[i + 1] = newColor.g;
-        pix[i + 3] = newColor.a;
-      }
-    }
-
-    context.putImageData(imageDataObject, 0, 0);
   }
 };
 
@@ -564,12 +394,13 @@ function handleUpload(canvas, frameInfo, frameSpecification) {
 const CanvasArea = () => {
   const canvasRef = useRef(null);
   const [canvasInstance, setCanvasInstance] = useState(null);
+  const [frameSpecification, setFrameSpecification] = useState("vertical");
   const dispatch = useDispatch();
+  // store에서 canvas에 사용할 재료들을 가져옴
   const {
     width,
     height,
     bgColor,
-    block,
     bgImg,
     objects,
     text,
@@ -579,62 +410,76 @@ const CanvasArea = () => {
     downloadSignal,
     frameInfo,
     postSignal,
-  } = useSelector((store) => store.frame); // store에서 canvas에 사용할 재료들을 가져옴
-  let frameSpecification = ""; // DOM을 조작해야하는 데이터가 아니라면 일반 변수로 사용하는 것이 관리하기 낫다
-  let blockSpecification = "Plain"; // 투명한 칸이 어떠한 모양인지 담고있는 변수입니다 종류는 Plain, SmoothPlain, Circle
-  if (block) {
-    blockSpecification = block;
-  }
-  const [isRedoing, setIsRedoing] = useState(false);
-  const [history, setHistory] = useState([]);
+  } = useSelector((store) => store.frame);
+
+  const [doing, setDoing] = useState(true);
+  const [undoHistory, setUndoHistory] = useState([]);
   const [redoHistory, setRedoHistory] = useState([]);
+  // CanvasArea 컴포넌트 내부에서 상태 및 함수를 관리하는 부분
+  const [historyIndex, setHistoryIndex] = useState(-1); // 현재 위치를 나타내는 인덱스
+  const [current, setCurrent] = useState(-1);
+  // 새로운 상태를 저장하고 인덱스를 업데이트하는 함수
+  const saveState = (newState) => {
+    if (historyIndex < undoHistory.length - 1) {
+      // 현재 위치 이후의 redoHistory 제거
+      setRedoHistory([]);
+    }
+    setUndoHistory((prevUndoHistory) => [...prevUndoHistory, newState]);
+    setHistoryIndex(historyIndex + 1); // 인덱스 증가
+  };
+
+  // undo 기능
   const undo = () => {
-    // undo는 history stack을 이용하여 합니다
-    if (!bgImg) {
-      // 사용자  배경 이미지가 없다면
-      if (canvasInstance._objects.length > 4) {
-        // 기본 생성되는 색 배경(1) + 투명 4칸(4) = 5번의 동작 이후의 변화만 redo undo 할 수 있도록 5번 이후의 기록만 사용합니다
-        const removedObject = canvasInstance._objects.pop(); // removedObject는 undo 하는 바로 최근의 활동입니다
-        setRedoHistory([...redoHistory, removedObject]); // redo stack 마지막에 removedObject를 추가합니다
+    console.log(historyIndex);
+    if (historyIndex > 0) {
+      setHistoryIndex(historyIndex - 1);
+      const prevState = undoHistory[historyIndex - 1];
+      setHistoryIndex(historyIndex - 1); // 인덱스 감소
+      setRedoHistory((prevRedoHistory) => [
+        undoHistory[historyIndex],
+        ...prevRedoHistory,
+      ]);
+      // 상태 복원
+      canvasInstance.loadFromJSON(prevState, () => {
         canvasInstance.renderAll();
-      }
-    } else {
-      // 사용자 배경 이미지가 있다면
-      if (canvasInstance._objects.length > 9) {
-        // 색 배경(1) + 투명 4칸(4) + 이미지 배경(1) + 투명 4칸(4) = 9이후의 변화만 redo undo 할 수 있도록 10번 이후의 기록만 사용합니다
-        const removedObject = canvasInstance._objects.pop(); // removedObject는 undo 하는 바로 최근의 활동입니다
-        setRedoHistory([...redoHistory, removedObject]); // redo stack 마지막에 removedObject를 추가합니다
-        canvasInstance.renderAll();
-      }
+      });
     }
   };
 
+  // redo 기능
   const redo = () => {
-    if (redoHistory.length > 0) {
-      setIsRedoing(true);
-      const lastObject = redoHistory.pop(); // RedoHistory 마지막 값을 가져와 다시 실행합니다.
-      canvasInstance.add(lastObject);
-      canvasInstance.renderAll();
+    console.log(historyIndex);
+    setHistoryIndex(historyIndex + 1);
+    if (historyIndex < undoHistory.length - 1) {
+      const nextState = undoHistory[historyIndex + 1];
+      setHistoryIndex(historyIndex + 1); // 인덱스 증가
+      setUndoHistory((prevUndoHistory) => [...prevUndoHistory, nextState]);
+      // 상태 복원
+      canvasInstance.loadFromJSON(nextState, () => {
+        canvasInstance.renderAll();
+      });
     }
   };
 
-  async function handleSpecification() {
-    if (width > height) {
-      frameSpecification = "horizontal";
-    } else {
-      frameSpecification = "vertical";
-    }
+  function handleObjectAdded(newState) {
+    const newUndoHistory = undoHistory.slice(0, historyIndex + 1);
+    newUndoHistory.push(newState);
+
+    setUndoHistory(newUndoHistory);
+    setRedoHistory([]);
+    setHistoryIndex(historyIndex + 1);
+    setCurrent(current + 1);
+    console.log("저장저장", historyIndex, current);
   }
 
-  const handleObjectAdded = () => {
-    if (!isRedoing) {
-      setHistory([]);
-    }
-    setIsRedoing(false);
-  };
+  useEffect(() => {
+    console.log(historyIndex);
+  }, [historyIndex]);
+
   const makeHistoryEmpty = () => {
-    setHistory([]);
+    setUndoHistory([]);
     setRedoHistory([]);
+    console.log("reset");
   };
 
   useEffect(() => {
@@ -646,26 +491,11 @@ const CanvasArea = () => {
     });
     // useEffect를 사용하여 캔버스를 초기화하고 사다리형과 창문형에 맞게 투명한 블록들을 추가합니다. height와 width의 변화에 따라 캔버스의 크기를 조정합니다.
     //위의 코드는 리렌더링을 일으키지 않도록 이펙트 내에 두어야 합니다. 안 그러면 too many re redner 에러가 납니다
-    makeHistoryEmpty(); // 캔버스 재생성 될 때마다 history 기억을 비운다
 
     // 컬러 백그라운드 만들기
-    if (newCanvas && bgColor && !bgImg) {
+    if (newCanvas && bgColor) {
       newCanvas.backgroundColor = bgColor;
-      if (newCanvas.backgroundColor) {
-        if (block === "Heart") {
-          addHeartBlocks(newCanvas, height, width);
-        } else if (block === "SmoothPlain") {
-          addSmoothPlainBlocks(newCanvas, height, width);
-        } else if (block === "Circle") {
-          addCircleBlocks(newCanvas, height, width);
-        } else {
-          addPlainBlocks(newCanvas, height, width);
-        }
-      }
-
-      handleSpecification().then(() => {
-        console.log(width, frameSpecification);
-      });
+      addPlainBlocks(newCanvas, height, width);
     }
     // 이미지 있으면 이미지 백그라운드 만들기
     if (newCanvas && bgImg) {
@@ -673,50 +503,49 @@ const CanvasArea = () => {
       makeBackground(bgImg, width, height, bgColor, newCanvas)
         .then((bg) => {
           newCanvas.add(bg);
-          setHistory([]);
-          handleSpecification().then(() => {
-            console.log(width, frameSpecification);
-          });
-        })
-        .then(() => {
-          // 빈 캔버스에 투명칸을 만들수 없다는 에러를 해결하기 위해 조건문으로 작성
-          if (newCanvas._objects.length > 1) {
-            if (block === "Heart") {
-              addHeartBlocks(newCanvas, height, width);
-            } else if (block === "SmoothPlain") {
-              addSmoothPlainBlocks(newCanvas, height, width);
-            } else if (block === "Circle") {
-              addCircleBlocks(newCanvas, height, width);
-            } else {
-              addPlainBlocks(newCanvas, height, width);
-            }
-          }
+          addPlainBlocks(newCanvas, height, width);
         })
         .catch((error) => {
           console.error(error);
         });
     }
-
+    setDoing(false);
     setCanvasInstance(newCanvas);
 
-    handleSpecification();
     return () => {
       // `newCanvas`가 유효한지 확인하고
       if (newCanvas) {
         newCanvas.dispose();
       }
+      if (width > height) {
+        setFrameSpecification("horizontal");
+      }
     };
-  }, [width, height, bgColor, bgImg, block]); // width, height, bg 바뀔 때마다 리렌더
+  }, [width, height, bgColor, bgImg]); // width, height, bg 바뀔 때마다 리렌더
+
+  useEffect(() => {
+    makeHistoryEmpty();
+  }, [width, height]); // width, height 변할때마다 값 비워줘야함 json 에는 캔버스 그자체 값이 없어서 에러 난다
 
   // 객체 추가 또는 수정 시 상태 저장
   useEffect(() => {
     if (canvasInstance) {
-      canvasInstance.on("object:added", () => {
+      const objectAddedHandler = () => {
+        console.log("캔버스 무언가 추가되었음");
+        console.log("");
         handleObjectAdded();
-      });
-      canvasInstance.on("object:modified", () => {
+      };
+
+      const objectModifiedHandler = () => {
+        console.log("캔버스 무언가 수정되었음");
+        console.log("        ");
         handleObjectAdded();
-      });
+      };
+
+      return () => {
+        canvasInstance.off("object:added", objectAddedHandler);
+        canvasInstance.off("object:modified", objectModifiedHandler);
+      };
     }
   }, [canvasInstance]); // 캔버스가 바뀔때마다 HISTORY STACK에 추가합니다
 
@@ -778,24 +607,29 @@ const CanvasArea = () => {
   // 업로드 요청이 들어오면 handleUpload(canvasInstance)를 실행합니다
   useEffect(() => {
     async function upload() {
-      console.log(
-        "업로드 함수에서",
-        canvasInstance,
-        frameInfo,
-        frameSpecification
-      );
       handleUpload(canvasInstance, frameInfo, frameSpecification);
       return "success";
     }
     if (postSignal && canvasInstance) {
-      handleSpecification() // 프레임규격을 검사하고 나서
-        .then(() => upload()) // 업로드 하고
-        .then(() => dispatch(ResetSignal("postSignal"))); // 업로드 요청 시그널 다시 0으로 리셋합니다
+      upload().then(() => dispatch(ResetSignal("postSignal")));
     }
-  }, [postSignal, frameSpecification]);
+  }, [postSignal]);
+
+  useEffect(() => {
+    if (
+      canvasInstance &&
+      historyIndex >= 0 &&
+      historyIndex < undoHistory.length
+    ) {
+      const stateToRestore = undoHistory[historyIndex];
+      canvasInstance.loadFromJSON(stateToRestore, () => {
+        canvasInstance.renderAll();
+      });
+    }
+  }, [historyIndex, undoHistory, canvasInstance]);
 
   return (
-    <div>
+    <>
       <div className="canvasBackground">
         <canvas
           ref={canvasRef}
@@ -804,15 +638,21 @@ const CanvasArea = () => {
           id="canvas"
         />
       </div>
-      <div
-        id="redoUndo"
-        // className="twoButtonAlign"
+      <button
+        onClick={() => {
+          undo();
+        }}
       >
-        <LuRotateCcw onClick={() => undo()} />
-        <LuRotateCw onClick={() => redo()} />
-      </div>
-      {/* <button onClick={() => RemoveWhiteBackground(canvasInstance)} /> */}
-    </div>
+        Undo
+      </button>
+      <button
+        onClick={() => {
+          redo();
+        }}
+      >
+        Redo
+      </button>
+    </>
   );
 };
 

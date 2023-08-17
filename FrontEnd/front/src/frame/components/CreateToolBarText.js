@@ -2,6 +2,8 @@ import React, { useState, useRef } from "react";
 // third party
 import { useDispatch } from "react-redux";
 import Select from "react-select";
+import Swal from "sweetalert2";
+
 // local
 import { Undecorate } from "../../redux/features/frame/frameSlice";
 import { AddText } from "../../redux/features/frame/frameSlice";
@@ -9,7 +11,7 @@ import "../css/CreateToolBarText.css";
 
 export default function Text() {
   const [customText, setCustomText] = useState("");
-  const [customTextColor, setCustomTextColor] = useState("white");
+  const [customTextColor, setCustomTextColor] = useState("#ffffff");
   const [customTextSize, setCustomTextSize] = useState("20");
   const [customTextFont, setCustomTextFont] = useState("Roboto");
   const textRef = useRef();
@@ -28,6 +30,14 @@ export default function Text() {
     dispatch(Undecorate());
   }
 
+  function onRest() {
+    // 제출 완료하면 인풋칸을 비웁니다
+    if (!customText) {
+      Swal.fire("내용을 입력하세요");
+    }
+    setCustomText("");
+  }
+
   return (
     <>
       <label htmlFor="text">내용을 입력하세요</label>
@@ -35,6 +45,7 @@ export default function Text() {
         id="text"
         type="text"
         ref={textRef}
+        value={customText}
         onChange={(e) => {
           setCustomText(e.target.value);
         }}
@@ -43,7 +54,7 @@ export default function Text() {
       <input
         id="textColor"
         type="color"
-        value="#FFFFFF"
+        value={customTextColor}
         ref={textColorRef}
         onChange={(e) => {
           setCustomTextColor(e.target.value);
@@ -114,13 +125,16 @@ export default function Text() {
       <div className="alignTwoButtons">
         <button
           type="button"
-          onClick={(e) => dispatch(AddText(payload))}
+          onClick={() => {
+            dispatch(AddText(payload));
+            onRest();
+          }}
           className="whtbtn"
         >
           추가하기
         </button>
         <br />
-        <button className="btn" onClick={deleteText}>
+        <button className="btn" onClick={deleteText()}>
           삭제하기
         </button>
       </div>

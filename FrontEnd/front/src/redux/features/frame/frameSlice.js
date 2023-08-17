@@ -6,6 +6,7 @@ const initialState = {
   height: 589.6,
   width: 207.8,
   bgColor: "#000000",
+  block: "Plain",
   bgImg: false,
   objects: false,
   text: false,
@@ -29,6 +30,7 @@ const frameSlice = createSlice({
       state.height = 589.6;
       state.width = 207.8;
       state.bgColor = "#000000";
+      state.block = "Plain";
       state.bgImg = false;
       state.objects = false;
       state.text = false;
@@ -58,7 +60,10 @@ const frameSlice = createSlice({
         state.bgColor = action.payload.color;
       }
     },
-
+    ReBlock: (state, action) => {
+      state.block = action.payload;
+      console.log(action.payload);
+    },
     RemoveBgImg: (state) => {
       state.bgImg = false;
     },
@@ -107,6 +112,7 @@ export const {
   ResetAll,
   Resize,
   Repaint,
+  ReBlock,
   RemoveBgImg,
   Decorate,
   Undecorate,

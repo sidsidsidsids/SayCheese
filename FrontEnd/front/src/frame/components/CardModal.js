@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 // third party
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import Swal from "sweetalert2";
 // local
 import { closeModal } from "../../redux/features/modal/modalSlice";
 import "../css/CardModal.css";
@@ -94,7 +95,7 @@ export default function CardModal() {
         handleLikePlus();
       }
     } else {
-      alert("로그인 해주세요");
+      Swal.fire("로그인 해주세요");
     }
   }
   // 프레임 삭제 API
@@ -109,11 +110,11 @@ export default function CardModal() {
           },
         })
         .then((response) => {
-          alert("게시글이 정상적으로 삭제되었습니다.");
+          Swal.fire("게시글이 정상적으로 삭제되었습니다.");
           window.location.reload();
         })
         .catch((error) => {
-          alert(
+          Swal.fire(
             "오류로 인해 게시글을 삭제할 수 없습니다.\n다시 시도해주시길 바랍니다."
           );
         });
@@ -129,7 +130,7 @@ export default function CardModal() {
         },
       })
       .then((response) => {
-        alert(response.message);
+        Swal.fire(response.message);
       })
       .catch((error) => {
         console.log(error);
@@ -249,7 +250,7 @@ export default function CardModal() {
                 >
                   <div style={{ display: "flex", justifyContent: "center" }}>
                     <img
-                      src={userInfo.profile ? userInfo.profile : logo}
+                      src={userInfo?.profile ? userInfo.profile : logo}
                       alt="프로필 이미지"
                       className="FrameAuthorProfile"
                     />

@@ -78,27 +78,35 @@ function RoomCreateModal({ open, close }) {
       selectedFrame = "vertical";
     }
     try {
-      console.log(roomPassword,roomLimit,selectedMode,roomCode,selectedFrame)
-      await axios.post(
-        "/api/room",
-        {
-          password: roomPassword,
-          maxCount: roomLimit,
-          mode: selectedMode,
-          // roomCode: "sessionC",
-          roomCode: roomCode,
-          specification: selectedFrame,
-        },
-        {
-          headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
-            "Content-Type": "application/json;charset=UTF-8",
+      console.log(
+        roomPassword,
+        roomLimit,
+        selectedMode,
+        roomCode,
+        selectedFrame
+      );
+      await axios
+        .post(
+          "/api/room",
+          {
+            password: roomPassword,
+            maxCount: roomLimit,
+            mode: selectedMode,
+            // roomCode: "sessionC",
+            roomCode: roomCode,
+            specification: selectedFrame,
           },
-        }
-      ).then((response) => {
-        console.log(response);
-        navigate(`/room/${roomCode}`);
-      })
+          {
+            headers: {
+              Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEifQ.sV341CXOobH8-xNyjrm-DnJ8nHE8HWS2WgM44EdIp6kwhU2vdmqKcSzKHPsEn_OrDPz6UpBN4hIY5TjTa42Z3A`,
+              "Content-Type": "application/json;charset=UTF-8",
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response);
+          navigate(`/room/${roomCode}`);
+        });
     } catch (error) {
       console.log(error);
     }
@@ -110,28 +118,26 @@ function RoomCreateModal({ open, close }) {
         <div className="finish-create-modal-content">
           <h2>방 생성</h2>
           <div className="room-code">
-            <p>
-              <b>방 코드: </b>
-              <input
-                className={roomCode}
-                value={roomCode ? roomCode : "Sample Room Code"}
-                readOnly
-              />
-            </p>
+            <span>방 코드</span>
+            <input
+              id="createdCode"
+              className={roomCode}
+              value={roomCode ? roomCode : "Sample Room Code"}
+              readOnly
+            />
           </div>
           <div className="room-invite">
-            <p>
-              <b>방 초대 링크: </b>
-              <input
-                className={roomInvite}
-                value={
-                  roomInvite
-                    ? roomInvite
-                    : "www.sample.com/sample123/?sample456?/sample789?"
-                }
-                readOnly
-              />
-            </p>
+            <span>방 초대 링크</span>
+            <input
+              className={roomInvite}
+              value={
+                roomInvite
+                  ? roomInvite
+                  : "www.sample.com/sample123/?sample456?/sample789?"
+              }
+              id="inviteLink"
+              readOnly
+            />
           </div>
           <ModalButtons
             onConfirm={() => {
@@ -151,6 +157,7 @@ function RoomCreateModal({ open, close }) {
             <p>
               <label>
                 <input
+                  id="gameMode"
                   type="radio"
                   checked={isModeActive}
                   onChange={() => setIsModeActive(!isModeActive)}
@@ -159,6 +166,7 @@ function RoomCreateModal({ open, close }) {
               </label>
               <label>
                 <input
+                  id="nomalMode"
                   type="radio"
                   checked={!isModeActive}
                   onChange={() => setIsModeActive(!isModeActive)}
