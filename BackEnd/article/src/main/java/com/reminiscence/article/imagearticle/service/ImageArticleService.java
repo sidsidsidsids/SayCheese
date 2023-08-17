@@ -18,7 +18,7 @@ public interface ImageArticleService {
    List<ImageArticleListResponseDto> getRecentImageArticleList(UserDetail userDetail);
    List<ImageArticleListResponseDto> getRandomImageArticleList(UserDetail userDetail);
    @Transactional
-   void writeImageArticle(Long image, Long memberId);
+   void writeImageArticle(Long imageId, Long memberId);
    @Transactional
    void deleteImageArticle(Long memberId, Long articleId);
    @Transactional

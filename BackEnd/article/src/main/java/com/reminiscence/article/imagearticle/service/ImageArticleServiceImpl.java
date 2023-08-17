@@ -124,9 +124,9 @@ public class ImageArticleServiceImpl implements ImageArticleService {
 
     @Transactional
     @Override
-    public void writeImageArticle(Long image, Long memberId) {
+    public void writeImageArticle(Long imageId, Long memberId) {
         Optional<Member> findMember = memberRepository.findById(memberId);
-        Optional<Image> findImage = imageRepository.findById(image);
+        Optional<Image> findImage = imageRepository.findById(imageId);
 
         findMember.orElseThrow(()->
                 new MemberException(MemberExceptionMessage.NOT_FOUND_MEMBER));
