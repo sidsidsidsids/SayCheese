@@ -16,9 +16,7 @@ function SetNameModal({ open, close }) {
     return null;
   }
   const handleConfirm = () => {
-    console.log(inputNickname);
     nicknameCheck(inputNickname);
-    console.log(userInfo);
   };
   const nicknameCheck = (nickname) => {
     axios
@@ -28,7 +26,6 @@ function SetNameModal({ open, close }) {
         },
       })
       .then((response) => {
-        console.log(response);
         const accessToken = response.headers["authorization"];
         localStorage.setItem("accessToken", accessToken);
         dispatch(notUserNickname(`Guest_${nickname}`));

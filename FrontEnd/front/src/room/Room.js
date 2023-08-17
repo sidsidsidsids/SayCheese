@@ -41,7 +41,7 @@ let frameSearchInput = "";
 let roomImageID; // 최종 결과물 ID 저장 변수
 let chosenUrl; // 프레임 url
 let orders;
-let horizontalLeftLoc = [32, 261, 32, 261];
+let horizontalLeftLoc = [32, 261, 261, 32];
 let horizontalTopLoc = [29, 29, 205, 205];
 let verticalLeftLoc = [19, 19, 19, 19];
 let verticalTopLoc = [19, 139, 259, 379];
@@ -63,11 +63,8 @@ const Room = () => {
   const dispatch = useDispatch();
   const { userInfo, isLogin } = useSelector((store) => store.login);
   const { roomInfo } = useSelector((store) => store.room);
-  // let selectedMode = roomInfo ? roomInfo.mode : undefined;
   let selectedMode = roomInfo ? roomInfo.mode : "game";
-  // let selectedMode = "game";
-  // let selectedSpec = roomInfo ? roomInfo.specification : "horizontal";
-  let selectedSpec = "horizontal";
+  let selectedSpec = roomInfo ? roomInfo.specification : "horizontal";
   if (selectedSpec) {
     selectedSpec = selectedSpec.toUpperCase();
     videoFrameWidth = videoFrameSizes[selectedSpec].width;
@@ -117,23 +114,6 @@ const Room = () => {
     }
   }, [roomStatus]);
 
-  // useEffect(() => {
-  //   if (roomStatus === 2) {
-  //     setTimeout(async () => {
-  //       try {
-  //         // userDelete();
-  //         // if (isHost) {
-  //         //   roomDelete(mySessionId);
-  //         // }
-  //         navigate("/");
-  //         console.log("나가");
-  //       } catch (error) {
-  //         console.log(error);
-  //       }
-  //     }, 300000);
-  //   }
-  // }, [roomStatus]);
-
   useEffect(() => {
     if (isHost && roomStatus === 0 && roomInfo === {}) {
       leaveSession();
@@ -159,8 +139,6 @@ const Room = () => {
     setSession(OV.initSession());
     const mySession = OV.initSession();
 
-    console.log(mySession);
-
     mySession.on("streamCreated", (event) => {
       const subscriber = mySession.subscribe(event.stream, undefined);
       setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
@@ -182,37 +160,6 @@ const Room = () => {
     });
 
     mySession.on("startGameMode", (event) => {
-      console.log(event);
-      // if (chosenUrl) {
-      //   axios
-      //     .get(
-      //       chosenUrl,
-      //       {
-      //         responseType: "arraybuffer",
-      //       },
-      //       {
-      //         headers: {
-      //           "Access-Control-Allow-Origin": "*",
-      //           "Access-Control-Allow-Methods": "GET,POST",
-      //         },
-      //       }
-      //     )
-      //     .then((response) => {
-      //       console.log(response);
-      //       // setSelectFrame(response.data);
-      //       const b64 = arrayBufferToBase64(response.data);
-      //       console.log(b64);
-      //       const image = new Image();
-      //       image.src = "data:image/png;base64," + b64;
-      //       // document.body.appendChild(image);
-      //       // setSelectFrame(`url(${response.data})`);
-      //       setSelectFrame(`url(${image.src})`);
-      //     })
-      //     .catch((error) => {
-      //       console.log(error);
-      //     });
-
-      // }
       setTimeout(() => {
         gameMode();
         
@@ -220,7 +167,6 @@ const Room = () => {
     });
 
     mySession.on("startNormalMode", (event) => {
-      console.log(event);
       normalMode();
       handleNormalPhase(normalCnt);
     });
@@ -250,12 +196,6 @@ const Room = () => {
     });
 
     mySession.on("selectFrame", (event) => {
-      console.log(event);
-      // let src = /^data:image/.test(event.data)
-      //   ? event.data
-      //   : event.data + "?" + new Date().getTime();
-
-      console.log(event.data);
       setSelectFrame(`url(${event.data})`);
       chosenUrl = event.data;
     });
@@ -268,7 +208,6 @@ const Room = () => {
       await mySession
         .connect(token)
         .then(async () => {
-          console.log(mySession, mySessionId);
           const publisher = await OV.initPublisherAsync(undefined, {
             audioSource: undefined,
             videoSource: undefined,
@@ -279,29 +218,16 @@ const Room = () => {
             insertMode: "APPEND",
             mirror: false,
           });
-          console.log(publisher);
           await mySession.publish(publisher);
           // 카메라 선택 옵션 넣을 때 사용됨
           const devices = await OV.getDevices();
           setPublisher(publisher);
-          console.log(publisher);
-
-          // mySession.on("signal:chat", (event) => {
-          //   console.log(event);
-          // });
-          // 채팅창에 보낼 데이터셋
           chatData = mySession;
 
           sessionConnectId = publisher.session.connection.connectionId;
           sessionStreamId = publisher.stream.streamId;
           userJoin(mySessionId);
           setTimeout(() => {
-            // 방에 유저 정보 보낼 곳
-            // if (isHost) {
-            //   console.log("방장");
-            //   getRoomInfo(mySessionId);
-            //   hostPost(mySessionId);
-            // }
             userStream(mySessionId);
           }, 1000);
 
@@ -466,8 +392,9 @@ const Room = () => {
           },
         }
       );
-      console.log(request);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   // 방 정보 조회
@@ -481,8 +408,6 @@ const Room = () => {
           },
         })
         .then((response) => {
-          console.log("ROOMINFO");
-          console.log(response);
           selectedMode = response.data.mode;
           selectedSpec = response.data.specification.toUpperCase();
           setSpec(response.data.specification.toUpperCase());
@@ -493,7 +418,6 @@ const Room = () => {
   };
   // 유저 정보 방 입장 시 전달
   const userJoin = async (sessionId) => {
-    console.log("USERJOIN");
     try {
       const request = await axios.post(
         "/api/participant",
@@ -532,7 +456,6 @@ const Room = () => {
   };
   // 유저와 연결 끊김 (재접속할 수 있음)
   const userDisconnection = async (sessionId, streamId) => {
-    console.log("USERSTREAM");
     try {
       const request = await axios.put(
         "/api/participant/fail/connection/" + sessionId,
@@ -546,16 +469,13 @@ const Room = () => {
           },
         }
       );
-      console.log(request);
     } catch (error) {
       console.log(error);
     }
   };
   // 유저의 화상 ID(streamId) 전달
   const userStream = async (sessionId) => {
-    console.log("USERSTREAM");
     try {
-      console.log(sessionStreamId);
       const request = await axios.put(
         "/api/participant/" + sessionId + "/streamId",
         {
@@ -568,7 +488,6 @@ const Room = () => {
           },
         }
       );
-      console.log(request);
     } catch (error) {
       console.log(error);
     }
@@ -588,7 +507,6 @@ const Room = () => {
           },
         }
       );
-      console.log(request);
     } catch (error) {
       console.log(error);
     }
@@ -611,7 +529,6 @@ const Room = () => {
   };
   // 새 방장 갱신
   const updateHost = async (sessionId) => {
-    console.log("UPDATEHOST");
     try {
       const response = await axios.get(
         "/openvidu/api/sessions/" + sessionId + "/connection",
@@ -629,9 +546,7 @@ const Room = () => {
       let content = response.data.content;
       let sortByTime = await content.sort((a, b) => a.createdAt - b.createdAt);
       let hostConnectionId = sortByTime[0].connectionId;
-      console.log(hostConnectionId);
       if (hostConnectionId === sessionConnectId) {
-        console.log("방장되기");
         setHost(true);
         hostPost(mySessionId);
       }
@@ -641,7 +556,6 @@ const Room = () => {
   };
   // 방장 정보 갱신
   const hostPost = async (sessionId) => {
-    console.log("HOSTPOST");
     try {
       const request = await axios.put(
         "/api/participant/" + sessionId + "/owner",
@@ -677,7 +591,6 @@ const Room = () => {
           }
         )
         .then((response) => {
-          console.log(response);
           setFrameList(response.data.frameArticleVoList);
         });
     } catch (error) {}
@@ -763,50 +676,9 @@ const Room = () => {
   };
   // 게임모드
   const gameMode = () => {
-    axios
-      .get(
-        chosenUrl,
-        {
-          responseType: "arraybuffer",
-        },
-        {
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET,POST",
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response);
-        // setSelectFrame(response.data);
-        const b64 = arrayBufferToBase64(response.data);
-        console.log(b64);
-        const image = new Image();
-        image.src = "data:image/png;base64," + b64;
-        // document.body.appendChild(image);
-        // setSelectFrame(`url(${response.data})`);
-        setSelectFrame(`url(${image.src})`);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
     gameCnt = 0
-    console.log("GAMEMODE");
     // 방 상태 설정
     setRoomStatus(1);
-    // 유저 순서 설정(without RoomServer ver)
-    // 백엔드와 연동 이후 userStreamIds ~ targetUsers 부분 삭제할 것
-    // const userStreamIds = joinUsers.map((user) => user.stream.streamId);
-    // const targetUsers = [...userStreamIds];
-    // if (targetUsers.length === 3) {
-    //   targetUsers.push(targetUsers[0]);
-    // } else if (targetUsers.length === 2) {
-    //   targetUsers.push(...targetUsers);
-    // } else if (targetUsers.length === 1) {
-    //   targetUsers.push(...targetUsers, ...targetUsers, ...targetUsers);
-    // }
-
     // 유저 정보
     const Users = joinUsers;
     // gameMode 로직
@@ -830,7 +702,6 @@ const Room = () => {
           randomTag = randomTags[4 - count];
         }
         Users.forEach((user) => {
-          console.log(user, orders);
           if (
             user &&
             user.stream &&
@@ -873,22 +744,8 @@ const Room = () => {
   // 일반모드 (settings)
   const normalMode = () => {
     normalCnt = 0
-    console.log("NORMALMODE");
     setRoomStatus(1);
-    // 유저 순서 설정(without RoomServer ver)
-    // 순서 설정 기능 구현 후 userStreamIds ~ targetUsers 부분 삭제할 것
-    // const userStreamIds = joinUsers.map((user) => user.stream.streamId);
-    // const targetUsers = [...userStreamIds];
-    // if (targetUsers.length === 3) {
-    //   targetUsers.push(targetUsers[0]);
-    // } else if (targetUsers.length === 2) {
-    //   targetUsers.push(...targetUsers);
-    // } else if (targetUsers.length === 1) {
-    //   targetUsers.push(...targetUsers, ...targetUsers, ...targetUsers);
-    // }
-    // orders = targetUsers;
-    // setOrders(targetUsers);
-    // console.log(orders, targetUsers);
+   
   };
   // 일반모드 (display)
   const handleNormalPhase = (count) => {
@@ -896,10 +753,8 @@ const Room = () => {
     if (count === 4) {
       const range = document.querySelector("#video-frame");
       const imageURL = range.style.backgroundImage;
-      console.log("imageURL: ", imageURL);
       const imageURLCleaned = imageURL.replace(/url\(['"]?(.*?)['"]?\)/, "$1");
       resultSrc = imageURLCleaned;
-      console.log("finish");
       setRoomStatus(2);
       return;
     } else {
@@ -911,7 +766,6 @@ const Room = () => {
         locationY = verticalTopLoc[count];
       }
       joinUsers.forEach((user) => {
-        console.log(user.stream.streamId, orders[count]);
         if (user && user.stream && user.stream.streamId === orders[count]) {
           // 해당 유저를 MainPublisher로 설정합니다.
           setMainStreamManager(user);
@@ -1098,7 +952,6 @@ const Room = () => {
           },
         })
         .then((response) => {
-          console.log("대답:", response);
           randomTags = response.data
           sendTags();
         })
@@ -1143,7 +996,6 @@ const Room = () => {
   // 결과창에서 DB에 이미지 저장
   const sendImageData = async (resultURL, sessionId) => {
     if (isHost) {
-      console.log("SEND");
       try {
         await axios
           .post(
@@ -1162,7 +1014,6 @@ const Room = () => {
           .then(async (response) => {
             // PRESIGNED URL에 이미지 보내는 코드
             // 아래 주석 절대 지우지 말기
-            console.log("IMAGE");
             const binaryImageData = atob(resultURL.split(",")[1]);
             const arrayBufferData = new Uint8Array(binaryImageData.length);
             for (let i = 0; i < binaryImageData.length; i++) {
@@ -1173,7 +1024,6 @@ const Room = () => {
             const imageFile = new File([blob], `${sessionId}.jpg`, {
               type: "image/jpg",
             });
-            console.log(imageFile);
             // 테스트용
             // const image = new Image();
             // image.src = URL.createObjectURL(imageFile);
@@ -1186,10 +1036,6 @@ const Room = () => {
                 "Content-Type": "image/jpg",
               },
             }).then(async (response) => {
-              console.log("DATA");
-              console.log(response);
-              console.log(getFileName, mySessionId);
-              // fileName, type(image), tags, roomCode to Back(Article)
               await axios
                 .post(
                   "/api/image",
@@ -1213,7 +1059,6 @@ const Room = () => {
                 .then((response) => {
                   console.log(response);
                   roomImageID = response.data.imageId;
-                  console.log(roomImageID);
                   Swal.fire("정상적으로 종료되었습니다")
                 });
             });
@@ -1227,7 +1072,6 @@ const Room = () => {
   };
   // 결과창 사진 공유 버튼 눌렀을 때
   const handleImageUpload = async (resultImageId) => {
-    console.log(resultImageId);
     try {
       const request = await axios.post(
         "/api/article/image",
@@ -1241,7 +1085,6 @@ const Room = () => {
           },
         }
       );
-      console.log(request);
     } catch (error) {
       Swal.fire("업로드 실패");
       console.error("Error:", error);
@@ -1250,12 +1093,8 @@ const Room = () => {
   // 결과창 사진 다운
   const handleDownload = () => {
     let range = document.querySelector("#video-frame");
-    console.log(range);
     const imageURL = range.style.backgroundImage;
-    console.log(imageURL);
     const imageURLCleaned = imageURL.replace(/url\(['"]?(.*?)['"]?\)/, "$1");
-    // const imageElement = document.createElement("img");
-    // imageElement.src = imageURLCleaned;
     const downloadLink = document.createElement("a");
     downloadLink.href = imageURLCleaned;
     downloadLink.download = `${sessionConnectId}.png`; // 원하는 파일명 설정
@@ -1335,7 +1174,7 @@ const Room = () => {
                     backgroundPosition: "center",
                   }}
                 >
-                  <div
+                  {/* <div
                 id="video-frame-2"
                 style={{
                   width: "589.6px",
@@ -1345,7 +1184,7 @@ const Room = () => {
                   backgroundRepeat: "no-repeat",
                   backgroundPosition: "center",
                 }}
-              ></div>
+              ></div> */}
               </div>
               )}
               {Spec === "VERTICAL" && (
@@ -1360,7 +1199,7 @@ const Room = () => {
                     backgroundPosition: "center",
                   }}
                 >
-                  <div
+                  {/* <div
                 id="video-frame-2"
                 style={{
                   width: "207.8px",
@@ -1370,7 +1209,7 @@ const Room = () => {
                   backgroundRepeat: "no-repeat",
                   backgroundPosition: "center",
                 }}
-              ></div>
+              ></div> */}
               </div>
               )}
             </div>
@@ -1585,17 +1424,6 @@ const Room = () => {
                 }
               }}
               onButton3={() => {
-                console.log("pub: ", publisher);
-                console.log("sub: ", subscribers);
-                console.log("roomInfo: ", roomInfo);
-                console.log("connecionId: ", sessionConnectId);
-                console.log("streamId: ", sessionStreamId);
-                console.log("frame: ", selectFrame);
-                console.log("frames: ", frameList);
-                console.log("mode: ", selectedMode);
-                console.log("spec: ", selectedSpec);
-                console.log("stat: ", roomStatus);
-                console.log(chosenUrl);
                 Swal.fire(`${selectedMode} 모드 입니다`)
               }}
               buttonName1="나가기"
