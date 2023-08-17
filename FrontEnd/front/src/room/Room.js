@@ -1540,7 +1540,7 @@ const Room = () => {
                           cursor: "pointer",
                         }}
                         onClick={() => {
-                          if (roomInfo) {
+                          if (roomInfo.owner === true) {
                             handleSelectFrame(mySessionId, item.frameLink);
                           }
                         }}
