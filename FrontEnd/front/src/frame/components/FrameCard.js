@@ -25,7 +25,6 @@ export default function FrameCard({
   // 좋아요 함수 로직 //
   // 좋아요
   async function handleLikePlus() {
-    console.log(payload.articleId);
     axios
       .post(`/api/article/lover/frame/${payload.articleId}`, {
         headers: {
@@ -61,7 +60,6 @@ export default function FrameCard({
   }
   // 모달에 프레임 상세 데이터를 axios get 방식으로 가져오는 함수
   async function getLikeData() {
-    console.log("like 숫자 받아올거임");
     try {
       const response = await axios.get(
         `/api/article/frame/${payload.articleId}`,
@@ -73,7 +71,6 @@ export default function FrameCard({
           },
         }
       );
-      console.log(response.data.loverCnt);
       setLike(response.data.loverYn); // like에 좋아요 여부 저장합니다
     } catch (error) {
       console.log(error);

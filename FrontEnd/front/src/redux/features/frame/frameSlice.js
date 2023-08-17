@@ -56,14 +56,12 @@ const frameSlice = createSlice({
         action.payload.color !== undefined &&
         state.bgColor !== action.payload.Color
       ) {
-        console.log(action.payload.color);
         state.bgColor = action.payload.color;
       }
     },
     // 프레임 투명칸 만들기
     ReBlock: (state, action) => {
       state.block = action.payload;
-      console.log(action.payload);
     },
     // 배경 제거하기
     RemoveBgImg: (state) => {
@@ -94,7 +92,6 @@ const frameSlice = createSlice({
     // 시그널 리셋
     ResetSignal: (state, action) => {
       state[action.payload] = 0;
-      console.log(`state[action.payload] 리셋합니다`);
       /* download 및 delete signal을
       0으로 리셋해야 하는 이유는
       캔버스 리렌더시 
@@ -104,7 +101,6 @@ const frameSlice = createSlice({
     // 서버 POST
     PostSignal: (state, action) => {
       state.frameInfo = action.payload;
-      console.log(action.payload);
       state.postSignal = 1;
     },
     ResetPostSignal: (state) => {

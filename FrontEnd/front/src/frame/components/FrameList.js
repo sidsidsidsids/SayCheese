@@ -17,8 +17,6 @@ export default function FrameList({ searchWord }) {
   // 기존 검색어와 새로 검색어의 비교를 위해 정보를 저장합니다.
   //
   const [beforeSearch, setBeforeSearch] = useState("");
-
-  console.log("이거 검색할거임", searchWord);
   // TODO: 이후 서버 API가 나오면 프레임 리스트를 fetch해야 합니다
   const [frameList, setFrameList] = useState([]);
 
@@ -38,15 +36,10 @@ export default function FrameList({ searchWord }) {
     }
   }
   function handlePageChange(pageNumber) {
-    console.log(`click. active page is ${pageNumber}`);
     setActivePage(pageNumber);
   }
 
   function fetchRecetAll() {
-    console.log(
-      "fetch",
-      `/api/article/frame/list/recent?curPage=${activePage}`
-    );
     const accessToken = localStorage.getItem("accessToken");
     axios
       .get(`/api/article/frame/list/recent?page=${activePage}`, {
@@ -58,7 +51,6 @@ export default function FrameList({ searchWord }) {
       })
       .then((res) => {
         setFrameList(res.data.frameArticleVoList);
-        console.log("444이러한 데이터를 받아옴", res.data);
         setPage(res.data.pageNavigator);
       })
       .catch((err) => {
@@ -67,7 +59,6 @@ export default function FrameList({ searchWord }) {
   }
 
   function fetchRecentSearch() {
-    console.log("2");
     const accessToken = localStorage.getItem("accessToken");
     axios
       .get(
@@ -81,11 +72,6 @@ export default function FrameList({ searchWord }) {
         }
       )
       .then((res) => {
-        console.log(3);
-        console.log("검색 데이터를 페치해왔습니다", res);
-        console.log(
-          `/api/article/frame/list/recent?searchWord=${searchWord}&curPage=${activePage}`
-        );
         setFrameList(res.data.frameArticleVoList);
         setPage(res.data.pageNavigator);
       })

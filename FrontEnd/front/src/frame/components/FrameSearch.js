@@ -9,7 +9,6 @@ export default function FrameSearch({ searchWord, setSearchWord }) {
   function search() {
     setSearchWord(inputValue);
     setInputValue("");
-    console.log("이거 검색할거임", inputValue);
   }
   // 사용자가 엔터키를 사용하면 검색하기를 원한다고 간주하여 실행
   const onCheckEnter = (e) => {
@@ -24,9 +23,6 @@ export default function FrameSearch({ searchWord, setSearchWord }) {
           value={inputValue}
           onChange={(event) => {
             setInputValue(event.target.value); // 엔터키가 아니면 검색어를 입력한다고 간주
-            console.log(event.target.value);
-            // setInputValue(event.target.value); // 엔터키가 아니면 검색어를 입력한다고 간주
-            console.log(event);
           }}
         />
         {/* <input>이 하나면 엔터했을때 submit이 실행되서 리렌더링 되는 사이드 이펙트가 발생합니다. 이것을 방지하고자 보이지 않는 input 태그를 하나 더 만들었습니다 */}
