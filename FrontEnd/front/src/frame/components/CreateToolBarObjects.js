@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { Decorate, Undecorate } from "../../redux/features/frame/frameSlice";
 
 export default function Objects() {
-  const [objects, setObjects] = useState([]);
+  const [object, setObject] = useState([]);
   const imgRef = useRef();
   const dispatch = useDispatch();
 
@@ -17,7 +17,7 @@ export default function Objects() {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = () => {
-        objects.push(reader.result);
+        object.push(reader.result);
         const payload = reader.result;
         dispatch(Decorate(payload));
       };
@@ -30,13 +30,13 @@ export default function Objects() {
 
   return (
     <div>
-      <label htmlFor="objects">이미지를 추가해서 프레임을 꾸며보세요</label>
+      <label htmlFor="object">이미지를 추가해서 프레임을 꾸며보세요</label>
       <div className="alignTwoButtons">
-        <label htmlFor="objects" className="forFile">
+        <label htmlFor="object" className="forFile">
           스티커 추가
         </label>
         <input
-          id="objects"
+          id="object"
           type="file"
           accept="image/*"
           ref={imgRef}
