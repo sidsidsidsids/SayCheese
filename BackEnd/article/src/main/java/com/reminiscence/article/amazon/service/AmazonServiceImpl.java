@@ -56,7 +56,7 @@ public class AmazonServiceImpl implements AmazonService {
         return expiration;
     }
     private String onlyOneFileName(String fileName){
-        return UUID.randomUUID().toString() + fileName.substring(fileName.lastIndexOf(".")+1);
+        return UUID.randomUUID().toString() + "." + fileName.substring(fileName.lastIndexOf(".")+1);
     }
 
 }

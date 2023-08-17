@@ -11,10 +11,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class WebClientConfig {
 
     @Bean
-    @LoadBalanced
     public WebClient webClient() {
         return WebClient.builder()
-                .baseUrl("http://room-service")
+                .baseUrl("https://i9a401.p.ssafy.io")
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
