@@ -77,6 +77,7 @@ public class SecurityConfiguration {
                     .antMatchers(HttpMethod.POST,"/api/member/nickname-check").permitAll()
                     .antMatchers(HttpMethod.POST,"/api/member/password").permitAll()
                     .antMatchers(HttpMethod.PUT,"/api/member/password").permitAll()
+                    .antMatchers(HttpMethod.GET,"/api/member/nickname").authenticated()
                     .antMatchers(HttpMethod.PUT,"/api/member/**").hasAnyRole(Role.ADMIN.name(), Role.MEMBER.name())
                     .antMatchers(HttpMethod.DELETE,"/api/member/**").hasAnyRole(Role.ADMIN.name(), Role.MEMBER.name())
                     .antMatchers("/api/mail/auth").permitAll()

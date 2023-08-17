@@ -1,7 +1,6 @@
 package com.reminiscence.filter;
 import com.reminiscence.config.redis.TokenRevocationService;
 import io.jsonwebtoken.*;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -65,8 +64,9 @@ public class JwtTokenProvider {
     }
 
     // 어세스 토큰 헤더 설정
-    public void addHeaderAccessToken(HttpServletResponse response, String accessToken) {
-        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + accessToken);
+    public void setHeaderAccessToken(HttpServletResponse response, String accessToken) {
+        response.setHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + accessToken);
+//        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + accessToken);
     }
 
     // 리프레시 토큰 헤더 설정

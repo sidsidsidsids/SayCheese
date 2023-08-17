@@ -105,7 +105,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 //                .withClaim("memberId", String.valueOf(memberDetail.getMember().getId()))
 //                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
 
-        jwtTokenProvider.addHeaderAccessToken(response, accessToken);
+
+        jwtTokenProvider.setHeaderAccessToken(response, accessToken);
 
         // 사용자로부터 헤더 값으로 리프레시 토큰을 받는 것을 테스트하는 용도로, 실제 구현에서는 쿠키 값으로 전달하므로 빼야 함
         jwtTokenProvider.addHeaderRefreshToken(response, refreshToken);
