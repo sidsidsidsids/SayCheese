@@ -2,6 +2,7 @@ import { useState } from "react";
 // third party
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import Swal from "sweetalert2";
 // local
 import "./PhotoCard.css";
 import { openModal } from "../redux/features/modal/modalSlice";
@@ -24,7 +25,7 @@ function PhotoCard({
 
   const handleCardClick = () => {
     if (!isLogin || !userInfo) {
-      alert(
+      Swal.fire(
         "네컷사진을 자세히 보기 위해서는 로그인이 필요합니다.\n로그인 후 진행해주시길 바랍니다."
       );
     } else {

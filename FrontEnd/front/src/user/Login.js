@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
+import Swal from "sweetalert2";
 // local
 import "./Login.css";
 import Button from "../Button";
@@ -71,13 +72,11 @@ function Login() {
         },
       })
       .then((response) => {
-        console.log(response);
+        // accessToken과 refreshToken
         const accessToken = response.headers["authorization"];
         const refreshToken = response.headers["refreshtoken"];
 
         axios.defaults.headers.common["Authorization"] = `${accessToken}`;
-
-        console.log(axios.defaults.headers.common["Authorization"]);
 
         if (response.status === 200) {
           localStorage.setItem("accessToken", accessToken);
@@ -85,13 +84,13 @@ function Login() {
           setCallbackOK(true);
           dispatch(loginSuccess());
           dispatch(getUserInfo());
-          movePage("/main");
+          movePage("/main"); // main 페이지로 이동
         }
       })
       .catch((error) => {
         console.log(error);
         if (error.response.status === 401) {
-          alert("이메일이나 비밀번호를 확인해주세요.");
+          Swal.fire("이메일이나 비밀번호를 확인해주세요.");
         }
       });
   }

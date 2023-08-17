@@ -1,6 +1,7 @@
-import "./User.css";
-
+// third party
 import { Outlet } from "react-router-dom";
+// local
+import "./User.css";
 
 function User() {
   return (

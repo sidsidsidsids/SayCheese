@@ -1,31 +1,30 @@
 import { useEffect, useState } from "react";
+// third party
 import { useDispatch, useSelector } from "react-redux";
-import Button from "../Button";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import Swal from "sweetalert2";
+// local
+import Button from "../Button";
 import "./MyInfoModify.css";
-import { useNavigate } from "react-router-dom";
 import { getUserInfo } from "../redux/features/login/loginSlice";
 
 function MyInfoModify() {
   const [activeIndex, setActiveIndex] = useState(null);
 
-  const movePage = useNavigate();
-  const dispatch = useDispatch();
-
   const { userInfo } = useSelector((store) => store.login);
   const { email } = useParams(); // 경로의 email
 
   const [nickname, setNickname] = useState(userInfo.nickname); // 현재 닉네임
-  const [nicknameMessage, setNicknameMessage] = useState("현재 닉네임입니다.");
+  const [nicknameMessage, setNicknameMessage] = useState("현재 닉네임입니다."); // 닉네임 사용 가능 여부를 알려주기 위한 메시지
 
   const [nowPassword, setNowPassword] = useState(""); // 현재 비밀번호
   const [nowPasswordMessage, setNowPasswordMessage] = useState(
     "! 현재 비밀번호를 입력해주세요 !"
-  );
+  ); // 비밀번호 사용 가능 여부를 알려주기 위한 메시지
   const [newPassword, setNewPassword] = useState(""); // 새 비밀번호
   const [newPasswordCheck, setNewPasswordCheck] = useState(""); // 새 비밀번호 확인
-  const [newPasswordMessage, setNewPasswordMessage] = useState("");
+  const [newPasswordMessage, setNewPasswordMessage] = useState(""); // 새 비밀번호 사용 가능 여부를 알려주기 위한 메시지
 
   const [name, setName] = useState(userInfo.name); // 현재 이름
 
@@ -42,8 +41,11 @@ function MyInfoModify() {
   const [nullInputCheck, setNullInputCheck] = useState(false);
   // 필수 입력해야하는 부분 중 한 곳이라도 잘못 입력한 곳 있는지 체크
 
+  const movePage = useNavigate();
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    setNullInputCheck(nicknameCheck && nowPasswordCheck);
+    setNullInputCheck(nicknameCheck && nowPasswordCheck); // 닉네임 또는 현재 비밀번호가 잘 입력되어있는지 체크
   }, [nickname, nicknameCheck, nowPassword, nowPasswordCheck]);
 
   useEffect(() => {
@@ -73,7 +75,6 @@ function MyInfoModify() {
     let data = {
       nickname: currentNickname,
     };
-    console.log(currentNickname);
     try {
       const response = await axios.post("/api/member/nickname-check", data, {
         headers: {
@@ -101,7 +102,7 @@ function MyInfoModify() {
   }
 
   function nicknameAlert() {
-    alert(`${nicknameMessage}`);
+    Swal.fire(`${nicknameMessage}`);
   }
 
   // 현재 비밀번호 맞게 입력했는지 체크
@@ -185,7 +186,7 @@ function MyInfoModify() {
     const currentAge = event.target.value;
     setAge(currentAge);
     if (currentAge <= 0 || currentAge >= 100) {
-      alert("나이를 다시 확인해주세요.");
+      Swal.fire("나이를 다시 확인해주세요.");
     }
   };
 
@@ -208,13 +209,13 @@ function MyInfoModify() {
         newPassword === "" ||
         newPasswordCheck === ""
       ) {
-        return alert(
+        return Swal.fire(
           "닉네임, 비밀번호는 필수로 입력해야 합니다.\n빈 칸을 확인해주세요."
         );
       } else if (!nullInputCheck) {
-        return alert("닉네임 또는 현재 비밀번호를 다시 확인해주세요.");
+        return Swal.fire("닉네임 또는 현재 비밀번호를 다시 확인해주세요.");
       } else if (!newPasswordInputCheck) {
-        return alert(
+        return Swal.fire(
           "새 비밀번호를 다시 확인해주세요.\n비밀번호는 숫자+영문자+특수문자 조합으로 8자리 이상 25자리 이하 입력해야 합니다."
         );
       }
@@ -223,11 +224,11 @@ function MyInfoModify() {
       data.password = nowPassword;
 
       if (nickname === "" || nowPassword === "") {
-        return alert(
+        return Swal.fire(
           "닉네임, 비밀번호는 필수로 입력해야 합니다.\n빈 칸을 확인해주세요."
         );
       } else if (!nullInputCheck) {
-        return alert("닉네임 또는 현재 비밀번호를 다시 확인해주세요.");
+        return Swal.fire("닉네임 또는 현재 비밀번호를 다시 확인해주세요.");
       }
     }
     const accessToken = localStorage.getItem("accessToken");
@@ -240,13 +241,13 @@ function MyInfoModify() {
         },
       })
       .then((response) => {
-        alert("회원 정보 수정이 완료되었습니다.");
+        Swal.fire("회원 정보 수정이 완료되었습니다.");
         dispatch(getUserInfo());
         movePage(`/user/mypage/${email}`);
       })
       .catch((error) => {
         console.log(error);
-        alert(
+        Swal.fire(
           "오류로 인해 회원가입이 불가능합니다.\n다시 시도해주시길 바랍니다."
         );
       });

@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
+// third party
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Swal from "sweetalert2";
+// local
 import "./SignUp.css";
 import Button from "../Button";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 function SignUp() {
   const [activeIndex, setActiveIndex] = useState(null);
-
-  const movePage = useNavigate(); // 페이지 이동
 
   const [email, setEmail] = useState(""); // 이메일
   const [emailMessage, setEmailMessage] = useState("이메일을 입력해주세요."); // 이메일 메시지
@@ -35,6 +36,8 @@ function SignUp() {
   const [agreeCheck, setAgreeCheck] = useState(false); // 개인정보 제공 동의했는지 체크
   const [nullInputCheck, setNullInputCheck] = useState(false);
   // 필수 입력해야하는 부분 중 한 곳이라도 잘못 입력한 곳 있는지 체크
+
+  const movePage = useNavigate(); // 페이지 이동
 
   useEffect(() => {
     setNullInputCheck(emailCheck && emailNumCheck && nicknameCheck);
@@ -123,7 +126,7 @@ function SignUp() {
 
   // emailMessage에 담은 메시지 alert하는 함수
   function emailAlert() {
-    alert(`${emailMessage}`);
+    Swal.fire(`${emailMessage}`);
   }
 
   // 인증번호 확인 메시지 출력하는 함수
@@ -140,15 +143,15 @@ function SignUp() {
         },
       });
       setEmailNumCheck(true);
-      alert(response.data.message);
+      Swal.fire(response.data.message);
     } catch (error) {
       setEmailNumCheck(false);
       if (error.response.status === 400) {
-        alert("인증번호 입력을 부탁드립니다.");
+        Swal.fire("인증번호 입력을 부탁드립니다.");
       } else if (error.response.status === 404) {
-        alert("잘못 입력하셨습니다.\n인증번호를 다시 확인 부탁드립니다.");
+        Swal.fire("잘못 입력하셨습니다.\n인증번호를 다시 확인 부탁드립니다.");
       } else {
-        alert(
+        Swal.fire(
           "오류로 인해 인증번호 확인이 불가능합니다.\n다시 시도해주시길 바랍니다."
         );
       }
@@ -191,7 +194,7 @@ function SignUp() {
 
   // nicknameMessage 담은 메시지 alert하는 함수
   function nicknameAlert() {
-    alert(`${nicknameMessage}`);
+    Swal.fire(`${nicknameMessage}`);
   }
 
   const handlePasswordCheck = () => {
@@ -239,7 +242,7 @@ function SignUp() {
     const currentAge = event.target.value;
     setAge(currentAge);
     if (currentAge <= 0 || currentAge >= 100) {
-      alert("나이를 다시 확인해주세요.");
+      Swal.fire("나이를 다시 확인해주세요.");
     }
   };
 
@@ -257,20 +260,20 @@ function SignUp() {
       passwordCheck === "" ||
       nickname === ""
     ) {
-      return alert(
+      return Swal.fire(
         "이메일, 비밀번호, 닉네임은 필수로 입력해야 합니다.\n빈 칸을 확인해주세요."
       );
       // 이메일이나 닉네임 잘못 입력한 경우
     } else if (!nullInputCheck) {
-      return alert("이메일 또는 닉네임을 다시 확인해주세요.");
+      return Swal.fire("이메일 또는 닉네임을 다시 확인해주세요.");
       // 비밀번호 잘못 입력한 경우
     } else if (!passwordInputCheck) {
-      return alert(
+      return Swal.fire(
         "비밀번호를 다시 확인해주세요.\n비밀번호는 숫자+영문자+특수문자 조합으로 8자리 이상 25자리 이하 입력해야 합니다."
       );
       // 개인정보 제공 동의 체크하지 않은 경우
     } else if (!agreeCheck) {
-      return alert("개인정보 제공 동의를 해주세요.");
+      return Swal.fire("개인정보 제공 동의를 해주세요.");
     }
 
     let data = {
@@ -289,11 +292,11 @@ function SignUp() {
         },
       })
       .then((response) => {
-        alert("회원가입에 성공했습니다. 로그인 페이지로 이동합니다.");
+        Swal.fire("회원가입에 성공했습니다. 로그인 페이지로 이동합니다.");
         movePage("/user/login");
       })
       .catch((error) => {
-        alert(
+        Swal.fire(
           "오류로 인해 회원가입이 불가능합니다.\n다시 시도해주시길 바랍니다."
         );
       });

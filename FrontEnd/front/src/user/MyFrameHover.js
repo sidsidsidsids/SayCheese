@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
+// local
 import "./MyFrameHover.css";
-import axios from "axios";
 
 function MyFrameHover({
   props,
@@ -14,8 +14,6 @@ function MyFrameHover({
   frameSpecification,
   loverYn,
 }) {
-  const accessToken = localStorage.getItem("accessToken");
-
   useEffect(() => {
     document.body.style.overflow = "hidden";
     const modalbg = document.getElementsByClassName("modalBackdrop")[0]; // Get the first element with the class name

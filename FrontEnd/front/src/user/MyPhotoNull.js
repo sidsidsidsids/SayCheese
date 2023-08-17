@@ -1,3 +1,4 @@
+// local
 import "./MyPhotoNull.css";
 
 function MyPhotoNull() {
