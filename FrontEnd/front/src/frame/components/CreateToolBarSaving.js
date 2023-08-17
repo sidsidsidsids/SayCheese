@@ -165,7 +165,7 @@ export default function Saving() {
       });
   }
   return (
-    <>
+    <div className="savingButton">
       <button
         className="btn alignCenter"
         onClick={() => dispatch(DoDownload())}
@@ -188,6 +188,6 @@ export default function Saving() {
         : uploadStage === 1
         ? stage1() // 로그인
         : null}
-    </>
+    </div>
   );
 }
