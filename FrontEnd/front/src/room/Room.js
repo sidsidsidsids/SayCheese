@@ -6,7 +6,7 @@ import { getUserInfo } from "../redux/features/login/loginSlice";
 import { OpenVidu } from "openvidu-browser";
 import html2canvas from "html2canvas";
 import axios from "axios";
-import Swal from "sweetalert2"
+import Swal from "sweetalert2";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -44,7 +44,7 @@ let orders;
 let horizontalLeftLoc = [32, 261, 261, 32];
 let horizontalTopLoc = [29, 29, 205, 205];
 let verticalLeftLoc = [19, 19, 19, 19];
-let verticalTopLoc = [19, 139, 259, 379];
+let verticalTopLoc = [379, 259, 139, 19];
 let videoFrameSizes = {
   VERTICAL: {
     width: "207.8px",
@@ -162,7 +162,6 @@ const Room = () => {
     mySession.on("startGameMode", (event) => {
       setTimeout(() => {
         gameMode();
-        
       }, 1000);
     });
 
@@ -393,7 +392,7 @@ const Room = () => {
         }
       );
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 
@@ -618,9 +617,9 @@ const Room = () => {
         ctx.drawImage(
           video,
           // 0, // 비디오를 캔버스의 어떤 X 위치에 그릴지
-          // 0, // 비디오를 캔버스의 어떤 y 위치에 그릴지
-          // 217.5, // 비디오의 원래 width
-          // 165.5, // 비디오의 원래 height
+          // 3 * count, // 비디오를 캔버스의 어떤 y 위치에 그릴지
+          // 170.3, // 비디오의 원래 width
+          // 114.3, // 비디오의 원래 height
           511.3 + locationX, // 캔버스에 그릴 때 시작점 x 위치
           60 + locationY, // 캔버스에 그릴 때 시작점 y 위치
           170.3, // 캔버스에 그릴 비디오의 width
@@ -642,6 +641,7 @@ const Room = () => {
       // 캔버스의 데이터 URL을 얻어 이미지로 사용할 수 있습니다.
       const dataURL = canvas.toDataURL("image/png");
       range.style.backgroundImage = `url(${dataURL})`;
+      // range.style.top = `-23px`;
       // 이미지를 다른 요소에 적용하려면 아래와 같이 설정합니다.
       // const image = new Image();
       // image.src = dataURL;
@@ -676,7 +676,7 @@ const Room = () => {
   };
   // 게임모드
   const gameMode = () => {
-    gameCnt = 0
+    gameCnt = 0;
     // 방 상태 설정
     setRoomStatus(1);
     // 유저 정보
@@ -696,7 +696,7 @@ const Room = () => {
       } // 4번 다 돌기 전에는 이를 반복
       else {
         console.log(`${count} times left`);
-        console.log("gameCnt: ", gameCnt)
+        console.log("gameCnt: ", gameCnt);
         // 페이즈에 들어서며 일어날 일 (캠 메인에 띄우기/주제 출력)
         if (randomTags) {
           randomTag = randomTags[4 - count];
@@ -706,8 +706,7 @@ const Room = () => {
             user &&
             user.stream &&
             user.stream.streamId === orders[count - 1]
-          )
-           {
+          ) {
             // 해당 유저를 MainPublisher로 설정합니다.
             setMainStreamManager(user);
           }
@@ -719,7 +718,7 @@ const Room = () => {
         setTimeout(() => {
           // 7000ms 후에 일어날 일 (사진 찍기/주제 변경/유저 변경)
           setMinutes(0);
-          setSeconds(7);
+          setSeconds(4);
           setTimeout(() => {
             // 2000ms 후에 일어날 일(중간 텀), 이 이후 다시 else문
             if (selectedSpec === "HORIZONTAL") {
@@ -735,7 +734,7 @@ const Room = () => {
             setMinutes(0);
             setSeconds(2);
             gamePhase(count - 1);
-          }, 7000);
+          }, 4000);
         }, 2000);
       }
     };
@@ -743,9 +742,8 @@ const Room = () => {
   };
   // 일반모드 (settings)
   const normalMode = () => {
-    normalCnt = 0
+    normalCnt = 0;
     setRoomStatus(1);
-   
   };
   // 일반모드 (display)
   const handleNormalPhase = (count) => {
@@ -952,7 +950,7 @@ const Room = () => {
           },
         })
         .then((response) => {
-          randomTags = response.data
+          randomTags = response.data;
           sendTags();
         })
         .catch((error) => {
@@ -992,7 +990,7 @@ const Room = () => {
       console.log(error);
     }
   };
-  
+
   // 결과창에서 DB에 이미지 저장
   const sendImageData = async (resultURL, sessionId) => {
     if (isHost) {
@@ -1059,7 +1057,7 @@ const Room = () => {
                 .then((response) => {
                   console.log(response);
                   roomImageID = response.data.imageId;
-                  Swal.fire("정상적으로 종료되었습니다")
+                  Swal.fire("정상적으로 종료되었습니다");
                 });
             });
           });
@@ -1185,7 +1183,7 @@ const Room = () => {
                   backgroundPosition: "center",
                 }}
               ></div> */}
-              </div>
+                </div>
               )}
               {Spec === "VERTICAL" && (
                 <div
@@ -1210,7 +1208,7 @@ const Room = () => {
                   backgroundPosition: "center",
                 }}
               ></div> */}
-              </div>
+                </div>
               )}
             </div>
             {chatData && <ChatComponent user={chatData} myName={myUserName} />}
@@ -1296,17 +1294,16 @@ const Room = () => {
                     />
                   )}
                   <div
-                  id="video-frame-2"
-                  style={{
-                    width: "589.6px",
-                    height: "400.6px",
-                    backgroundImage: selectFrame,
-                    backgroundSize: "contain",
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                  }}
-                >
-                  </div>
+                    id="video-frame-2"
+                    style={{
+                      width: "589.6px",
+                      height: "400.6px",
+                      backgroundImage: selectFrame,
+                      backgroundSize: "contain",
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "center",
+                    }}
+                  ></div>
                 </div>
               )}
               {Spec === "VERTICAL" && (
@@ -1338,17 +1335,17 @@ const Room = () => {
                     />
                   )}
                   <div
-                  id="video-frame-2"
-                  style={{
-                    width: "207.8px",
-                    height: "589.6px",
-                    backgroundImage: `url(${chosenUrl})`,
-                    backgroundSize: "contain",
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                  }}
-                >
-                  </div>
+                    id="video-frame-2"
+                    style={{
+                      width: "207.8px",
+                      height: "589.6px",
+                      top: "-0.8px",
+                      backgroundImage: `url(${chosenUrl})`,
+                      backgroundSize: "contain",
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "center",
+                    }}
+                  ></div>
                 </div>
               )}
             </div>
@@ -1424,7 +1421,7 @@ const Room = () => {
                 }
               }}
               onButton3={() => {
-                Swal.fire(`${selectedMode} 모드 입니다`)
+                Swal.fire(`${selectedMode} 모드 입니다`);
               }}
               buttonName1="나가기"
               buttonName2="시작하기"
@@ -1463,18 +1460,17 @@ const Room = () => {
                       />
                     </div>
                   ))}
-                      <div
-                        id="video-frame-2"
-                        style={{
-                          width: "589.6px",
-                          height: "400.6px",
-                          backgroundImage: selectFrame,
-                          backgroundSize: "contain",
-                          backgroundRepeat: "no-repeat",
-                          backgroundPosition: "center",
-                        }}
-                      >
-                  </div>
+                  <div
+                    id="video-frame-2"
+                    style={{
+                      width: "589.6px",
+                      height: "400.6px",
+                      backgroundImage: selectFrame,
+                      backgroundSize: "contain",
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "center",
+                    }}
+                  ></div>
                 </div>
               )}
               {Spec === "VERTICAL" && (
@@ -1505,18 +1501,17 @@ const Room = () => {
                       />
                     </div>
                   ))}
-                <div
-                  id="video-frame-2"
-                  style={{
-                    width: "207.8px",
-                    height: "589.6px",
-                    backgroundImage: selectFrame,
-                    backgroundSize: "contain",
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                  }}
-                >
-                </div>
+                  <div
+                    id="video-frame-2"
+                    style={{
+                      width: "207.8px",
+                      height: "589.6px",
+                      backgroundImage: selectFrame,
+                      backgroundSize: "contain",
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "center",
+                    }}
+                  ></div>
                 </div>
               )}
             </div>

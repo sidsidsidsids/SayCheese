@@ -79,7 +79,7 @@
   flex: 1 1 80%;
   overflow: hidden;
   font-size: 60px;
-  z-index: 100;
+  z-index: 200000;
 }
 .slide-container {
   display: inline-block;
