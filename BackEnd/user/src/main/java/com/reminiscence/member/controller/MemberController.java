@@ -3,31 +3,33 @@ package com.reminiscence.member.controller;
 //import com.reminiscence.JwtServiceImpl;
 
 import com.reminiscence.config.auth.MemberDetail;
-import com.reminiscence.config.redis.RefreshTokenService;
+import com.reminiscence.config.redis.RedisKey;
 import com.reminiscence.domain.Member;
-import com.reminiscence.filter.JwtTokenProvider;
+import com.reminiscence.email.EmailType;
+import com.reminiscence.email.dto.EmailRequestDto;
+import com.reminiscence.email.service.EmailService;
+import com.reminiscence.exception.customexception.EmailException;
+import com.reminiscence.exception.customexception.MemberException;
+import com.reminiscence.exception.message.EmailExceptionMessage;
+import com.reminiscence.exception.message.MemberExceptionMessage;
 import com.reminiscence.member.dto.*;
 import com.reminiscence.member.service.MemberService;
 import com.reminiscence.message.Response;
 import com.reminiscence.message.custom_message.MemberResponseMessage;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static com.reminiscence.filter.JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/member")
 @Slf4j
 public class MemberController {
@@ -35,29 +37,27 @@ public class MemberController {
     private static final String SUCCESS = "success";
     private static final String FAIL = "fail";
 
-    @Autowired
-    private MemberService memberService;
+    private final RedisTemplate redisTemplate;
 
-    public MemberController(MemberService memberService) {
-        super();
-        this.memberService = memberService;
-    }
+    private final MemberService memberService;
+
+    private final EmailService emailService;
 
     @PostMapping("/join")
-    public ResponseEntity join(@Valid @RequestBody MemberJoinRequestDto requestDto, BindingResult bindingResult) throws Exception {
-
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
-        }
-
+    public ResponseEntity join(@Valid @RequestBody MemberJoinRequestDto requestDto) throws Exception {
         log.debug("MemberJoinRequestDto info : {}", requestDto);
-        return memberService.joinMember(requestDto);
+        String token = (String) redisTemplate.opsForValue().get(RedisKey.EMAIL_AUTH_SUCCESS_TOKEN_PREFIX + requestDto.getEmail());
+        if (token == null) {
+            throw new EmailException(EmailExceptionMessage.DATA_NOT_FOUND);
+        }
+        memberService.joinMember(requestDto);
+        return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_JOIN_SUCCESS), HttpStatus.OK);
     }
 
-    @GetMapping("/join/{email}/id-check")
-    public ResponseEntity idCheck(@PathVariable("email") String email) throws Exception {
-        log.debug("idCheck email : {}", email);
-        Member member = memberService.emailCheck(email);
+    @PostMapping("/id-check")
+    public ResponseEntity idCheck(@RequestBody MemberIdCheckRequestDto memberIdCheckRequestDto) throws Exception {
+        log.debug("idCheck email : {}", memberIdCheckRequestDto.getEmail());
+        Member member = memberService.emailCheck(memberIdCheckRequestDto.getEmail());
         if (member != null) {
             return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_ID_CHECK_FAILURE), HttpStatus.BAD_REQUEST);
         } else {
@@ -65,11 +65,10 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/join/{nickname}/nickname-check")
-    @ResponseBody
-    public ResponseEntity nicknameCheck(@PathVariable("nickname") String nickname) throws Exception {
-        log.debug("nicknameCheck nickname : {}", nickname);
-        Member member = memberService.nicknameCheck(nickname);
+    @PostMapping("/nickname-check")
+    public ResponseEntity nicknameCheck(@RequestBody MemberNicknameCheckRequestDto memberNicknameCheckRequestDto) throws Exception {
+        log.debug("nicknameCheck nickname : {}", memberNicknameCheckRequestDto.getNickname());
+        Member member = memberService.nicknameCheck(memberNicknameCheckRequestDto.getNickname());
         if (member != null) {
             return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_NICKNAME_CHECK_FAILURE), HttpStatus.BAD_REQUEST);
         } else {
@@ -86,19 +85,23 @@ public class MemberController {
         return memberService.updateMemberInfo(memberDetail, requestDto);
     }
 
-    @GetMapping("/find-password/{memberId}")
-    public Member findPassword(@PathVariable("memberId") String memberId) throws Exception {
-        Member member = memberService.emailCheck(memberId);
-        return member;
+    @PostMapping("/password")
+    public ResponseEntity findPassword(@RequestBody MemberFindPasswordRequestDto memberFindPasswordRequestDto) throws Exception {
+        Member member = memberService.emailCheck(memberFindPasswordRequestDto.getEmail());
+        if (member == null)
+            return new ResponseEntity(new MemberFindPasswordResponseDto(MemberResponseMessage.MEMBER_EMAIL_CHECK_REQUEST), HttpStatus.BAD_REQUEST);
+        emailService.storeAuthToken(new EmailRequestDto(member.getEmail()), EmailType.FIND_PW);
+        return new ResponseEntity(new MemberFindPasswordResponseDto(MemberResponseMessage.MEMBER_PASSWORD_FIND_EMAIL_SEND_SUCCESS), HttpStatus.OK);
     }
 
-    @PutMapping("/modify-password")
-    public void modifyPassword(@RequestBody MemberUpdatePasswordRequestDto memberUpdatePasswordRequestDto) throws Exception {
+    @PutMapping("/password")
+    public ResponseEntity modifyPassword(@RequestBody MemberUpdatePasswordRequestDto memberUpdatePasswordRequestDto) throws Exception {
         memberService.updateMemberPassword(memberUpdatePasswordRequestDto);
+        return new ResponseEntity(Response.of(MemberResponseMessage.MEMBER_PASSWORD_MODIFY_SUCCESS), HttpStatus.OK);
     }
 
-    @GetMapping("/search-member/{email-nickname}")
-    public ResponseEntity findMembers(@PathVariable("email-nickname") String emailNickname) throws Exception {
+    @GetMapping("/search-member")
+    public ResponseEntity findMembers(@RequestParam(value = "email-nickname", required = false, defaultValue = "") String emailNickname) throws Exception {
         List<MemberSearchResponseDto> memberList = memberService.getMemberList(emailNickname);
         return new ResponseEntity<>(memberList, HttpStatus.OK);
     }
@@ -114,106 +117,20 @@ public class MemberController {
     public ResponseEntity<MemberInfoResponseDto> getInfo(@AuthenticationPrincipal MemberDetail memberDetail) throws Exception {
         String memberId = memberDetail.getMember().getEmail();
         MemberInfoResponseDto memberInfoResponseDto = memberService.getMemberInfo(memberId);
-        return new ResponseEntity<MemberInfoResponseDto>(memberInfoResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(memberInfoResponseDto, HttpStatus.OK);
     }
 
-//    @PostMapping("/login")
-//    public ResponseEntity<Map<String, Object>> login(
-//            @RequestBody
-//            MemberLoginRequestDto requestDto) {
-//        Map<String, Object> resultMap = new HashMap<>();
-//        HttpStatus status = null;
-//        try {
-//            Member loginMember = memberService.login(requestDto);
-//            if (loginMember != null) {
-//                String accessToken = jwtService.createAccessToken("memberId", loginMember.getEmail());// key, data
-//                String refreshToken = jwtService.createRefreshToken("memberId", loginMember.getEmail());// key, data
-//                memberService.saveRefreshToken(requestDto.getEmail(), refreshToken);
-//                logger.debug("로그인 accessToken 정보 : {}", accessToken);
-//                logger.debug("로그인 refreshToken 정보 : {}", refreshToken);
-//                resultMap.put("access-token", accessToken);
-//                resultMap.put("refresh-token", refreshToken);
-//                resultMap.put("message", SUCCESS);
-//                status = HttpStatus.ACCEPTED;
-//            } else {
-//                resultMap.put("message", FAIL);
-//                status = HttpStatus.ACCEPTED;
-//            }
-//        } catch (Exception e) {
-//            logger.error("로그인 실패 : {}", e);
-//            resultMap.put("message", e.getMessage());
-//            status = HttpStatus.INTERNAL_SERVER_ERROR;
-//        }
-//        return new ResponseEntity<Map<String, Object>>(resultMap, status);
-//    }
-//
-//    @GetMapping("/info/{memberId}")
-//    public ResponseEntity<Map<String, Object>> getInfo(
-//            @PathVariable("memberId")
-//            String memberId,
-//            HttpServletRequest request) {
-////		logger.debug("memberId : {} ", memberId);
-//        Map<String, Object> resultMap = new HashMap<>();
-////        HttpStatus status = HttpStatus.ACCEPTED;
-//        HttpStatus status = HttpStatus.UNAUTHORIZED;
-//        if (jwtService.isUsable(request.getHeader("access-token"))) {
-//            logger.info("사용 가능한 토큰!!!");
-//            try {
-////				로그인 사용자 정보.
-//                Member member = memberService.getMemberInfo(memberId);
-//                resultMap.put("MemberInfo", member);
-//                resultMap.put("message", SUCCESS);
-//                status = HttpStatus.ACCEPTED;
-//            } catch (Exception e) {
-//                logger.error("정보조회 실패 : {}", e);
-//                resultMap.put("message", e.getMessage());
-//                status = HttpStatus.INTERNAL_SERVER_ERROR;
-//            }
-//        } else {
-//            logger.error("사용 불가능 토큰!!!");
-//            resultMap.put("message", FAIL);
-//            status = HttpStatus.ACCEPTED;
-//        }
-//        return new ResponseEntity<Map<String, Object>>(resultMap, status);
-//    }
-//
-//    @GetMapping("/logout/{memberId}")
-//    public ResponseEntity<?> removeToken(@PathVariable("memberId") String memberId) {
-//        Map<String, Object> resultMap = new HashMap<>();
-//        HttpStatus status = HttpStatus.ACCEPTED;
-//        try {
-//            memberService.deleteRefreshToken(memberId);
-//            resultMap.put("message", SUCCESS);
-//            status = HttpStatus.ACCEPTED;
-//        } catch (Exception e) {
-//            logger.error("로그아웃 실패 : {}", e);
-//            resultMap.put("message", e.getMessage());
-//            status = HttpStatus.INTERNAL_SERVER_ERROR;
-//        }
-//        return new ResponseEntity<Map<String, Object>>(resultMap, status);
-//    }
-//
-//    @PostMapping("/refresh")
-//    public ResponseEntity<?> refreshToken(@RequestBody Member member, HttpServletRequest request)
-//            throws Exception {
-//        Map<String, Object> resultMap = new HashMap<>();
-//        HttpStatus status = HttpStatus.ACCEPTED;
-//        String token = request.getHeader("refresh-token");
-//        logger.debug("token : {}, member : {}", token, member);
-//        if (jwtService.isUsable(token)) {
-//            if (token.equals(memberService.getRefreshToken(String.valueOf(member.getId())))) {
-//                String accessToken = jwtService.createAccessToken("memberId", member.getId());
-//                logger.debug("token : {}", accessToken);
-//                logger.debug("정상적으로 액세스토큰 재발급!!!");
-//                resultMap.put("access-token", accessToken);
-//                resultMap.put("message", SUCCESS);
-//                status = HttpStatus.ACCEPTED;
-//            }
-//        } else {
-//            logger.debug("리프레쉬토큰도 사용불가!!!!!!!");
-//            status = HttpStatus.UNAUTHORIZED;
-//        }
-//        return new ResponseEntity<Map<String, Object>>(resultMap, status);
-//    }
+    @GetMapping("/nickname")
+    public ResponseEntity getNickname(@AuthenticationPrincipal MemberDetail memberDetail) throws Exception {
+        MemberNicknameResponseDto memberNicknameResponseDto = memberService.getMemberNickName(memberDetail);
+        return new ResponseEntity<>(memberNicknameResponseDto, HttpStatus.OK);
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity saveProfile(@AuthenticationPrincipal MemberDetail memberDetail,
+                                      @RequestBody @Valid MemberProfileSaveRequestDto requestDto) {
+        return new ResponseEntity<>(memberService.saveProfile(memberDetail, requestDto), HttpStatus.OK);
+    }
+
 }
 

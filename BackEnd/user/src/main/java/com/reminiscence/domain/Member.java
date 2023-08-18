@@ -30,9 +30,9 @@ public class Member extends BaseTimeEntity {
     @Column(name="role", nullable = false)
     private Role role;
     @Column(name="gender_fm")
-    private char genderFm;
+    private Character genderFm;
     @Column(name="age")
-    private int age;
+    private Integer age;
     @Column(name="name")
     private String name;
 
@@ -40,7 +40,7 @@ public class Member extends BaseTimeEntity {
     private String profile;
 
     @Column(name="del_yn")
-    private char delYn;
+    private Character delYn;
 
     @Column(name="sns_id")
     private String snsId;
@@ -49,10 +49,10 @@ public class Member extends BaseTimeEntity {
     private String snsType;
 
     @Column(name="personal_agreement_yn")
-    private char personalAgreement;
+    private Character personalAgreement;
 
     @Builder
-    public Member(String email, String password, String nickname, Role role, char genderFm, int age, String name, String profile, char delYn ,String snsId, String snsType, char personalAgreement) {
+    public Member(String email, String password, String nickname, Role role, Character genderFm, Integer age, String name, String profile, Character delYn ,String snsId, String snsType, Character personalAgreement) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
@@ -74,10 +74,10 @@ public class Member extends BaseTimeEntity {
     public void modifyNickname(String nickname) {
         this.nickname=nickname;
     }
-    public void modifyGenderFm(char genderFm) {
+    public void modifyGenderFm(Character genderFm) {
         this.genderFm=genderFm;
     }
-    public void modifyAge(int age) {
+    public void modifyAge(Integer age) {
         this.age=age;
     }
     public void modifyName(String name) {
@@ -86,7 +86,7 @@ public class Member extends BaseTimeEntity {
     public void modifyProfile(String profile) {
         this.profile=profile;
     }
-    public void modifyDelYn(char delYn) {
+    public void modifyDelYn(Character delYn) {
         this.delYn=delYn;
     }
     public void modifySnsId(String snsId) {
@@ -95,7 +95,7 @@ public class Member extends BaseTimeEntity {
     public void modifySnsType(String snsType) {
         this.snsType=snsType;
     }
-    public void modifyPersonalAgreement(char personalAgreement) {
+    public void modifyPersonalAgreement(Character personalAgreement) {
         this.personalAgreement=personalAgreement;
     }
 }

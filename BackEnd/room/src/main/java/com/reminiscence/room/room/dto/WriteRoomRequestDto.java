@@ -2,6 +2,7 @@ package com.reminiscence.room.room.dto;
 
 import com.reminiscence.room.domain.Mode;
 import com.reminiscence.room.domain.Room;
+import com.reminiscence.room.domain.Specification;
 import lombok.Getter;
 
 import javax.validation.constraints.*;
@@ -18,8 +19,8 @@ public class WriteRoomRequestDto {
     private Mode mode;
     @NotBlank(message = "방 코드를 입력해주세요.")
     private String roomCode;
-    @NotBlank(message = "방 설명을 입력해주세요.")
-    private String specification;
+    @NotNull(message = "방 규격을 입력해주세요.")
+    private Specification specification;
 
     public Room toEntity() {
         return Room.builder()
@@ -28,7 +29,11 @@ public class WriteRoomRequestDto {
                 .mode(mode)
                 .roomCode(roomCode)
                 .specification(specification)
+                .startYn('N')
                 .endDate(LocalDateTime.now().plusMinutes(30))
                 .build();
+    }
+    public void encryptPassword(String encryptPassword){
+        this.password = encryptPassword;
     }
 }

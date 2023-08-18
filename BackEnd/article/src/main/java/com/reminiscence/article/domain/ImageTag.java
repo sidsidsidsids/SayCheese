@@ -31,4 +31,9 @@ public class ImageTag {
         tag.addImageTag(this);
         this.imageTagKey = new ImageTagKey(image.getId(), tag.getId());
     }
+    public ImageTag(Image image, Long tagId) {
+        this.image = image;
+        image.addImageTag(this);
+        this.imageTagKey = new ImageTagKey(image.getId(), tagId);
+    }
 }

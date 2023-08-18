@@ -1,12 +1,15 @@
 package com.reminiscence.article.image;
 
+import com.reminiscence.article.common.Pagination;
 import com.reminiscence.article.domain.Image;
 import com.reminiscence.article.domain.ImageOwner;
 import com.reminiscence.article.domain.Member;
-import com.reminiscence.article.image.dto.OwnerImageResponseDto;
+import com.reminiscence.article.image.dto.RandomTagResponseDto;
 import com.reminiscence.article.image.repository.ImageOwnerRepository;
 import com.reminiscence.article.image.repository.ImageRepository;
 import com.reminiscence.article.image.repository.ImageTagRepository;
+import com.reminiscence.article.image.repository.TagRepository;
+import com.reminiscence.article.image.vo.ImageVo;
 import com.reminiscence.article.member.repository.MemberRepository;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,11 +18,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @DataJpaTest
@@ -27,14 +31,14 @@ public class ImageJpaTest {
 
     @Autowired
     ImageRepository imageRepository;
-
     @Autowired
     ImageOwnerRepository imageOwnerRepository;
-
     @Autowired
     MemberRepository memberRepository;
     @Autowired
     ImageTagRepository imageTagRepository;
+    @Autowired
+    TagRepository tagRepository;
 
     @Test
     @DisplayName("소유한 이미지 조회 테스트")
@@ -60,16 +64,15 @@ public class ImageJpaTest {
     public void RecentOwnerImageTest(){
         // given
         Long memberId = 1L;
-        int PAGE_SIZE = 5;
-        PageRequest page = PageRequest.of(0, PAGE_SIZE, Sort.Direction.DESC, "createdDate");
+        int PAGE = 1;
+        PageRequest page = PageRequest.of(PAGE, Pagination.DEFAULT_OWN_IMAGE_PER_PAGE_SIZE, Sort.Direction.DESC, "createdDate");
 
         // when
-        List<OwnerImageResponseDto> recentOwnerImage = imageRepository.findRecentOwnerImage(page, memberId).orElse(null);
+        Page<ImageVo> images = imageRepository.findRecentOwnerImage(memberId, page).orElse(null);
 
         // then
-        assertNotNull(recentOwnerImage);
-        assertEquals(PAGE_SIZE, recentOwnerImage.size());
-        assertEquals(17, recentOwnerImage.get(0).getImageId());
+        assertNotNull(images);
+        assertEquals(6, images.getTotalElements());
     }
 
     @Test
@@ -151,6 +154,12 @@ public class ImageJpaTest {
         String imageLink = "https://s3.ap-northeast-2.amazonaws.com/reminiscence-bucket/image/2021/04/16/1618560000_1.jpg";
         String imageType = imageLink.substring(imageLink.lastIndexOf(".")+1);
         String fileName = "1618560000_1";
+        List<Long> tags = new ArrayList<>();
+        tags.add(1L);
+        tags.add(2L);
+        tags.add(3L);
+        tags.add(4L);
+        String roomCode = "1234";
         Image image = Image.builder()
                 .link(imageLink)
                 .type(imageType)
@@ -175,6 +184,18 @@ public class ImageJpaTest {
 
         // when
         List<String> findTags = imageTagRepository.findTagNameByImageId(imageId).orElse(null);
+
+        // then
+        assertNotNull(findTags);
+        assertEquals(4, findTags.size());
+    }
+    @Test
+    @DisplayName("랜덤 태그 조회 테스트")
+    public void RandomTagReadTest(){
+        // given
+
+        // when
+        List<RandomTagResponseDto> findTags = tagRepository.findRandomTags().orElse(null);
 
         // then
         assertNotNull(findTags);

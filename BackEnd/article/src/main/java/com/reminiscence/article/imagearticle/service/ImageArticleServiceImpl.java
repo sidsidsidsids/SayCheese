@@ -124,9 +124,9 @@ public class ImageArticleServiceImpl implements ImageArticleService {
 
     @Transactional
     @Override
-    public void writeImageArticle(Long image, Long memberId) {
+    public void writeImageArticle(Long imageId, Long memberId) {
         Optional<Member> findMember = memberRepository.findById(memberId);
-        Optional<Image> findImage = imageRepository.findById(image);
+        Optional<Image> findImage = imageRepository.findById(imageId);
 
         findMember.orElseThrow(()->
                 new MemberException(MemberExceptionMessage.NOT_FOUND_MEMBER));
@@ -159,9 +159,8 @@ public class ImageArticleServiceImpl implements ImageArticleService {
                 new ImageArticleException(ImageArticleExceptionMessage.NOT_FOUND_IMAGE_ARTICLE));
         userConfirm(memberId, imageArticle);
         loverRepository.deleteByArticleId(articleId);
-        imageArticleRepository.delete(imageArticle.get());
         imageOwnerRepository.deleteByImageIdAndMemberId(imageArticle.get().getImage().getId(), imageArticle.get().getMember().getId());
-
+        imageArticleRepository.delete(imageArticle.get());
     }
 
     private void userConfirm(Long memberId, Optional<ImageArticle> imageArticle) {

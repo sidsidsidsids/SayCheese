@@ -41,5 +41,8 @@ public class Frame extends BaseTimeEntity {
         this.frameSpecification = frameSpecification;
     }
 
+    public void modifyOpenYn(Character open_yn){
+        this.open_yn = (open_yn=='Y'?'N':'Y');
+    };
 
 }

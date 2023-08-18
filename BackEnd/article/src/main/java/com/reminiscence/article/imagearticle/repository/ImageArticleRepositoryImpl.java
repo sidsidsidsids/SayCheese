@@ -26,7 +26,6 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
-
     public ImageArticleRepositoryImpl(EntityManager entityManager){
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
@@ -50,6 +49,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
                 .from(QImageArticle.imageArticle)
                 .join(QImageArticle.imageArticle.member, QMember.member)
                 .join(QImageArticle.imageArticle.image, QImage.image)
+                .where(memberDelNEq())
                 .orderBy(getOrderSpecifiers(page))
                 .limit(page.getPageSize())
                 .fetch());
@@ -70,6 +70,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
                 .from(QImageArticle.imageArticle)
                 .join(QImageArticle.imageArticle.member, QMember.member)
                 .join(QImageArticle.imageArticle.image, QImage.image)
+                .where(memberDelNEq())
                 .orderBy(getOrderSpecifiers(page))
                 .limit(page.getPageSize())
                 .fetch());
@@ -97,7 +98,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
                 .join(QImageArticle.imageArticle.image, QImage.image)
                 .join(QImage.image.imageTags, QImageTag.imageTag)
                 .join(QImageTag.imageTag.tag, QTag.tag)
-                .where(tagIdEq(tagId))
+                .where(tagIdEq(tagId), memberDelNEq())
                 .orderBy(getOrderSpecifiers(page))
                 .limit(page.getPageSize())
                 .fetch());
@@ -120,7 +121,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
                 .join(QImageArticle.imageArticle.image, QImage.image)
                 .join(QImage.image.imageTags, QImageTag.imageTag)
                 .join(QImageTag.imageTag.tag, QTag.tag)
-                .where(tagIdEq(tagId))
+                .where(tagIdEq(tagId),memberDelNEq())
                 .orderBy(getOrderSpecifiers(page))
                 .limit(page.getPageSize())
                 .fetch());
@@ -130,7 +131,7 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
     public Optional<ImageArticleDetailResponseDto> findMemberImageArticleDetailById(Long articleId, Long memberId) {
         return Optional.ofNullable(queryFactory
                 .select(Projections.constructor(ImageArticleDetailResponseDto.class,
-                        QMember.member.id.as("memberId"),
+                        memberIdEq(memberId).as("isMine"),
                         QImage.image.id.as("imageId"),
                         QMember.member.nickname.as("author"),
                         QImageArticle.imageArticle.createdDate.as("createdDate"),
@@ -153,7 +154,6 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
     public Optional<ImageArticleDetailResponseDto> findNonMemberImageArticleDetailById(Long articleId) {
         return Optional.ofNullable(queryFactory
                 .select(Projections.constructor(ImageArticleDetailResponseDto.class,
-                        QMember.member.id.as("memberId"),
                         QImage.image.id.as("imageId"),
                         QMember.member.nickname.as("name"),
                         QImageArticle.imageArticle.createdDate.as("createdDate"),
@@ -169,13 +169,13 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
     }
 
     @Override
-    public Optional<ImageArticle> findImageArticleOfAllById(Long id) {
-        return Optional.ofNullable(queryFactory.selectFrom(QImageArticle.imageArticle)
+    public Optional<ImageArticle> findImageArticleOfAllById(Long articleId) {
+        return Optional.ofNullable(queryFactory
+                .select(QImageArticle.imageArticle)
+                .from(QImageArticle.imageArticle)
                 .join(QImageArticle.imageArticle.member, QMember.member).fetchJoin()
                 .join(QImageArticle.imageArticle.image, QImage.image).fetchJoin()
-                .join(QImage.image.imageTags, QImageTag.imageTag).fetchJoin()
-                .join(QImageTag.imageTag.tag, QTag.tag).fetchJoin()
-                .where(imageArticleIdEq(id))
+                .where(QImageArticle.imageArticle.id.eq(articleId))
                 .fetchOne());
     }
 
@@ -227,7 +227,12 @@ public class ImageArticleRepositoryImpl implements ImageArticleRepositoryCustom{
     private BooleanExpression tagIdEq(Long tagId) {
         return QTag.tag.id.eq(tagId);
     }
-
+    private BooleanExpression memberIdEq(Long memberId) {
+        return QMember.member.id.eq(memberId);
+    }
+    private BooleanExpression memberDelNEq() {
+        return QMember.member.delYn.eq('N');
+    }
     private BooleanExpression imageArticleIdEq(Long imageArticleId) {
         return QImageArticle.imageArticle.id.eq(imageArticleId);
     }

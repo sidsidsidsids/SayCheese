@@ -1,0 +1,6 @@
+[[Amazon-API]]
+== Amazon-API
+
+operation::AmazonIntegrationTest/createPreSignedUrlTest[snippets='http-request,http-response,response-fields']
+operation::AmazonIntegrationTest/createFramePreSignedUrlTest[snippets='http-request,http-response,response-fields']
+operation::AmazonIntegrationTest/createProfilePreSignedUrlTest[snippets='http-request,http-response,response-fields']

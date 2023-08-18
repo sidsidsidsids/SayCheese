@@ -17,9 +17,8 @@ public class FrameArticleRequestDto {
     @NotBlank(message = "프레임 이름을 입력해주세요")
     private String name;
 
-    @Size(min=3, max=1000, message="링크 길이가 최대 1000글자입니다.")
-    @NotBlank(message = "Link를 입력해주세요")
-    private String link;
+    @NotBlank(message = "파일 타입을 입력해주세요")
+    private String fileType;
 
     @NotNull(message="허용 여부를 선택해주세요")
     private Boolean isPublic;

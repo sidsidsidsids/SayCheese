@@ -18,39 +18,85 @@ spring:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=user-service/login
-            - Method=POST
+            - Path=/api/member/**
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=user-service/**
+            - Path=/api/auth/**
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
-            - AuthorizationFilter
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/email/**
+          filters:
+            - RemoveRequestHeader=Cookie
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/login/**
+          filters:
+            - RemoveRequestHeader=Cookie
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/logout/**
+          filters:
+            - RemoveRequestHeader=Cookie
 
         - id: article-service
           uri: lb://ARTICLE-SERVICE
           predicates:
-            - Path=article-service/**
+            - Path=/api/article/**
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/article-service/(?<segment>.*), /$\{segment}
-            - AuthorizationFilter
 
+        - id: article-service
+          uri: lb://ARTICLE-SERVICE
+          predicates:
+            - Path=/api/image/**
+          filters:
+            - RemoveRequestHeader=Cookie
+
+        - id: article-service
+          uri: lb://ARTICLE-SERVICE
+          predicates:
+            - Path=/api/amazon/**
+          filters:
+            - RemoveRequestHeader=Cookie
+
+        - id: article-service
+          uri: lb://ARTICLE-SERVICE
+          predicates:
+            - Path=/api/faq/**
+          filters:
+            - RemoveRequestHeader=Cookie
+
+        - id: article-service
+          uri: lb://ARTICLE-SERVICE
+          predicates:
+            - Path=/api/frame/**
+          filters:
+            - RemoveRequestHeader=Cookie
 
         - id: room-service
           uri: lb://ROOM-SERVICE
           predicates:
-            - Path=room-service/**
+            - Path=/api/room/**
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/room-service/(?<segment>.*), /$\{segment}
-            - AuthorizationFilter
 
+        - id: room-service
+          uri: lb://ROOM-SERVICE
+          predicates:
+            - Path=/api/participant/**
+          filters:
+            - RemoveRequestHeader=Cookie
 
 
 

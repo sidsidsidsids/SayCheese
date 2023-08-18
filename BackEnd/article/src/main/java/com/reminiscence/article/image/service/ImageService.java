@@ -1,17 +1,17 @@
 package com.reminiscence.article.image.service;
 
 import com.reminiscence.article.config.auth.UserDetail;
-import com.reminiscence.article.image.dto.OwnerImageResponseDto;
-import com.reminiscence.article.image.dto.PreSignedResponseDto;
-import org.springframework.transaction.annotation.Transactional;
+import com.reminiscence.article.image.dto.ImageWriteRequestDto;
+import com.reminiscence.article.image.dto.ImageWriteResponseDto;
+import com.reminiscence.article.image.dto.OwnerImageListResponseDto;
+import com.reminiscence.article.image.dto.RandomTagResponseDto;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface ImageService {
-    void saveImage(UserDetail userDetail, String fileName, String imageLink);
-    List<OwnerImageResponseDto> getReadRecentOwnImages(Long memberId);
-//    public void readImageOwner(Long id);
-    PreSignedResponseDto getPreSignedUrl(String prefix, String fileName);
-    @Transactional
+    OwnerImageListResponseDto getReadRecentOwnImages(Long memberId, Pageable requestPageable);
+    List<RandomTagResponseDto> getRandomTags();
+    ImageWriteResponseDto saveImage(UserDetail userDetail, ImageWriteRequestDto requestDto);
     void deleteImage( Long imageId, Long memberId);
 }

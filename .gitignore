@@ -1,6 +1,5 @@
 HELP.md
 .gradle
-.yml
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
@@ -39,8 +38,6 @@ out/
 .vscode/
 
 ### Config ###
-application.yml
 application-jwt.yml
 application-local.yml
 application-server.yml
-**/data.sql

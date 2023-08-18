@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reminiscence.article.domain.Member;
+import com.reminiscence.article.filter.JwtUtil;
 import com.reminiscence.article.member.repository.MemberRepository;
 import com.reminiscence.article.notice.dummy.DummyNoticeArticleRequestDto;
 import org.junit.jupiter.api.*;
@@ -24,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.web.filter.CharacterEncodingFilter;
@@ -54,6 +57,9 @@ public class NoticeIntegrationTest {
     @Autowired
     private Environment env;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     ObjectMapper objectMapper=new ObjectMapper();
     String adminToken;
 
@@ -70,12 +76,15 @@ public class NoticeIntegrationTest {
                 .build();
         Member admin=memberRepository.findById(1L).orElse(null);
         Member member=memberRepository.findById(2L).orElse(null);
-        adminToken= JWT.create()
-                .withClaim("memberId",String.valueOf(admin.getId()))
-                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
-        memberToken= JWT.create()
-                .withClaim("memberId",String.valueOf(member.getId()))
-                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
+
+        Map<String, Object> adminClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(admin.getId()));
+        Map<String, Object> memberClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId", String.valueOf(member.getId()));
+
+        final int ACCESS_TOKEN_EXPIRATION_TIME = 60 * 30 * 1000 ; // 30분
+
+        adminToken = jwtUtil.generateToken(admin.getEmail(), ACCESS_TOKEN_EXPIRATION_TIME, adminClaims);
+        memberToken = jwtUtil.generateToken(member.getEmail(), ACCESS_TOKEN_EXPIRATION_TIME, memberClaims);
+
     }
 
     @Test

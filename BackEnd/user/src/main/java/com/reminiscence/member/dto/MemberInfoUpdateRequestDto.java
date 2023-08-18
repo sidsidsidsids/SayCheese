@@ -13,16 +13,16 @@ public class MemberInfoUpdateRequestDto {
 
     private String password;
     private String nickname;
-    private char genderFm;
-    private int age;
+    private Character genderFm;
+    private Integer age;
     private String name;
     private String profile;
     private String snsId;
     private String snsType;
-    private char personalAgreement;
+    private Character personalAgreement;
 
     @Builder
-    public MemberInfoUpdateRequestDto(String password, String nickname, char genderFm, int age, String name, String profile, String snsId, String snsType) {
+    public MemberInfoUpdateRequestDto(String password, String nickname, Character genderFm, Integer age, String name, String profile, String snsId, String snsType) {
         this.password = password;
         this.nickname = nickname;
         this.genderFm = genderFm;

@@ -1,33 +1,29 @@
 package com.reminiscence.filter;
-import com.reminiscence.config.auth.MemberDetail;
+import com.reminiscence.config.redis.TokenRevocationService;
 import io.jsonwebtoken.*;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.Map;
 
-import static com.reminiscence.filter.JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME;
-
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class JwtTokenProvider {
 
     private final String SECRET_KEY;
 
     private final JwtUtil jwtUtil;
+    private final TokenRevocationService tokenRevocationService;
 
     @Autowired
-    public JwtTokenProvider(Environment env, JwtUtil jwtUtil) {
+    public JwtTokenProvider(Environment env, JwtUtil jwtUtil, TokenRevocationService tokenRevocationService) {
         this.SECRET_KEY = env.getProperty("jwt.secret");
         this.jwtUtil = jwtUtil;
+        this.tokenRevocationService = tokenRevocationService;
     }
 
     public String generateToken(String username, int expiration_time, Map<String, Object> claims) {
@@ -50,47 +46,27 @@ public class JwtTokenProvider {
         return claims.getSubject();
     }
 
-    public boolean validateToken(String token, MemberDetail memberDetail) {
-        String username = getUsernameFromToken(token);
-        return username.equals(memberDetail.getUsername()) && !isTokenExpired(token);
+    public boolean validateToken(String token) {
+        String memberId = jwtUtil.extractClaimValue(token, "memberId");
+        String revokedToken = tokenRevocationService.getRevokedToken(memberId);
+        System.out.println("revokedToken" + revokedToken);
+        return !token.equals(revokedToken);
     }
 
     public boolean isTokenExpired(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date());
+            return claims.getBody().getExpiration().before(new Date());
         } catch (ExpiredJwtException e) {
             log.info(e.getMessage());
-            return false;
+            return true;
         }
     }
 
-    // refreshToken을 쿠키에서 추출할 경우
-//    public String getRefreshTokenFromCookie(HttpServletRequest request) {
-//        Cookie[] cookies = request.getCookies();
-//        if (cookies != null) {
-//            for (Cookie cookie : cookies) {
-//                if ("refreshToken".equals(cookie.getName())) {
-//                    return cookie.getValue();
-//                }
-//            }
-//        }
-//        return null;
-//    }
-
-    // refreshToken을 쿠키에 담을 경우
-//    public void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
-//        Cookie cookie = new Cookie("refreshToken", refreshToken);
-//        cookie.setHttpOnly(true); // JavaScript로 쿠키에 접근 불가능하도록 설정
-//        cookie.setSecure(true);   // HTTPS 프로토콜을 통해 전송할 때만 쿠키 사용
-//        cookie.setMaxAge(REFRESH_TOKEN_EXPIRATION_TIME); // 쿠키의 유효 기간 설정 (초 단위)
-//        cookie.setPath("/");     // 쿠키의 경로 설정 (애플리케이션의 모든 경로에서 접근 가능하도록 설정)
-//        response.addCookie(cookie);
-//    }
-
     // 어세스 토큰 헤더 설정
-    public void addHeaderAccessToken(HttpServletResponse response, String accessToken) {
-        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + accessToken);
+    public void setHeaderAccessToken(HttpServletResponse response, String accessToken) {
+        response.setHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + accessToken);
+//        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + accessToken);
     }
 
     // 리프레시 토큰 헤더 설정

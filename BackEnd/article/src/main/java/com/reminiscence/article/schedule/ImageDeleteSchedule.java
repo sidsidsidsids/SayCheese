@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -26,9 +27,12 @@ public class ImageDeleteSchedule {
         if(imageList == null) {
             return;
         }
+        List<Long> imageIdList = new ArrayList<>();
         for(ImageDeleteResponseDto images : imageList){
             deleteFile(images.getImageName(), images.getImageType());
+            imageIdList.add(images.getImageId());
         }
+        imageRepository.deleteNonOwnerImage(imageIdList);
     }
 
     public void deleteFile(String fileName, String imageType){

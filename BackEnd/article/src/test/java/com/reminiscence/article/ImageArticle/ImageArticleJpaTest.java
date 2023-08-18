@@ -181,7 +181,6 @@ public class ImageArticleJpaTest{
         //given
         Tag randomTag = tagRepository.findRandomTag().orElse(null);
         assertNotNull(randomTag, "잘못된 태그가 들어왔습니다.");
-        System.out.println("randomTag: " + randomTag.getName());
 
         Pageable page = PageRequest.of(0, 10, Sort.Direction.DESC, "random");
 
@@ -248,7 +247,6 @@ public class ImageArticleJpaTest{
 
         //then
         assertEquals("www.naver.com",imageArticle.getImgLink());
-        assertEquals(1L, imageArticle.getMemberId());
         assertEquals(4, findTags.size());
         assertEquals("se6816",imageArticle.getAuthor());
         assertEquals(1,imageArticle.getLoverYn());
@@ -271,7 +269,6 @@ public class ImageArticleJpaTest{
 
         //then
         assertEquals("www.naver.com",imageArticle.getImgLink());
-        assertEquals(1L, imageArticle.getMemberId());
         assertEquals(4, findTags.size());
         assertEquals("se6816",imageArticle.getAuthor());
         assertEquals(0,imageArticle.getLoverYn());
