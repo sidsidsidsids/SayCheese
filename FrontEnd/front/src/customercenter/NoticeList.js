@@ -1,10 +1,15 @@
 import { useState, useEffect } from "react";
+// third party
+import { Link } from "react-router-dom";
+import axios from "axios";
+// local
 import "./NoticeList.css";
 import Paging from "./Paging";
-import axios from "axios";
-import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function NoticeList() {
+  const { userInfo } = useSelector((store) => store.login);
+
   const [notices, setNotices] = useState([]); // 나타낼 공지사항
   const [count, setCount] = useState(0); // 공지사항 총 개수
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
@@ -12,7 +17,7 @@ function NoticeList() {
 
   useEffect(() => {
     getNoticeList();
-  }, [currentPage]);
+  }, [currentPage]); // 현재 페이지가 바뀔 때마다 공지사항 목록 다시 불러오기
 
   async function getNoticeList() {
     try {
@@ -73,9 +78,11 @@ function NoticeList() {
       </table>
       <Paging page={currentPage} count={count} setPage={setPage} />
       <div className="NoticeWriteBtnSort">
-        <Link className="NoticeWriteBtn" to="/customercenter/notice/write">
-          글 작성
-        </Link>
+        {!userInfo ? null : userInfo.email === "mailto:admin@admin.com" ? (
+          <Link className="NoticeWriteBtn" to="/customercenter/notice/write">
+            글 작성
+          </Link>
+        ) : null}
       </div>
     </div>
   );

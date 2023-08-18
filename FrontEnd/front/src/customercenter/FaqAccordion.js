@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+// local
 import "./FaqAccordion.css";
 
 function FaqAccordion({ sections }) {

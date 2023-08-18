@@ -1,31 +1,23 @@
 /* 카드 */
 .frameCard {
-  width: 230px;
-  height: 230px;
+  width: 260px;
+  height: 260px;
   border: #d9d9d9 1px solid;
   border-radius: 30px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 30px;
-  margin-left: 30px;
+  margin: 0 0 20px 10px;
   position: relative;
 }
-/* 카드 이미지 호버 확대 */
-.cardImg:hover {
-  animation: imgZoom 2s forwards;
-}
 
-@keyframes imgZoom {
-  to {
-    background-color: white;
-    transform: scale(2);
+@media (min-width: 1262px) {
+  .frameSpace div:nth-child(1) {
+    margin: 0;
   }
-}
-@media (max-width: 600px) {
-  .frameCard {
-    margin: 20px auto;
+  .frameSpace div:last-child(4n) {
+    margin: 0;
   }
 }
 

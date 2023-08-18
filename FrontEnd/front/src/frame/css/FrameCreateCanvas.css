@@ -1,0 +1,11 @@
+.canvasBackground {
+  background-image: url("../assets/background.jpg");
+  position: relative;
+  margin-bottom: 10px;
+}
+
+div#redoUndo{
+  position: absolute;
+  top: 17px;
+  right: 17px;
+}

@@ -76,6 +76,14 @@
   color: black;
 }
 
+.FrameAuthorProfile {
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+  border-radius: 20%;
+  margin: 0 10px;
+}
+
 /* 모달의 좋아요 버튼*/
 
 .modal .heart-content {
@@ -89,8 +97,8 @@
   background: url("/src/frame/assets/likes.png") no-repeat;
   background-position: left;
   background-size: 2900%;
-  height: 90px;
-  width: 90px;
+  height: 80px;
+  width: 80px;
   z-index: inherit;
 }
 
@@ -113,4 +121,10 @@
 /* 처음 렌더링할때 좋아요 이미 누른 작품은 핑크색으로 하트 바꾸기 위해서 */
 .modal .heart.full {
   background-position: right;
+}
+
+.alignFrameTwoButtons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

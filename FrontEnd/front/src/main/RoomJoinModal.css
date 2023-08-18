@@ -25,34 +25,35 @@
 .room-join-modal h2 {
   margin-top: 0;
   margin-bottom: 10px;
-  font-size: 20px;
+  font-size: 30px;
+  font-weight: 500;
 }
 
 /* 입력 필드 스타일 */
+.room-join-modal-content {
+  margin: 0 auto;
+}
+
 .room-join-modal input {
-  width: 100%;
+  width: 250px;
   padding: 10px;
   margin-right: 10px;
   border: 1px solid #ccc;
-  border-radius: 3px;
+  border-radius: 10px;
   margin-bottom: 10px;
 }
 
-/* 버튼 스타일 */
-.room-join-modal button {
-  padding: 10px 15px;
-  margin-right: 10px;
-  cursor: pointer;
-  border: 1px solid gray;
-  border-radius: 3px;
+.room-join-modal #roomCode {
+  margin-left: 37px;
 }
 
-.room-join-modal button:last-child {
-  margin-right: 0;
-}
 .room-join-modal p {
   margin: 10px;
   font-size: 16px;
   display: flex;
   align-items: center;
+}
+
+.room-join-modal #roomPW {
+  margin-left: 10px;
 }

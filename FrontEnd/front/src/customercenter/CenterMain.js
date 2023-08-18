@@ -1,5 +1,6 @@
+import { Outlet } from "react-router-dom";
+// local
 import "./CenterMain.css";
-import { Outlet } from "react-router";
 
 // 공지사항과 자주 묻는 질문 나타내는 부분
 function CenterMain() {

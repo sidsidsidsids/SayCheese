@@ -6,12 +6,10 @@ button {
   border: 0;
   vertical-align: middle;
   text-decoration: none;
-
   font-family: "Black Han Sans";
 }
 
 .btn {
-  font-weight: 600;
   color: white;
   background: #ea5455;
   border: 1px solid black;

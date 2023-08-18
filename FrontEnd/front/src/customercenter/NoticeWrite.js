@@ -1,4 +1,5 @@
 import { useState } from "react";
+// local
 import "./NoticeWrite.css";
 
 function NoticeWrite() {

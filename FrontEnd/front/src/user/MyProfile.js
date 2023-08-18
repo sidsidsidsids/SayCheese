@@ -1,11 +1,28 @@
 import React from "react";
+// third party
+import { useDispatch } from "react-redux";
+// local
 import "./MyProfile.css";
+import { openModal } from "../redux/features/modal/modalSlice";
+import logo from "./assets/SayCheeseLogo.png";
 
-function MyProfile({ name }) {
+function MyProfile({ email, nickname, genderFm, age, name, profile, payload }) {
+  const dispatch = useDispatch();
+
   return (
     <div>
-      <div className="MyProfileBox"></div>
-      <p style={{ fontSize: "20px" }}>🙋‍♀️반가워요, {name}님!</p>
+      <img
+        src={profile ? profile : logo}
+        alt="프로필 이미지"
+        className="MyProfileBox"
+        onClick={(event) => {
+          dispatch(openModal(payload));
+        }}
+      />
+
+      <p style={{ fontSize: "20px", margin: "20px 0" }}>
+        🙋‍♀️반가워요, {nickname}님!
+      </p>
     </div>
   );
 }
