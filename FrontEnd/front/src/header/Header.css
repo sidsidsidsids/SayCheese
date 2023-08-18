@@ -1,0 +1,82 @@
+.Header {
+  margin: 10px 40px;
+  padding: 0;
+  font-size: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.SayCheeseLogo {
+  margin: 0;
+  width: 160px;
+}
+
+.HeaderSort {
+  display: flex;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.DropDownMenu a {
+  color: black;
+}
+
+.DropDownSubMenu {
+  height: 0;
+  overflow: hidden;
+}
+
+.DropDownMenu > li:hover {
+  transition-duration: 0.4s;
+}
+
+.MyPageHover {
+  position: relative;
+}
+
+.MyPageHover:hover .DropDownSubMenu {
+  height: 45px;
+  word-wrap: break-all;
+  position: absolute;
+  transition: height 0.5s;
+}
+
+.DropDownSubMenuTwo {
+  height: 0;
+  overflow: hidden;
+}
+
+.DropDownSubMenuTwo > li:hover {
+  transition-duration: 0.4s;
+}
+
+.MyPageHover:hover .LoginLink {
+  margin: auto 8px;
+}
+
+.MyPageHover:hover .DropDownSubMenuTwo {
+  height: 20px;
+  position: absolute;
+  transition: height 0.5s;
+}
+
+.DropDownMenu p {
+  width: 89.25px !important;
+  word-break: break-all;
+}
+
+.HoverEffect {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  color: black;
+  transition: color 0.3s;
+}
+
+.HoverEffect:hover {
+  color: #ea5455;
+}

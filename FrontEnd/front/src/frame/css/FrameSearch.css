@@ -1,0 +1,30 @@
+.frameSearfch > form {
+  display: flex;
+  flex-direction: row;
+}
+
+.frameSearch > form > button {
+  border: none;
+  background: transparent;
+  /* background-color: blue; */
+  height: 30px;
+}
+
+.frameSearch > form > button > img {
+  height: 20px;
+  vertical-align: baseline;
+  object-fit: cover;
+}
+
+.frameSearch > form > input {
+  box-sizing: border-box;
+  font-family: Black Han Sans;
+  border-radius: 0;
+  border-bottom: 3px solid black;
+  background-color: transparent;
+  width: 200px;
+  font-size: 22px;
+}
+&:focus {
+  outline: none;
+}

@@ -1,0 +1,57 @@
+[[FrameArticle-API]]
+== FrameArticle API
+
+
+[[FrameArticle-작성-API]]
+=== FrameArticle 작성 API(정상)
+operation::FrameArticleIntegrationTest/writeFrameArticleSuccessTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+
+=== FrameArticle 작성 API(비로그인 시도 시)
+operation::FrameArticleIntegrationTest/writeFrameArticleNotAuthFailTest[snippets='http-request,request-fields,http-response']
+
+=== FrameArticle 작성 API(잘못된 값이 들어올 시)
+operation::FrameArticleIntegrationTest/writeFrameArticleValidFailTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+
+[[FrameArticle-삭제-API]]
+=== FrameArticle 삭제 API(정상)
+operation::FrameArticleIntegrationTest/deleteFrameArticleSuccessTest[snippets='http-request,request-headers,path-parameters,http-response,response-fields']
+
+=== FrameArticle 삭제 API(자신이 글이 아닌 글 삭제 시도 시)
+operation::FrameArticleIntegrationTest/deleteFrameArticleNoAuthFailTest[snippets='http-request,request-headers,path-parameters,http-response,response-fields']
+
+=== FrameArticle 삭제 API(없는 글을 삭제하려고 할 시)
+operation::FrameArticleIntegrationTest/deleteFrameArticleNotExistsIdFailTest[snippets='http-request,request-headers,path-parameters,http-response,response-fields']
+
+[[FrameArticle-목록-API]]
+=== FrameArticle 목록 API(좋아요 순 - 회원)
+operation::FrameArticleIntegrationTest/MemberListHotFrameArticleSuccessTest[snippets='http-request,request-headers,request-parameters,http-response,response-fields']
+
+=== FrameArticle 목록 API(좋아요 순 - 비회원)
+operation::FrameArticleIntegrationTest/NonMemberListHotFrameArticleSuccessTest[snippets='http-request,request-parameters,http-response,response-fields']
+
+=== FrameArticle 목록 API(무작위 - 회원)
+operation::FrameArticleIntegrationTest/MemberListRandomFrameArticleSuccessTest[snippets='http-request,request-headers,request-parameters,request-fields,http-response,response-fields']
+
+=== FrameArticle 목록 API(무작위 - 비회원)
+operation::FrameArticleIntegrationTest/NonMemberListRandomFrameArticleSuccessTest[snippets='http-request,request-parameters,http-response,response-fields']
+
+=== FrameArticle 목록 API(최신 - 회원)
+operation::FrameArticleIntegrationTest/MemberListRecentFrameArticleSuccessTest[snippets='http-request,request-headers,request-parameters,request-fields,http-response,response-fields']
+
+=== FrameArticle 목록 API(최신 - 비회원)
+operation::FrameArticleIntegrationTest/NonMemberListRecentFrameArticleSuccessTest[snippets='http-request,request-parameters,http-response,response-fields']
+
+=== 나의 FrameArticle 목록 API
+operation::FrameArticleIntegrationTest/getMyFrameArticleListSuccessTest[snippets='http-request,request-headers,request-parameters,http-response,response-fields']
+
+=== FrameArticle 공개여부 수정 API
+operation::FrameArticleIntegrationTest/alterFrameArticlePublicStatusTest[snippets='http-request,request-headers,path-parameters,http-response,response-fields']
+
+=== FrameArticle 상세정보 조회 API(회원)
+operation::FrameArticleIntegrationTest/readMemberFrameArticleDetailTest[snippets='http-request,request-headers,path-parameters,http-response,response-fields']
+
+=== FrameArticle 상세정보 조회 API(비회원)
+operation::FrameArticleIntegrationTest/readNonMemberFrameArticleDetailTest[snippets='http-request,path-parameters,http-response,response-fields']
+
+=== FrameArticle 상세정보 조회 API(이미 삭제되었거나 없는 글)
+operation::FrameArticleIntegrationTest/readFrameArticleDetailFailureTest[snippets='http-request,path-parameters,http-response,response-fields']

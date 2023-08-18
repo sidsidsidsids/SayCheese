@@ -1,0 +1,20 @@
+.CenterMenu {
+  box-sizing: border-box;
+  width: 200px;
+  height: 220px;
+  flex-shrink: 0;
+  border-radius: 20px;
+  background: #fff;
+  text-align: center;
+  padding: 5px 10px;
+}
+
+.ActiveMenu {
+  text-decoration-line: none;
+  color: #ea5455;
+}
+
+.NotActiveMenu {
+  text-decoration-line: none;
+  color: black;
+}

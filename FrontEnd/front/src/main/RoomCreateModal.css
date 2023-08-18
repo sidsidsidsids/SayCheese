@@ -1,0 +1,179 @@
+/* 모달을 렌더링하는 전체적인 스타일 */
+.room-create-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+/* 실제 모달 내용을 감싸는 컨테이너 */
+.room-create-modal-content {
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+}
+.finish-create-modal-content {
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+}
+
+/* 모달의 타이틀 스타일 */
+h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 30px;
+  font-weight: 200;
+}
+
+/* 입력 필드 스타일 */
+.room-create-modal input {
+  width: 100%;
+  padding: 10px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.finish-create-modal input {
+  width: 100%;
+  padding: 10px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.mode-selection {
+  margin-bottom: 20px;
+}
+
+.mode-selection p {
+  margin: 0;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+.mode-selection label {
+  display: inline;
+  margin-right: 20px;
+  margin-bottom: 30px;
+  height: 20px;
+  font-size: 20px;
+}
+.mode-selection input[type="radio"] {
+  border-radius: 50%;
+  margin-right: 15px;
+  margin-top: 10px;
+  width: 20px;
+  height: 20px !important;
+  top: 13px;
+  border: 1px solid #808080 !important;
+}
+.frame-type {
+  justify-content: center;
+}
+/* 이미지를 감싸는 버튼 스타일 */
+.room-create-modal .frame-btn {
+  width: 80px;
+  height: 80px;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+}
+
+/* 이미지 스타일 */
+.room-create-modal .frame-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: scale-down;
+}
+.limit-settings {
+  margin-bottom: 20px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.limit-settings p {
+  margin: 0;
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.limit-settings input[type="number"] {
+  margin: 10px;
+  padding: 2px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  width: 38px;
+  border-radius: 10px;
+}
+
+.limit-settings button {
+  background-color: grey;
+  font-size: 30px;
+  height: 30px;
+  width: 30px;
+  color: white;
+  border-radius: 50%;
+  padding: 0px;
+  margin-left: 10px;
+}
+
+/* 프레임 규격 설정 */
+.frame-type {
+  font-size: 20px;
+}
+
+.frame-type button {
+  margin-left: 50px;
+  margin: 0 15px 10px 35px;
+}
+
+.password-settings {
+  width: inherit;
+}
+
+.password-settings input {
+  width: 250px;
+  margin: 0 auto;
+  border-radius: 10px;
+}
+
+.finish-create-modal-content {
+  width: 100%;
+}
+
+.finish-create-modal-content input {
+  width: 250px;
+  font-size: 20px;
+}
+.room-code,
+.room-invite {
+  margin: 0 auto;
+}
+#createdCode {
+  margin-left: 10px;
+}
+
+#inviteLink {
+  margin-left: 10px;
+}
+
+.finish-create-modal-content p {
+  padding: 0;
+  text-align: left;
+}

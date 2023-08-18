@@ -1,0 +1,193 @@
+.SignUpWrapper {
+  padding: 100px 0;
+}
+
+.SignUpBox {
+  box-sizing: border-box;
+  width: 600px;
+  height: 1000px;
+  flex-shrink: 0;
+
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  padding: 0 0 15px;
+}
+
+.SignBtnInputSort {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 입력창의 기본 테두리 디자인 */
+.SignUpInputLine {
+  border: 1px solid #dadada;
+  padding: 10px 15px;
+  margin: 10px 0;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px 0px rgba(218, 218, 218, 0.25);
+}
+
+/* 입력창 눌렀을 경우 */
+.SignUpInputLine.focused {
+  border-color: #9795f0;
+}
+
+/* 버튼 디자인 */
+.SignUpCheckBtn {
+  box-sizing: border-box;
+  width: 130px;
+  height: 45px;
+  flex-shrink: 0;
+
+  margin: 0 0 5px 10px;
+}
+
+/* 한 줄 전체를 차지하는 input 태그의 width */
+.SignUpInputSize {
+  width: 100%;
+}
+
+/* 비밀번호 사용 가능 여부 출력 메시지 기본 디자인 */
+.PwCheckMsg {
+  text-align: left;
+  color: #ea5455;
+}
+
+/* 비밀번호와 비밀번호 확인 창에 입력한 값이 일치할 경우 메시지 초록색 */
+.SamePassword {
+  color: #1acb16;
+}
+
+/* 성별과 나이 input 태그 한 줄에 정렬 */
+.SignGenderAgeSort {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* input 타입이 radio인 경우 동그라미 버튼 보이지 않게 */
+.SelectGender input[type="radio"] {
+  display: none;
+}
+
+/* SelectGender 클래스를 가진 요소 하위에 있는 radio 버튼과 연결된 label */
+.SelectGender input[type="radio"] + label {
+  display: inline-block;
+  cursor: pointer;
+  height: 50px;
+  width: 110px;
+  border: 1px solid #ea5455;
+  line-height: 50px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+
+  margin: 0;
+
+  background-color: #fff;
+  color: #929294;
+  box-shadow: 0px 4px 4px 0px rgba(218, 218, 218, 0.25);
+}
+
+/* radio 버튼 눌렀을 경우 글씨색은 흰색, 배경색은 빨간색 */
+.SelectGender input[type="radio"]:checked + label {
+  background-color: #ea5455;
+  color: #fff;
+}
+
+/* 남자 radio 버튼 디자인 - 왼쪽 위아래만 둥글게 */
+.SelectGender input[type="radio"]:nth-child(1) + label {
+  border-radius: 10px 0 0 10px;
+}
+
+/* 여자 radio 버튼 디자인 - 오른쪽 위아래만 둥글게 */
+.SelectGender input[type="radio"]:nth-child(3) + label {
+  border-radius: 0 10px 10px 0;
+}
+
+.AgeSize {
+  width: 90%;
+}
+
+/* 개인정보 제공 동의 박스 디자인 */
+.InfoInnerBox {
+  margin: 10px 0;
+  width: 525px;
+  height: 170px;
+  /* 스크롤 자동 */
+  overflow: auto;
+
+  border-radius: 10px;
+  border: 1px solid #dadada;
+  background: white;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
+  text-align: left;
+}
+
+.InfoText {
+  padding: 0 15px;
+}
+
+.InfoText > p {
+  color: #929294;
+}
+
+.InfoTitleText {
+  font-weight: 500 !important;
+}
+
+.AgreeBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* input 타입이 checkbox인 경우 */
+input[type="checkbox"] {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  border: 1px solid #dadada;
+  position: relative;
+
+  /* 체크했을 경우 빨간색 효과 */
+  accent-color: #ea5455;
+}
+
+/* checkbox의 label에 커서 올릴 경우 */
+input#AgreeCheckBtn + label {
+  cursor: pointer;
+}
+
+label {
+  margin: 0;
+  margin-left: 5px;
+  display: flex;
+  align-items: center;
+
+  font-weight: 500 !important;
+}
+
+/* 회원가입 버튼 디자인 */
+.SignUpBtn {
+  box-sizing: border-box;
+  width: 520px;
+  height: 50px;
+  flex-shrink: 0;
+  margin: 20px 0 0;
+}
+
+.SignUpBtnSort {
+  display: flex;
+  justify-content: center;
+}

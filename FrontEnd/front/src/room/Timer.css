@@ -1,0 +1,20 @@
+.timer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  font-weight: bold;
+  flex: 1 1 20%;
+  font-size: 28px;
+  position: absolute;
+  right: 0;
+  width: 170px;
+  height: 170px;
+}
+
+.timer img {
+  object-fit: contain;
+  width: 100px;
+  height: 100px;
+}

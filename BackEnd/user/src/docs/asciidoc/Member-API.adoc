@@ -1,0 +1,137 @@
+[[Member-API]]
+== Member API
+
+
+[[회원가입-API]]
+=== 회원가입 API
+operation::MemberIntegrationTest/testJoinMemberSuccess[snippets='http-request,request-fields,http-response,response-fields']
+
+=== 회원가입 API(이메일 중복)
+operation::MemberIntegrationTest/testJoinMemberFailure_DuplicatedEmail[snippets='http-request,request-fields,http-response,response-fields']
+
+=== 회원가입 API(닉네임 중복)
+operation::MemberIntegrationTest/testJoinMemberFailure_DuplicatedNickname[snippets='http-request,request-fields,http-response,response-fields']
+
+=== 회원가입 API(비밀번호 제약)
+operation::MemberIntegrationTest/testJoinMemberFailure_PasswordConstraints[snippets='http-request,request-fields,http-response,response-fields']
+
+[[중복확인-API]]
+
+=== 이메일 중복확인 API(정상)
+operation::MemberIntegrationTest/testIdCheckSuccess[snippets='http-request,request-fields,http-response,response-fields']
+
+=== 이메일 중복확인 API(이메일 중복)
+operation::MemberIntegrationTest/testIdCheckFailure[snippets='http-request,request-fields,http-response,response-fields']
+
+=== 닉네임 중복확인 API(정상)
+operation::MemberIntegrationTest/testNicknameCheckSuccess[snippets='http-request,request-fields,http-response,response-fields']
+
+=== 닉네임 중복확인 API(닉네임 중복)
+operation::MemberIntegrationTest/testNicknameCheckFailure[snippets='http-request,request-fields,http-response,response-fields']
+
+[[로그인-API]]
+
+=== 로그인 API
+operation::MemberIntegrationTest/testLoginSuccess[snippets='http-request,request-fields,http-response,response-fields']
+
+=== 로그인 API(비밀번호 다를 경우)
+operation::MemberIntegrationTest/testLoginFail[snippets='http-request,request-fields,http-response,response-fields']
+
+[[회원정보-API]]
+
+=== 회원정보 조회 API
+operation::MemberIntegrationTest/testGetMemberInfo[snippets='http-request,request-headers,http-response,response-fields']
+
+=== 회원정보 수정 API
+operation::MemberIntegrationTest/testUpdateMemberInfo[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+
+=== 프로필 수정 API
+operation::MemberIntegrationTest/testSaveMemberProfile[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+
+[[계정삭제-API]]
+
+=== 계정삭제 API(정상)
+operation::MemberIntegrationTest/testDeleteMemberSuccess[snippets='http-request,request-headers,http-response,response-fields']
+
+=== 계정삭제 API(잘못된 사용자 접근 시)
+operation::MemberIntegrationTest/testDeleteMemberFailure[snippets='http-request,http-response,response-fields']
+
+[[회원명단불러오기-API]]
+
+=== 회원명단불러오기 API
+operation::MemberIntegrationTest/testGetMembersList[snippets='http-request,request-parameters,http-response,response-fields']
+
+[[로그아웃-API]]
+
+=== 로그아웃 API
+operation::MemberIntegrationTest/testLogoutSuccess[snippets='http-request,request-headers,http-response']
+
+[[JwtToken검증-API]]
+
+=== AccessToken 만료 여부 판별(만료 시)
+operation::MemberIntegrationTest/testAccessTokenExpiredConfirmed[snippets='http-request,request-headers,http-response']
+
+=== (AccessToken 만료 시) RefreshToken 검증 통해 AccessToken 재발급
+operation::MemberIntegrationTest/testRefreshSuccess[snippets='http-request,request-headers,http-response,response-fields']
+
+=== AccessToken와 RefreshToken 모두 만료 시
+operation::MemberIntegrationTest/testRefreshFail[snippets='http-request,request-headers,http-response']
+
+=== 로그아웃 시 AccessToken 블랙리스트 설정 후 해당 AccessToken 접근 제한
+operation::MemberIntegrationTest/testAccessTokenBlacklist[snippets='http-request,request-headers,http-response']
+
+=== 로그아웃 시 Redis 내 RefreshToken 삭제 후 RefreshToken 접근 제한
+operation::MemberIntegrationTest/testRefreshTokenDeletion[snippets='http-request,request-headers,http-response,response-fields']
+
+[[이메일-전송-API]]
+
+=== 회원 가입 시 이메일 인증번호 전송 API(정상)
+operation::EmailIntegrationTest/EmailTransportSuccessTest[snippets='http-request,request-fields,http-response,response-fields']
+
+=== 회원 가입 시 이메일 인증번호 전송 API(잘못된 값이 들어왔을 시)
+operation::EmailIntegrationTest/EmailTransportValidFailTest[snippets='http-request,request-fields,http-response,response-fields']
+
+
+=== 회원 가입 시 이메일 인증 API(정상)
+operation::EmailIntegrationTest/checkAuthTokenSuccessTest[snippets='http-request,request-fields,http-response,response-fields']
+=== 회원 가입 시 이메일 인증 API(잘못된 값이 들어왔을 시)
+operation::EmailIntegrationTest/checkAuthTokenValidFailTest[snippets='http-request,request-fields,http-response,response-fields']
+=== 회원 가입 시 이메일 인증 API(없는 값이 들어왔을 시)
+operation::EmailIntegrationTest/checkAuthTokenNotExistsFailTest[snippets='http-request,request-fields,http-response,response-fields']
+
+[[게스트-토큰-API]]
+=== 게스트 토큰 발급
+operation::MemberIntegrationTest/testGuestTokenIssue[snippets='http-request,http-response,response-fields']
+
+=== 게스트 토큰으로 회원 정보 조회 접근 시 실패
+operation::MemberIntegrationTest/testGuestTokenForbiddenAccessFailure[snippets='http-request,request-headers,http-response']
+
+[[닉네임-조회-API]]
+=== 회원 닉네임 조회
+operation::MemberIntegrationTest/testGetGuestNickName[snippets='http-request,request-parameters,http-response,response-fields']
+
+=== 게스트 닉네임 조회
+operation::MemberIntegrationTest/testGetGuestNickName[snippets='http-request,request-parameters,http-response,response-fields']
+
+[[프로필-수정-API]]
+=== 프로필 수정
+operation::MemberIntegrationTest/testSaveMemberProfile[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+
+[[비밀번호-변경-API]]
+=== 비밀번호 변경 시 회원 이메일 찾기 및 이메일 전송(정상)
+operation::MemberIntegrationTest/testFindMemberEmailAndTransportEmailSuccess[snippets='http-request,request-fields,http-response,response-fields']
+
+=== 비밀번호 변경 시 회원 이메일 찾기(없는 이메일)
+operation::MemberIntegrationTest/testFindMemberEmailFailure[snippets='http-request,request-fields,http-response,response-fields']
+
+=== 비밀번호 확인 인증코드 검증 테스트
+operation::MemberIntegrationTest/testCheckAuthTokenSuccess[snippets='http-request,request-fields,http-response,response-fields']
+
+=== 비밀번호 변경 테스트(정상)
+operation::MemberIntegrationTest/testModifyPasswordSuccess[snippets='http-request,request-fields,http-response,response-fields']
+
+=== 비밀번호 변경 테스트(없는 회원)
+operation::MemberIntegrationTest/testWhenNotExistMember_ThenModifyPasswordFailure[snippets='http-request,request-fields,http-response,response-fields']
+
+=== 비밀번호 변경 테스트(서로 다른 패스워드)
+operation::MemberIntegrationTest/testWhenNotExistMember_ThenModifyPasswordFailure[snippets='http-request,request-fields,http-response,response-fields']

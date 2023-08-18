@@ -1,0 +1,9 @@
+.MyProfileBox {
+  box-sizing: border-box;
+  width: 260px;
+  height: 260px;
+  border-radius: 30px;
+  object-fit: cover;
+  border: 1px solid #d9d9d9;
+  cursor: pointer;
+}

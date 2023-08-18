@@ -1,0 +1,59 @@
+/* 모달을 렌더링하는 전체적인 스타일 */
+.room-join-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+/* 실제 모달 내용을 감싸는 컨테이너 */
+.room-join-modal-content {
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  width: 400px;
+}
+
+/* 모달의 타이틀 스타일 */
+.room-join-modal h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 30px;
+  font-weight: 500;
+}
+
+/* 입력 필드 스타일 */
+.room-join-modal-content {
+  margin: 0 auto;
+}
+
+.room-join-modal input {
+  width: 250px;
+  padding: 10px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.room-join-modal #roomCode {
+  margin-left: 37px;
+}
+
+.room-join-modal p {
+  margin: 10px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.room-join-modal #roomPW {
+  margin-left: 10px;
+}

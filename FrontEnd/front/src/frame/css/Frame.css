@@ -1,0 +1,124 @@
+.frame {
+  font-size: 30px;
+}
+
+/* 프레임 탭 */
+.frame .frameTap {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.frame .frameButton {
+  font-family: Black Han Sans;
+  font-size: 22px;
+  width: 200px;
+  height: 80px;
+  vertical-align: text-bottom;
+  border: #d9d9d9 1px solid;
+  border-radius: 30px 30px 0 0;
+  background-color: #d9d9d9;
+  word-break: keep-all;
+  padding: 20px;
+}
+
+.frame .focused {
+  border: white 1px solid;
+  background-color: white;
+  transition: background-color 0.1s, transform 0.3s;
+  transform: translateX(10.5px) scale(1.1, 1.1);
+  z-index: 10;
+}
+
+@media (min-width: 1032px) and (max-width: 1382px) {
+  /* 브라우저 사이즈 이상 이하일때*/
+  .frame .frameTap {
+    font-size: 18px;
+  }
+
+  .frame .focused {
+    border: white 1px solid;
+    background-color: white;
+    transition: background-color 0.1s, transform 0.3s;
+    transform: translateX(10px) scale(1.1, 1.1);
+    z-index: 10;
+  }
+}
+
+@media (min-width: 702px) and (max-width: 1032px) {
+  /* 브라우저 사이즈 이상 이하일때*/
+  .frame .focused {
+    border: white 1px solid;
+    background-color: white;
+    transition: background-color 0.1s, transform 0.3s;
+    transform: translateX(0);
+    z-index: 10;
+  }
+
+  .frame .frameButton {
+    font-size: 25px;
+  }
+}
+
+@media (max-width: 701px) {
+  /* 브라우저 사이즈 이상 이하일때*/
+  .frame .focused {
+    border: white 1px solid;
+    background-color: white;
+    transition: background-color 0.3s, transform 0.3s;
+    transform: translateX(0);
+    z-index: 10;
+  }
+
+  .frame .frameButton {
+    font-size: 20px;
+  }
+}
+
+.displayHide {
+  visibility: hidden;
+}
+
+.frameSearchTab {
+  margin-left: auto;
+  flex-shrink: 0;
+  padding-left: 10px;
+}
+
+.responsiveFrameTab {
+  display: none;
+}
+
+/* 화면 작아지면 검색바 숨김, 탭 글씨 줄임 */
+@media (max-width: 600px) {
+  .frameSearchTab {
+    display: none;
+  }
+  .responsiveFrameTab {
+    display: block;
+    margin: 10px;
+    width: 100%;
+  }
+}
+
+/* 탭 아래 컨텐츠 영역 */
+.frameSpace {
+  background-color: white;
+  border-radius: 0 30px 30px 30px;
+  min-height: 70vh;
+}
+
+/* 프레임 페이지 컨텐츠 부분 영역 */
+@media (max-width: 600px) {
+  .frameSpace {
+    border-radius: 0 0 30px 30px;
+    font-size: 18px;
+  }
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}

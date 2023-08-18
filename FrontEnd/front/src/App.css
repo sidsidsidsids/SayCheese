@@ -1,0 +1,16 @@
+.App {
+  text-align: center;
+}
+
+.contents {
+  width: 80vw;
+  margin: 0 auto;
+}
+
+/* 스윗알러트 커스텀 글씨 웨이트 있으면 깨져서 주면 안됩니다 */
+.swal2-popup,
+.swal2-title{
+  /* font-size: 1.6rem !important; */
+  /* font-family: Georgia, serif; */
+  font-weight: 300 !important;
+}

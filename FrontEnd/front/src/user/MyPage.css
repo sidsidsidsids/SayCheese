@@ -1,0 +1,51 @@
+.MyPageBox {
+  border-radius: 30px;
+  background-color: white;
+  min-height: 70vh;
+  width: 80vw;
+  padding: 60px;
+}
+
+.MyProfileSort {
+  display: flex;
+  justify-content: center;
+}
+
+.MyPageTitle {
+  margin: 60px 50px 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.MyPageTitle > h2 {
+  font-weight: 500 !important;
+}
+
+.MyPageTitle > a {
+  display: flex;
+  align-items: end;
+}
+
+.MyPageTitle > a:hover {
+  color: #ea5455;
+}
+
+.MyPagePhoto {
+  display: flex;
+  justify-content: center;
+}
+
+.UserWithdrawSort {
+  display: flex;
+  justify-content: right;
+  margin: 20px 0 0;
+}
+
+.UserWithdrawBtn {
+  color: darkgray;
+}
+
+.UserWithdrawBtn:hover {
+  cursor: pointer;
+  color: black;
+}

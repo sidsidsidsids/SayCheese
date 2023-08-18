@@ -1,0 +1,198 @@
+.room-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 18px;
+  font-weight: bold;
+  /* border: 1px dashed black;
+  width: 19% */
+  flex: 1 1 20%;
+}
+.room-button > button {
+  border-radius: 10px;
+  border: 1px solid black;
+  width: 80px;
+  height: 50px;
+}
+
+.button1 {
+  background-color: rgb(255, 181, 181);
+}
+
+.button2 {
+  background-color: rgb(177, 245, 157);
+}
+
+.button3 {
+  background-color: rgb(79, 205, 255);
+}
+
+.button1 {
+  color: white;
+  background: rgb(255, 181, 181);
+  border: 1px solid black;
+  border-radius: 10px;
+  transform-style: preserve-3d;
+  transition: transform 150ms cubic-bezier(0, 0, 0.58, 1),
+    background 150ms cubic-bezier(0, 0, 0.58, 1);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.button1::before {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 85%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgb(255, 181, 181);
+  border-radius: inherit;
+  border: 1px solid black;
+  transform: translate3d(0, 0.75em, -1em);
+  transition: transform 150ms cubic-bezier(0, 0, 0.58, 1),
+    box-shadow 150ms cubic-bezier(0, 0, 0.58, 1);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.button1:hover {
+  background: rgb(255, 181, 181);
+  transform: translate(0, 0.25em);
+}
+
+.button1:hover::before {
+  transform: translate3d(0, 0.5em, -1em);
+}
+
+.button1:active {
+  background: rgb(255, 181, 181);
+  transform: translate(0em, 0.75em);
+}
+
+.button1:active::before {
+  box-shadow: 0 0 0 2px rgb(255, 181, 181), 0 0 rgb(255, 181, 181);
+  transform: translate3d(0, 0, -1em);
+}
+
+.button1 {
+  background-color: rgb(255, 181, 181);
+}
+
+.button2 {
+  background-color: rgb(177, 245, 157);
+}
+.button2 {
+  color: white;
+  background: rgb(104, 223, 68);
+  border: 1px solid black;
+  border-radius: 10px;
+  transform-style: preserve-3d;
+  transition: transform 150ms cubic-bezier(0, 0, 0.58, 1),
+    background 150ms cubic-bezier(0, 0, 0.58, 1);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.button2::before {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 85%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgb(68, 226, 19);
+  border-radius: inherit;
+  border: 1px solid black;
+  transform: translate3d(0, 0.75em, -1em);
+  transition: transform 150ms cubic-bezier(0, 0, 0.58, 1),
+    box-shadow 150ms cubic-bezier(0, 0, 0.58, 1);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.button2:hover {
+  background: rgb(177, 245, 157);
+  transform: translate(0, 0.25em);
+}
+
+.button2:hover::before {
+  transform: translate3d(0, 0.5em, -1em);
+}
+
+.button2:active {
+  background: rgb(177, 245, 157);
+  transform: translate(0em, 0.75em);
+}
+
+.button2:active::before {
+  box-shadow: 0 0 0 2px rgb(177, 245, 157), 0 0 rgb(177, 245, 157);
+  transform: translate3d(0, 0, -1em);
+}
+.button3 {
+  background-color: rgb(79, 205, 255);
+}
+
+.button3 {
+  color: white;
+  background: rgb(79, 205, 255);
+  border: 1px solid black;
+  border-radius: 10px;
+  transform-style: preserve-3d;
+  transition: transform 150ms cubic-bezier(0, 0, 0.58, 1),
+    background 150ms cubic-bezier(0, 0, 0.58, 1);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.button3::before {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 85%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgb(79, 205, 255);
+  border-radius: inherit;
+  border: 1px solid black;
+  transform: translate3d(0, 0.75em, -1em);
+  transition: transform 150ms cubic-bezier(0, 0, 0.58, 1),
+    box-shadow 150ms cubic-bezier(0, 0, 0.58, 1);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.button3:hover {
+  background: rgb(79, 205, 255);
+  transform: translate(0, 0.25em);
+}
+
+.button3:hover::before {
+  transform: translate3d(0, 0.5em, -1em);
+}
+
+.button3:active {
+  background: rgb(79, 205, 255);
+  transform: translate(0em, 0.75em);
+}
+
+.button3:active::before {
+  box-shadow: 0 0 0 2px rgb(79, 205, 255), 0 0 rgb(79, 205, 255);
+  transform: translate3d(0, 0, -1em);
+}

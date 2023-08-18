@@ -1,0 +1,21 @@
+.frameList {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  /* justify-content: space-evenly; */
+  align-items: flex-start;
+  align-content: space-around;
+  padding: 60px;
+}
+
+.responsiveFrameTab {
+  display: none;
+}
+
+/* framelist 와 pagination 을 각각 위와 아래에 배치하기 위해 */
+.frameGallery {
+  min-height: 70vh; /* Ensure the frameGallery takes the full height */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}

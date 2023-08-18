@@ -1,0 +1,26 @@
+[[방-참가자-API]]
+== 방-참가자 API
+
+[[참가자-작성-API]]
+=== 참가자 생성 테스트(정상) API
+operation::ParticipantIntegrationTest/writeParticipantSuccessTest[snippets='http-request,request-headers,request-fields,http-response']
+
+=== 존재하지 않는 방 참가자 생성 테스트(비정상) API
+operation::ParticipantIntegrationTest/writeInvalidRoomParticipantFailTest[snippets='http-request,request-headers,request-fields,http-response']
+
+[[참가자-정보변경-API]]
+=== 방장 변경 테스트(정상) API
+operation::ParticipantIntegrationTest/updateOwnerParticipantSuccessTest[snippets='http-request,request-headers,http-response']
+
+=== 참여자 스트림 ID 변경 테스트(정상) API
+operation::ParticipantIntegrationTest/updateStreamIdParticipantSuccessTest[snippets='http-request,request-headers,request-fields,http-response']
+
+=== 참여자 ConnectionN 변경 테스트(정상) API
+operation::ParticipantIntegrationTest/updateConnectionYnParticipantSuccessTest[snippets='http-request,request-headers,request-fields,http-response']
+
+[[참가자-삭제-API]]
+=== 참가자 삭제 테스트(정상) API
+operation::ParticipantIntegrationTest/deleteParticipantSuccessTest[snippets='http-request,request-headers,request-fields,http-response']
+
+=== 방이 존재하지 않는 참여자 삭제 테스트(비정상) API
+operation::ParticipantIntegrationTest/deleteInvalidRoomParticipantFailTest[snippets='http-request,request-headers,request-fields,http-response']
