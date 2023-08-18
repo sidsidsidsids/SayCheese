@@ -1,0 +1,42 @@
+server:
+port: 8080
+spring:
+  data:
+    base-url:
+  cloud:
+    config:
+      enabled: false
+  config:
+    import: "optional:configserver:/"
+  sql:
+    init:
+      mode: always
+  datasource:
+    url: jdbc:h2:mem:test
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+jwt:
+  secret: secret-key
+  expiration: 86400000
+cloud:
+  aws:
+    credentials:
+      instance-profile: false
+      access-key:
+      secret-key:
+    s3:
+      bucket: test
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false

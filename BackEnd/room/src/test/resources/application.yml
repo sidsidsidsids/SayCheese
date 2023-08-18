@@ -1,0 +1,27 @@
+spring:
+  sql:
+    init:
+      mode: always
+  cloud:
+    config:
+      enabled: false
+  config:
+    import: "optional:configserver:/"
+  datasource:
+    url: jdbc:h2:mem:test
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  data:
+    openvidu-url: https://test:8080
+    openvidu-secret:
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+jwt:
+  secret: secret-key
+  expiration: 86400000

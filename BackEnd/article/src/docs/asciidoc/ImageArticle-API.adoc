@@ -1,0 +1,48 @@
+[[ImageArticle-API]]
+== ImageArticle API
+
+[[ImageArticle-목록조회-API]]
+=== ImageArticle 목록조회 API(좋아요 순)
+operation::ImageArticleIntegrationTest/listHotImageArticleSuccessTest[/snippets='http-request,request-headers,path-parameters,http-response']
+
+=== ImageArticle 목록조회 API(무작위)
+operation::ImageArticleIntegrationTest/listRandomImageArticleSuccessTest[/snippets='http-request,request-headers,path-parameters,http-response']
+
+=== ImageArticle 목록조회 API(최신)
+operation::ImageArticleIntegrationTest/listRecentImageArticleSuccessTest[/snippets='http-request,request-headers,path-parameters,http-response']
+
+=== ImageArticle 목록조회 API(태그)
+operation::ImageArticleIntegrationTest/listTagImageArticleSuccessTest[/snippets='http-request,request-headers,path-parameters,http-response']
+
+=== ImageArticle 목록조회 API(무작위 태그)
+operation::ImageArticleIntegrationTest/listRandomTagImageArticleSuccessTest[/snippets='http-request,request-headers,path-parameters,http-response']
+
+
+[[ImageArticle-상세조회-API]]
+=== ImageArticle 상세조회 API
+operation::ImageArticleIntegrationTest/detailImageArticleSuccessTest[/snippets='http-request,request-headers,path-parameters,http-response']
+
+=== ImageArticle 상세조회 API(존재하지 않는 게시글 접근할 때)
+operation::ImageArticleIntegrationTest/detailNonImageArticleFailTest[/snippets='http-request,request-headers,path-parameters,http-response']
+
+[[ImageArticle-작성-API]]
+=== ImageArticle 작성 API
+operation::ImageArticleIntegrationTest/writeImageArticleSuccessTest[/snippets='http-request,request-headers,request-fields,http-response']
+
+=== ImageArticle 작성 API(이미지가 없을 때, 비정상)
+operation::ImageArticleIntegrationTest/writeImageArticleFailTest[/snippets='http-request,request-headers,request-fields,http-response']
+
+[[ImageArticle-삭제-API]]
+=== ImageArticle 삭제 API(게시글만 삭제)
+operation::ImageArticleIntegrationTest/deleteOnlyImageArticleSuccessTest[/snippets='http-request,request-headers,path-parameters,http-response']
+
+=== ImageArticle 삭제 API(잘못된 사용자 접근할 때)
+operation::ImageArticleIntegrationTest/detailNonImageArticleFailTest[/snippets='http-request,request-headers,path-parameters,http-response']
+
+=== ImageArticle 삭제 API(게시글, 이미지 모두 삭제)
+operation::ImageArticleIntegrationTest/deleteImageArticleSuccessTest[/snippets='http-request,request-headers,path-parameters,http-response']
+
+=== ImageArticle 삭제 API(잘못된 사용자 접근할 때)
+operation::ImageArticleIntegrationTest/deleteWrongUserImageArticleSuccessTest[/snippets='http-request,request-headers,path-parameters,http-response']
+
+

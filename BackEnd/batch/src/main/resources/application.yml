@@ -1,0 +1,22 @@
+spring:
+  port: 8600
+  datasource:
+    username: test
+    password: test
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/tuto
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: never
+      table-prefix: batch_
+  main:
+    allow-bean-definition-overriding: true

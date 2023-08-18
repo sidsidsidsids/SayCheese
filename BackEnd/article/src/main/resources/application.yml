@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: article-service
+  profiles:
+    active: local
+    include: jwt
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:7000/eureka
