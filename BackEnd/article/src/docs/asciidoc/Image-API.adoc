@@ -1,0 +1,15 @@
+[[이미지-API]]
+== Image API
+
+[[이미지-소유자-조회-API]]
+=== 소유한 이미지 조회(정상) API
+operation::ImageIntegrationTest/getNoticeArticleListSuccessTest[snippets='http-request,request-headers,http-response,response-fields']
+
+
+[[이미지-소유자-삭제-API]]
+=== 이미지 소유자 삭제(정상) API
+operation::ImageIntegrationTest/deleteImageOwnerSuccessTest[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+
+[[랜덤-태그-조회-소유자-삭제-API]]
+=== 랜덤 태그 조회(정상) API
+operation::ImageIntegrationTest/readRandomTagSuccessTest[snippets='http-request,request-headers,http-response,response-fields']

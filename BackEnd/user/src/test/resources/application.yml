@@ -1,0 +1,58 @@
+server:
+  port: 8080
+spring:
+  sql:
+    init:
+      mode: always
+  data:
+    redis:
+      host: '127.0.0.1'
+      port: 6379
+      password: 17171771
+  datasource:
+    url: jdbc:h2:mem:test
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+    defer-datasource-initialization: true
+  config:
+    import: "optional:configserver:"
+logging.level:
+  org.hibernate.SQL: debug
+jwt:
+  secret: secret-key
+eureka:
+  client:
+    enabled: false
+cloud:
+  aws:
+    s3:
+      bucket: 200oks3bucket
+    region:
+      auto: false
+      static: ap-northeast-2
+    stack:
+      auto: false
+#social:
+#  client:
+#    google:
+#      rest-api-key:
+#      secret-key:
+#      redirect-uri:
+#      grant_type:
+#    kakao:
+#      rest-api-key:
+#      secret-key:
+#      redirect-uri:
+#      grant_type:
+#    naver:
+#      rest-api-key:
+#      secret-key:
+#      redirect-uri:
+#      grant_type:
