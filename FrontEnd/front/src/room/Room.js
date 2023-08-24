@@ -90,6 +90,7 @@ const Room = () => {
 
   useEffect(() => {
     window.addEventListener("beforeunload", onbeforeunload);
+    console.log(chatData);
     if (roomInfo.owner === true) {
       sendRoomInfo();
       setHost(true);
@@ -248,7 +249,7 @@ const Room = () => {
     if (session) {
       session.disconnect();
     }
-
+    chatData = undefined;
     setMySessionId(undefined);
     setSession(undefined);
     setSubscribers([]);
@@ -1142,6 +1143,7 @@ const Room = () => {
                   .catch((error) => {
                     console.log(error);
                   });
+                chatData = undefined;
                 navigate("/");
               }}
               onButton2={() => {
@@ -1400,6 +1402,7 @@ const Room = () => {
                       console.log(error);
                     });
                 }
+                chatData = undefined;
                 navigate("/");
               }}
               onButton2={() => {

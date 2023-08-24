@@ -39,7 +39,6 @@ function Main() {
   const [toJoin, setToJoin] = useState(false);
   const { userInfo, isLogin } = useSelector((store) => store.login);
   const [loginLink, setLoginLink] = useState("/user/login");
-
   const dispatch = useDispatch();
 
   useEffect(() => {
